@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgihanController;
+use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\KesController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
@@ -64,6 +65,11 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::put('/kes/{kes}/mahkamah', [MahkamahController::class, 'update'])->name('mahkamah.update')->whereNumber('kes');
     Route::post('/kes/{kes}/laporan', [MahkamahController::class, 'storeLaporan'])->name('laporan.store')->whereNumber('kes');
     Route::delete('/kes/{kes}/laporan/{laporan}', [MahkamahController::class, 'destroyLaporan'])->name('laporan.destroy')->whereNumber('kes')->whereNumber('laporan');
+
+    // Cetakan (per-case printouts → dompdf, inline stream)
+    Route::get('/kes/{kes}/cetak/ringkasan', [CetakanController::class, 'ringkasan'])->name('cetak.ringkasan')->whereNumber('kes');
+    Route::get('/kes/{kes}/cetak/penugasan', [CetakanController::class, 'agihan'])->name('cetak.penugasan')->whereNumber('kes');
+    Route::get('/kes/{kes}/cetak/laporan', [CetakanController::class, 'laporan'])->name('cetak.laporan')->whereNumber('kes');
 
     // Statistik + exports
     Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik.index');

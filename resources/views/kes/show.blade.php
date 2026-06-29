@@ -65,6 +65,13 @@
             <a href="{{ route('pengantaraan.edit', $kes) }}" class="tap-head__btn">Pengantaraan</a>
             <a href="{{ route('mahkamah.edit', $kes) }}" class="tap-head__btn">Kes Mahkamah</a>
             <a href="{{ route('kes.edit', $kes) }}" class="tap-head__btn">✎ Kemaskini</a>
+            <a href="{{ route('cetak.ringkasan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Ringkasan</a>
+            @if ($kes->nama_pegawai_yang_dapat_kes)
+                <a href="{{ route('cetak.penugasan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Surat Penugasan</a>
+            @endif
+            @if ($kes->laporanKes->count())
+                <a href="{{ route('cetak.laporan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Laporan</a>
+            @endif
         </div>
     </div>
 
@@ -72,6 +79,9 @@
         <div class="formerr" style="color: var(--success); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.18); margin-bottom:14px;">
             {{ session('status') }}
         </div>
+    @endif
+    @if ($errors->any())
+        <div class="formerr" style="margin-bottom:14px;">{{ $errors->first() }}</div>
     @endif
 
     <div class="tap-title" style="border:1px solid var(--line); border-radius: var(--r-lg); margin-bottom: 18px;">
