@@ -16,11 +16,20 @@ class SejarahPeguamPanel extends Model
 
     protected $casts = [
         'tarikh_penugasan' => 'date',
+        'tarikhNextBicaraKes' => 'date',
+        'permohonan_kali' => 'integer',
+        'createdDate' => 'datetime',
         'modifiedDate' => 'datetime',
     ];
 
     public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class, 'id_kes', 'id');
+    }
+
+    /** Next reassignment counter for a case (MAX+1 per id_kes). */
+    public static function nextPermohonanKali(int $idKes): int
+    {
+        return (int) static::where('id_kes', $idKes)->max('permohonan_kali') + 1;
     }
 }
