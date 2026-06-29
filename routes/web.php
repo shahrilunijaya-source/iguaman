@@ -30,9 +30,13 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(function () {
     Route::get('/system', [SystemController::class, 'utama'])->name('system.utama');
 
-    // Rekod kes (Case backbone)
+    // Rekod kes (Case backbone + permohonan CRUD)
     Route::get('/kes', [KesController::class, 'index'])->name('kes.index');
-    Route::get('/kes/{kes}', [KesController::class, 'show'])->name('kes.show');
+    Route::get('/kes/create', [KesController::class, 'create'])->name('kes.create');
+    Route::post('/kes', [KesController::class, 'store'])->name('kes.store');
+    Route::get('/kes/{kes}/edit', [KesController::class, 'edit'])->name('kes.edit')->whereNumber('kes');
+    Route::put('/kes/{kes}', [KesController::class, 'update'])->name('kes.update')->whereNumber('kes');
+    Route::get('/kes/{kes}', [KesController::class, 'show'])->name('kes.show')->whereNumber('kes');
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----

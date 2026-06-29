@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PermohonanRequest;
 use App\Models\Form;
+use App\Models\RefKes;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-// Kes (Case) backbone over the `forms` spine — list/filter/search + detail.
-// Foundation for the rekod-kes domain (permohonan/pengantaraan/mahkamah build on this).
+// Kes (Case) backbone over the `forms` spine — list/filter/search, detail, and permohonan CRUD.
+// Foundation for the rekod-kes domain (pengantaraan/mahkamah build on this).
 class KesController extends Controller
 {
     public function index(Request $request): View
@@ -32,9 +35,9 @@ class KesController extends Controller
         return view('kes.index', [
             'kes' => $kes,
             'filters' => $filters,
-            'cawanganList' => Form::query()->whereNotNull('cawangan')->where('cawangan', '!=', '')->distinct()->orderBy('cawangan')->pluck('cawangan'),
+            'cawanganList' => $this->cawanganList(),
             'statusList' => Form::query()->whereNotNull('status')->where('status', '!=', '')->distinct()->orderBy('status')->pluck('status'),
-            'kategoriList' => Form::query()->whereNotNull('kategori_kes')->where('kategori_kes', '!=', '')->distinct()->orderBy('kategori_kes')->pluck('kategori_kes'),
+            'kategoriList' => $this->kategoriList(),
         ]);
     }
 
@@ -43,5 +46,55 @@ class KesController extends Controller
         $kes->load(['laporanKes', 'sejarahPegawai', 'sejarahPeguamPanel', 'sejarahSidang']);
 
         return view('kes.show', ['kes' => $kes]);
+    }
+
+    public function create(): View
+    {
+        return view('kes.form', $this->formData(new Form()) + ['mode' => 'create']);
+    }
+
+    public function store(PermohonanRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+        $data['created_at'] = now();
+        $data['tarikh_daftar'] = $data['tarikh_daftar'] ?? now()->toDateString();
+        $data['didaftarkan_oleh'] = $request->user()->name;
+        $data['diterima'] = $data['diterima'] ?? ''; // NOT NULL in legacy schema
+
+        $kes = Form::create($data);
+
+        return redirect()->route('kes.show', $kes)->with('status', 'Permohonan baharu direkodkan.');
+    }
+
+    public function edit(Form $kes): View
+    {
+        return view('kes.form', $this->formData($kes) + ['mode' => 'edit']);
+    }
+
+    public function update(PermohonanRequest $request, Form $kes): RedirectResponse
+    {
+        $kes->update($request->validated() + ['tarikh_KPKemaskini' => now()]);
+
+        return redirect()->route('kes.show', $kes)->with('status', 'Kes dikemaskini.');
+    }
+
+    private function formData(Form $kes): array
+    {
+        return [
+            'kes' => $kes,
+            'cawanganList' => $this->cawanganList(),
+            'kategoriList' => $this->kategoriList(),
+            'jenisList' => RefKes::query()->whereNotNull('jenis_kes')->where('jenis_kes', '!=', '')->distinct()->orderBy('jenis_kes')->pluck('jenis_kes'),
+        ];
+    }
+
+    private function cawanganList()
+    {
+        return Form::query()->whereNotNull('cawangan')->where('cawangan', '!=', '')->distinct()->orderBy('cawangan')->pluck('cawangan');
+    }
+
+    private function kategoriList()
+    {
+        return Form::query()->whereNotNull('kategori_kes')->where('kategori_kes', '!=', '')->distinct()->orderBy('kategori_kes')->pluck('kategori_kes');
     }
 }

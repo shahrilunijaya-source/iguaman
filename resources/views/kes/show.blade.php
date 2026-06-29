@@ -61,8 +61,15 @@
         <span class="tap-nav__crumb">Kes <span class="now">{{ $kes->no_fail ?: '#'.$kes->id }}</span></span>
         <div class="tap-nav__cluster">
             <span class="tap-nav__step">{{ $kes->status ?: 'baru' }}</span>
+            <a href="{{ route('kes.edit', $kes) }}" class="tap-head__btn">✎ Kemaskini</a>
         </div>
     </div>
+
+    @if (session('status'))
+        <div class="formerr" style="color: var(--success); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.18); margin-bottom:14px;">
+            {{ session('status') }}
+        </div>
+    @endif
 
     <div class="tap-title" style="border:1px solid var(--line); border-radius: var(--r-lg); margin-bottom: 18px;">
         <div>
