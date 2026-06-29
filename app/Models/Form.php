@@ -24,6 +24,7 @@ class Form extends Model
         'tarikh_sidang' => 'date',
         'tarikh_selesai' => 'date',
         'tarikh_tutup_fail' => 'date',
+        'tarikh_mohon_khidmat_pp' => 'datetime',
         'created_at' => 'datetime',
         'is_duplicate' => 'boolean',
     ];
