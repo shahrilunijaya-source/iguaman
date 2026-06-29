@@ -43,7 +43,7 @@ class KesController extends Controller
 
     public function show(Form $kes): View
     {
-        $kes->load(['laporanKes', 'sejarahPegawai', 'sejarahPeguamPanel', 'sejarahSidang']);
+        $kes->load(['laporanKes', 'sejarahPegawai', 'sejarahPeguamPanel', 'sejarahSidang', 'lampiran']);
 
         return view('kes.show', ['kes' => $kes]);
     }

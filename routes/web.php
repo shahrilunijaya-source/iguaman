@@ -4,6 +4,7 @@ use App\Http\Controllers\AgihanController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\KesController;
+use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
@@ -67,6 +68,11 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::put('/kes/{kes}/mahkamah', [MahkamahController::class, 'update'])->name('mahkamah.update')->whereNumber('kes');
     Route::post('/kes/{kes}/laporan', [MahkamahController::class, 'storeLaporan'])->name('laporan.store')->whereNumber('kes');
     Route::delete('/kes/{kes}/laporan/{laporan}', [MahkamahController::class, 'destroyLaporan'])->name('laporan.destroy')->whereNumber('kes')->whereNumber('laporan');
+
+    // Lampiran (case attachments) — private disk, auth-streamed
+    Route::post('/kes/{kes}/lampiran', [LampiranController::class, 'store'])->name('lampiran.store')->whereNumber('kes');
+    Route::get('/lampiran/{lampiran}/muat-turun', [LampiranController::class, 'download'])->name('lampiran.download')->whereNumber('lampiran');
+    Route::delete('/kes/{kes}/lampiran/{lampiran}', [LampiranController::class, 'destroy'])->name('lampiran.destroy')->whereNumber('kes')->whereNumber('lampiran');
 
     // Cetakan (per-case printouts → dompdf, inline stream)
     Route::get('/kes/{kes}/cetak/ringkasan', [CetakanController::class, 'ringkasan'])->name('cetak.ringkasan')->whereNumber('kes');

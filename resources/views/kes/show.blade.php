@@ -117,6 +117,37 @@
                 @endif
             @endforeach
 
+            {{-- Lampiran (attachments) --}}
+            <div class="tap-card">
+                <div class="tap-card__eyebrow">Lampiran ({{ $kes->lampiran->count() }})</div>
+                @forelse ($kes->lampiran as $f)
+                    <div class="tap-card__row" style="align-items:center;">
+                        <div class="k" style="display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:11px; text-transform:uppercase; background:var(--paper-2); color:var(--pine-deep); padding:2px 6px; border-radius:4px;">{{ $f->file_type ?: 'fail' }}</span>
+                            {{ $f->nama }}
+                        </div>
+                        <div class="v" style="display:flex; gap:10px; align-items:center; justify-content:flex-end;">
+                            <span style="color:var(--mute); font-size:11px;">{{ optional($f->uploaded_at)->format('d/m/Y') }}</span>
+                            <a href="{{ route('lampiran.download', $f) }}" class="tap-head__btn">⬇</a>
+                            <form method="POST" action="{{ route('lampiran.destroy', [$kes, $f]) }}" onsubmit="return confirm('Padam lampiran ini?')" style="display:inline;">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="tap-head__btn" style="color:var(--danger);">✕</button>
+                            </form>
+                        </div>
+                    </div>
+                @empty
+                    <div class="dash-empty__sub" style="padding:6px 0;">Tiada lampiran.</div>
+                @endforelse
+
+                <form method="POST" action="{{ route('lampiran.store', $kes) }}" enctype="multipart/form-data" style="margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    @csrf
+                    <input type="text" name="nama" class="field__input" placeholder="Nama dokumen (pilihan)" style="flex:1; min-width:160px;">
+                    <input type="file" name="fail" required class="field__input" style="flex:1; min-width:160px;">
+                    <button type="submit" class="btn btn--primary">Muat Naik</button>
+                </form>
+                <div class="dash-empty__sub" style="margin-top:6px;">PDF, imej, Word, Excel · maks 10MB.</div>
+            </div>
+
             @if ($kes->laporanKes->count())
                 <div class="tap-card">
                     <div class="tap-card__eyebrow">Laporan Kes ({{ $kes->laporanKes->count() }})</div>

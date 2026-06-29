@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** uploaded_files — document attachments. */
+/** uploaded_files — document attachments, optionally linked to a case via id_kes. */
 class UploadedFile extends Model
 {
     protected $table = 'uploaded_files';
@@ -15,5 +16,11 @@ class UploadedFile extends Model
 
     protected $casts = [
         'uploaded_at' => 'datetime',
+        'id_kes' => 'integer',
     ];
+
+    public function kes(): BelongsTo
+    {
+        return $this->belongsTo(Form::class, 'id_kes', 'id');
+    }
 }

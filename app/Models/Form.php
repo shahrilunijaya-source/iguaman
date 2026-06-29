@@ -48,4 +48,9 @@ class Form extends Model
     {
         return $this->hasMany(SejarahSidang::class, 'id_kes', 'id');
     }
+
+    public function lampiran(): HasMany
+    {
+        return $this->hasMany(UploadedFile::class, 'id_kes', 'id');
+    }
 }
