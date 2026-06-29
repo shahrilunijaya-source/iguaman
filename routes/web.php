@@ -8,6 +8,7 @@ use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\PeguamDaftarController;
@@ -92,10 +93,17 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/statistik/excel', [StatistikController::class, 'excel'])->name('statistik.excel');
     Route::get('/statistik/pdf', [StatistikController::class, 'pdf'])->name('statistik.pdf');
 
-    // Audit log (read-only) — supervisory roles only
-    Route::get('/audit', [AuditController::class, 'index'])
-        ->middleware('role:admin,pengarah,koordinator')
-        ->name('audit.index');
+    // Pegawai JBG registry + Audit log — supervisory roles only
+    Route::middleware('role:admin,pengarah,koordinator')->group(function () {
+        Route::get('/pegawai', [PegawaiController::class, 'index'])->name('pegawai.index');
+        Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+        Route::post('/pegawai', [PegawaiController::class, 'store'])->name('pegawai.store');
+        Route::get('/pegawai/{pegawai}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit')->whereNumber('pegawai');
+        Route::put('/pegawai/{pegawai}', [PegawaiController::class, 'update'])->name('pegawai.update')->whereNumber('pegawai');
+        Route::delete('/pegawai/{pegawai}', [PegawaiController::class, 'destroy'])->name('pegawai.destroy')->whereNumber('pegawai');
+
+        Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
+    });
 
     // Agihan peguam (assignment) + workload
     Route::get('/kes/{kes}/agih', [AgihanController::class, 'form'])->name('agihan.form')->whereNumber('kes');

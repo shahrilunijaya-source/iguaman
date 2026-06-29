@@ -61,6 +61,9 @@
 
         @if (auth()->user()->hasRole('admin', 'pengarah', 'koordinator'))
             <div class="ws-side-section">Pentadbiran</div>
+            <a href="{{ route('pegawai.index') }}" class="ws-side-top {{ request()->routeIs('pegawai.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">☰</span><span class="ws-side-label">Pegawai JBG</span>
+            </a>
             <a href="{{ route('audit.index') }}" class="ws-side-top {{ request()->routeIs('audit.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">≣</span><span class="ws-side-label">Log Audit</span>
             </a>
