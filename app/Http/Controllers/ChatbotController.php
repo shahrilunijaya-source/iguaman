@@ -62,7 +62,9 @@ class ChatbotController extends Controller
                 ->post("{$base}/forward_message", [
                     'message' => $data['message'],
                     'session_id' => $sid,
-                    'user_name' => $request->user()?->name,
+                    // Bot's Pydantic model types user_name as str — send '' (not
+                    // null) for guests, else it rejects the body with 422.
+                    'user_name' => $request->user()?->name ?? '',
                 ]);
 
             if (! $msgRes->successful()) {
