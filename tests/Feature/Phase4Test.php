@@ -21,12 +21,15 @@ class Phase4Test extends TestCase
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => 'iguaman_2in1']);
         DB::purge('mysql');
         DB::reconnect('mysql');
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        (new \Database\Seeders\RolePermissionSeeder())->run();
         $this->cleanup();
     }
 
     protected function tearDown(): void
     {
         $this->cleanup();
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
         parent::tearDown();
     }
 
@@ -43,11 +46,14 @@ class Phase4Test extends TestCase
 
     private function staff(): User
     {
-        return User::create([
+        $user = User::create([
             'name' => 'PHPUnit Staff', 'email' => 'staff@phpunit.local',
             'password' => Hash::make('secret'), 'user_type' => 'staff',
             'role' => 'pegawai', 'is_active' => true,
         ]);
+        $user->syncRoles([$user->role]);
+
+        return $user;
     }
 
     private function makeCase(): Form
@@ -76,7 +82,9 @@ class Phase4Test extends TestCase
 
         $kes->refresh();
         $this->assertSame('PHPUNIT Ali', $kes->nama_pegawai_yang_dapat_kes);
-        $this->assertSame('Diagih', $kes->status_agihan);
+        // Agihan now creates an OFFER (status_agihan=Ditawarkan); the lawyer accepts/rejects
+        // in their area (peguam offer workflow). Was 'Diagih' before that workflow shipped.
+        $this->assertSame('Ditawarkan', $kes->status_agihan);
     }
 
     public function test_reassign_logs_previous_lawyer(): void
@@ -122,6 +130,7 @@ class Phase4Test extends TestCase
             'name' => 'PHPUNIT Ali', 'email' => 'ali@phpunit.local', 'password' => Hash::make('secret'),
             'user_type' => 'lawyer', 'role' => 'peguam', 'id_peguam_panel' => 'KP001', 'is_active' => true,
         ]);
+        $lawyer->syncRoles([$lawyer->role]);
 
         $this->actingAs($lawyer)
             ->get(route('peguam.kes'))
@@ -136,6 +145,7 @@ class Phase4Test extends TestCase
             'name' => 'PHPUNIT Ali', 'email' => 'ali@phpunit.local', 'password' => Hash::make('secret'),
             'user_type' => 'lawyer', 'role' => 'peguam', 'id_peguam_panel' => 'KP001', 'is_active' => true,
         ]);
+        $lawyer->syncRoles([$lawyer->role]);
 
         $this->actingAs($lawyer)
             ->get(route('peguam.profil'))
@@ -149,6 +159,7 @@ class Phase4Test extends TestCase
             'name' => 'PHPUNIT Peguam', 'email' => 'peguam@phpunit.local', 'password' => Hash::make('secret'),
             'user_type' => 'lawyer', 'role' => 'peguam', 'is_active' => true,
         ]);
+        $lawyer->syncRoles([$lawyer->role]);
 
         $this->actingAs($lawyer)
             ->get(route('agihan.beban'))

@@ -18,12 +18,15 @@ class Phase4bTest extends TestCase
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => 'iguaman_2in1']);
         DB::purge('mysql');
         DB::reconnect('mysql');
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        (new \Database\Seeders\RolePermissionSeeder())->run();
         $this->cleanup();
     }
 
     protected function tearDown(): void
     {
         $this->cleanup();
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
         parent::tearDown();
     }
 
@@ -36,20 +39,30 @@ class Phase4bTest extends TestCase
 
     private function user(string $role): User
     {
-        return User::create([
+        $user = User::create([
             'name' => 'PHPUnit '.$role, 'email' => $role.'@phpunit.local',
             'password' => Hash::make('secret'), 'user_type' => 'staff',
             'role' => $role, 'is_active' => true,
         ]);
+        $user->syncRoles([$user->role]);
+
+        return $user;
     }
 
-    private function app(): ButiranPeguamPanel2
+    /**
+     * Create a pending application. Pass upstream-tier flags to pre-satisfy the controller's
+     * sequential 3-tier workflow guard for the tier under test:
+     *   $semakanPpuu      — set '1' so Pengarah `sokong` clears its semakan_ppuu prerequisite
+     *   $sokonganPengarah — set '1' so Ketua Pengarah `keputusan` clears its sokongan prerequisite
+     */
+    private function app(?string $semakanPpuu = null, ?string $sokonganPengarah = null): ButiranPeguamPanel2
     {
         return ButiranPeguamPanel2::create([
             'namaPeguam' => 'PHPUNIT Calon', 'kpBaru' => 'PHPUNITKP1', 'jantina' => 'Lelaki',
             'noTelBimbit' => '0123456789', 'emelPeguam' => 'calon@firma.my', 'kelulusanAkademik' => 'LLB',
             'tahunPengalaman' => '5', 'tahunPengalamanSyarie' => '0', 'bilanganKes' => '10',
             'keteranganKes' => '-', 'permohonan_status' => '0',
+            'semakan_ppuu' => $semakanPpuu, 'sokonganPengarah' => $sokonganPengarah,
         ]);
     }
 
@@ -63,7 +76,7 @@ class Phase4bTest extends TestCase
 
     public function test_pengarah_endorses(): void
     {
-        $a = $this->app();
+        $a = $this->app(semakanPpuu: '1');
 
         $this->actingAs($this->user('pengarah'))
             ->post(route('permohonan-peguam.sokong', $a), ['sokonganPengarah' => '1', 'ulasan_sokonganPengarah' => 'Layak'])
@@ -85,7 +98,7 @@ class Phase4bTest extends TestCase
 
     public function test_approve_promotes_to_panel(): void
     {
-        $a = $this->app();
+        $a = $this->app(sokonganPengarah: '1');
 
         $this->actingAs($this->user('admin'))
             ->post(route('permohonan-peguam.keputusan', $a), ['keputusan' => 'lulus', 'ulasan' => 'OK'])
@@ -97,9 +110,10 @@ class Phase4bTest extends TestCase
 
     public function test_reject_sets_status(): void
     {
-        $a = $this->app();
+        $a = $this->app(sokonganPengarah: '1');
 
-        $this->actingAs($this->user('koordinator'))
+        // Final decision (keputusan) is the Ketua Pengarah tier in the 3-tier workflow.
+        $this->actingAs($this->user('ketua_pengarah'))
             ->post(route('permohonan-peguam.keputusan', $a), ['keputusan' => 'tolak', 'ulasan' => 'Tak layak'])
             ->assertRedirect(route('permohonan-peguam.show', $a));
 
