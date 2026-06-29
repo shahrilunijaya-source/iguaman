@@ -7,6 +7,7 @@ use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\KesController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
@@ -103,6 +104,13 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
 
     // KPI dashboard (yearly SLA prestasi)
     Route::get('/kpi', [KpiController::class, 'index'])->name('kpi.index');
+
+    // Laporan (litigasi + pengantaraan) — table + CSV/PDF export
+    $laporanTypes = ['permohonan', 'pendaftaran-fail', 'status-fail', 'penugasan-pengantaraan', 'pencapaian-pengantaraan', 'tidak-dirujuk'];
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/{type}/csv', [LaporanController::class, 'csv'])->name('laporan.csv')->whereIn('type', $laporanTypes);
+    Route::get('/laporan/{type}/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf')->whereIn('type', $laporanTypes);
+    Route::get('/laporan/{type}', [LaporanController::class, 'show'])->name('laporan.show')->whereIn('type', $laporanTypes);
 
     // Statistik + exports
     Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik.index');

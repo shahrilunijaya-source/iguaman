@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\KesDitawarkanMail;
 use App\Models\Form;
 use App\Models\PeguamPanel;
 use App\Models\SejarahPeguamPanel;
@@ -9,6 +10,7 @@ use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 // Agihan (case assignment) — staff assigns/reassigns a panel lawyer to a case.
@@ -59,6 +61,15 @@ class AgihanController extends Controller
         $verb = $isReassign ? 'ditawarkan semula' : 'ditawarkan';
 
         Audit::log('forms', $kes->id, Audit::UPDATE, "Kes {$verb} kepada {$peguam->nama_peguam}.");
+
+        // Notify the lawyer of the offer (mail driver is 'log' in dev). Never block assignment on mail failure.
+        if (filled($peguam->emel_peguam) && str_contains($peguam->emel_peguam, '@')) {
+            try {
+                Mail::to($peguam->emel_peguam)->send(new KesDitawarkanMail($kes, $peguam));
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        }
 
         return redirect()->route('kes.show', $kes)->with('status', "Kes {$verb} kepada {$peguam->nama_peguam}. Menunggu peguam menerima.");
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\CawanganScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -14,6 +15,12 @@ class Form extends Model
     protected $table = 'forms';
 
     public $timestamps = false; // legacy has created_at only, no updated_at
+
+    protected static function booted(): void
+    {
+        // Branch isolation for front-line staff (legacy WHERE cawangan = session).
+        static::addGlobalScope(new CawanganScope());
+    }
 
     protected $guarded = ['id'];
 
