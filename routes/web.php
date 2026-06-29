@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AgihanController;
 use App\Http\Controllers\AgihanSpineController;
+use App\Http\Controllers\TarikDiriController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\KeputusanController;
@@ -175,6 +176,13 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
     Route::post('/agihan/{kes}/ppuu-pilih', [AgihanSpineController::class, 'ppuuPilih'])->name('agihan.ppuu.pilih')->whereNumber('kes')->middleware('role:ppuu,koordinator,admin');
     Route::post('/agihan/{kes}/pengarah-keputusan', [AgihanSpineController::class, 'pengarahKeputusan'])->name('agihan.pengarah.keputusan')->whereNumber('kes')->middleware('role:pengarah,admin');
     Route::post('/agihan/{kes}/kp-keputusan', [AgihanSpineController::class, 'kpKeputusan'])->name('agihan.kp.keputusan')->whereNumber('kes')->middleware('role:ketua_pengarah,admin');
+
+    // Tarik Diri Mewakili OYD — staff review queue (PPUU -> Pengarah -> Ketua Pengarah).
+    Route::get('/tarik-diri/senarai', [TarikDiriController::class, 'senarai'])->name('tarikdiri.senarai');
+    Route::get('/tarik-diri/{kes}/maklumat', [TarikDiriController::class, 'show'])->name('tarikdiri.maklumat')->whereNumber('kes');
+    Route::post('/tarik-diri/{kes}/ppuu', [TarikDiriController::class, 'ppuu'])->name('tarikdiri.ppuu')->whereNumber('kes')->middleware('role:ppuu,koordinator,admin');
+    Route::post('/tarik-diri/{kes}/pengarah', [TarikDiriController::class, 'pengarah'])->name('tarikdiri.pengarah')->whereNumber('kes')->middleware('role:pengarah,admin');
+    Route::post('/tarik-diri/{kes}/kp', [TarikDiriController::class, 'kp'])->name('tarikdiri.kp')->whereNumber('kes')->middleware('role:ketua_pengarah,admin');
     Route::get('/peguam-panel/{peguam}', [PeguamPanelController::class, 'show'])->name('peguam-panel.show')->whereNumber('peguam');
     Route::get('/peguam-panel/{peguam}/edit', [PeguamPanelController::class, 'edit'])->name('peguam-panel.edit')->whereNumber('peguam');
     Route::put('/peguam-panel/{peguam}', [PeguamPanelController::class, 'update'])->name('peguam-panel.update')->whereNumber('peguam');
@@ -202,4 +210,8 @@ Route::middleware(['auth', 'role:peguam'])->prefix('peguam')->group(function () 
     Route::post('/kes/{kes}/tolak', [PeguamController::class, 'tolak'])->name('peguam.tolak')->whereNumber('kes');
     Route::get('/kes/{kes}', [PeguamController::class, 'kesShow'])->name('peguam.kes.show')->whereNumber('kes');
     Route::post('/kes/{kes}/laporan', [PeguamController::class, 'storeLaporan'])->name('peguam.laporan')->whereNumber('kes');
+
+    // Tarik Diri Mewakili OYD (lawyer-initiated withdrawal from an assigned case).
+    Route::get('/kes/{kes}/tarik-diri', [PeguamController::class, 'tarikDiriForm'])->name('peguam.tarikdiri.form')->whereNumber('kes');
+    Route::post('/kes/{kes}/tarik-diri', [PeguamController::class, 'tarikDiriStore'])->name('peguam.tarikdiri.store')->whereNumber('kes');
 });

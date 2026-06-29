@@ -8,6 +8,9 @@
         <span class="tap-nav__crumb">{{ $kes->no_fail ?: '#'.$kes->id }}</span>
         <div class="tap-nav__cluster">
             <span class="tap-nav__step">{{ $kes->status ?: 'baru' }}</span>
+            @if (\App\Support\StatusAgihan::normalise($kes->status_agihan) === \App\Support\StatusAgihan::DITERIMA)
+                <a href="{{ route('peguam.tarikdiri.form', $kes) }}" class="tap-head__btn">Tarik Diri</a>
+            @endif
         </div>
     </div>
 

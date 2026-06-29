@@ -13,12 +13,17 @@ use App\Models\LaporanKes;
 use App\Models\PeguamPanel;
 use App\Models\RefNegeri;
 use App\Models\SejarahPeguamPanel;
+use App\Models\UploadedFile;
 use App\Support\Audit;
 use App\Support\LawyerDocuments;
+use App\Support\StatusAgihan;
+use App\Support\TarikDiriService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 // External lawyer (peguam) area — assigned cases, offer accept/reject (tawaran),
@@ -144,6 +149,53 @@ class PeguamController extends Controller
         return redirect()->route('peguam.kes.show', $kes)->with('status', 'Laporan kes direkodkan.');
     }
 
+    /** Lawyer-side "Tarik Diri Mewakili OYD" request form for an assigned case. */
+    public function tarikDiriForm(Form $kes): View
+    {
+        $this->authorizeCase($kes);
+        $this->ensureKesDiterima($kes);
+
+        return view('peguam.tarik-diri', ['kes' => $kes, 'reasons' => TarikDiriService::REASONS]);
+    }
+
+    /** Submit a withdrawal request (status 2→12) — enters the PPUU→Pengarah→KP review chain. */
+    public function tarikDiriStore(Request $request, Form $kes, TarikDiriService $svc): RedirectResponse
+    {
+        $this->authorizeCase($kes);
+        $this->ensureKesDiterima($kes);
+
+        $data = $request->validate([
+            'pilihanTarikDiri' => ['required', Rule::in(TarikDiriService::REASONS)],
+            'alasan' => ['required', 'string', 'max:600'],
+            'tarikhNextBicaraKes' => ['nullable', 'date'],
+            'akuanTarikDiri' => ['nullable', 'file', 'mimes:pdf', 'max:5120'],
+        ]);
+
+        $svc->ppSubmit($kes, $request->user(), [
+            'pilihanTarikDiri' => $data['pilihanTarikDiri'],
+            'alasan' => $data['alasan'],
+            'tarikhNextBicaraKes' => $data['tarikhNextBicaraKes'] ?? null,
+            'kpBaruPP' => $this->lawyerKp(),
+        ]);
+
+        if ($request->hasFile('akuanTarikDiri')) {
+            $fileName = "akuanTarikDiri_{$kes->id}.pdf";
+            $path = $request->file('akuanTarikDiri')->storeAs("tarikdiri/{$kes->id}", $fileName, 'local');
+            UploadedFile::create([
+                'nama' => Auth::user()->name,
+                'doc_type' => 'akuanTarikDiri',
+                'id_kes' => $kes->id,
+                'file_name' => $fileName,
+                'file_path' => $path,
+                'file_type' => 'application/pdf',
+            ]);
+        }
+
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Permohonan tarik diri dihantar oleh peguam {$kes->nama_pegawai_yang_dapat_kes}.");
+
+        return redirect()->route('peguam.kes')->with('status', 'Permohonan tarik diri dihantar untuk semakan JBG.');
+    }
+
     public function profil(): View
     {
         $profile = $this->profile();
@@ -266,5 +318,11 @@ class PeguamController extends Controller
     {
         $profile = $this->profile();
         abort_unless($profile && $kes->nama_pegawai_yang_dapat_kes === $profile->nama_peguam, 403, 'Kes ini bukan milik anda.');
+    }
+
+    /** Tarik diri is only allowed while the lawyer is actively handling the case (status Diterima). */
+    private function ensureKesDiterima(Form $kes): void
+    {
+        abort_unless(StatusAgihan::normalise($kes->status_agihan) === StatusAgihan::DITERIMA, 422, 'Tarik diri hanya boleh dimohon untuk kes yang sedang dikendalikan.');
     }
 }

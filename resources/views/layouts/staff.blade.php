@@ -70,6 +70,9 @@
         <a href="{{ route('agihan.beban') }}" class="ws-side-top {{ request()->routeIs('agihan.beban') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▥</span><span class="ws-side-label">Beban Tugas Peguam</span>
         </a>
+        <a href="{{ route('tarikdiri.senarai') }}" class="ws-side-top {{ request()->routeIs('tarikdiri.*') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">⤴</span><span class="ws-side-label">Permohonan Tarik Diri</span>
+        </a>
 
         @if (auth()->user()->hasRole('admin', 'pengarah', 'koordinator'))
             <div class="ws-side-section">Pentadbiran</div>
