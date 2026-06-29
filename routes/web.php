@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\KesController;
+use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\SystemAuthController;
 use App\Http\Controllers\SystemController;
@@ -37,6 +39,17 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/kes/{kes}/edit', [KesController::class, 'edit'])->name('kes.edit')->whereNumber('kes');
     Route::put('/kes/{kes}', [KesController::class, 'update'])->name('kes.update')->whereNumber('kes');
     Route::get('/kes/{kes}', [KesController::class, 'show'])->name('kes.show')->whereNumber('kes');
+
+    // Pengantaraan (mediation) — section edit + hearing reschedule
+    Route::get('/kes/{kes}/pengantaraan', [PengantaraanController::class, 'edit'])->name('pengantaraan.edit')->whereNumber('kes');
+    Route::put('/kes/{kes}/pengantaraan', [PengantaraanController::class, 'update'])->name('pengantaraan.update')->whereNumber('kes');
+    Route::post('/kes/{kes}/sidang', [PengantaraanController::class, 'tangguhSidang'])->name('sidang.tangguh')->whereNumber('kes');
+
+    // Kes Mahkamah (court) — section edit + laporan_kes child records
+    Route::get('/kes/{kes}/mahkamah', [MahkamahController::class, 'edit'])->name('mahkamah.edit')->whereNumber('kes');
+    Route::put('/kes/{kes}/mahkamah', [MahkamahController::class, 'update'])->name('mahkamah.update')->whereNumber('kes');
+    Route::post('/kes/{kes}/laporan', [MahkamahController::class, 'storeLaporan'])->name('laporan.store')->whereNumber('kes');
+    Route::delete('/kes/{kes}/laporan/{laporan}', [MahkamahController::class, 'destroyLaporan'])->name('laporan.destroy')->whereNumber('kes')->whereNumber('laporan');
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----
