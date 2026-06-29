@@ -156,14 +156,14 @@ class AgihanSpineController extends Controller
     /** Which tier form the current user may act on, given the case status. */
     private function stage(?string $status, User $user): ?string
     {
-        $is = fn (...$roles) => $user->hasRole(...$roles);
+        $is = fn (array $roles) => $user->hasRole(...$roles);
 
         return match (true) {
-            $status === StatusAgihan::BARU_PENGARAH && $is(User::ROLE_PENGARAH, User::ROLE_ADMIN) => 'pengarah_baru',
+            $status === StatusAgihan::BARU_PENGARAH && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'pengarah_baru',
             in_array($status, [StatusAgihan::DIAGIH_PPUU, StatusAgihan::PPUU_AGIH_SEMULA, StatusAgihan::KELULUSAN_KP_SEMULA], true)
-                && $is(User::ROLE_PPUU, User::ROLE_KOORDINATOR, User::ROLE_ADMIN) => 'ppuu_pilih',
-            $status === StatusAgihan::SOKONGAN_PENGARAH && $is(User::ROLE_PENGARAH, User::ROLE_ADMIN) => 'pengarah_sokong',
-            $status === StatusAgihan::KELULUSAN_KP && $is(User::ROLE_KETUA_PENGARAH, User::ROLE_ADMIN) => 'kp_keputusan',
+                && $is([User::ROLE_PPUU, User::ROLE_KOORDINATOR, User::ROLE_ADMIN]) => 'ppuu_pilih',
+            $status === StatusAgihan::SOKONGAN_PENGARAH && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'pengarah_sokong',
+            $status === StatusAgihan::KELULUSAN_KP && $is([User::ROLE_KETUA_PENGARAH, User::ROLE_ADMIN]) => 'kp_keputusan',
             default => null,
         };
     }

@@ -47,7 +47,7 @@ class PermohonanPeguamController extends Controller
     /** Tier 1 — PPUU / Pembantu Tadbir initial review (semakan). */
     public function semak(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
-        if (! $request->user()->hasRole(User::ROLE_PPUU, User::ROLE_PEMBANTU_TADBIR, User::ROLE_KOORDINATOR, User::ROLE_ADMIN)) {
+        if (! $request->user()->can('peguam.semak')) {
             return back()->withErrors(['akses' => 'Hanya PPUU / Pembantu Tadbir boleh menyemak permohonan.']);
         }
 
@@ -64,7 +64,7 @@ class PermohonanPeguamController extends Controller
     /** Tier 2 — Pengarah endorsement (requires PPUU semakan first). */
     public function sokong(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
-        if (! $request->user()->hasRole(User::ROLE_PENGARAH, User::ROLE_ADMIN)) {
+        if (! $request->user()->can('peguam.sokong')) {
             return back()->withErrors(['akses' => 'Hanya Pengarah boleh memberi sokongan.']);
         }
 
@@ -85,7 +85,7 @@ class PermohonanPeguamController extends Controller
     /** Tier 3 — Ketua Pengarah final decision (requires Pengarah sokong first). Approve promotes into peguam_panel. */
     public function keputusan(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
-        if (! $request->user()->hasRole(User::ROLE_KETUA_PENGARAH, User::ROLE_ADMIN)) {
+        if (! $request->user()->can('peguam.keputusan')) {
             return back()->withErrors(['akses' => 'Hanya Ketua Pengarah boleh membuat keputusan muktamad.']);
         }
 

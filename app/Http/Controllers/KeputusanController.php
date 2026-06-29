@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
-use App\Models\User;
 use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +18,7 @@ class KeputusanController extends Controller
     private function gate(Request $request): void
     {
         abort_unless(
-            $request->user()->hasRole(...User::APPROVER_ROLES),
+            $request->user()->can('kes.keputusan'),
             403,
             'Hanya Pengarah / Ketua Pengarah boleh membuat keputusan ini.'
         );
