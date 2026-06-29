@@ -49,7 +49,7 @@
                         </td>
                         <td>
                             <div class="kb-act">
-                                @if (in_array($row->checkbox_value_status, P6::PENGARAH_PENDING, true) && $user->hasRole('pengarah', 'admin'))
+                                @if (in_array($row->checkbox_value_status, P6::PENGARAH_PENDING, true) && $user->hasAnyRole(['pengarah', 'admin']))
                                     <form method="POST" action="{{ route('kemaskini-bidang.pengarah', $row) }}" style="display:flex;gap:6px;align-items:center;">
                                         @csrf
                                         <input type="hidden" name="keputusan" value="sokong">
@@ -57,7 +57,7 @@
                                         <button class="btn btn--primary" style="padding:3px 10px;font-size:11px;">Sokong</button>
                                     </form>
                                     <form method="POST" action="{{ route('kemaskini-bidang.pengarah', $row) }}">@csrf<input type="hidden" name="keputusan" value="tolak"><button class="btn btn--ghost" style="padding:3px 10px;font-size:11px;">Tolak</button></form>
-                                @elseif (in_array($row->checkbox_value_status, P6::KP_PENDING, true) && $user->hasRole('ketua_pengarah', 'admin'))
+                                @elseif (in_array($row->checkbox_value_status, P6::KP_PENDING, true) && $user->hasAnyRole(['ketua_pengarah', 'admin']))
                                     <form method="POST" action="{{ route('kemaskini-bidang.kp', $row) }}">@csrf<input type="hidden" name="keputusan" value="lulus"><button class="btn btn--primary" style="padding:3px 10px;font-size:11px;">Luluskan</button></form>
                                     <form method="POST" action="{{ route('kemaskini-bidang.kp', $row) }}">@csrf<input type="hidden" name="keputusan" value="tolak"><button class="btn btn--ghost" style="padding:3px 10px;font-size:11px;">Tolak</button></form>
                                 @else

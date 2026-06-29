@@ -81,7 +81,7 @@
             <span class="ws-side-top__icon">◳</span><span class="ws-side-label">Kemaskini Bidang @if ($bidangPending > 0)<strong style="color:var(--brand,#00B8A9);">({{ $bidangPending }})</strong>@endif</span>
         </a>
 
-        @if (auth()->user()->hasRole('admin', 'pengarah', 'koordinator'))
+        @can('menu.selenggara')
             <div class="ws-side-section">Pentadbiran</div>
             <a href="{{ route('pengguna.index') }}" class="ws-side-top {{ request()->routeIs('pengguna.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">👤</span><span class="ws-side-label">Pengguna</span>
@@ -106,7 +106,7 @@
             <a href="{{ route('poster.index') }}" class="ws-side-top {{ request()->routeIs('poster.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">🖼</span><span class="ws-side-label">e-Poster</span>
             </a>
-        @endif
+        @endcan
     </aside>
 
     <main class="ws-content">

@@ -47,7 +47,7 @@
                         @if ($p->ulasan_semakan_ppuu) — {{ $p->ulasan_semakan_ppuu }} @endif
                     </p>
                 @endif
-                @if (auth()->user()->hasRole('ppuu', 'pembantu_tadbir', 'koordinator', 'admin'))
+                @can('peguam.semak')
                     <form method="POST" action="{{ route('permohonan-peguam.semak', $p) }}" class="va-form">
                         @csrf
                         <select name="semakan_ppuu" class="field__input" required>
@@ -59,7 +59,7 @@
                     </form>
                 @else
                     <p class="dash-empty__sub">Hanya PPUU / Pembantu Tadbir.</p>
-                @endif
+                @endcan
             </div>
 
             {{-- Tier 2 · Pengarah endorsement --}}
@@ -71,7 +71,7 @@
                         @if ($p->ulasan_sokonganPengarah) — {{ $p->ulasan_sokonganPengarah }} @endif
                     </p>
                 @endif
-                @if (auth()->user()->hasRole('pengarah', 'admin'))
+                @can('peguam.sokong')
                     <form method="POST" action="{{ route('permohonan-peguam.sokong', $p) }}" class="va-form">
                         @csrf
                         <select name="sokonganPengarah" class="field__input" required>
@@ -83,13 +83,13 @@
                     </form>
                 @else
                     <p class="dash-empty__sub">Hanya Pengarah.</p>
-                @endif
+                @endcan
             </div>
 
             {{-- Tier 3 · Ketua Pengarah final decision --}}
             <div class="tap-card">
                 <div class="tap-card__eyebrow">3 · Keputusan Ketua Pengarah</div>
-                @if (auth()->user()->hasRole('ketua_pengarah', 'admin'))
+                @can('peguam.keputusan')
                     <form method="POST" action="{{ route('permohonan-peguam.keputusan', $p) }}" class="va-form">
                         @csrf
                         <select name="keputusan" class="field__input" required>
@@ -101,7 +101,7 @@
                     </form>
                 @else
                     <p class="dash-empty__sub">Hanya Admin / Koordinator.</p>
-                @endif
+                @endcan
             </div>
 
             {{-- Tarik diri --}}

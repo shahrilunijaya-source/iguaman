@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -24,7 +25,7 @@ class UserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($ignoreId)],
             'username' => ['nullable', 'string', 'max:255'],
-            'role' => ['required', Rule::in(array_keys(\App\Http\Controllers\UserController::ROLES))],
+            'role' => ['required', Rule::in(array_keys(UserController::ROLES))],
             'user_type' => ['required', Rule::in([User::TYPE_STAFF, User::TYPE_LAWYER])],
             'cawangan' => ['nullable', 'string', 'max:50'],
             'nokp' => ['nullable', 'string', 'max:20'],

@@ -163,7 +163,7 @@
         </div>
 
         <div style="display:flex; flex-direction:column; gap:14px;">
-            @if (auth()->user()->hasRole('pengarah', 'ketua_pengarah', 'admin'))
+            @can('kes.keputusan')
                 <div class="tap-card" style="border-left:3px solid var(--teal);">
                     <div class="tap-card__eyebrow">Keputusan Pengarah</div>
                     <p class="dash-empty__sub" style="margin:0 0 10px;">
@@ -193,7 +193,7 @@
                         <p class="dash-empty__sub" style="margin:0;">Fail telah ditutup pada {{ optional($kes->tarikh_tutup_fail)->format('d/m/Y') }}.</p>
                     @endif
                 </div>
-            @endif
+            @endcan
 
             <div class="rail-card">
                 <div class="rail-card__head"><span class="rail-card__eyebrow">Sejarah Peguam</span></div>

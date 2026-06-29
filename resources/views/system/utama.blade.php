@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @php
-    $isSupervisor = auth()->user()->hasRole('admin', 'pengarah', 'koordinator');
+    $canSelenggara = auth()->user()->can('menu.selenggara');
 
     $modules = array_filter([
         ['route' => 'kes.index', 'icon' => '▤', 'label' => 'Senarai Kes', 'desc' => 'Rekod & cari kes', 'show' => true],
@@ -12,8 +12,8 @@
         ['route' => 'statistik.index', 'icon' => '▦', 'label' => 'Statistik', 'desc' => 'Carta & eksport', 'show' => true],
         ['route' => 'permohonan-peguam.index', 'icon' => '▧', 'label' => 'Permohonan Peguam', 'desc' => 'Sokong & keputusan', 'show' => true],
         ['route' => 'agihan.beban', 'icon' => '▥', 'label' => 'Beban Tugas', 'desc' => 'Beban peguam panel', 'show' => true],
-        ['route' => 'pegawai.index', 'icon' => '☰', 'label' => 'Pegawai JBG', 'desc' => 'Daftar pegawai', 'show' => $isSupervisor],
-        ['route' => 'audit.index', 'icon' => '≣', 'label' => 'Log Audit', 'desc' => 'Jejak perubahan', 'show' => $isSupervisor],
+        ['route' => 'pegawai.index', 'icon' => '☰', 'label' => 'Pegawai JBG', 'desc' => 'Daftar pegawai', 'show' => $canSelenggara],
+        ['route' => 'audit.index', 'icon' => '≣', 'label' => 'Log Audit', 'desc' => 'Jejak perubahan', 'show' => $canSelenggara],
     ], fn ($m) => $m['show']);
 
     $auditTone = ['INSERT' => '#00B8A9', 'APPROVE' => '#00B8A9', 'UPDATE' => '#C98A00', 'REJECT' => '#D14343', 'DELETE' => '#D14343'];
@@ -92,7 +92,7 @@
     </div>
 
     {{-- ===== Recent activity ===== --}}
-    <div style="display:grid; grid-template-columns: {{ $isSupervisor ? '1.4fr 1fr' : '1fr' }}; gap:18px; margin-top:6px;">
+    <div style="display:grid; grid-template-columns: {{ $canSelenggara ? '1.4fr 1fr' : '1fr' }}; gap:18px; margin-top:6px;">
         <div class="tap-card">
             <div class="tap-card__eyebrow">Kes Terkini</div>
             @forelse ($recentKes as $k)
@@ -111,7 +111,7 @@
             @endforelse
         </div>
 
-        @if ($isSupervisor)
+        @can('menu.selenggara')
             <div class="tap-card">
                 <div class="tap-card__eyebrow">Aktiviti Audit</div>
                 @forelse ($recentAudit as $a)
@@ -126,6 +126,6 @@
                     <div class="dash-empty__sub" style="padding:6px 0;">Tiada aktiviti.</div>
                 @endforelse
             </div>
-        @endif
+        @endcan
     </div>
 @endsection

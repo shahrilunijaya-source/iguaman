@@ -31,7 +31,7 @@
         <div class="formerr" style="margin-bottom:16px;">{{ $errors->first() }}</div>
     @endif
 
-    @if (auth()->user()->hasRole('admin', 'koordinator', 'pengarah', 'ketua_pengarah'))
+    @hasanyrole('admin|koordinator|pengarah|ketua_pengarah')
         <div class="tap-card" style="margin-bottom:18px;">
             <div class="tap-card__eyebrow">Status Keaktifan Peguam</div>
             @if ($peguam->isAktif())
@@ -63,7 +63,7 @@
                 </form>
             @endif
         </div>
-    @endif
+    @endhasanyrole
 
     @include('peguam-panel._butiran', ['b' => $b])
 

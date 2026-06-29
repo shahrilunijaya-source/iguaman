@@ -179,7 +179,7 @@ class PermohonanPeguamController extends Controller
 
         $temp = Str::password(10, symbols: false);
 
-        User::create([
+        $login = User::create([
             'name' => $b->namaPeguam,
             'email' => $b->emelPeguam,
             'password' => $temp, // User casts password => 'hashed' (bcrypt on set)
@@ -190,6 +190,8 @@ class PermohonanPeguamController extends Controller
             'is_active' => true,
             'must_change_password' => true,
         ]);
+
+        $login->syncRoles([User::ROLE_PEGUAM]);
 
         Audit::log('users', 0, Audit::INSERT, "Akaun log masuk peguam dijana: {$b->emelPeguam} (KP {$b->kpBaru}).");
 

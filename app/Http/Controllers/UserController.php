@@ -56,6 +56,8 @@ class UserController extends Controller
             'must_change_password' => $data['user_type'] === User::TYPE_STAFF,
         ]);
 
+        $user->syncRoles([$data['role']]);
+
         Audit::log('users', $user->id, Audit::INSERT, "Pengguna ditambah: {$user->name} ({$user->email})");
 
         return redirect()->route('pengguna.index')->with('status', 'Pengguna ditambah.');
@@ -87,6 +89,8 @@ class UserController extends Controller
 
         $user->update($payload);
 
+        $user->syncRoles([$data['role']]);
+
         Audit::log('users', $user->id, Audit::UPDATE, "Pengguna dikemaskini: {$user->name} ({$user->email})");
 
         return redirect()->route('pengguna.index')->with('status', 'Pengguna dikemaskini.');
@@ -114,6 +118,9 @@ class UserController extends Controller
         User::ROLE_PENGARAH => 'Pengarah',
         User::ROLE_KOORDINATOR => 'Koordinator',
         User::ROLE_PEGAWAI => 'Pegawai',
+        User::ROLE_PPUU => 'PPUU',
+        User::ROLE_PEMBANTU_TADBIR => 'Pembantu Tadbir',
+        User::ROLE_KETUA_PENGARAH => 'Ketua Pengarah',
         User::ROLE_PEGUAM => 'Peguam',
     ];
 }
