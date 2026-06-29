@@ -4,33 +4,155 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PeguamDaftarRequest;
 use App\Models\ButiranPeguamPanel2;
+use App\Models\ButiranPeguamPanel3;
+use App\Models\ButiranPeguamPanel4;
+use App\Models\ButiranPeguamPanel5;
+use App\Models\ButiranPeguamPanel6;
+use App\Models\RefKes;
+use App\Models\RefNegeri;
+use App\Models\UploadedFile;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
-// Public lawyer panel application. Creates a butiran_peguam_panel_2 row (permohonan_status='0')
-// that staff endorse + decide in PermohonanPeguamController. No login required to apply.
+// Public lawyer panel application — full 7-section parity with legacy daftar.php.
+// Writes butiran_peguam_panel_2..6 + 18 PDF docs (permohonan_status='0' Baharu) that
+// staff endorse + decide in PermohonanPeguamController. No login required to apply.
 class PeguamDaftarController extends Controller
 {
+    /** jenis_kes code (ref_kes) → display category stored in _6.category. */
+    private const KATEGORI = [
+        'JEN' => 'JENAYAH',
+        'SIV' => 'SIVIL',
+        'SYA' => 'SYARIAH',
+        'PG' => 'PENDAMPING GUAMAN',
+    ];
+
     public function create(): View
     {
-        return view('peguam.daftar');
+        $bidang = RefKes::query()
+            ->whereIn('jenis_kes', array_keys(self::KATEGORI))
+            ->where(fn ($q) => $q->where('aktif_kes', '1')->orWhereNull('aktif_kes'))
+            ->orderBy('jenis_kes')
+            ->orderBy('deskripsi')
+            ->get(['jenis_kes', 'deskripsi'])
+            ->groupBy('jenis_kes');
+
+        return view('peguam.daftar', [
+            'kategoriMap' => self::KATEGORI,
+            'bidang' => $bidang,
+            'negeriList' => RefNegeri::orderBy('nama')->pluck('nama'),
+        ]);
     }
 
     public function store(PeguamDaftarRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        unset($data['website']); // honeypot, never persisted
+        $kp = $data['kpBaru'];
 
-        $permohonan = ButiranPeguamPanel2::create($data + [
-            'permohonan_status' => '0',
-            'tarikhMohon' => now(),
-            // NOT NULL columns in legacy schema with no default — coerce blanks.
-            'tahunPengalamanSyarie' => $data['tahunPengalamanSyarie'] ?? '0',
-        ]);
+        $permohonan = DB::transaction(function () use ($request, $data, $kp) {
+            $base = ButiranPeguamPanel2::create($this->section2($data) + [
+                'permohonan_status' => '0',
+                'tarikhMohon' => now(),
+            ]);
+
+            ButiranPeguamPanel3::create($this->section3($data) + ['kpBaru' => $kp]);
+            ButiranPeguamPanel4::create($this->section4($data) + ['kpBaru' => $kp]);
+            ButiranPeguamPanel5::create($this->section5($data) + ['kpBaru' => $kp]);
+
+            // Section 2 — one pengkhususan row per selected practice area ("CATEGORY::deskripsi").
+            foreach ($data['selected_kes'] as $entry) {
+                [$category, $value] = array_pad(explode('::', $entry, 2), 2, '');
+                ButiranPeguamPanel6::create([
+                    'kpBaru' => $kp,
+                    'category' => $category,
+                    'checkbox_value' => $value !== '' ? $value : $category,
+                    'checkbox_value_status' => 0,
+                ]);
+            }
+
+            $this->storeDocuments($request, $kp, $data['namaPeguam']);
+
+            return $base;
+        });
 
         return redirect()
             ->route('peguam.daftar')
             ->with('daftar_selesai', true)
             ->with('daftar_ref', $permohonan->id);
+    }
+
+    /** _2 — biographical. */
+    private function section2(array $d): array
+    {
+        $cols = [
+            'namaPeguam', 'kpBaru', 'kpLama', 'jantina', 'noTelBimbit', 'emelPeguam',
+            'kelulusanAkademik', 'tarikhDiterimaMasuk', 'tarikhDiterimaMasukSyarie',
+            'tahunPengalaman', 'tahunPengalamanSyarie', 'bilanganKes', 'keteranganKes',
+        ];
+
+        return Arr::only($d, $cols) + ['tahunPengalamanSyarie' => $d['tahunPengalamanSyarie'] ?? '0'];
+    }
+
+    /** _3 — qualifications (CLP / CSO 1-5 / YBGK / ADR / sijil / eVendor). */
+    private function section3(array $d): array
+    {
+        $cols = [
+            'clpNumber', 'clpMula', 'clpAkhir',
+            'ybgk_kelulusan', 'ybgk_tarikhLulus_A', 'ybgk_tarikhLulus_B', 'ybgk_daftar',
+            'adr_penimbangtara', 'adr_pengantara',
+            'sijilAhli_nombor', 'sijilAhli_namaBadan', 'sijilAhli_mula', 'sijilAhli_akhir',
+            'sijilAkreditasi_nombor', 'sijilAkreditasi_namaBadan', 'sijilAkreditasi_mula', 'sijilAkreditasi_akhir',
+            'eVendor_daftar', 'eVendor_ID',
+        ];
+        foreach (range(1, 5) as $i) {
+            array_push($cols, "csoNumber{$i}", "cso{$i}Tauliah", "cso{$i}Mula", "cso{$i}Akhir", "lokasiBerguam{$i}");
+        }
+
+        return Arr::only($d, $cols);
+    }
+
+    /** _4 — firma + insurance. */
+    private function section4(array $d): array
+    {
+        return Arr::only($d, [
+            'namaFirma', 'alamatFirma1', 'alamatFirma2', 'alamatFirma3', 'poskodFirma',
+            'bandarFirma', 'negeriFirma', 'noTelFirma', 'noFaksFirma',
+            'namaInsurans', 'noPolisi', 'amaunPerlindungan', 'polisiMula', 'polisiAkhir',
+        ]);
+    }
+
+    /** _5 — bank account. */
+    private function section5(array $d): array
+    {
+        return Arr::only($d, [
+            'namaBank', 'noAkaunBank', 'alamatBank1', 'alamatBank2', 'alamatBank3',
+            'poskodBank', 'bandarBank', 'negeriBank',
+        ]);
+    }
+
+    /** Persist the 18 PDF documents to private storage + uploaded_files rows. */
+    private function storeDocuments(PeguamDaftarRequest $request, string $kp, string $nama): void
+    {
+        $safeKp = preg_replace('/[^A-Za-z0-9]/', '', $kp);
+
+        foreach (array_keys(PeguamDaftarRequest::DOC_TYPES) as $field) {
+            if (! $request->hasFile($field)) {
+                continue;
+            }
+
+            $fileName = "{$safeKp}_{$field}.pdf";
+            $path = $request->file($field)->storeAs("peguam/{$safeKp}", $fileName, 'local');
+
+            UploadedFile::create([
+                'nama' => $nama,
+                'kpBaru' => $kp,
+                'doc_type' => $field,
+                'file_name' => $fileName,
+                'file_path' => $path,
+                'file_type' => 'application/pdf',
+            ]);
+        }
     }
 }
