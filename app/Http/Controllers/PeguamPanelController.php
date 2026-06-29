@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Form;
 use App\Models\PeguamPanel;
 use App\Support\Audit;
+use App\Support\PeguamLifecycleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 // Staff view of a panel lawyer: master record + detailed profile (butiran) + assigned cases.
@@ -53,5 +55,31 @@ class PeguamPanelController extends Controller
         Audit::log('peguam_panel', $peguam->id, Audit::UPDATE, "Kemaskini peguam panel: {$peguam->nama_peguam}");
 
         return redirect()->route('peguam-panel.show', $peguam)->with('status', 'Rekod peguam panel dikemaskini.');
+    }
+
+    /** Deactivate a panel lawyer with justification → triggers death-redistribution of active cases. */
+    public function nyahaktif(Request $request, PeguamPanel $peguam, PeguamLifecycleService $svc): RedirectResponse
+    {
+        $data = $request->validate([
+            'sebab' => ['required', Rule::in(PeguamPanel::SEBAB_LIST)],
+            'sebabLain' => ['nullable', 'string', 'max:200', 'required_if:sebab,'.PeguamPanel::SEBAB_LAIN],
+        ]);
+
+        $sebab = $data['sebab'] === PeguamPanel::SEBAB_LAIN
+            ? PeguamPanel::SEBAB_LAIN.': '.$data['sebabLain']
+            : $data['sebab'];
+
+        $n = $svc->deactivate($peguam, $request->user(), $sebab);
+
+        return redirect()->route('peguam-panel.show', $peguam)
+            ->with('status', "Peguam dinyahaktifkan. {$n} kes aktif telah dikembalikan untuk agihan semula.");
+    }
+
+    /** Reactivate a deactivated panel lawyer. */
+    public function aktifSemula(Request $request, PeguamPanel $peguam, PeguamLifecycleService $svc): RedirectResponse
+    {
+        $svc->reactivate($peguam, $request->user());
+
+        return redirect()->route('peguam-panel.show', $peguam)->with('status', 'Peguam diaktifkan semula.');
     }
 }

@@ -186,6 +186,9 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
     Route::get('/peguam-panel/{peguam}', [PeguamPanelController::class, 'show'])->name('peguam-panel.show')->whereNumber('peguam');
     Route::get('/peguam-panel/{peguam}/edit', [PeguamPanelController::class, 'edit'])->name('peguam-panel.edit')->whereNumber('peguam');
     Route::put('/peguam-panel/{peguam}', [PeguamPanelController::class, 'update'])->name('peguam-panel.update')->whereNumber('peguam');
+    // Lawyer active/inactive lifecycle (deactivation triggers death-redistribution of active cases).
+    Route::post('/peguam-panel/{peguam}/nyahaktif', [PeguamPanelController::class, 'nyahaktif'])->name('peguam-panel.nyahaktif')->whereNumber('peguam')->middleware('role:admin,koordinator,pengarah,ketua_pengarah');
+    Route::post('/peguam-panel/{peguam}/aktif-semula', [PeguamPanelController::class, 'aktifSemula'])->name('peguam-panel.aktif')->whereNumber('peguam')->middleware('role:admin,koordinator,pengarah,ketua_pengarah');
 
     // Permohonan peguam panel (application approval workflow)
     Route::get('/permohonan-peguam', [PermohonanPeguamController::class, 'index'])->name('permohonan-peguam.index');
