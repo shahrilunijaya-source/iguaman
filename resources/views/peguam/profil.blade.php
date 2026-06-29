@@ -8,7 +8,14 @@
             <h1 class="tap-head__title">Profil Peguam<span class="dot"></span></h1>
             <p class="tap-head__sub">Maklumat panel &amp; akaun</p>
         </div>
+        <a href="{{ route('peguam.profil.edit') }}" class="btn btn--primary">✎ Kemaskini Profil</a>
     </div>
+
+    @if (session('status'))
+        <div class="formerr" style="color: var(--success); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.18); margin-bottom: 16px;">
+            {{ session('status') }}
+        </div>
+    @endif
 
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:18px;">
         <div class="tap-card">

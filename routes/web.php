@@ -184,6 +184,8 @@ Route::middleware(['auth', 'role:peguam'])->prefix('peguam')->group(function () 
     Route::get('/kes', [PeguamController::class, 'kes'])->name('peguam.kes');
     Route::get('/tawaran', [PeguamController::class, 'tawaran'])->name('peguam.tawaran');
     Route::get('/profil', [PeguamController::class, 'profil'])->name('peguam.profil');
+    Route::get('/profil/kemaskini', [PeguamController::class, 'editProfil'])->name('peguam.profil.edit');
+    Route::post('/profil/kemaskini', [PeguamController::class, 'updateProfil'])->name('peguam.profil.update');
 
     // Offer accept/reject (tawaran) + lawyer-side case reporting.
     Route::post('/kes/{kes}/terima', [PeguamController::class, 'terima'])->name('peguam.terima')->whereNumber('kes');

@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PeguamDaftarRequest;
+use App\Http\Requests\PeguamProfilUpdateRequest;
+use App\Models\ButiranPeguamPanel2;
+use App\Models\ButiranPeguamPanel3;
+use App\Models\ButiranPeguamPanel4;
+use App\Models\ButiranPeguamPanel5;
 use App\Models\Form;
 use App\Models\LaporanKes;
 use App\Models\PeguamPanel;
+use App\Models\RefNegeri;
 use App\Models\SejarahPeguamPanel;
 use App\Support\Audit;
+use App\Support\LawyerDocuments;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -138,18 +147,112 @@ class PeguamController extends Controller
     public function profil(): View
     {
         $profile = $this->profile();
+        $kp = $this->lawyerKp();
 
         return view('peguam.profil', [
             'profile' => $profile,
             'user' => Auth::user(),
             'b' => $profile?->butiran,
+            // Detailed self-service profile (butiran_peguam_panel_2..5), keyed by IC.
+            'p2' => $kp ? ButiranPeguamPanel2::where('kpBaru', $kp)->first() : null,
+            'p3' => $kp ? ButiranPeguamPanel3::where('kpBaru', $kp)->first() : null,
+            'p4' => $kp ? ButiranPeguamPanel4::where('kpBaru', $kp)->first() : null,
+            'p5' => $kp ? ButiranPeguamPanel5::where('kpBaru', $kp)->first() : null,
         ]);
+    }
+
+    /** Self-service profile edit form (legacy profil.php + profilUpdate.php). */
+    public function editProfil(): View
+    {
+        $kp = $this->lawyerKp();
+        abort_if($kp === null, 403, 'Akaun anda belum dipautkan ke rekod peguam panel.');
+
+        return view('peguam.profil-edit', [
+            'p2' => ButiranPeguamPanel2::firstOrNew(['kpBaru' => $kp]),
+            'p3' => ButiranPeguamPanel3::firstOrNew(['kpBaru' => $kp]),
+            'p4' => ButiranPeguamPanel4::firstOrNew(['kpBaru' => $kp]),
+            'p5' => ButiranPeguamPanel5::firstOrNew(['kpBaru' => $kp]),
+            'docs' => \App\Models\UploadedFile::where('kpBaru', $kp)->pluck('doc_type')->all(),
+            'negeriList' => RefNegeri::orderBy('nama')->pluck('nama'),
+            'banks' => self::BANKS,
+        ]);
+    }
+
+    /** Persist self-service profile changes across _2/_3/_4/_5 + document re-uploads. */
+    public function updateProfil(PeguamProfilUpdateRequest $request): RedirectResponse
+    {
+        $kp = $this->lawyerKp();
+        abort_if($kp === null, 403, 'Akaun anda belum dipautkan ke rekod peguam panel.');
+
+        $d = $request->validated();
+        $user = Auth::user();
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $d, $kp, $user) {
+            $p2 = ButiranPeguamPanel2::firstOrNew(['kpBaru' => $kp]);
+            $p2->fill(Arr::only($d, [
+                'noTelBimbit', 'emelPeguam', 'kelulusanAkademik', 'tarikhDiterimaMasuk',
+                'tarikhDiterimaMasukSyarie', 'tahunPengalaman', 'tahunPengalamanSyarie',
+                'bilanganKes', 'keteranganKes',
+            ]));
+            if (! $p2->exists) {
+                $p2->namaPeguam = $user->name;
+                $p2->permohonan_status = '0';
+                $p2->tarikhMohon = now();
+            }
+            $p2->save();
+
+            $cso = [];
+            foreach (range(1, 5) as $i) {
+                array_push($cso, "csoNumber{$i}", "cso{$i}Tauliah", "cso{$i}Mula", "cso{$i}Akhir", "lokasiBerguam{$i}");
+            }
+            ButiranPeguamPanel3::firstOrNew(['kpBaru' => $kp])->fill(Arr::only($d, array_merge([
+                'clpNumber', 'clpMula', 'clpAkhir',
+                'ybgk_kelulusan', 'ybgk_tarikhLulus_A', 'ybgk_tarikhLulus_B', 'ybgk_daftar',
+                'adr_penimbangtara', 'adr_pengantara',
+                'sijilAhli_nombor', 'sijilAhli_namaBadan', 'sijilAhli_mula', 'sijilAhli_akhir',
+                'sijilAkreditasi_nombor', 'sijilAkreditasi_namaBadan', 'sijilAkreditasi_mula', 'sijilAkreditasi_akhir',
+                'eVendor_daftar', 'eVendor_ID',
+            ], $cso)))->save();
+
+            ButiranPeguamPanel4::firstOrNew(['kpBaru' => $kp])->fill(Arr::only($d, [
+                'namaFirma', 'alamatFirma1', 'alamatFirma2', 'alamatFirma3', 'poskodFirma',
+                'bandarFirma', 'negeriFirma', 'noTelFirma', 'noFaksFirma',
+                'namaInsurans', 'noPolisi', 'amaunPerlindungan', 'polisiMula', 'polisiAkhir',
+            ]))->save();
+
+            ButiranPeguamPanel5::firstOrNew(['kpBaru' => $kp])->fill(Arr::only($d, [
+                'namaBank', 'noAkaunBank', 'alamatBank1', 'alamatBank2', 'alamatBank3',
+                'poskodBank', 'bandarBank', 'negeriBank',
+            ]))->save();
+
+            // All 18 docs editable (cso4/cso5 included — fixes the legacy profilUpdate bug).
+            LawyerDocuments::store($request, $kp, $p2->namaPeguam ?? $user->name, array_keys(PeguamDaftarRequest::DOC_TYPES));
+        });
+
+        Audit::log('butiran_peguam_panel_2', 0, Audit::UPDATE, "Profil peguam dikemaskini oleh {$user->name} (KP {$kp})");
+
+        return redirect()->route('peguam.profil')->with('status', 'Profil berjaya dikemaskini.');
     }
 
     /** Panel-lawyer master record for the signed-in user (links via id_peguam_panel = kp_peguam). */
     private function profile(): ?PeguamPanel
     {
         return Auth::user()->lawyerProfile;
+    }
+
+    /** Common Malaysian banks for the payment-account dropdown. */
+    private const BANKS = [
+        'Maybank', 'CIMB Bank', 'Public Bank', 'RHB Bank', 'Hong Leong Bank', 'AmBank',
+        'Bank Islam', 'Bank Rakyat', 'BSN', 'Affin Bank', 'Alliance Bank', 'OCBC Bank',
+        'HSBC', 'UOB', 'Standard Chartered', 'Agrobank', 'MBSB Bank',
+    ];
+
+    /** The signed-in lawyer's IC (kpBaru) — the key for butiran_peguam_panel_2..6. */
+    private function lawyerKp(): ?string
+    {
+        $user = Auth::user();
+
+        return $user->id_peguam_panel ?: $user->nokp ?: null;
     }
 
     /** Cases assigned to a lawyer by name. */

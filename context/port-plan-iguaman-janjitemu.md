@@ -47,7 +47,7 @@ Integrate into the 2in1 monolith (one app, one DB, one auth) — **not** a side-
 | `AspNetUsers` (Pengguna) | Users | **REUSE/EXTEND** `users` (+ new fields, + public user_type) |
 | `AspNetRoles` (Peranan) | Roles | **MAP** to 2in1 string `role` (see §6); no separate table |
 | holiday calendar | Public holidays | **REUSE** `ref_cuti` (already present, used for working-day calc) |
-| `Kategoris` | Case category | **REUSE/EXTEND** `ref_kes` (verify field parity) or new `ref_kategori_kn` |
+| `Kategoris` → `JenisKess` | Advisory category hierarchy | **NEW** normalized `ref_kategori_kn` + `ref_subkategori_kn` (do NOT overload `ref_kes` — see §7.3) |
 | `Cawangans` (CawanganJBG) | Branches (4 types: JBG/JKM/Mahkamah/Penjara) | **NEW** `cawangan` master (2in1 currently stores branch as a free string only) |
 | `JKMs` | Welfare dept records | **NEW** `jkm` |
 | `Penjaras` | Prison records | **NEW** `penjara` |
@@ -127,13 +127,11 @@ Source roles (5): SUPERADMIN, PENGURUSAN, PEMBANTU TADBIR, PEGAWAI KHIDMAT NASIH
 
 ---
 
-## 7. Open decisions (need answer before batch 1)
+## 7. Decisions (LOCKED — 2026-06-30)
 
-1. **Public portal?** Source has public self-registration + public applicants (PELANGGAN) booking their own appointments. 2in1 today is internal-officer only. Options:
-   - **(A) Internal-only** — staff create advisory records on behalf of walk-ins. Smaller, safer.
-   - **(B) Full public portal** — add `awam` user_type, public register/login, captcha, self-service booking. Much bigger, adds public attack surface.
-2. **Cawangan master vs string.** 2in1 stores branch as a free string + `CawanganScope`. Source treats branches as real entities (4 types, rooms, slots, calendars). Recommend introducing a real `cawangan` table and migrating the string usage — but that touches existing scoping. Confirm.
-3. **Kategori reuse.** Reuse `ref_kes` for advisory categories, or new `ref_kategori_kn` (+ subkategori)? Need a field-level compare.
+1. **Public portal → (B) FULL public portal.** Add `awam` user_type, public register/login, captcha, self-service booking. Batch 12 is **in scope** (not optional). New public attack surface — enforce server-side auth + rate-limit + captcha on all public routes.
+2. **Cawangan → REAL `cawangan` master table** (+ branch type: JBG/JKM/Mahkamah/Penjara). Migrate existing free-string branch usage; reconcile with `CawanganScope` (scope currently keys off a string — update it to FK or keep string key seeded from the new master). Branch-level rooms/slots/calendars depend on this.
+3. **Kategori → NEW normalized `ref_kategori_kn` + `ref_subkategori_kn`.** Field-compare done: `ref_kes` is flat/denormalized (id_kes, jenis_kes code, kategori_kes name, deskripsi, aktif_kes, tarikh_kuatkuasa; ~219 rows; drives case-records lifecycle). Source advisory side is a normalized hierarchy (Kategori → JenisKes → subkategori) with per-level CRUD. Keep separate tables; optionally seed from `ref_kes` where values align.
 
 ---
 
@@ -154,12 +152,12 @@ Mirrors the existing "legacy parity batch N" cadence. Each batch = atomic commit
 
 | Batch | Scope | Depends on |
 |---|---|---|
-| **7 — Foundations** | New masters: `cawangan` (+type), `jkm`, `penjara`, `jenis_kes`, kategori/subkategori. Migrations + models + CawanganScope + Tetapan CRUD UI. Role const additions. | §7 decisions |
+| **7 — Foundations** | New masters: `cawangan` (+type) + reconcile `CawanganScope`, `jkm`, `penjara`, `jenis_kes`, `ref_kategori_kn` + `ref_subkategori_kn`. Migrations + models + Tetapan CRUD UI. Role const additions (incl. `awam`). | §7 decisions |
 | **8 — Khidmat Nasihat core** | `khidmat_nasihat` table/model, 4-step wizard (Blade + per-step FormRequest), status lifecycle, attachments. | 7 |
 | **9 — Appointment + calendar** | `slot_temu_janji`, `temu_janji`, `sesi_janji_temu`, `penutupan_hari_operasi`, `bilik`; **new** availability/double-booking logic; calendar + slot config UI. | 7, 8 |
 | **10 — Officer processing** | `pengesahan-janjitemu` flow (assign officer, accept/reject, attendance, complete); janji temu list/schedule. | 8, 9 |
 | **11 — Feedback + reports** | `maklumbalas` survey; 8 statistik reports (ApexCharts + Laravel Excel export). | 8–10 |
-| **12 — Public portal** *(only if §7→B)* | `awam` user_type, public register/login, captcha, self-service booking. | all |
+| **12 — Public portal** *(IN SCOPE — §7.1=B)* | `awam` user_type, public register/login, captcha, rate-limited self-service booking, public-facing layout. | all |
 
 ---
 

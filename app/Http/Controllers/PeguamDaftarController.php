@@ -10,7 +10,7 @@ use App\Models\ButiranPeguamPanel5;
 use App\Models\ButiranPeguamPanel6;
 use App\Models\RefKes;
 use App\Models\RefNegeri;
-use App\Models\UploadedFile;
+use App\Support\LawyerDocuments;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -72,7 +72,7 @@ class PeguamDaftarController extends Controller
                 ]);
             }
 
-            $this->storeDocuments($request, $kp, $data['namaPeguam']);
+            LawyerDocuments::store($request, $kp, $data['namaPeguam'], array_keys(PeguamDaftarRequest::DOC_TYPES));
 
             return $base;
         });
@@ -130,29 +130,5 @@ class PeguamDaftarController extends Controller
             'namaBank', 'noAkaunBank', 'alamatBank1', 'alamatBank2', 'alamatBank3',
             'poskodBank', 'bandarBank', 'negeriBank',
         ]);
-    }
-
-    /** Persist the 18 PDF documents to private storage + uploaded_files rows. */
-    private function storeDocuments(PeguamDaftarRequest $request, string $kp, string $nama): void
-    {
-        $safeKp = preg_replace('/[^A-Za-z0-9]/', '', $kp);
-
-        foreach (array_keys(PeguamDaftarRequest::DOC_TYPES) as $field) {
-            if (! $request->hasFile($field)) {
-                continue;
-            }
-
-            $fileName = "{$safeKp}_{$field}.pdf";
-            $path = $request->file($field)->storeAs("peguam/{$safeKp}", $fileName, 'local');
-
-            UploadedFile::create([
-                'nama' => $nama,
-                'kpBaru' => $kp,
-                'doc_type' => $field,
-                'file_name' => $fileName,
-                'file_path' => $path,
-                'file_type' => 'application/pdf',
-            ]);
-        }
     }
 }
