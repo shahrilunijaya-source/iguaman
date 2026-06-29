@@ -88,8 +88,9 @@
                     </div>
                     <div class="wiz-field">
                         <label class="wiz-field__label">No. KP</label>
-                        <input class="wiz-field__input" name="nokp" value="{{ $val('nokp') }}">
+                        <input class="wiz-field__input" name="nokp" id="nokpInput" value="{{ $val('nokp') }}" autocomplete="off">
                         @error('nokp') <div class="wiz-field__hint" style="color:var(--danger)">{{ $message }}</div> @enderror
+                        <div id="nokpDup" style="display:none;margin-top:6px;font-size:12px;padding:8px 10px;border-radius:8px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#b45309;"></div>
                     </div>
                     <div class="wiz-field">
                         <label class="wiz-field__label">Umur</label>
@@ -353,6 +354,27 @@
                     if (bad) { e.preventDefault(); show(i); bad.reportValidity(); return; }
                 }
             });
+
+            // Duplicate-IC guard (legacy check_nokp): warn if this IC already has applications.
+            const nokpInput = document.getElementById('nokpInput');
+            const nokpDup = document.getElementById('nokpDup');
+            if (nokpInput && nokpDup) {
+                nokpInput.addEventListener('blur', async () => {
+                    const ic = nokpInput.value.trim();
+                    if (ic.length < 6) { nokpDup.style.display = 'none'; return; }
+                    try {
+                        const res = await fetch('{{ route('kes.semak-nokp') }}?nokp=' + encodeURIComponent(ic), { headers: { 'Accept': 'application/json' } });
+                        const data = await res.json();
+                        if (data.exists) {
+                            const rows = data.records.map(r => '• #' + r.id + ' — ' + r.nama + ' (' + r.no_fail + ', ' + r.status + ')').join('<br>');
+                            nokpDup.innerHTML = '<strong>Amaran:</strong> No. KP ini mempunyai ' + data.records.length + ' permohonan terdahulu:<br>' + rows;
+                            nokpDup.style.display = 'block';
+                        } else {
+                            nokpDup.style.display = 'none';
+                        }
+                    } catch (e) { nokpDup.style.display = 'none'; }
+                });
+            }
 
             // Reopen the peringkat that carries a server-side validation error.
             const errStep = form.dataset.errorStep;

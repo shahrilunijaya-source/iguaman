@@ -65,6 +65,7 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
     Route::get('/kes', [KesController::class, 'index'])->name('kes.index');
     Route::get('/fail-tutup', [KesController::class, 'tutup'])->name('kes.tutup');
     Route::get('/kes/create', [KesController::class, 'create'])->name('kes.create');
+    Route::get('/kes/semak-nokp', [KesController::class, 'checkNokp'])->name('kes.semak-nokp');
     Route::post('/kes', [KesController::class, 'store'])->name('kes.store');
     Route::get('/kes/{kes}/edit', [KesController::class, 'edit'])->name('kes.edit')->whereNumber('kes');
     Route::put('/kes/{kes}', [KesController::class, 'update'])->name('kes.update')->whereNumber('kes');

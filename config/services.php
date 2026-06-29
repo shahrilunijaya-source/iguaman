@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    // Standalone JBG chatbot microservice (Python/FastAPI). The Laravel proxy
+    // (ChatbotController) is the only thing that holds these creds.
+    'chatbot' => [
+        'url' => env('BOT_API_URL'),
+        'user' => env('BOT_API_USER'),
+        'pass' => env('BOT_API_PASS'),
+        'timeout' => env('BOT_API_TIMEOUT', 30),
+    ],
+
 ];

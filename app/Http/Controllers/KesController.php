@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PermohonanRequest;
 use App\Models\Form;
 use App\Models\RefKes;
+use App\Support\NoFailGenerator;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -65,10 +67,34 @@ class KesController extends Controller
 
         // Auto-generate file number if the officer left it blank (legacy generated no_fail at registration).
         if (blank($kes->no_fail)) {
-            $kes->update(['no_fail' => $this->genNoFail($kes)]);
+            $kes->update(['no_fail' => app(NoFailGenerator::class)->generate($kes)]);
         }
 
         return redirect()->route('kes.show', $kes)->with('status', 'Permohonan baharu direkodkan. No. Fail: '.$kes->no_fail);
+    }
+
+    /** AJAX duplicate-IC guard (legacy check_nokp.php) — returns prior applications for an IC. */
+    public function checkNokp(Request $request): JsonResponse
+    {
+        $nokp = trim((string) $request->query('nokp', ''));
+
+        if ($nokp === '') {
+            return response()->json(['exists' => false, 'records' => []]);
+        }
+
+        $records = Form::where('nokp', $nokp)
+            ->orderByDesc('id')
+            ->limit(20)
+            ->get(['id', 'nama', 'no_fail', 'jenis_kes', 'status'])
+            ->map(fn ($f) => [
+                'id' => $f->id,
+                'nama' => $f->nama ?: '-',
+                'no_fail' => $f->no_fail ?: '-Tiada Maklumat-',
+                'jenis_kes' => $f->jenis_kes ?: '-Tiada Maklumat-',
+                'status' => $f->status ?: '-',
+            ]);
+
+        return response()->json(['exists' => $records->isNotEmpty(), 'records' => $records]);
     }
 
     /** Closed-files list (Senarai Fail Tutup). */
@@ -94,14 +120,6 @@ class KesController extends Controller
             'kategoriList' => $this->kategoriList(),
             'tutup' => true,
         ]);
-    }
-
-    /** Generate a file number when none supplied: JBG/{cawangan}/{id}/{mmYY}. */
-    private function genNoFail(Form $kes): string
-    {
-        $abbrev = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', (string) $kes->cawangan) ?: 'JBG', 0, 3)) ?: 'JBG';
-
-        return sprintf('JBG/%s/%04d/%s', $abbrev, $kes->id, now()->format('my'));
     }
 
     public function edit(Form $kes): View
