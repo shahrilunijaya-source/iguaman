@@ -85,9 +85,31 @@ class ImportLegacyData extends Command
     private function copyVerbatim(string $src): void
     {
         foreach ($this->verbatim as $t) {
-            DB::statement("INSERT INTO `{$t}` SELECT * FROM `{$src}`.`{$t}`");
+            // Copy only columns present in BOTH schemas. Live sistemspk has drifted
+            // ahead of the target on some tables (e.g. forms +4 cols, ref_negeri +idNegeri),
+            // so `SELECT *` breaks on column-count mismatch. Shared-column copy is drift-safe.
+            $cols = $this->sharedColumns($src, $t);
+            $list = '`'.implode('`,`', $cols).'`';
+            DB::statement("INSERT INTO `{$t}` ({$list}) SELECT {$list} FROM `{$src}`.`{$t}`");
             $this->line(sprintf('  %-26s %d rows', $t, DB::table($t)->count()));
         }
+    }
+
+    /** Columns common to source.$table and target.$table, in target ordinal order. */
+    private function sharedColumns(string $src, string $table): array
+    {
+        $cols = fn (string $schema) => array_map(
+            fn ($r) => $r->COLUMN_NAME,
+            DB::select(
+                'SELECT COLUMN_NAME FROM information_schema.columns WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position',
+                [$schema, $table]
+            )
+        );
+
+        $target = $cols(DB::getDatabaseName());
+        $source = $cols($src);
+
+        return array_values(array_intersect($target, $source));
     }
 
     private function copyPeguamPanel(string $src): void
