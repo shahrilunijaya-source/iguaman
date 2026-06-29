@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgihanController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CetakanController;
+use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\KesController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
@@ -54,7 +55,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // ---- Staff area: rekod-kes + panel admin (admin / pengarah / koordinator / pegawai) ----
-Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(function () {
+Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembantu_tadbir,ketua_pengarah'])->group(function () {
     Route::get('/system', [SystemController::class, 'utama'])->name('system.utama');
 
     // Rekod kes (Case backbone + permohonan CRUD)
@@ -65,6 +66,11 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/kes/{kes}/edit', [KesController::class, 'edit'])->name('kes.edit')->whereNumber('kes');
     Route::put('/kes/{kes}', [KesController::class, 'update'])->name('kes.update')->whereNumber('kes');
     Route::get('/kes/{kes}', [KesController::class, 'show'])->name('kes.show')->whereNumber('kes');
+
+    // Keputusan Pengarah (peringkat 2 approve/reject) + Tutup Fail (peringkat 7) — gated in controller
+    Route::post('/kes/{kes}/lulus', [KeputusanController::class, 'lulus'])->name('kes.lulus')->whereNumber('kes');
+    Route::post('/kes/{kes}/tolak', [KeputusanController::class, 'tolak'])->name('kes.tolak')->whereNumber('kes');
+    Route::post('/kes/{kes}/tutup-fail', [KeputusanController::class, 'tutupFail'])->name('kes.tutupfail')->whereNumber('kes');
 
     // Pengantaraan (mediation) — section edit + hearing reschedule
     Route::get('/kes/{kes}/pengantaraan', [PengantaraanController::class, 'edit'])->name('pengantaraan.edit')->whereNumber('kes');
@@ -104,7 +110,7 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/statistik/pdf', [StatistikController::class, 'pdf'])->name('statistik.pdf');
 
     // Selenggara (maintenance) + Pegawai JBG registry + Audit log — supervisory roles only
-    Route::middleware('role:admin,pengarah,koordinator')->group(function () {
+    Route::middleware('role:admin,pengarah,koordinator,ketua_pengarah')->group(function () {
         Route::get('/pegawai', [PegawaiController::class, 'index'])->name('pegawai.index');
         Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
         Route::post('/pegawai', [PegawaiController::class, 'store'])->name('pegawai.store');

@@ -162,6 +162,38 @@
         </div>
 
         <div style="display:flex; flex-direction:column; gap:14px;">
+            @if (auth()->user()->hasRole('pengarah', 'ketua_pengarah', 'admin'))
+                <div class="tap-card" style="border-left:3px solid var(--teal);">
+                    <div class="tap-card__eyebrow">Keputusan Pengarah</div>
+                    <p class="dash-empty__sub" style="margin:0 0 10px;">
+                        Status: <strong>{{ $kes->status ?: 'baru' }}</strong>
+                        @if ($kes->keputusan) · {{ $kes->keputusan }} @endif
+                    </p>
+
+                    @if (blank($kes->tarikh_tutup_fail))
+                        <form method="POST" action="{{ route('kes.lulus', $kes) }}" class="va-form" style="margin-bottom:10px;">
+                            @csrf
+                            <input class="field__input" name="kelulusan" placeholder="Kelulusan (pilihan)" maxlength="20">
+                            <input class="field__input" name="sumbangan" placeholder="Sumbangan (pilihan)" maxlength="20">
+                            <button type="submit" class="btn btn--primary btn--block">✓ Luluskan Permohonan</button>
+                        </form>
+                        <form method="POST" action="{{ route('kes.tolak', $kes) }}" class="va-form" style="margin-bottom:10px;" onsubmit="return confirm('Tolak permohonan ini?')">
+                            @csrf
+                            <input class="field__input" name="reason" placeholder="Sebab tolak (pilihan)" maxlength="100">
+                            <button type="submit" class="btn btn--ghost btn--block" style="color:var(--danger);">✕ Tolak Permohonan</button>
+                        </form>
+                        <form method="POST" action="{{ route('kes.tutupfail', $kes) }}" class="va-form" onsubmit="return confirm('Tutup fail ini secara rasmi?')">
+                            @csrf
+                            <input class="field__input" name="kos" placeholder="Kos (pilihan)" maxlength="10">
+                            <input class="field__input" name="sebab_tutup_fail" placeholder="Sebab tutup fail (pilihan)">
+                            <button type="submit" class="btn btn--ghost btn--block">🔒 Tutup Fail</button>
+                        </form>
+                    @else
+                        <p class="dash-empty__sub" style="margin:0;">Fail telah ditutup pada {{ optional($kes->tarikh_tutup_fail)->format('d/m/Y') }}.</p>
+                    @endif
+                </div>
+            @endif
+
             <div class="rail-card">
                 <div class="rail-card__head"><span class="rail-card__eyebrow">Sejarah Peguam</span></div>
                 <div class="audit-list">
