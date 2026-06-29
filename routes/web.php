@@ -6,6 +6,7 @@ use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
+use App\Http\Controllers\PermohonanPeguamController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\SystemAuthController;
 use App\Http\Controllers\SystemController;
@@ -62,6 +63,13 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/kes/{kes}/agih', [AgihanController::class, 'form'])->name('agihan.form')->whereNumber('kes');
     Route::post('/kes/{kes}/agih', [AgihanController::class, 'store'])->name('agihan.store')->whereNumber('kes');
     Route::get('/peguam-panel/beban', [AgihanController::class, 'beban'])->name('agihan.beban');
+
+    // Permohonan peguam panel (application approval workflow)
+    Route::get('/permohonan-peguam', [PermohonanPeguamController::class, 'index'])->name('permohonan-peguam.index');
+    Route::get('/permohonan-peguam/{butiran}', [PermohonanPeguamController::class, 'show'])->name('permohonan-peguam.show')->whereNumber('butiran');
+    Route::post('/permohonan-peguam/{butiran}/sokong', [PermohonanPeguamController::class, 'sokong'])->name('permohonan-peguam.sokong')->whereNumber('butiran');
+    Route::post('/permohonan-peguam/{butiran}/keputusan', [PermohonanPeguamController::class, 'keputusan'])->name('permohonan-peguam.keputusan')->whereNumber('butiran');
+    Route::post('/permohonan-peguam/{butiran}/tarik-diri', [PermohonanPeguamController::class, 'tarikDiri'])->name('permohonan-peguam.tarik')->whereNumber('butiran');
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----

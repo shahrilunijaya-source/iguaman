@@ -26,11 +26,11 @@
                 <div class="dash-kpi__value">{{ number_format($stats['peguam']) }}</div>
                 <div class="dash-kpi__sub">aktif dalam panel</div>
             </div>
-            <div class="dash-kpi {{ $stats['mohon_peguam'] > 0 ? 'is-warn' : '' }}">
+            <a href="{{ route('permohonan-peguam.index', ['status' => '0']) }}" class="dash-kpi {{ $stats['mohon_peguam'] > 0 ? 'is-warn' : '' }}" style="text-decoration:none; color:inherit;">
                 <div class="dash-kpi__eyebrow">Permohonan Peguam</div>
                 <div class="dash-kpi__value">{{ number_format($stats['mohon_peguam']) }}</div>
                 <div class="dash-kpi__sub">menunggu keputusan</div>
-            </div>
+            </a>
             <div class="dash-kpi">
                 <div class="dash-kpi__eyebrow">Pengguna Staf</div>
                 <div class="dash-kpi__value">{{ number_format($stats['pengguna']) }}</div>

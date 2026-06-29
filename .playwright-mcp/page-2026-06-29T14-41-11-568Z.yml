@@ -1,0 +1,185 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: iGuaman
+        - generic [ref=e8]: 2IN1 · BANTUAN GUAMAN
+      - generic [ref=e9]:
+        - heading "Dua sistem, satu ruang. Rekod kes & panel peguam." [level=2] [ref=e10]:
+          - generic [ref=e11]: Dua sistem,
+          - generic [ref=e12]: satu ruang.
+          - generic [ref=e13]: Rekod kes &
+          - generic [ref=e14]: panel peguam.
+        - paragraph [ref=e16]: Ruang kerja iGuaman 2in1 — rekod kes, pengantaraan, mahkamah dan panel peguam dalam satu sistem.
+        - generic [ref=e17]:
+          - generic [ref=e18]: Direkod.
+          - generic [ref=e19]: Diagih.
+          - generic [ref=e20]: Diselesaikan.
+      - generic [ref=e21]:
+        - generic [ref=e22]: iGuaman · 2in1
+        - generic [ref=e23]: Sesi disulitkan TLS 1.3
+    - generic [ref=e26]:
+      - generic [ref=e28]:
+        - generic [ref=e29]: Akses Pengguna
+        - heading "Log masuk." [level=1] [ref=e30]: Log masuk.
+      - paragraph [ref=e32]: Masukkan emel dan kata laluan anda untuk meneruskan.
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - generic [ref=e35]: Emel
+          - textbox "nama@jbg.gov.my" [ref=e36]
+        - generic [ref=e37]:
+          - generic [ref=e38]: Kata Laluan
+          - generic [ref=e39]:
+            - textbox "••••••••" [ref=e40]
+            - button [ref=e41] [cursor=pointer]:
+              - img [ref=e42]
+        - generic [ref=e45]:
+          - generic [ref=e46] [cursor=pointer]:
+            - checkbox "Ingat saya" [ref=e47]
+            - generic [ref=e48]: Ingat saya
+          - link "Lupa kata laluan?" [ref=e49] [cursor=pointer]:
+            - /url: http://127.0.0.1:8777/password/forgot
+        - button "Log Masuk" [ref=e50] [cursor=pointer]:
+          - text: Log Masuk
+          - img [ref=e51]
+      - generic [ref=e53]:
+        - button "Lihat akaun demo" [active] [ref=e54] [cursor=pointer]:
+          - img [ref=e55]
+          - text: Lihat akaun demo
+        - link "← Laman awam" [ref=e58] [cursor=pointer]:
+          - /url: http://127.0.0.1:8777
+  - dialog "2 kawasan akses · 6 akaun ujian" [ref=e59]:
+    - generic [ref=e60]:
+      - button "Tutup" [ref=e61] [cursor=pointer]:
+        - img [ref=e62]
+      - generic [ref=e65]:
+        - generic [ref=e66]: Akaun Demo · Prototaip
+        - heading "2 kawasan akses · 6 akaun ujian" [level=2] [ref=e67]: 2 kawasan akses · 6 akaun ujian
+        - paragraph [ref=e69]: iGuaman menyokong kawasan kakitangan (rekod kes, pengantaraan, mahkamah, statistik) dan kawasan peguam panel. Klik mana-mana akaun di bawah untuk mengisi borang log masuk secara automatik.
+      - generic [ref=e71]:
+        - generic [ref=e72]:
+          - generic [ref=e73]:
+            - generic [ref=e74]: P1
+            - generic [ref=e75]:
+              - generic [ref=e76]: Pegawai
+              - generic [ref=e77]: Officer · L1
+          - generic [ref=e78]:
+            - generic [ref=e79]: Kebenaran
+            - generic [ref=e80]:
+              - generic [ref=e81]: ✓
+              - text: Lihat & cari rekod kes
+            - generic [ref=e82]:
+              - generic [ref=e83]: ✓
+              - text: Daftar permohonan baru
+            - generic [ref=e84]:
+              - generic [ref=e85]: ✓
+              - text: Kemaskini pengantaraan
+            - generic [ref=e86]:
+              - generic [ref=e87]: ✓
+              - text: Kemaskini kes mahkamah
+            - generic [ref=e88]:
+              - generic [ref=e89]: ✓
+              - text: Jana statistik & eksport
+          - generic [ref=e90]:
+            - generic [ref=e91]: Akaun ujian (2)
+            - button "Demo Admin UTAMA demo@example.com" [ref=e92] [cursor=pointer]:
+              - generic [ref=e93]:
+                - generic [ref=e94]: Demo Admin UTAMA
+                - generic [ref=e95]: demo@example.com
+              - img [ref=e96]
+            - button "Test Pegawai pegawai@test.local" [ref=e98] [cursor=pointer]:
+              - generic [ref=e99]:
+                - generic [ref=e100]: Test Pegawai
+                - generic [ref=e101]: pegawai@test.local
+              - img [ref=e102]
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - generic [ref=e106]: P2
+            - generic [ref=e107]:
+              - generic [ref=e108]: Koordinator / Pengarah
+              - generic [ref=e109]: Penyelia · L2
+          - generic [ref=e110]:
+            - generic [ref=e111]: Tambahan kepada Pegawai
+            - generic [ref=e112]:
+              - generic [ref=e113]: ✓
+              - text: Pantau beban kes unit
+            - generic [ref=e114]:
+              - generic [ref=e115]: ✓
+              - text: Agih / tugaskan kes
+            - generic [ref=e116]:
+              - generic [ref=e117]: ✓
+              - text: Semak prestasi pengantaraan
+            - generic [ref=e118]:
+              - generic [ref=e119]: ✓
+              - text: Akses laporan unit
+          - generic [ref=e120]:
+            - generic [ref=e121]: Akaun ujian (2)
+            - button "Test Koordinator koordinator@test.local" [ref=e122] [cursor=pointer]:
+              - generic [ref=e123]:
+                - generic [ref=e124]: Test Koordinator
+                - generic [ref=e125]: koordinator@test.local
+              - img [ref=e126]
+            - button "Test Pengarah pengarah@test.local" [ref=e128] [cursor=pointer]:
+              - generic [ref=e129]:
+                - generic [ref=e130]: Test Pengarah
+                - generic [ref=e131]: pengarah@test.local
+              - img [ref=e132]
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e136]: P3
+            - generic [ref=e137]:
+              - generic [ref=e138]: Pentadbir
+              - generic [ref=e139]: Admin · L3
+          - generic [ref=e140]:
+            - generic [ref=e141]: Tambahan kepada Penyelia
+            - generic [ref=e142]:
+              - generic [ref=e143]: ✓
+              - text: Pengurusan pengguna
+            - generic [ref=e144]:
+              - generic [ref=e145]: ✓
+              - text: Peranan & kebenaran
+            - generic [ref=e146]:
+              - generic [ref=e147]: ✓
+              - text: Tetapan sistem & API
+            - generic [ref=e148]:
+              - generic [ref=e149]: ✓
+              - text: Audit log penuh (kekal)
+            - generic [ref=e150]:
+              - generic [ref=e151]: ✓
+              - text: Sandaran & pemulihan
+          - generic [ref=e152]:
+            - generic [ref=e153]: Akaun ujian (1)
+            - button "Test Admin admin@test.local" [ref=e154] [cursor=pointer]:
+              - generic [ref=e155]:
+                - generic [ref=e156]: Test Admin
+                - generic [ref=e157]: admin@test.local
+              - img [ref=e158]
+        - generic [ref=e160]:
+          - generic [ref=e161]:
+            - generic [ref=e162]: PG
+            - generic [ref=e163]:
+              - generic [ref=e164]: Peguam Panel
+              - generic [ref=e165]: Lawyer · Akses Luaran
+          - generic [ref=e166]:
+            - generic [ref=e167]: Kawasan berasingan (bukan kakitangan)
+            - generic [ref=e168]:
+              - generic [ref=e169]: ✓
+              - text: Dashboard peguam
+            - generic [ref=e170]:
+              - generic [ref=e171]: ✓
+              - text: Lihat kes ditugaskan (bila dipautkan)
+            - generic [ref=e172]:
+              - generic [ref=e173]: ✓
+              - text: Papar profil panel
+          - generic [ref=e174]:
+            - generic [ref=e175]: Akaun ujian (1)
+            - button "Test Peguam peguam@test.local" [ref=e176] [cursor=pointer]:
+              - generic [ref=e177]:
+                - generic [ref=e178]: Test Peguam
+                - generic [ref=e179]: peguam@test.local
+              - img [ref=e180]
+      - generic [ref=e182]:
+        - generic [ref=e183]:
+          - text: "Kata laluan untuk semua akaun:"
+          - code [ref=e184]: password
+        - generic [ref=e185]: Hanya untuk prototaip · Pengeluaran akan guna MFA + SSO
