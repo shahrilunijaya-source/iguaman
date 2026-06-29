@@ -38,9 +38,33 @@
         </div>
 
         <div style="display:flex; flex-direction:column; gap:14px;">
-            {{-- Pengarah endorsement --}}
+            {{-- Tier 1 · PPUU semakan --}}
             <div class="tap-card">
-                <div class="tap-card__eyebrow">Sokongan Pengarah</div>
+                <div class="tap-card__eyebrow">1 · Semakan PPUU</div>
+                @if ($p->semakan_ppuu !== null && $p->semakan_ppuu !== '')
+                    <p class="vb-sub" style="margin:0 0 10px;">
+                        <strong>{{ $p->semakan_ppuu === '1' ? 'Disemak & Disokong' : 'Tidak Disokong' }}</strong>
+                        @if ($p->ulasan_semakan_ppuu) — {{ $p->ulasan_semakan_ppuu }} @endif
+                    </p>
+                @endif
+                @if (auth()->user()->hasRole('ppuu', 'pembantu_tadbir', 'koordinator', 'admin'))
+                    <form method="POST" action="{{ route('permohonan-peguam.semak', $p) }}" class="va-form">
+                        @csrf
+                        <select name="semakan_ppuu" class="field__input" required>
+                            <option value="1">Sokong</option>
+                            <option value="0">Tidak Sokong</option>
+                        </select>
+                        <input class="field__input" name="ulasan_semakan_ppuu" placeholder="Ulasan (pilihan)" maxlength="600">
+                        <button type="submit" class="btn btn--primary btn--block">Rekod Semakan</button>
+                    </form>
+                @else
+                    <p class="dash-empty__sub">Hanya PPUU / Pembantu Tadbir.</p>
+                @endif
+            </div>
+
+            {{-- Tier 2 · Pengarah endorsement --}}
+            <div class="tap-card">
+                <div class="tap-card__eyebrow">2 · Sokongan Pengarah</div>
                 @if ($p->sokonganPengarah !== null && $p->sokonganPengarah !== '')
                     <p class="vb-sub" style="margin:0 0 10px;">
                         <strong>{{ $p->sokonganPengarah === '1' ? 'Disokong' : 'Tidak Disokong' }}</strong>
@@ -62,10 +86,10 @@
                 @endif
             </div>
 
-            {{-- KP/Admin decision --}}
+            {{-- Tier 3 · Ketua Pengarah final decision --}}
             <div class="tap-card">
-                <div class="tap-card__eyebrow">Keputusan</div>
-                @if (auth()->user()->hasRole('admin', 'koordinator'))
+                <div class="tap-card__eyebrow">3 · Keputusan Ketua Pengarah</div>
+                @if (auth()->user()->hasRole('ketua_pengarah', 'admin'))
                     <form method="POST" action="{{ route('permohonan-peguam.keputusan', $p) }}" class="va-form">
                         @csrf
                         <select name="keputusan" class="field__input" required>

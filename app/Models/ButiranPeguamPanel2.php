@@ -16,6 +16,7 @@ class ButiranPeguamPanel2 extends Model
     protected $casts = [
         'tarikhDiterimaMasuk' => 'date',
         'tarikhDiterimaMasukSyarie' => 'date',
+        'tarikh_semakan_ppuu' => 'datetime',
         'tarikh_sokonganPengarah' => 'datetime',
         'tarikh_keputusanKP' => 'datetime',
         'tarikhMohon' => 'datetime',

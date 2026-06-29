@@ -95,6 +95,11 @@
                         </div>
                     </div>
 
+                    <div class="field">
+                        <label class="field__label">Pengesahan · Berapa {{ $captchaA ?? '?' }} + {{ $captchaB ?? '?' }}?</label>
+                        <input type="number" name="captcha" class="field__input" placeholder="Jawapan" required>
+                    </div>
+
                     <div class="va-form__row">
                         <label style="color: var(--mute); display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
                             <input type="checkbox" name="remember" style="margin: 0;">

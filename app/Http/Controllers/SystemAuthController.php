@@ -11,13 +11,18 @@ use Illuminate\View\View;
 // Unified users table (staff + lawyers); landing area decided by role/user_type.
 class SystemAuthController extends Controller
 {
-    public function showLogin(): View|RedirectResponse
+    public function showLogin(Request $request): View|RedirectResponse
     {
         if (Auth::check()) {
             return redirect()->route(Auth::user()->homeRoute());
         }
 
-        return view('system.login');
+        // Simple number captcha (legacy parity). Store the answer in session.
+        $a = random_int(1, 9);
+        $b = random_int(1, 9);
+        $request->session()->put('captcha_sum', $a + $b);
+
+        return view('system.login', ['captchaA' => $a, 'captchaB' => $b]);
     }
 
     public function attempt(Request $request): RedirectResponse
@@ -25,7 +30,15 @@ class SystemAuthController extends Controller
         $data = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
+            'captcha' => ['required', 'integer'],
         ]);
+
+        // Verify the number captcha before touching credentials.
+        if ((int) $data['captcha'] !== (int) $request->session()->get('captcha_sum')) {
+            return back()
+                ->withInput($request->only('email', 'remember'))
+                ->withErrors(['captcha' => 'Jawapan pengesahan salah. Cuba lagi.']);
+        }
 
         $remember = $request->boolean('remember');
 

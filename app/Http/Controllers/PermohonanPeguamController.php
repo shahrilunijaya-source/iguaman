@@ -43,11 +43,32 @@ class PermohonanPeguamController extends Controller
         ]);
     }
 
-    /** Pengarah endorsement. */
+    /** Tier 1 — PPUU / Pembantu Tadbir initial review (semakan). */
+    public function semak(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
+    {
+        if (! $request->user()->hasRole(User::ROLE_PPUU, User::ROLE_PEMBANTU_TADBIR, User::ROLE_KOORDINATOR, User::ROLE_ADMIN)) {
+            return back()->withErrors(['akses' => 'Hanya PPUU / Pembantu Tadbir boleh menyemak permohonan.']);
+        }
+
+        $data = $request->validate([
+            'semakan_ppuu' => ['required', 'in:0,1'],
+            'ulasan_semakan_ppuu' => ['nullable', 'string', 'max:600'],
+        ]);
+
+        $butiran->update($data + ['tarikh_semakan_ppuu' => now()]);
+
+        return redirect()->route('permohonan-peguam.show', $butiran)->with('status', 'Semakan PPUU direkodkan.');
+    }
+
+    /** Tier 2 — Pengarah endorsement (requires PPUU semakan first). */
     public function sokong(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
         if (! $request->user()->hasRole(User::ROLE_PENGARAH, User::ROLE_ADMIN)) {
             return back()->withErrors(['akses' => 'Hanya Pengarah boleh memberi sokongan.']);
+        }
+
+        if ($butiran->semakan_ppuu !== '1') {
+            return back()->withErrors(['urutan' => 'Permohonan perlu disemak & disokong oleh PPUU terlebih dahulu.']);
         }
 
         $data = $request->validate([
@@ -60,11 +81,15 @@ class PermohonanPeguamController extends Controller
         return redirect()->route('permohonan-peguam.show', $butiran)->with('status', 'Sokongan Pengarah direkodkan.');
     }
 
-    /** KP/Admin final decision. Approve promotes the applicant into peguam_panel. */
+    /** Tier 3 — Ketua Pengarah final decision (requires Pengarah sokong first). Approve promotes into peguam_panel. */
     public function keputusan(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
-        if (! $request->user()->hasRole(User::ROLE_ADMIN, User::ROLE_KOORDINATOR)) {
-            return back()->withErrors(['akses' => 'Hanya Admin / Koordinator boleh membuat keputusan.']);
+        if (! $request->user()->hasRole(User::ROLE_KETUA_PENGARAH, User::ROLE_ADMIN)) {
+            return back()->withErrors(['akses' => 'Hanya Ketua Pengarah boleh membuat keputusan muktamad.']);
+        }
+
+        if ($butiran->sokonganPengarah !== '1') {
+            return back()->withErrors(['urutan' => 'Permohonan perlu disokong oleh Pengarah terlebih dahulu.']);
         }
 
         $data = $request->validate([
