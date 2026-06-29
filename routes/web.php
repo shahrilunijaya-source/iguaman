@@ -8,8 +8,12 @@ use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
+use App\Http\Controllers\MahkamahRefController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PosterController;
+use App\Http\Controllers\RefKesController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\PeguamDaftarController;
@@ -99,7 +103,7 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/statistik/excel', [StatistikController::class, 'excel'])->name('statistik.excel');
     Route::get('/statistik/pdf', [StatistikController::class, 'pdf'])->name('statistik.pdf');
 
-    // Pegawai JBG registry + Audit log — supervisory roles only
+    // Selenggara (maintenance) + Pegawai JBG registry + Audit log — supervisory roles only
     Route::middleware('role:admin,pengarah,koordinator')->group(function () {
         Route::get('/pegawai', [PegawaiController::class, 'index'])->name('pegawai.index');
         Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
@@ -107,6 +111,38 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
         Route::get('/pegawai/{pegawai}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit')->whereNumber('pegawai');
         Route::put('/pegawai/{pegawai}', [PegawaiController::class, 'update'])->name('pegawai.update')->whereNumber('pegawai');
         Route::delete('/pegawai/{pegawai}', [PegawaiController::class, 'destroy'])->name('pegawai.destroy')->whereNumber('pegawai');
+
+        // e-Poster
+        Route::get('/poster', [PosterController::class, 'index'])->name('poster.index');
+        Route::get('/poster/create', [PosterController::class, 'create'])->name('poster.create');
+        Route::post('/poster', [PosterController::class, 'store'])->name('poster.store');
+        Route::get('/poster/{poster}/edit', [PosterController::class, 'edit'])->name('poster.edit')->whereNumber('poster');
+        Route::put('/poster/{poster}', [PosterController::class, 'update'])->name('poster.update')->whereNumber('poster');
+        Route::delete('/poster/{poster}', [PosterController::class, 'destroy'])->name('poster.destroy')->whereNumber('poster');
+
+        // Jenis Kes (ref_kes)
+        Route::get('/ref-kes', [RefKesController::class, 'index'])->name('ref-kes.index');
+        Route::get('/ref-kes/create', [RefKesController::class, 'create'])->name('ref-kes.create');
+        Route::post('/ref-kes', [RefKesController::class, 'store'])->name('ref-kes.store');
+        Route::get('/ref-kes/{ref_kes}/edit', [RefKesController::class, 'edit'])->name('ref-kes.edit')->whereNumber('ref_kes');
+        Route::put('/ref-kes/{ref_kes}', [RefKesController::class, 'update'])->name('ref-kes.update')->whereNumber('ref_kes');
+        Route::delete('/ref-kes/{ref_kes}', [RefKesController::class, 'destroy'])->name('ref-kes.destroy')->whereNumber('ref_kes');
+
+        // Mahkamah reference (sivil + syariah)
+        Route::get('/mahkamah-ref/{jenis}', [MahkamahRefController::class, 'index'])->name('mahkamah-ref.index')->whereIn('jenis', ['sivil', 'syariah']);
+        Route::get('/mahkamah-ref/{jenis}/create', [MahkamahRefController::class, 'create'])->name('mahkamah-ref.create')->whereIn('jenis', ['sivil', 'syariah']);
+        Route::post('/mahkamah-ref/{jenis}', [MahkamahRefController::class, 'store'])->name('mahkamah-ref.store')->whereIn('jenis', ['sivil', 'syariah']);
+        Route::get('/mahkamah-ref/{jenis}/{id}/edit', [MahkamahRefController::class, 'edit'])->name('mahkamah-ref.edit')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
+        Route::put('/mahkamah-ref/{jenis}/{id}', [MahkamahRefController::class, 'update'])->name('mahkamah-ref.update')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
+        Route::delete('/mahkamah-ref/{jenis}/{id}', [MahkamahRefController::class, 'destroy'])->name('mahkamah-ref.destroy')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
+
+        // Pengurusan Pengguna
+        Route::get('/pengguna', [UserController::class, 'index'])->name('pengguna.index');
+        Route::get('/pengguna/create', [UserController::class, 'create'])->name('pengguna.create');
+        Route::post('/pengguna', [UserController::class, 'store'])->name('pengguna.store');
+        Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])->name('pengguna.edit')->whereNumber('user');
+        Route::put('/pengguna/{user}', [UserController::class, 'update'])->name('pengguna.update')->whereNumber('user');
+        Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])->name('pengguna.destroy')->whereNumber('user');
 
         Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
     });
@@ -116,6 +152,8 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::post('/kes/{kes}/agih', [AgihanController::class, 'store'])->name('agihan.store')->whereNumber('kes');
     Route::get('/peguam-panel/beban', [AgihanController::class, 'beban'])->name('agihan.beban');
     Route::get('/peguam-panel/{peguam}', [PeguamPanelController::class, 'show'])->name('peguam-panel.show')->whereNumber('peguam');
+    Route::get('/peguam-panel/{peguam}/edit', [PeguamPanelController::class, 'edit'])->name('peguam-panel.edit')->whereNumber('peguam');
+    Route::put('/peguam-panel/{peguam}', [PeguamPanelController::class, 'update'])->name('peguam-panel.update')->whereNumber('peguam');
 
     // Permohonan peguam panel (application approval workflow)
     Route::get('/permohonan-peguam', [PermohonanPeguamController::class, 'index'])->name('permohonan-peguam.index');

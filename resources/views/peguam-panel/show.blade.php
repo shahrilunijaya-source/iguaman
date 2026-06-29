@@ -6,6 +6,9 @@
     <div class="tap-nav" style="margin: -24px -20px 18px; border-radius: 0;">
         <a href="{{ route('agihan.beban') }}" class="tap-nav__back">← Beban Tugas</a>
         <span class="tap-nav__crumb">{{ $peguam->nama_peguam }}</span>
+        <div class="tap-nav__cluster">
+            <a href="{{ route('peguam-panel.edit', $peguam) }}" class="tap-head__btn">✎ Kemaskini</a>
+        </div>
     </div>
 
     <div class="tap-title" style="border:1px solid var(--line); border-radius: var(--r-lg); margin-bottom: 18px;">

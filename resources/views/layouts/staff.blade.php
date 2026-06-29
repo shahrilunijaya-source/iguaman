@@ -67,11 +67,25 @@
 
         @if (auth()->user()->hasRole('admin', 'pengarah', 'koordinator'))
             <div class="ws-side-section">Pentadbiran</div>
+            <a href="{{ route('pengguna.index') }}" class="ws-side-top {{ request()->routeIs('pengguna.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">👤</span><span class="ws-side-label">Pengguna</span>
+            </a>
             <a href="{{ route('pegawai.index') }}" class="ws-side-top {{ request()->routeIs('pegawai.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">☰</span><span class="ws-side-label">Pegawai JBG</span>
             </a>
             <a href="{{ route('audit.index') }}" class="ws-side-top {{ request()->routeIs('audit.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">≣</span><span class="ws-side-label">Log Audit</span>
+            </a>
+
+            <div class="ws-side-section">Selenggara</div>
+            <a href="{{ route('ref-kes.index') }}" class="ws-side-top {{ request()->routeIs('ref-kes.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">▦</span><span class="ws-side-label">Jenis Kes</span>
+            </a>
+            <a href="{{ route('mahkamah-ref.index', ['jenis' => 'sivil']) }}" class="ws-side-top {{ request()->routeIs('mahkamah-ref.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">⚖</span><span class="ws-side-label">Mahkamah</span>
+            </a>
+            <a href="{{ route('poster.index') }}" class="ws-side-top {{ request()->routeIs('poster.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">🖼</span><span class="ws-side-label">e-Poster</span>
             </a>
         @endif
     </aside>
