@@ -8,14 +8,17 @@ use App\Models\ButiranPeguamPanel2;
 use App\Models\ButiranPeguamPanel3;
 use App\Models\ButiranPeguamPanel4;
 use App\Models\ButiranPeguamPanel5;
+use App\Models\ButiranPeguamPanel6;
 use App\Models\Form;
 use App\Models\LaporanKes;
 use App\Models\PeguamPanel;
+use App\Models\RefKes;
 use App\Models\RefNegeri;
 use App\Models\SejarahPeguamPanel;
 use App\Models\UploadedFile;
 use App\Support\Audit;
 use App\Support\LawyerDocuments;
+use App\Support\PengkhususanService;
 use App\Support\StatusAgihan;
 use App\Support\TarikDiriService;
 use Illuminate\Http\RedirectResponse;
@@ -210,7 +213,48 @@ class PeguamController extends Controller
             'p3' => $kp ? ButiranPeguamPanel3::where('kpBaru', $kp)->first() : null,
             'p4' => $kp ? ButiranPeguamPanel4::where('kpBaru', $kp)->first() : null,
             'p5' => $kp ? ButiranPeguamPanel5::where('kpBaru', $kp)->first() : null,
+            'pengkhususan' => $kp ? ButiranPeguamPanel6::where('kpBaru', $kp)->orderBy('category')->get() : collect(),
+            'bidang' => $this->bidangOptions(),
+            'kategoriMap' => ['JEN' => 'JENAYAH', 'SIV' => 'SIVIL', 'SYA' => 'SYARIAH', 'PG' => 'PENDAMPING GUAMAN'],
         ]);
+    }
+
+    /** Lawyer requests to add a practice area (status 4 → Pengarah → KP). */
+    public function pengkhususanAdd(Request $request, PengkhususanService $svc): RedirectResponse
+    {
+        $kp = $this->lawyerKp();
+        abort_if($kp === null, 403);
+
+        $data = $request->validate([
+            'category' => ['required', 'string', 'max:100'],
+            'checkbox_value' => ['required', 'string', 'max:500'],
+        ]);
+
+        $row = $svc->requestAdd($kp, $data['category'], $data['checkbox_value'], $request->user());
+
+        return redirect()->route('peguam.profil')->with('status',
+            $row ? 'Permohonan tambah bidang dihantar untuk kelulusan.' : 'Bidang ini sudah ada atau sedang dalam proses.');
+    }
+
+    /** Lawyer requests to drop one of their practice areas (status 3 → Pengarah → KP). */
+    public function pengkhususanDrop(Request $request, ButiranPeguamPanel6 $row, PengkhususanService $svc): RedirectResponse
+    {
+        abort_unless($row->kpBaru === $this->lawyerKp(), 403, 'Bidang ini bukan milik anda.');
+
+        $svc->requestDrop($row, $request->user());
+
+        return redirect()->route('peguam.profil')->with('status', 'Permohonan gugur bidang dihantar untuk kelulusan.');
+    }
+
+    /** Active practice-area options grouped by jenis_kes (for the add form). */
+    private function bidangOptions()
+    {
+        return RefKes::query()
+            ->whereIn('jenis_kes', ['JEN', 'SIV', 'SYA', 'PG'])
+            ->where(fn ($q) => $q->where('aktif_kes', '1')->orWhereNull('aktif_kes'))
+            ->orderBy('jenis_kes')->orderBy('deskripsi')
+            ->get(['jenis_kes', 'deskripsi'])
+            ->groupBy('jenis_kes');
     }
 
     /** Self-service profile edit form (legacy profil.php + profilUpdate.php). */

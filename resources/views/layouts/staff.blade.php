@@ -73,6 +73,10 @@
         <a href="{{ route('tarikdiri.senarai') }}" class="ws-side-top {{ request()->routeIs('tarikdiri.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">⤴</span><span class="ws-side-label">Permohonan Tarik Diri</span>
         </a>
+        @php $bidangPending = \App\Support\PengkhususanService::pendingCount(); @endphp
+        <a href="{{ route('kemaskini-bidang.index') }}" class="ws-side-top {{ request()->routeIs('kemaskini-bidang.*') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">◳</span><span class="ws-side-label">Kemaskini Bidang @if ($bidangPending > 0)<strong style="color:var(--brand,#00B8A9);">({{ $bidangPending }})</strong>@endif</span>
+        </a>
 
         @if (auth()->user()->hasRole('admin', 'pengarah', 'koordinator'))
             <div class="ws-side-section">Pentadbiran</div>

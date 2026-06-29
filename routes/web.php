@@ -5,7 +5,9 @@ use App\Http\Controllers\AgihanSpineController;
 use App\Http\Controllers\TarikDiriController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CetakanController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\KeputusanController;
+use App\Http\Controllers\KemaskiniBidangController;
 use App\Http\Controllers\KesController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
@@ -30,6 +32,11 @@ use Illuminate\Support\Facades\Route;
 
 // Public landing.
 Route::get('/', fn () => view('welcome'))->name('home');
+
+// Public AI@JBG chatbot proxy (widget on the landing page → Python microservice). Throttled.
+Route::post('/chatbot/ask', [ChatbotController::class, 'ask'])
+    ->middleware('throttle:20,1')
+    ->name('chatbot.ask');
 
 // Public lawyer panel application (no login — prospective panel lawyers). Throttled + honeypot.
 Route::get('/peguam/daftar', [PeguamDaftarController::class, 'create'])->name('peguam.daftar');
@@ -184,6 +191,11 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
     Route::post('/tarik-diri/{kes}/ppuu', [TarikDiriController::class, 'ppuu'])->name('tarikdiri.ppuu')->whereNumber('kes')->middleware('role:ppuu,koordinator,admin');
     Route::post('/tarik-diri/{kes}/pengarah', [TarikDiriController::class, 'pengarah'])->name('tarikdiri.pengarah')->whereNumber('kes')->middleware('role:pengarah,admin');
     Route::post('/tarik-diri/{kes}/kp', [TarikDiriController::class, 'kp'])->name('tarikdiri.kp')->whereNumber('kes')->middleware('role:ketua_pengarah,admin');
+
+    // Kemaskini Bidang Pengkhususan — staff review of lawyer add/drop requests.
+    Route::get('/kemaskini-bidang', [KemaskiniBidangController::class, 'index'])->name('kemaskini-bidang.index');
+    Route::post('/kemaskini-bidang/{row}/pengarah', [KemaskiniBidangController::class, 'pengarah'])->name('kemaskini-bidang.pengarah')->whereNumber('row')->middleware('role:pengarah,admin');
+    Route::post('/kemaskini-bidang/{row}/kp', [KemaskiniBidangController::class, 'kp'])->name('kemaskini-bidang.kp')->whereNumber('row')->middleware('role:ketua_pengarah,admin');
     Route::get('/peguam-panel/{peguam}', [PeguamPanelController::class, 'show'])->name('peguam-panel.show')->whereNumber('peguam');
     Route::get('/peguam-panel/{peguam}/edit', [PeguamPanelController::class, 'edit'])->name('peguam-panel.edit')->whereNumber('peguam');
     Route::put('/peguam-panel/{peguam}', [PeguamPanelController::class, 'update'])->name('peguam-panel.update')->whereNumber('peguam');
@@ -218,4 +230,8 @@ Route::middleware(['auth', 'role:peguam'])->prefix('peguam')->group(function () 
     // Tarik Diri Mewakili OYD (lawyer-initiated withdrawal from an assigned case).
     Route::get('/kes/{kes}/tarik-diri', [PeguamController::class, 'tarikDiriForm'])->name('peguam.tarikdiri.form')->whereNumber('kes');
     Route::post('/kes/{kes}/tarik-diri', [PeguamController::class, 'tarikDiriStore'])->name('peguam.tarikdiri.store')->whereNumber('kes');
+
+    // Bidang Pengkhususan add/drop requests (lawyer-initiated).
+    Route::post('/pengkhususan/tambah', [PeguamController::class, 'pengkhususanAdd'])->name('peguam.pengkhususan.add');
+    Route::post('/pengkhususan/{row}/gugur', [PeguamController::class, 'pengkhususanDrop'])->name('peguam.pengkhususan.drop')->whereNumber('row');
 });
