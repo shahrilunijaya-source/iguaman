@@ -6,6 +6,7 @@ use App\Http\Controllers\TarikDiriController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\CutiController;
 use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\KemaskiniBidangController;
 use App\Http\Controllers\KesController;
@@ -179,6 +180,16 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/mahkamah-ref/{jenis}/{id}/edit', [MahkamahRefController::class, 'edit'])->name('mahkamah-ref.edit')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
         Route::put('/mahkamah-ref/{jenis}/{id}', [MahkamahRefController::class, 'update'])->name('mahkamah-ref.update')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
         Route::delete('/mahkamah-ref/{jenis}/{id}', [MahkamahRefController::class, 'destroy'])->name('mahkamah-ref.destroy')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
+    });
+
+    // Cuti Umum (ref_cuti) — public-holiday reference master
+    Route::middleware('permission:selenggara.cuti')->group(function () {
+        Route::get('/cuti', [CutiController::class, 'index'])->name('cuti.index');
+        Route::get('/cuti/create', [CutiController::class, 'create'])->name('cuti.create');
+        Route::post('/cuti', [CutiController::class, 'store'])->name('cuti.store');
+        Route::get('/cuti/{cuti}/edit', [CutiController::class, 'edit'])->name('cuti.edit')->whereNumber('cuti');
+        Route::put('/cuti/{cuti}', [CutiController::class, 'update'])->name('cuti.update')->whereNumber('cuti');
+        Route::delete('/cuti/{cuti}', [CutiController::class, 'destroy'])->name('cuti.destroy')->whereNumber('cuti');
     });
 
     // Pengurusan Pengguna

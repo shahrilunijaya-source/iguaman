@@ -49,6 +49,7 @@ class RolePermissionSeeder extends Seeder
         'selenggara.poster'      => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.ref_kes'     => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.mahkamah_ref'=> ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'selenggara.cuti'        => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'urus.pengguna'          => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'audit.view'             => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'menu.selenggara'        => ['pengarah', 'koordinator'],

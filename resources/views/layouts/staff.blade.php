@@ -100,6 +100,9 @@
             <a href="{{ route('mahkamah-ref.index', ['jenis' => 'sivil']) }}" class="ws-side-top {{ request()->routeIs('mahkamah-ref.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">⚖</span><span class="ws-side-label">Mahkamah</span>
             </a>
+            <a href="{{ route('cuti.index') }}" class="ws-side-top {{ request()->routeIs('cuti.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">📅</span><span class="ws-side-label">Cuti Umum</span>
+            </a>
             <a href="{{ route('poster.index') }}" class="ws-side-top {{ request()->routeIs('poster.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">🖼</span><span class="ws-side-label">e-Poster</span>
             </a>

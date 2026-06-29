@@ -21,7 +21,7 @@ Legend — size: **S** ≤½day · **M** 1–2 days · **L** 3–5 days · **XL*
 - ✅ EPIC F — per-branch SLA matrix dashboards (5×, fixed 23-branch) + wide-column exports. `SlaMatrix` service (pure pivot+peratus, 5 defs perakuan40/fail-tiada60/fail-terlibat120/serahan7/khidmat60) + `StatistikSlaController` (`/statistik-sla`, index/show/pdf, all-branch aggregate bypassing CawanganScope, gated `statistik.view`). `WideExport` (verbatim 49/27/53-col lists, ref_kes JENIS KES join, derived BULAN/TAHUN, reason decode, computed STATUS PEMFAILAN, NoKP as Excel text formula `="…"`, title+filter envelope) + `LaporanPenuhController` (`/laporan/{type}/eksport-penuh`, CawanganScope = legacy HQ/branch gating). 19 tests (13 unit pure + 6 mysql smoke). Legacy bugs fixed: `*7.0` peratus typo + Putrajaya typo/missing-branch normalised to one canonical 23-list.
 
 **REMAINING:**
-- ⬜ EPIC G — Cuti Umum module (`RefCuti` model exists, no CRUD) · Lebih Masa 7-day auto-reassign cron · agihan transition emails.
+- 🟡 EPIC G — Cuti Umum module **DONE** (`CutiController` full CRUD + `/cuti` senarai/form, `CutiNegeri` 16-slot `idnegeri` encode/decode, `selenggara.cuti` perm, 11 tests; legacy raw-text `negeri` wart upgraded to proper state checkboxes). **Still remaining:** Lebih Masa 7-day auto-reassign cron · agihan transition emails.
 
 ---
 
