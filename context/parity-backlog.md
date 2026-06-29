@@ -7,6 +7,23 @@ Legend — size: **S** ≤½day · **M** 1–2 days · **L** 3–5 days · **XL*
 
 ---
 
+## Build progress (resume point)
+
+**DONE (committed, verified):**
+- ✅ EPIC C — lawyer registration (70 fields + 18 uploads) · editable profile · login provisioning · Tarik Diri withdrawal
+- ✅ EPIC A — agihan 3-tier state machine (PPUU→Pengarah→KP) · Semula re-pick · list buckets (`StatusAgihan` + `sejarah_ppuu`)
+- ✅ EPIC B — lawyer deactivation + death-redistribution
+- ✅ EPIC D — Bidang Pengkhususan add/drop 3-tier approval (`butiran_peguam_panel_6`)
+- ✅ EPIC E — exact `no_fail` generation (23 branch codes) + `check_nokp` duplicate guard
+
+→ Whole **sistem-peguam-panel** domain at parity. Services in `app/Support/` (AgihanService, TarikDiriService, PeguamLifecycleService, PengkhususanService, NoFailGenerator, StatusAgihan). All state machines unit-tested.
+
+**REMAINING:**
+- ⬜ EPIC F — per-branch SLA matrix dashboards (5×, 23-branch) + wide-column exports (49–56 cols). LARGE/data-heavy. Math already in `KpiController`. Legacy spec: `rk-statistik` + `rk-export` rows below + legacy `cetakan_statistik_*` / `export_*` files.
+- ⬜ EPIC G — Cuti Umum module (`RefCuti` model exists, no CRUD) · Lebih Masa 7-day auto-reassign cron · agihan transition emails.
+
+---
+
 ## P0 — Critical (45 features). Build first.
 
 ### EPIC A — pp-agihan: 3-tier case-assignment spine `[XL]`
