@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Exports\KesExport;
 use App\Models\Form;
+use App\Models\Oyd;
+use App\Models\PeguamPanel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -45,18 +47,27 @@ class StatistikController extends Controller
     /** Shared aggregates for dashboard + PDF. */
     private function report(Request $request): array
     {
+        $base = fn () => clone $this->filtered($request);
+
         $kpi = [
-            'jumlah' => (clone $this->filtered($request))->count(),
-            'tutup' => (clone $this->filtered($request))->whereNotNull('tarikh_tutup_fail')->count(),
-            'aktif' => (clone $this->filtered($request))->whereNull('tarikh_tutup_fail')->count(),
-            'pengantaraan' => (clone $this->filtered($request))->whereNotNull('status_pengantaraan')->where('status_pengantaraan', '!=', '')->count(),
+            'jumlah' => $base()->count(),
+            'aktif' => $base()->whereNull('tarikh_tutup_fail')->count(),
+            'tutup' => $base()->whereNotNull('tarikh_tutup_fail')->count(),
+            'pengantaraan' => $base()->whereNotNull('status_pengantaraan')->where('status_pengantaraan', '!=', '')->count(),
+            'diagih' => $base()->whereNotNull('nama_pegawai_yang_dapat_kes')->where('nama_pegawai_yang_dapat_kes', '!=', '')->count(),
+            'belum_agih' => $base()->where(fn ($w) => $w->whereNull('nama_pegawai_yang_dapat_kes')->orWhere('nama_pegawai_yang_dapat_kes', ''))->count(),
+            'oyd' => Oyd::count(),
+            'peguam' => PeguamPanel::count(),
         ];
 
         return [
             'kpi' => $kpi,
             'byCawangan' => $this->groupCount($request, 'cawangan'),
             'byKategori' => $this->groupCount($request, 'kategori_kes'),
+            'byJenis' => $this->groupCount($request, 'jenis_kes'),
             'byStatus' => $this->groupCount($request, 'status'),
+            'byKeputusan' => $this->groupCount($request, 'keputusan'),
+            'byCaraSelesai' => $this->groupCount($request, 'cara_selesai'),
             'byBulan' => $this->byBulan($request),
         ];
     }
