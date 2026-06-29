@@ -10,13 +10,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'username', 'password', 'user_type', 'role', 'cawangan', 'nokp', 'id_peguam_panel', 'is_active', 'must_change_password', 'last_login_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
     // Roles (string). Staff: admin/pengarah/koordinator/pegawai (+ legacy tiers
     // ppuu/pembantu_tadbir/ketua_pengarah from peguam-panel). External: peguam.
