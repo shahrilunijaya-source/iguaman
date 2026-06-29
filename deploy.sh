@@ -5,8 +5,9 @@
 #   cd ~/domains/<domain>/public_html && bash deploy.sh
 #
 # Webhook auto-runs `git pull` + `composer install` only. This script does the rest:
-# env/key, MySQL migrate+seed, storage symlink, caches, and (if node present) front-end build.
+# env/key, MySQL migrate, storage symlink, caches, and (if node present) front-end build.
 # MySQL DB + user must be created in hPanel first; creds go in .env.
+# NOTE: real data is loaded ONCE via a separate import (see DEPLOY.md) — NOT seeded here.
 set -euo pipefail
 
 echo "==> deploy starting"
@@ -27,9 +28,9 @@ if [ ! -d vendor ]; then
   composer install --no-dev --optimize-autoloader
 fi
 
-# 4. Migrate + seed (MySQL DB must exist + creds set in .env).
+# 4. Migrate (MySQL DB must exist + creds set in .env). NO demo seed in production —
+#    real data is imported once (see DEPLOY.md "Data migration").
 php artisan migrate --force
-php artisan db:seed --force
 
 # 5. storage symlink (Hostinger php exec() disabled → artisan storage:link fails; use ln).
 if [ ! -e public/storage ]; then

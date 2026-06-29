@@ -1,58 +1,60 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# iGuaman 2in1
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Two legacy raw-PHP systems — **sistem-peguam-panel** (lawyer panel) and **sistem-rekod-kes**
+(case records) — unified into one Laravel 13 app over the shared `sistemspk` schema.
+Malaysian legal aid domain (JBG / Bantuan Guaman).
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+PHP 8.3 · Laravel 13 · MySQL 8 · Blade + vanilla JS · Vite + Tailwind 4 · plain Laravel auth (no Filament).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Local setup
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env && php artisan key:generate
+# set DB_DATABASE=iguaman_2in1 (+ creds) in .env, create the DB
+php artisan migrate
+php artisan legacy:import --source=sistemspk --fresh   # one-time: import + unify legacy data
+npm install && npm run build
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Commands
 
-## Contributing
+| Task | Command |
+|------|---------|
+| Dev server | `php artisan serve` |
+| Assets watch / build | `npm run dev` / `npm run build` |
+| Migrate | `php artisan migrate` |
+| Import legacy data | `php artisan legacy:import --source=sistemspk --fresh` |
+| Tests | `php artisan test` |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Structure
 
-## Code of Conduct
+- **Staff area** (`/system`, roles admin/pengarah/koordinator/pegawai): dashboard, Senarai Kes,
+  permohonan CRUD, pengantaraan, kes mahkamah, statistik + Excel/PDF, agihan peguam, beban tugas,
+  permohonan peguam approval.
+- **Lawyer area** (`/peguam`, role peguam): dashboard, Kes Saya, Profil.
+- One login over a unified `users` table; `EnsureRole` gates areas; `ForcePasswordChange` pins
+  migrated accounts to a password reset.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Docs
 
-## Security Vulnerabilities
+- `context/2in1-merge-plan.md` — merge analysis + phased plan
+- `context/schema-design.md` — unified data model (23 legacy tables → preserved + unified users)
+- `context/domain.md` — domain glossary
+- `context/security.md` — security posture + pre-prod checklist
+- `decisions/log.md` — decision log
+- `DEPLOY.md` — Hostinger deploy
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Tests
 
-## License
+`php artisan test` — feature tests run against the live `iguaman_2in1` MySQL DB (the MySQL-specific
+legacy baseline migration can't run on sqlite) and self-clean their rows.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Security
+
+Legacy passwords were plaintext → rehashed + every migrated account flagged `must_change_password`.
+**Before go-live:** rotate the email password leaked in legacy `sistem-peguam-panel/config.php`.
+See `context/security.md`.
