@@ -47,6 +47,9 @@
         <a href="{{ route('oyd.index') }}" class="ws-side-top {{ request()->routeIs('oyd.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">☺</span><span class="ws-side-label">OYD</span>
         </a>
+        <a href="{{ route('kes.tutup') }}" class="ws-side-top {{ request()->routeIs('kes.tutup') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">🔒</span><span class="ws-side-label">Fail Tutup</span>
+        </a>
         <a href="{{ route('statistik.index') }}" class="ws-side-top {{ request()->routeIs('statistik.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▦</span><span class="ws-side-label">Statistik</span>
         </a>

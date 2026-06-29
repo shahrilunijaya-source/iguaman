@@ -17,6 +17,7 @@ class PengantaraanRequest extends FormRequest
         return [
             'status_pengantaraan' => ['nullable', 'string', 'max:10'],
             'pengantaraan_kategori_kes' => ['nullable', 'string', 'max:255'],
+            'nama_pegawai' => ['nullable', 'string', 'max:50'], // pegawai pengantara (mediator)
             'tarikh_penugasan' => ['nullable', 'date'],
             'kaedah_sidang' => ['nullable', 'string', 'max:15'],
             'lokasi_pihak_pertama' => ['nullable', 'string', 'max:50'],

@@ -63,7 +63,45 @@ class KesController extends Controller
 
         $kes = Form::create($data);
 
-        return redirect()->route('kes.show', $kes)->with('status', 'Permohonan baharu direkodkan.');
+        // Auto-generate file number if the officer left it blank (legacy generated no_fail at registration).
+        if (blank($kes->no_fail)) {
+            $kes->update(['no_fail' => $this->genNoFail($kes)]);
+        }
+
+        return redirect()->route('kes.show', $kes)->with('status', 'Permohonan baharu direkodkan. No. Fail: '.$kes->no_fail);
+    }
+
+    /** Closed-files list (Senarai Fail Tutup). */
+    public function tutup(Request $request): View
+    {
+        $filters = $request->only(['cawangan', 'q']);
+
+        $kes = Form::query()
+            ->whereNotNull('tarikh_tutup_fail')
+            ->when($filters['cawangan'] ?? null, fn ($w, $v) => $w->where('cawangan', $v))
+            ->when($filters['q'] ?? null, function ($w, $v) {
+                $w->where(fn ($s) => $s->where('nama', 'like', "%{$v}%")->orWhere('nokp', 'like', "%{$v}%")->orWhere('no_fail', 'like', "%{$v}%"));
+            })
+            ->orderByDesc('tarikh_tutup_fail')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('kes.index', [
+            'kes' => $kes,
+            'filters' => $filters,
+            'cawanganList' => $this->cawanganList(),
+            'statusList' => collect(),
+            'kategoriList' => $this->kategoriList(),
+            'tutup' => true,
+        ]);
+    }
+
+    /** Generate a file number when none supplied: JBG/{cawangan}/{id}/{mmYY}. */
+    private function genNoFail(Form $kes): string
+    {
+        $abbrev = strtoupper(substr(preg_replace('/[^A-Za-z]/', '', (string) $kes->cawangan) ?: 'JBG', 0, 3)) ?: 'JBG';
+
+        return sprintf('JBG/%s/%04d/%s', $abbrev, $kes->id, now()->format('my'));
     }
 
     public function edit(Form $kes): View

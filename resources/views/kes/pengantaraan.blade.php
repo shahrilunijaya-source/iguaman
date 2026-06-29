@@ -42,6 +42,10 @@
                             <input class="wiz-field__input" name="pengantaraan_kategori_kes" value="{{ $val('pengantaraan_kategori_kes') }}">
                         </div>
                         <div class="wiz-field">
+                            <label class="wiz-field__label">Pegawai Pengantara</label>
+                            <input class="wiz-field__input" name="nama_pegawai" value="{{ $val('nama_pegawai') }}">
+                        </div>
+                        <div class="wiz-field">
                             <label class="wiz-field__label">Tarikh Penugasan</label>
                             <input type="date" class="wiz-field__input" name="tarikh_penugasan" value="{{ $val('tarikh_penugasan', 'date') }}">
                         </div>

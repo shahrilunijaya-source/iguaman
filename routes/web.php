@@ -32,7 +32,7 @@ Route::post('/peguam/daftar', [PeguamDaftarController::class, 'store'])
 // ---- Guest: login + password reset (plain Laravel, no Filament) ----
 Route::middleware('guest')->group(function () {
     Route::get('/system/login', [SystemAuthController::class, 'showLogin'])->name('system.login');
-    Route::post('/system/login', [SystemAuthController::class, 'attempt'])->name('system.login.attempt');
+    Route::post('/system/login', [SystemAuthController::class, 'attempt'])->middleware('throttle:10,1')->name('system.login.attempt');
 
     Route::get('/password/forgot', [PasswordResetController::class, 'request'])->name('password.request');
     Route::post('/password/forgot', [PasswordResetController::class, 'email'])->name('password.email');
@@ -55,6 +55,7 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
 
     // Rekod kes (Case backbone + permohonan CRUD)
     Route::get('/kes', [KesController::class, 'index'])->name('kes.index');
+    Route::get('/fail-tutup', [KesController::class, 'tutup'])->name('kes.tutup');
     Route::get('/kes/create', [KesController::class, 'create'])->name('kes.create');
     Route::post('/kes', [KesController::class, 'store'])->name('kes.store');
     Route::get('/kes/{kes}/edit', [KesController::class, 'edit'])->name('kes.edit')->whereNumber('kes');
