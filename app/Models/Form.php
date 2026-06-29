@@ -21,6 +21,7 @@ class Form extends Model
         'tarikh_permohonan' => 'date',
         'tarikh_khidmat_nasihat' => 'date',
         'tarikh_penugasan' => 'date',
+        'tarikh_penugasan_peguam_panel' => 'date',
         'tarikh_sidang' => 'date',
         'tarikh_selesai' => 'date',
         'tarikh_tutup_fail' => 'date',

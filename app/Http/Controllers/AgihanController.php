@@ -53,14 +53,14 @@ class AgihanController extends Controller
             'nama_pegawai_yang_dapat_kes' => $peguam->nama_peguam,
             'agih_kepada' => $peguam->nama_peguam,
             'tarikh_penugasan_peguam_panel' => now()->toDateString(),
-            'status_agihan' => 'Diagih',
+            'status_agihan' => 'Ditawarkan', // offered — lawyer accepts/rejects in their area
         ]);
 
-        $verb = $isReassign ? 'diagih semula' : 'diagih';
+        $verb = $isReassign ? 'ditawarkan semula' : 'ditawarkan';
 
         Audit::log('forms', $kes->id, Audit::UPDATE, "Kes {$verb} kepada {$peguam->nama_peguam}.");
 
-        return redirect()->route('kes.show', $kes)->with('status', "Kes {$verb} kepada {$peguam->nama_peguam}.");
+        return redirect()->route('kes.show', $kes)->with('status', "Kes {$verb} kepada {$peguam->nama_peguam}. Menunggu peguam menerima.");
     }
 
     public function beban(): View

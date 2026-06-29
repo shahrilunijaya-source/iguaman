@@ -173,5 +173,12 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
 Route::middleware(['auth', 'role:peguam'])->prefix('peguam')->group(function () {
     Route::get('/', [PeguamController::class, 'dashboard'])->name('peguam.dashboard');
     Route::get('/kes', [PeguamController::class, 'kes'])->name('peguam.kes');
+    Route::get('/tawaran', [PeguamController::class, 'tawaran'])->name('peguam.tawaran');
     Route::get('/profil', [PeguamController::class, 'profil'])->name('peguam.profil');
+
+    // Offer accept/reject (tawaran) + lawyer-side case reporting.
+    Route::post('/kes/{kes}/terima', [PeguamController::class, 'terima'])->name('peguam.terima')->whereNumber('kes');
+    Route::post('/kes/{kes}/tolak', [PeguamController::class, 'tolak'])->name('peguam.tolak')->whereNumber('kes');
+    Route::get('/kes/{kes}', [PeguamController::class, 'kesShow'])->name('peguam.kes.show')->whereNumber('kes');
+    Route::post('/kes/{kes}/laporan', [PeguamController::class, 'storeLaporan'])->name('peguam.laporan')->whereNumber('kes');
 });

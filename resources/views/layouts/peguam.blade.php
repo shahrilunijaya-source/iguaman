@@ -19,6 +19,7 @@
         <div class="ws-topbar__cluster">
             <a href="{{ route('peguam.dashboard') }}" class="ws-topbar__btn {{ request()->routeIs('peguam.dashboard') ? '' : '' }}">Dashboard</a>
             <a href="{{ route('peguam.kes') }}" class="ws-topbar__btn">Kes Saya</a>
+            <a href="{{ route('peguam.tawaran') }}" class="ws-topbar__btn">Tawaran</a>
             <a href="{{ route('peguam.profil') }}" class="ws-topbar__btn">Profil</a>
             <span class="ws-topbar__sep"></span>
             <div class="ws-topbar__user">
