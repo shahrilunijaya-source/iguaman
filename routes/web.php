@@ -6,6 +6,7 @@ use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
+use App\Http\Controllers\PeguamDaftarController;
 use App\Http\Controllers\PermohonanPeguamController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\SystemAuthController;
@@ -14,6 +15,12 @@ use Illuminate\Support\Facades\Route;
 
 // Public landing.
 Route::get('/', fn () => view('welcome'))->name('home');
+
+// Public lawyer panel application (no login — prospective panel lawyers). Throttled + honeypot.
+Route::get('/peguam/daftar', [PeguamDaftarController::class, 'create'])->name('peguam.daftar');
+Route::post('/peguam/daftar', [PeguamDaftarController::class, 'store'])
+    ->middleware('throttle:6,1')
+    ->name('peguam.daftar.store');
 
 // ---- Guest: login + password reset (plain Laravel, no Filament) ----
 Route::middleware('guest')->group(function () {

@@ -116,6 +116,10 @@
                     </button>
                 </form>
 
+                <p style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--mute);">
+                    Peguam baharu? <a href="{{ route('peguam.daftar') }}">Daftar sebagai Peguam Panel</a>
+                </p>
+
                 <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 12px;">
                     <button type="button" class="demo-trigger" id="demoTrigger">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
