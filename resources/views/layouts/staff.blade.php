@@ -50,6 +50,9 @@
         <a href="{{ route('statistik.index') }}" class="ws-side-top {{ request()->routeIs('statistik.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▦</span><span class="ws-side-label">Statistik</span>
         </a>
+        <a href="{{ route('kpi.index') }}" class="ws-side-top {{ request()->routeIs('kpi.*') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">◔</span><span class="ws-side-label">KPI</span>
+        </a>
 
         <div class="ws-side-section">Panel Peguam</div>
         <a href="{{ route('permohonan-peguam.index') }}" class="ws-side-top {{ request()->routeIs('permohonan-peguam.*') ? 'is-active' : '' }}">

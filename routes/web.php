@@ -4,6 +4,7 @@ use App\Http\Controllers\AgihanController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\KesController;
+use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
@@ -88,6 +89,9 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/oyd/{oyd}/edit', [OydController::class, 'edit'])->name('oyd.edit')->whereNumber('oyd');
     Route::put('/oyd/{oyd}', [OydController::class, 'update'])->name('oyd.update')->whereNumber('oyd');
     Route::get('/oyd/{oyd}', [OydController::class, 'show'])->name('oyd.show')->whereNumber('oyd');
+
+    // KPI dashboard (yearly SLA prestasi)
+    Route::get('/kpi', [KpiController::class, 'index'])->name('kpi.index');
 
     // Statistik + exports
     Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik.index');
