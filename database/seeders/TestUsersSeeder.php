@@ -32,6 +32,8 @@ class TestUsersSeeder extends Seeder
                 array_merge($u, [
                     'password' => Hash::make('password'),
                     'is_active' => true,
+                    // Demo/test accounts skip the legacy force-reset gate.
+                    'must_change_password' => false,
                 ])
             );
         }

@@ -19,7 +19,7 @@ class DemoUserSeeder extends Seeder
         foreach ($users as $u) {
             User::updateOrCreate(
                 ['email' => $u['email']],
-                ['name' => $u['name'], 'password' => Hash::make('password')]
+                ['name' => $u['name'], 'password' => Hash::make('password'), 'must_change_password' => false]
             );
         }
     }
