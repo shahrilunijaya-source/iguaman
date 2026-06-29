@@ -12,6 +12,7 @@ use App\Http\Controllers\KesController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\LaporanPenuhController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\PeguamDaftarController;
 use App\Http\Controllers\PeguamPanelController;
 use App\Http\Controllers\PermohonanPeguamController;
 use App\Http\Controllers\StatistikController;
+use App\Http\Controllers\StatistikSlaController;
 use App\Http\Controllers\SystemAuthController;
 use App\Http\Controllers\SystemController;
 use Illuminate\Support\Facades\Route;
@@ -65,7 +67,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // ---- Staff area: rekod-kes + panel admin (admin / pengarah / koordinator / pegawai) ----
-Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembantu_tadbir,ketua_pengarah'])->group(function () {
+Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/system', [SystemController::class, 'utama'])->name('system.utama');
 
     // Rekod kes (Case backbone + permohonan CRUD)
@@ -120,6 +122,11 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/{type}/csv', [LaporanController::class, 'csv'])->name('laporan.csv')->whereIn('type', $laporanTypes);
     Route::get('/laporan/{type}/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf')->whereIn('type', $laporanTypes);
+    // Wide-column CSV exports (EPIC F — legacy export_*.php): full legacy column parity.
+    Route::get('/laporan/{type}/eksport-penuh', [LaporanPenuhController::class, 'csv'])
+        ->middleware('permission:laporan.view')
+        ->whereIn('type', ['permohonan', 'pendaftaran-fail', 'status-fail'])
+        ->name('laporan.penuh');
     Route::get('/laporan/{type}', [LaporanController::class, 'show'])->name('laporan.show')->whereIn('type', $laporanTypes);
 
     // Statistik + exports
@@ -127,47 +134,65 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
     Route::get('/statistik/excel', [StatistikController::class, 'excel'])->name('statistik.excel');
     Route::get('/statistik/pdf', [StatistikController::class, 'pdf'])->name('statistik.pdf');
 
-    // Selenggara (maintenance) + Pegawai JBG registry + Audit log — supervisory roles only
-    Route::middleware('role:admin,pengarah,koordinator,ketua_pengarah')->group(function () {
+    // Statistik SLA — per-branch achievement matrices (EPIC F, all-branch aggregate).
+    Route::middleware('permission:statistik.view')->group(function () {
+        Route::get('/statistik-sla', [StatistikSlaController::class, 'index'])->name('statistik-sla.index');
+        Route::get('/statistik-sla/{key}', [StatistikSlaController::class, 'show'])->name('statistik-sla.show');
+        Route::get('/statistik-sla/{key}/pdf', [StatistikSlaController::class, 'pdf'])->name('statistik-sla.pdf');
+    });
+
+    // Selenggara (maintenance) + Pegawai JBG registry + Audit log — gated per-resource permission
+    Route::middleware('permission:selenggara.pegawai')->group(function () {
         Route::get('/pegawai', [PegawaiController::class, 'index'])->name('pegawai.index');
         Route::get('/pegawai/create', [PegawaiController::class, 'create'])->name('pegawai.create');
         Route::post('/pegawai', [PegawaiController::class, 'store'])->name('pegawai.store');
         Route::get('/pegawai/{pegawai}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit')->whereNumber('pegawai');
         Route::put('/pegawai/{pegawai}', [PegawaiController::class, 'update'])->name('pegawai.update')->whereNumber('pegawai');
         Route::delete('/pegawai/{pegawai}', [PegawaiController::class, 'destroy'])->name('pegawai.destroy')->whereNumber('pegawai');
+    });
 
-        // e-Poster
+    // e-Poster
+    Route::middleware('permission:selenggara.poster')->group(function () {
         Route::get('/poster', [PosterController::class, 'index'])->name('poster.index');
         Route::get('/poster/create', [PosterController::class, 'create'])->name('poster.create');
         Route::post('/poster', [PosterController::class, 'store'])->name('poster.store');
         Route::get('/poster/{poster}/edit', [PosterController::class, 'edit'])->name('poster.edit')->whereNumber('poster');
         Route::put('/poster/{poster}', [PosterController::class, 'update'])->name('poster.update')->whereNumber('poster');
         Route::delete('/poster/{poster}', [PosterController::class, 'destroy'])->name('poster.destroy')->whereNumber('poster');
+    });
 
-        // Jenis Kes (ref_kes)
+    // Jenis Kes (ref_kes)
+    Route::middleware('permission:selenggara.ref_kes')->group(function () {
         Route::get('/ref-kes', [RefKesController::class, 'index'])->name('ref-kes.index');
         Route::get('/ref-kes/create', [RefKesController::class, 'create'])->name('ref-kes.create');
         Route::post('/ref-kes', [RefKesController::class, 'store'])->name('ref-kes.store');
         Route::get('/ref-kes/{ref_kes}/edit', [RefKesController::class, 'edit'])->name('ref-kes.edit')->whereNumber('ref_kes');
         Route::put('/ref-kes/{ref_kes}', [RefKesController::class, 'update'])->name('ref-kes.update')->whereNumber('ref_kes');
         Route::delete('/ref-kes/{ref_kes}', [RefKesController::class, 'destroy'])->name('ref-kes.destroy')->whereNumber('ref_kes');
+    });
 
-        // Mahkamah reference (sivil + syariah)
+    // Mahkamah reference (sivil + syariah)
+    Route::middleware('permission:selenggara.mahkamah_ref')->group(function () {
         Route::get('/mahkamah-ref/{jenis}', [MahkamahRefController::class, 'index'])->name('mahkamah-ref.index')->whereIn('jenis', ['sivil', 'syariah']);
         Route::get('/mahkamah-ref/{jenis}/create', [MahkamahRefController::class, 'create'])->name('mahkamah-ref.create')->whereIn('jenis', ['sivil', 'syariah']);
         Route::post('/mahkamah-ref/{jenis}', [MahkamahRefController::class, 'store'])->name('mahkamah-ref.store')->whereIn('jenis', ['sivil', 'syariah']);
         Route::get('/mahkamah-ref/{jenis}/{id}/edit', [MahkamahRefController::class, 'edit'])->name('mahkamah-ref.edit')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
         Route::put('/mahkamah-ref/{jenis}/{id}', [MahkamahRefController::class, 'update'])->name('mahkamah-ref.update')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
         Route::delete('/mahkamah-ref/{jenis}/{id}', [MahkamahRefController::class, 'destroy'])->name('mahkamah-ref.destroy')->whereIn('jenis', ['sivil', 'syariah'])->whereNumber('id');
+    });
 
-        // Pengurusan Pengguna
+    // Pengurusan Pengguna
+    Route::middleware('permission:urus.pengguna')->group(function () {
         Route::get('/pengguna', [UserController::class, 'index'])->name('pengguna.index');
         Route::get('/pengguna/create', [UserController::class, 'create'])->name('pengguna.create');
         Route::post('/pengguna', [UserController::class, 'store'])->name('pengguna.store');
         Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])->name('pengguna.edit')->whereNumber('user');
         Route::put('/pengguna/{user}', [UserController::class, 'update'])->name('pengguna.update')->whereNumber('user');
         Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])->name('pengguna.destroy')->whereNumber('user');
+    });
 
+    // Audit log
+    Route::middleware('permission:audit.view')->group(function () {
         Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
     });
 
@@ -179,11 +204,11 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
     // 3-tier assignment spine (PPUU -> Pengarah -> Ketua Pengarah). Role-gated per action.
     Route::get('/agihan/senarai/{bucket}', [AgihanSpineController::class, 'senarai'])->name('agihan.senarai')->whereIn('bucket', ['baru', 'semasa', 'semula']);
     Route::get('/agihan/{kes}/maklumat', [AgihanSpineController::class, 'show'])->name('agihan.maklumat')->whereNumber('kes');
-    Route::post('/agihan/{kes}/pengarah-terima', [AgihanSpineController::class, 'pengarahTerima'])->name('agihan.pengarah.terima')->whereNumber('kes')->middleware('role:pengarah,admin');
-    Route::post('/agihan/{kes}/pengarah-tolak', [AgihanSpineController::class, 'pengarahTolak'])->name('agihan.pengarah.tolak')->whereNumber('kes')->middleware('role:pengarah,admin');
-    Route::post('/agihan/{kes}/ppuu-pilih', [AgihanSpineController::class, 'ppuuPilih'])->name('agihan.ppuu.pilih')->whereNumber('kes')->middleware('role:ppuu,koordinator,admin');
-    Route::post('/agihan/{kes}/pengarah-keputusan', [AgihanSpineController::class, 'pengarahKeputusan'])->name('agihan.pengarah.keputusan')->whereNumber('kes')->middleware('role:pengarah,admin');
-    Route::post('/agihan/{kes}/kp-keputusan', [AgihanSpineController::class, 'kpKeputusan'])->name('agihan.kp.keputusan')->whereNumber('kes')->middleware('role:ketua_pengarah,admin');
+    Route::post('/agihan/{kes}/pengarah-terima', [AgihanSpineController::class, 'pengarahTerima'])->name('agihan.pengarah.terima')->whereNumber('kes')->middleware('permission:agihan.pengarah');
+    Route::post('/agihan/{kes}/pengarah-tolak', [AgihanSpineController::class, 'pengarahTolak'])->name('agihan.pengarah.tolak')->whereNumber('kes')->middleware('permission:agihan.pengarah');
+    Route::post('/agihan/{kes}/ppuu-pilih', [AgihanSpineController::class, 'ppuuPilih'])->name('agihan.ppuu.pilih')->whereNumber('kes')->middleware('permission:agihan.ppuu');
+    Route::post('/agihan/{kes}/pengarah-keputusan', [AgihanSpineController::class, 'pengarahKeputusan'])->name('agihan.pengarah.keputusan')->whereNumber('kes')->middleware('permission:agihan.pengarah');
+    Route::post('/agihan/{kes}/kp-keputusan', [AgihanSpineController::class, 'kpKeputusan'])->name('agihan.kp.keputusan')->whereNumber('kes')->middleware('permission:agihan.kp');
 
     // Tarik Diri Mewakili OYD — staff review queue (PPUU -> Pengarah -> Ketua Pengarah).
     Route::get('/tarik-diri/senarai', [TarikDiriController::class, 'senarai'])->name('tarikdiri.senarai');
@@ -213,7 +238,7 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----
-Route::middleware(['auth', 'role:peguam'])->prefix('peguam')->group(function () {
+Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(function () {
     Route::get('/', [PeguamController::class, 'dashboard'])->name('peguam.dashboard');
     Route::get('/kes', [PeguamController::class, 'kes'])->name('peguam.kes');
     Route::get('/tawaran', [PeguamController::class, 'tawaran'])->name('peguam.tawaran');

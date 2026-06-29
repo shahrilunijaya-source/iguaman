@@ -16,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('system.login'));
 
         $middleware->alias([
-            'role' => \App\Http\Middleware\EnsureRole::class,
+            'role'               => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission'         => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
 
         // Security headers on every web response; force migrated users to reset their password.
@@ -29,4 +31,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        $exceptions->render(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json(['message' => 'Forbidden'], 403);
+            }
+            $user = $request->user();
+
+            return $user
+                ? redirect()->route($user->homeRoute())
+                : redirect()->route('system.login');
+        });
     })->create();

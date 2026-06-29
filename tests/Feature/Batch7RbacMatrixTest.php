@@ -62,7 +62,11 @@ class Batch7RbacMatrixTest extends TestCase
             'pegawai.index'   => ['pegawai.index',['admin','pengarah','koordinator','ketua_pengarah']],
             'pengguna.index'  => ['pengguna.index',['admin','pengarah','koordinator','ketua_pengarah']],
             'audit.index'     => ['audit.index',  ['admin','pengarah','koordinator','ketua_pengarah']],
-            'peguam.dashboard'=> ['peguam.dashboard',['peguam']],
+            // admin is super-admin (Gate::before) so it reaches every area, the lawyer
+            // area included — consistent with every staff row above. Under the legacy
+            // role:peguam gate admin was excluded; permission:lawyer.area + Gate::before
+            // now (correctly) lets admin through.
+            'peguam.dashboard'=> ['peguam.dashboard',['peguam','admin']],
         ];
     }
 

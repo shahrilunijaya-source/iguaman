@@ -17,7 +17,9 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles {
+        HasRoles::hasRole as private hasRoleViaTrait;
+    }
 
     // Roles (string). Staff: admin/pengarah/koordinator/pegawai (+ legacy tiers
     // ppuu/pembantu_tadbir/ketua_pengarah from peguam-panel). External: peguam.
@@ -55,9 +57,22 @@ class User extends Authenticatable
         return $this->user_type === self::TYPE_LAWYER;
     }
 
-    public function hasRole(string ...$roles): bool
+    /**
+     * Role check. Coexists with Spatie's HasRoles trait during the batch-7 migration:
+     *  - Variadic legacy callers, e.g. hasRole('pengarah','admin'), keep the
+     *    pre-RBAC string-column behavior (in_array on $this->role).
+     *  - Spatie's permission resolution (hasPermissionViaRole) calls this with a
+     *    single non-string arg (Collection|array|int|Role|BackedEnum); those are
+     *    delegated to the trait so `permission:` middleware can resolve role-granted
+     *    permissions. Removed entirely in Task 11 (trait becomes authoritative).
+     */
+    public function hasRole($role, ?string $guard = null): bool
     {
-        return in_array($this->role, $roles, true);
+        if (is_string($role)) {
+            return in_array($this->role, func_get_args(), true);
+        }
+
+        return $this->hasRoleViaTrait($role, $guard);
     }
 
     /** Staff roles that share the internal (rekod-kes + panel admin) area. */
