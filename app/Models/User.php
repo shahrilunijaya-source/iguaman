@@ -53,6 +53,15 @@ class User extends Authenticatable
         return in_array($this->role, $roles, true);
     }
 
+    /** Staff roles that share the internal (rekod-kes + panel admin) area. */
+    public const STAFF_ROLES = [self::ROLE_ADMIN, self::ROLE_PENGARAH, self::ROLE_KOORDINATOR, self::ROLE_PEGAWAI];
+
+    /** Landing route name for this user's area. */
+    public function homeRoute(): string
+    {
+        return $this->isLawyer() ? 'peguam.dashboard' : 'system.utama';
+    }
+
     /** Lawyer login -> panel-lawyer master record (links via IC). Tentative key; confirm at ETL. */
     public function lawyerProfile(): BelongsTo
     {

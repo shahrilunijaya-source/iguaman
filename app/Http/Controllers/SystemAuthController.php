@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 // Plain Laravel auth — NO Filament/Breeze/Jetstream. Login view = resources/views/system/login.blade.php.
+// Unified users table (staff + lawyers); landing area decided by role/user_type.
 class SystemAuthController extends Controller
 {
     public function showLogin(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect()->route('system.utama');
+            return redirect()->route(Auth::user()->homeRoute());
         }
 
         return view('system.login');
@@ -28,15 +29,19 @@ class SystemAuthController extends Controller
 
         $remember = $request->boolean('remember');
 
-        if (! Auth::attempt(['email' => $data['email'], 'password' => $data['password']], $remember)) {
+        // Only active accounts may sign in.
+        if (! Auth::attempt(['email' => $data['email'], 'password' => $data['password'], 'is_active' => true], $remember)) {
             return back()
                 ->withInput($request->only('email', 'remember'))
-                ->withErrors(['email' => 'Emel atau kata laluan tidak sah.']);
+                ->withErrors(['email' => 'Emel atau kata laluan tidak sah, atau akaun tidak aktif.']);
         }
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('system.utama'));
+        $user = Auth::user();
+        $user->forceFill(['last_login_at' => now()])->saveQuietly();
+
+        return redirect()->intended(route($user->homeRoute()));
     }
 
     public function logout(Request $request): RedirectResponse
