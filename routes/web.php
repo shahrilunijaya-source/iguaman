@@ -12,6 +12,7 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\PeguamDaftarController;
+use App\Http\Controllers\PeguamPanelController;
 use App\Http\Controllers\PermohonanPeguamController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\SystemAuthController;
@@ -109,6 +110,7 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/kes/{kes}/agih', [AgihanController::class, 'form'])->name('agihan.form')->whereNumber('kes');
     Route::post('/kes/{kes}/agih', [AgihanController::class, 'store'])->name('agihan.store')->whereNumber('kes');
     Route::get('/peguam-panel/beban', [AgihanController::class, 'beban'])->name('agihan.beban');
+    Route::get('/peguam-panel/{peguam}', [PeguamPanelController::class, 'show'])->name('peguam-panel.show')->whereNumber('peguam');
 
     // Permohonan peguam panel (application approval workflow)
     Route::get('/permohonan-peguam', [PermohonanPeguamController::class, 'index'])->name('permohonan-peguam.index');

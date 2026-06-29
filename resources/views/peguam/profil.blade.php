@@ -33,4 +33,9 @@
             @endif
         </div>
     </div>
+
+    <div style="margin-top:18px;">
+        <div class="tap-card__eyebrow" style="margin-bottom:12px;">Profil Terperinci</div>
+        @include('peguam-panel._butiran', ['b' => $b])
+    </div>
 @endsection

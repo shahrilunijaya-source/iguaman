@@ -35,9 +35,12 @@ class PeguamController extends Controller
 
     public function profil(): View
     {
+        $profile = $this->profile();
+
         return view('peguam.profil', [
-            'profile' => $this->profile(),
+            'profile' => $profile,
             'user' => Auth::user(),
+            'b' => $profile?->butiran,
         ]);
     }
 

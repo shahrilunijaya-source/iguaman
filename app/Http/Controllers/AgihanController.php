@@ -73,6 +73,7 @@ class AgihanController extends Controller
             ->pluck('n', 'nama_pegawai_yang_dapat_kes');
 
         $lawyers = PeguamPanel::orderBy('nama_peguam')->get()->map(fn ($p) => [
+            'id' => $p->id,
             'nama' => $p->nama_peguam,
             'firma' => $p->nama_firma,
             'kes' => (int) ($counts[$p->nama_peguam] ?? 0),

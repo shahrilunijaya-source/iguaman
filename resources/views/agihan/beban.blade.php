@@ -23,11 +23,11 @@
             <div class="tap-table__th">Bil. Kes</div>
         </div>
         @forelse ($lawyers as $l)
-            <div class="tap-row" style="grid-template-columns: 2fr 2fr 120px;">
+            <a href="{{ route('peguam-panel.show', $l['id']) }}" class="tap-row" style="grid-template-columns: 2fr 2fr 120px;">
                 <div class="tap-row__title">{{ $l['nama'] }}</div>
                 <div class="tap-row__tujuan">{{ $l['firma'] ?: '—' }}</div>
                 <div><span class="score">{{ number_format($l['kes']) }}</span></div>
-            </div>
+            </a>
         @empty
             <div class="dash-empty" style="border:0">
                 <div class="dash-empty__title">Tiada peguam panel<span class="dot"></span></div>
