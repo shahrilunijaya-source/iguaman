@@ -19,15 +19,18 @@ class TestUsersSeeder extends Seeder
         $panelKp = PeguamPanel::where('kp_peguam', '!=', '')->whereNotNull('kp_peguam')->value('kp_peguam');
 
         $users = [
-            ['email' => 'admin@test.local',       'name' => 'Test Admin',       'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_ADMIN],
-            ['email' => 'pengarah@test.local',    'name' => 'Test Pengarah',    'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_PENGARAH],
-            ['email' => 'koordinator@test.local', 'name' => 'Test Koordinator', 'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_KOORDINATOR],
-            ['email' => 'pegawai@test.local',     'name' => 'Test Pegawai',     'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_PEGAWAI],
-            ['email' => 'peguam@test.local',      'name' => 'Test Peguam',      'user_type' => User::TYPE_LAWYER, 'role' => User::ROLE_PEGUAM, 'id_peguam_panel' => $panelKp],
+            ['email' => 'admin@test.local',          'name' => 'Test Admin',          'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_ADMIN],
+            ['email' => 'pengarah@test.local',       'name' => 'Test Pengarah',       'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_PENGARAH],
+            ['email' => 'koordinator@test.local',    'name' => 'Test Koordinator',    'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_KOORDINATOR],
+            ['email' => 'pegawai@test.local',        'name' => 'Test Pegawai',        'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_PEGAWAI],
+            ['email' => 'ppuu@test.local',           'name' => 'Test PPUU',           'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_PPUU],
+            ['email' => 'pembantu@test.local',       'name' => 'Test Pembantu',       'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_PEMBANTU_TADBIR],
+            ['email' => 'kp@test.local',             'name' => 'Test Ketua Pengarah', 'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_KETUA_PENGARAH],
+            ['email' => 'peguam@test.local',         'name' => 'Test Peguam',         'user_type' => User::TYPE_LAWYER, 'role' => User::ROLE_PEGUAM, 'id_peguam_panel' => $panelKp],
         ];
 
         foreach ($users as $u) {
-            User::updateOrCreate(
+            $user = User::updateOrCreate(
                 ['email' => $u['email']],
                 array_merge($u, [
                     'password' => Hash::make('password'),
@@ -36,6 +39,7 @@ class TestUsersSeeder extends Seeder
                     'must_change_password' => false,
                 ])
             );
+            $user->syncRoles([$u['role']]);
         }
     }
 }
