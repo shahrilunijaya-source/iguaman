@@ -23,4 +23,10 @@ class UploadedFile extends Model
     {
         return $this->belongsTo(Form::class, 'id_kes', 'id');
     }
+
+    /** Owning lawyer (registration/profile documents, keyed by IC). */
+    public function peguam(): BelongsTo
+    {
+        return $this->belongsTo(ButiranPeguamPanel2::class, 'kpBaru', 'kpBaru');
+    }
 }
