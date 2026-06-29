@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KesController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\SystemAuthController;
@@ -28,6 +29,10 @@ Route::middleware('auth')->group(function () {
 // ---- Staff area: rekod-kes + panel admin (admin / pengarah / koordinator / pegawai) ----
 Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(function () {
     Route::get('/system', [SystemController::class, 'utama'])->name('system.utama');
+
+    // Rekod kes (Case backbone)
+    Route::get('/kes', [KesController::class, 'index'])->name('kes.index');
+    Route::get('/kes/{kes}', [KesController::class, 'show'])->name('kes.show');
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----
