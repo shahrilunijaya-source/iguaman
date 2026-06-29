@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgihanController;
 use App\Http\Controllers\KesController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
@@ -56,9 +57,16 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik.index');
     Route::get('/statistik/excel', [StatistikController::class, 'excel'])->name('statistik.excel');
     Route::get('/statistik/pdf', [StatistikController::class, 'pdf'])->name('statistik.pdf');
+
+    // Agihan peguam (assignment) + workload
+    Route::get('/kes/{kes}/agih', [AgihanController::class, 'form'])->name('agihan.form')->whereNumber('kes');
+    Route::post('/kes/{kes}/agih', [AgihanController::class, 'store'])->name('agihan.store')->whereNumber('kes');
+    Route::get('/peguam-panel/beban', [AgihanController::class, 'beban'])->name('agihan.beban');
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----
 Route::middleware(['auth', 'role:peguam'])->prefix('peguam')->group(function () {
     Route::get('/', [PeguamController::class, 'dashboard'])->name('peguam.dashboard');
+    Route::get('/kes', [PeguamController::class, 'kes'])->name('peguam.kes');
+    Route::get('/profil', [PeguamController::class, 'profil'])->name('peguam.profil');
 });

@@ -3,28 +3,53 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use App\Models\PeguamPanel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
-// External lawyer (peguam) area — cases assigned to the signed-in panel lawyer.
+// External lawyer (peguam) area — cases assigned to the signed-in panel lawyer + profile.
 class PeguamController extends Controller
 {
     public function dashboard(): View
     {
-        $user = Auth::user();
-
-        // Lawyer login links to peguam_panel via id_peguam_panel (IC). Match assigned cases by lawyer name/IC.
-        $profile = $user->lawyerProfile;
-
-        $kesSaya = $profile
-            ? Form::where('nama_pegawai_yang_dapat_kes', 'like', '%'.$profile->nama_peguam.'%')->count()
-            : 0;
+        $profile = $this->profile();
 
         $stats = [
-            'kes_saya' => $kesSaya,
-            'nama' => $profile->nama_peguam ?? $user->name,
+            'kes_saya' => $profile ? $this->kesQuery($profile->nama_peguam)->count() : 0,
+            'nama' => $profile->nama_peguam ?? Auth::user()->name,
         ];
 
         return view('peguam.dashboard', compact('stats'));
+    }
+
+    public function kes(): View
+    {
+        $profile = $this->profile();
+
+        $kes = $profile
+            ? $this->kesQuery($profile->nama_peguam)->orderByDesc('id')->paginate(20)
+            : Form::query()->whereRaw('1 = 0')->paginate(20);
+
+        return view('peguam.kes', ['kes' => $kes, 'profile' => $profile]);
+    }
+
+    public function profil(): View
+    {
+        return view('peguam.profil', [
+            'profile' => $this->profile(),
+            'user' => Auth::user(),
+        ]);
+    }
+
+    /** Panel-lawyer master record for the signed-in user (links via id_peguam_panel = kp_peguam). */
+    private function profile(): ?PeguamPanel
+    {
+        return Auth::user()->lawyerProfile;
+    }
+
+    /** Cases assigned to a lawyer by name. */
+    private function kesQuery(string $namaPeguam)
+    {
+        return Form::where('nama_pegawai_yang_dapat_kes', $namaPeguam);
     }
 }

@@ -61,6 +61,7 @@
         <span class="tap-nav__crumb">Kes <span class="now">{{ $kes->no_fail ?: '#'.$kes->id }}</span></span>
         <div class="tap-nav__cluster">
             <span class="tap-nav__step">{{ $kes->status ?: 'baru' }}</span>
+            <a href="{{ route('agihan.form', $kes) }}" class="tap-head__btn">Agih Peguam</a>
             <a href="{{ route('pengantaraan.edit', $kes) }}" class="tap-head__btn">Pengantaraan</a>
             <a href="{{ route('mahkamah.edit', $kes) }}" class="tap-head__btn">Kes Mahkamah</a>
             <a href="{{ route('kes.edit', $kes) }}" class="tap-head__btn">✎ Kemaskini</a>

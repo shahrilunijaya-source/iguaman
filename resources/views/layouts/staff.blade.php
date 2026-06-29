@@ -49,7 +49,9 @@
         </a>
 
         <div class="ws-side-section">Panel Peguam</div>
-        <span class="ws-side-item" style="opacity:.45;cursor:default"><span class="ws-side-item__bullet"></span>Agihan / Profil <small>(Phase 4)</small></span>
+        <a href="{{ route('agihan.beban') }}" class="ws-side-top {{ request()->routeIs('agihan.beban') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">▥</span><span class="ws-side-label">Beban Tugas Peguam</span>
+        </a>
     </aside>
 
     <main class="ws-content">
