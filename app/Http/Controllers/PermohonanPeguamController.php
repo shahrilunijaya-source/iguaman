@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ButiranPeguamPanel2;
 use App\Models\PeguamPanel;
 use App\Models\User;
+use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -78,6 +79,7 @@ class PermohonanPeguamController extends Controller
                 'tarikh_keputusanKP' => now(),
             ]);
             $this->promote($butiran);
+            Audit::log('butiran_peguam_panel_2', $butiran->id, Audit::APPROVE, "Permohonan peguam diluluskan: {$butiran->namaPeguam}.");
             $msg = 'Permohonan diluluskan dan peguam ditambah ke panel.';
         } else {
             $butiran->update([
@@ -85,6 +87,7 @@ class PermohonanPeguamController extends Controller
                 'sebabTidakDiluluskan' => $data['ulasan'] ?? null,
                 'tarikhTidakDiluluskan' => now()->toDateString(),
             ]);
+            Audit::log('butiran_peguam_panel_2', $butiran->id, Audit::REJECT, "Permohonan peguam tidak diluluskan: {$butiran->namaPeguam}.");
             $msg = 'Permohonan tidak diluluskan.';
         }
 

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AgihanController;
+use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\KesController;
+use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PengantaraanController;
@@ -71,10 +73,23 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::get('/kes/{kes}/cetak/penugasan', [CetakanController::class, 'agihan'])->name('cetak.penugasan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/laporan', [CetakanController::class, 'laporan'])->name('cetak.laporan')->whereNumber('kes');
 
+    // OYD (Orang Yang Dibantu) registry
+    Route::get('/oyd', [OydController::class, 'index'])->name('oyd.index');
+    Route::get('/oyd/create', [OydController::class, 'create'])->name('oyd.create');
+    Route::post('/oyd', [OydController::class, 'store'])->name('oyd.store');
+    Route::get('/oyd/{oyd}/edit', [OydController::class, 'edit'])->name('oyd.edit')->whereNumber('oyd');
+    Route::put('/oyd/{oyd}', [OydController::class, 'update'])->name('oyd.update')->whereNumber('oyd');
+    Route::get('/oyd/{oyd}', [OydController::class, 'show'])->name('oyd.show')->whereNumber('oyd');
+
     // Statistik + exports
     Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik.index');
     Route::get('/statistik/excel', [StatistikController::class, 'excel'])->name('statistik.excel');
     Route::get('/statistik/pdf', [StatistikController::class, 'pdf'])->name('statistik.pdf');
+
+    // Audit log (read-only) — supervisory roles only
+    Route::get('/audit', [AuditController::class, 'index'])
+        ->middleware('role:admin,pengarah,koordinator')
+        ->name('audit.index');
 
     // Agihan peguam (assignment) + workload
     Route::get('/kes/{kes}/agih', [AgihanController::class, 'form'])->name('agihan.form')->whereNumber('kes');

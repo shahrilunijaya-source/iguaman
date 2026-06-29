@@ -44,6 +44,9 @@
         <a href="{{ route('kes.create') }}" class="ws-side-top {{ request()->routeIs('kes.create') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">＋</span><span class="ws-side-label">Permohonan Baharu</span>
         </a>
+        <a href="{{ route('oyd.index') }}" class="ws-side-top {{ request()->routeIs('oyd.*') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">☺</span><span class="ws-side-label">OYD</span>
+        </a>
         <a href="{{ route('statistik.index') }}" class="ws-side-top {{ request()->routeIs('statistik.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▦</span><span class="ws-side-label">Statistik</span>
         </a>
@@ -55,6 +58,13 @@
         <a href="{{ route('agihan.beban') }}" class="ws-side-top {{ request()->routeIs('agihan.beban') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▥</span><span class="ws-side-label">Beban Tugas Peguam</span>
         </a>
+
+        @if (auth()->user()->hasRole('admin', 'pengarah', 'koordinator'))
+            <div class="ws-side-section">Pentadbiran</div>
+            <a href="{{ route('audit.index') }}" class="ws-side-top {{ request()->routeIs('audit.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">≣</span><span class="ws-side-label">Log Audit</span>
+            </a>
+        @endif
     </aside>
 
     <main class="ws-content">

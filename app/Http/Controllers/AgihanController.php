@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Form;
 use App\Models\PeguamPanel;
 use App\Models\SejarahPeguamPanel;
+use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,6 +57,8 @@ class AgihanController extends Controller
         ]);
 
         $verb = $isReassign ? 'diagih semula' : 'diagih';
+
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Kes {$verb} kepada {$peguam->nama_peguam}.");
 
         return redirect()->route('kes.show', $kes)->with('status', "Kes {$verb} kepada {$peguam->nama_peguam}.");
     }
