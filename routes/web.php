@@ -5,6 +5,7 @@ use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
+use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\SystemAuthController;
 use App\Http\Controllers\SystemController;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,11 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai'])->group(fu
     Route::put('/kes/{kes}/mahkamah', [MahkamahController::class, 'update'])->name('mahkamah.update')->whereNumber('kes');
     Route::post('/kes/{kes}/laporan', [MahkamahController::class, 'storeLaporan'])->name('laporan.store')->whereNumber('kes');
     Route::delete('/kes/{kes}/laporan/{laporan}', [MahkamahController::class, 'destroyLaporan'])->name('laporan.destroy')->whereNumber('kes')->whereNumber('laporan');
+
+    // Statistik + exports
+    Route::get('/statistik', [StatistikController::class, 'index'])->name('statistik.index');
+    Route::get('/statistik/excel', [StatistikController::class, 'excel'])->name('statistik.excel');
+    Route::get('/statistik/pdf', [StatistikController::class, 'pdf'])->name('statistik.pdf');
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----

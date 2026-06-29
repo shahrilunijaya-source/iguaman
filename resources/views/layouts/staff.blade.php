@@ -41,10 +41,12 @@
         <a href="{{ route('kes.index') }}" class="ws-side-top {{ request()->routeIs('kes.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▤</span><span class="ws-side-label">Senarai Kes</span>
         </a>
-        <span class="ws-side-item" style="opacity:.45;cursor:default"><span class="ws-side-item__bullet"></span>Permohonan <small>(Phase 3b)</small></span>
-        <span class="ws-side-item" style="opacity:.45;cursor:default"><span class="ws-side-item__bullet"></span>Pengantaraan <small>(Phase 3c)</small></span>
-        <span class="ws-side-item" style="opacity:.45;cursor:default"><span class="ws-side-item__bullet"></span>Kes Mahkamah <small>(Phase 3c)</small></span>
-        <span class="ws-side-item" style="opacity:.45;cursor:default"><span class="ws-side-item__bullet"></span>Statistik <small>(Phase 3d)</small></span>
+        <a href="{{ route('kes.create') }}" class="ws-side-top {{ request()->routeIs('kes.create') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">＋</span><span class="ws-side-label">Permohonan Baharu</span>
+        </a>
+        <a href="{{ route('statistik.index') }}" class="ws-side-top {{ request()->routeIs('statistik.*') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">▦</span><span class="ws-side-label">Statistik</span>
+        </a>
 
         <div class="ws-side-section">Panel Peguam</div>
         <span class="ws-side-item" style="opacity:.45;cursor:default"><span class="ws-side-item__bullet"></span>Agihan / Profil <small>(Phase 4)</small></span>
