@@ -20,6 +20,33 @@ use Illuminate\View\View;
  */
 class AgihanSpineController extends Controller
 {
+    /** bucket key → (status codes, title). */
+    private const BUCKETS = [
+        'baru' => [StatusAgihan::BUCKET_BARU, 'Pengagihan Baru'],
+        'semasa' => [StatusAgihan::BUCKET_SEMASA, 'Pengagihan Semasa'],
+        'semula' => [StatusAgihan::BUCKET_SEMULA, 'Pengagihan Semula'],
+    ];
+
+    /** Work-queue list for an assignment bucket (baru / semasa / semula). */
+    public function senarai(string $bucket): View
+    {
+        abort_unless(isset(self::BUCKETS[$bucket]), 404);
+        [$codes, $title] = self::BUCKETS[$bucket];
+
+        $kes = Form::query()
+            ->whereIn('status_agihan', StatusAgihan::bucketValues($codes))
+            ->orderByDesc('id')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('agihan.senarai', [
+            'kes' => $kes,
+            'bucket' => $bucket,
+            'title' => $title,
+            'buckets' => self::BUCKETS,
+        ]);
+    }
+
     /** Role-routed assignment detail + action form for a case. */
     public function show(Form $kes): View
     {

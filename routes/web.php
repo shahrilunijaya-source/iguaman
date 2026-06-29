@@ -168,6 +168,7 @@ Route::middleware(['auth', 'role:admin,pengarah,koordinator,pegawai,ppuu,pembant
     Route::get('/peguam-panel/beban', [AgihanController::class, 'beban'])->name('agihan.beban');
 
     // 3-tier assignment spine (PPUU -> Pengarah -> Ketua Pengarah). Role-gated per action.
+    Route::get('/agihan/senarai/{bucket}', [AgihanSpineController::class, 'senarai'])->name('agihan.senarai')->whereIn('bucket', ['baru', 'semasa', 'semula']);
     Route::get('/agihan/{kes}/maklumat', [AgihanSpineController::class, 'show'])->name('agihan.maklumat')->whereNumber('kes');
     Route::post('/agihan/{kes}/pengarah-terima', [AgihanSpineController::class, 'pengarahTerima'])->name('agihan.pengarah.terima')->whereNumber('kes')->middleware('role:pengarah,admin');
     Route::post('/agihan/{kes}/pengarah-tolak', [AgihanSpineController::class, 'pengarahTolak'])->name('agihan.pengarah.tolak')->whereNumber('kes')->middleware('role:pengarah,admin');

@@ -64,6 +64,9 @@
         <a href="{{ route('permohonan-peguam.index') }}" class="ws-side-top {{ request()->routeIs('permohonan-peguam.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▧</span><span class="ws-side-label">Permohonan Peguam</span>
         </a>
+        <a href="{{ route('agihan.senarai', 'baru') }}" class="ws-side-top {{ request()->routeIs('agihan.senarai') || request()->routeIs('agihan.maklumat') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">⇄</span><span class="ws-side-label">Agihan Kes</span>
+        </a>
         <a href="{{ route('agihan.beban') }}" class="ws-side-top {{ request()->routeIs('agihan.beban') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▥</span><span class="ws-side-label">Beban Tugas Peguam</span>
         </a>

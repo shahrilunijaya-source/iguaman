@@ -87,4 +87,24 @@ final class StatusAgihan
 
         return self::LEGACY_STRING_MAP[$code] ?? $code;
     }
+
+    /**
+     * Expand a bucket's numeric codes to ALL stored values that match them, including the
+     * legacy string aliases the pre-parity build wrote (so a whereIn over status_agihan
+     * catches both '1' and 'Ditawarkan'). Use for list-bucket queries.
+     *
+     * @param  array<int,string>  $codes
+     * @return array<int,string>
+     */
+    public static function bucketValues(array $codes): array
+    {
+        $aliases = [];
+        foreach (self::LEGACY_STRING_MAP as $string => $code) {
+            if (in_array($code, $codes, true)) {
+                $aliases[] = $string;
+            }
+        }
+
+        return array_values(array_unique(array_merge($codes, $aliases)));
+    }
 }
