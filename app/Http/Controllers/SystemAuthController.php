@@ -44,6 +44,27 @@ class SystemAuthController extends Controller
         return redirect()->intended(route($user->homeRoute()));
     }
 
+    public function showChangePassword(): View
+    {
+        return view('system.change-password');
+    }
+
+    public function changePassword(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', 'min:8', 'different:current_password'],
+        ]);
+
+        $user = $request->user();
+        $user->forceFill([
+            'password' => \Illuminate\Support\Facades\Hash::make($request->input('password')),
+            'must_change_password' => false,
+        ])->save();
+
+        return redirect()->route($user->homeRoute())->with('status', 'Kata laluan dikemaskini.');
+    }
+
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();

@@ -14,6 +14,9 @@
 /.zed
 /auth.json
 /node_modules
+# Playwright MCP scratch + ad-hoc QA screenshots — never commit
+/.playwright-mcp
+/iguaman-demo-modal.png
 # /public/build  — committed for Hostinger (no node on shared host); add with: git add -f public/build
 /public/fonts-manifest.dev.json
 /public/hot

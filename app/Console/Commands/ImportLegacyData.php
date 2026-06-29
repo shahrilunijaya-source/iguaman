@@ -118,6 +118,7 @@ class ImportLegacyData extends Command
                 'nokp' => $u->nokp ?? null,
                 'id_peguam_panel' => null,
                 'is_active' => ($u->status_aktif ?? '1') === '1',
+                'must_change_password' => true, // legacy plaintext → force reset
                 'last_login_at' => null,
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -139,6 +140,7 @@ class ImportLegacyData extends Command
                     'nokp' => null,
                     'id_peguam_panel' => $u->id_peguam_panel ?? null,
                     'is_active' => true,
+                    'must_change_password' => true, // legacy plaintext → force reset
                     'last_login_at' => null,
                     'created_at' => $now,
                     'updated_at' => $now,

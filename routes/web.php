@@ -29,6 +29,10 @@ Route::middleware('guest')->group(function () {
 // ---- Authenticated (any role) ----
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [SystemAuthController::class, 'logout'])->name('system.logout');
+
+    // Forced / voluntary password change (migrated accounts are pinned here until done).
+    Route::get('/password/change', [SystemAuthController::class, 'showChangePassword'])->name('password.change');
+    Route::post('/password/change', [SystemAuthController::class, 'changePassword'])->name('password.change.update');
 });
 
 // ---- Staff area: rekod-kes + panel admin (admin / pengarah / koordinator / pegawai) ----
