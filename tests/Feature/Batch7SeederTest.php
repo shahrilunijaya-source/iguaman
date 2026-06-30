@@ -41,9 +41,10 @@ class Batch7SeederTest extends TestCase
         // permissions ('tuntutan.view/manage/semak/lulus/bayar').
         // RolePermissionSeeder::MATRIX is the source of truth.
         // W10 added 2 roles (pengarah_pembelaan_awam, ketua_pembelaan_awam) + 2 perms
-        // (peguam.sokong.jenayah, peguam.keputusan.jenayah).
+        // (peguam.sokong.jenayah, peguam.keputusan.jenayah). W9/W14 added 3 perms
+        // (pembelaan.view, pembelaan.manage, kes.perakuan).
         $this->assertSame(11, Role::count());  // 9 + 2 pembelaan-awam approver roles (W10)
-        $this->assertSame(49, Permission::count());  // 47 + 2 peguam.*.jenayah (W10)
+        $this->assertSame(52, Permission::count());  // 49 + 3 pembelaan/perakuan perms (W9/W14)
     }
 
     public function test_admin_can_everything_via_gate_before(): void
