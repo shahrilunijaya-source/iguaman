@@ -202,6 +202,18 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])->name('pengguna.destroy')->whereNumber('user');
     });
 
+    // Peranan (role) + Akses (permission matrix) — admin-only (permission:urus.peranan)
+    Route::middleware('permission:urus.peranan')->group(function () {
+        Route::get('/peranan', [\App\Http\Controllers\RoleController::class, 'index'])->name('peranan.index');
+        Route::get('/peranan/create', [\App\Http\Controllers\RoleController::class, 'create'])->name('peranan.create');
+        Route::post('/peranan', [\App\Http\Controllers\RoleController::class, 'store'])->name('peranan.store');
+        Route::get('/peranan/{role}/edit', [\App\Http\Controllers\RoleController::class, 'edit'])->name('peranan.edit')->whereNumber('role');
+        Route::put('/peranan/{role}', [\App\Http\Controllers\RoleController::class, 'update'])->name('peranan.update')->whereNumber('role');
+        Route::delete('/peranan/{role}', [\App\Http\Controllers\RoleController::class, 'destroy'])->name('peranan.destroy')->whereNumber('role');
+        Route::get('/peranan/{role}/akses', [\App\Http\Controllers\RolePermissionController::class, 'edit'])->name('peranan.akses.edit')->whereNumber('role');
+        Route::put('/peranan/{role}/akses', [\App\Http\Controllers\RolePermissionController::class, 'update'])->name('peranan.akses.update')->whereNumber('role');
+    });
+
     // Audit log
     Route::middleware('permission:audit.view')->group(function () {
         Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');

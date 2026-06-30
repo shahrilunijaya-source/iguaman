@@ -92,6 +92,11 @@
             <a href="{{ route('audit.index') }}" class="ws-side-top {{ request()->routeIs('audit.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">≣</span><span class="ws-side-label">Log Audit</span>
             </a>
+            @can('urus.peranan')
+                <a href="{{ route('peranan.index') }}" class="ws-side-top {{ request()->routeIs('peranan.*') ? 'is-active' : '' }}">
+                    <span class="ws-side-top__icon">🔑</span><span class="ws-side-label">Peranan &amp; Akses</span>
+                </a>
+            @endcan
 
             <div class="ws-side-section">Selenggara</div>
             <a href="{{ route('ref-kes.index') }}" class="ws-side-top {{ request()->routeIs('ref-kes.*') ? 'is-active' : '' }}">
