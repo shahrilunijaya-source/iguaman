@@ -124,9 +124,9 @@ class SlaMatrix
 
     /**
      * Compute one dashboard. Returns ['def', 'matrix', 'jumlah', 'grand'].
-     * Optional $year filters on the SLA end date (legacy showed all years).
+     * Optional $year / $month filter on the SLA end date (legacy showed all periods).
      */
-    public static function compute(string $key, ?int $year = null): array
+    public static function compute(string $key, ?int $year = null, ?int $month = null): array
     {
         $def = self::definitions()[$key];
 
@@ -141,6 +141,7 @@ class SlaMatrix
             ->whereNotNull($def['end'])
             ->whereIn('kategori_kes', self::KATEGORI)
             ->when($year, fn (Builder $q) => $q->whereYear($def['end'], $year))
+            ->when($month, fn (Builder $q) => $q->whereMonth($def['end'], $month))
             ->where(fn (Builder $q) => $def['filter']($q))
             ->groupBy('cawangan', 'jenis')
             ->get();

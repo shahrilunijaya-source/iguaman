@@ -81,6 +81,15 @@ class EpicFStatistikExportTest extends TestCase
             ->assertSee('JUMLAH KESELURUHAN');
     }
 
+    public function test_sla_show_accepts_year_and_month_filter(): void
+    {
+        $this->actingAs($this->user('admin@test.local'))
+            ->get(route('statistik-sla.show', ['key' => 'perakuan', 'tahun' => 2026, 'bulan' => 6]))
+            ->assertOk()
+            ->assertSee('Jun 2026')
+            ->assertSee('JUMLAH KESELURUHAN');
+    }
+
     public function test_unknown_sla_key_404(): void
     {
         $this->actingAs($this->user('admin@test.local'))

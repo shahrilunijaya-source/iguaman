@@ -27,8 +27,12 @@
     </footer>
 
     <main>
+        @php
+            $bulanNama = [1 => 'Januari', 2 => 'Februari', 3 => 'Mac', 4 => 'April', 5 => 'Mei', 6 => 'Jun', 7 => 'Julai', 8 => 'Ogos', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Disember'];
+            $tempoh = ($month ? $bulanNama[$month].' ' : '').($year ?: (! $month ? 'Semua tahun' : 'semua tahun'));
+        @endphp
         <h1>{{ $data['def']['title'] }}</h1>
-        <div class="meta">SLA {{ $data['def']['target'] }} hari · {{ $year ? 'Tahun '.$year : 'Semua tahun' }}
+        <div class="meta">SLA {{ $data['def']['target'] }} hari · {{ $tempoh }}
             @if ($data['grand']['peratus'] !== null)
                 · Pencapaian keseluruhan {{ number_format($data['grand']['peratus'], 2) }}% ({{ number_format($data['grand']['total']) }} kes)
             @endif

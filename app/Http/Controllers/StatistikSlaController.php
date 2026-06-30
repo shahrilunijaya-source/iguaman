@@ -20,6 +20,7 @@ class StatistikSlaController extends Controller
         return view('statistik.sla.index', [
             'defs' => SlaMatrix::definitions(),
             'year' => $this->year($request),
+            'month' => $this->month($request),
         ]);
     }
 
@@ -28,11 +29,13 @@ class StatistikSlaController extends Controller
         abort_unless(SlaMatrix::has($key), 404, 'Statistik tidak dijumpai.');
 
         $year = $this->year($request);
+        $month = $this->month($request);
 
         return view('statistik.sla.show', [
             'key' => $key,
             'year' => $year,
-            'data' => SlaMatrix::compute($key, $year),
+            'month' => $month,
+            'data' => SlaMatrix::compute($key, $year, $month),
             'branches' => SlaMatrix::BRANCHES,
             'kategori' => SlaMatrix::KATEGORI,
         ]);
@@ -43,11 +46,13 @@ class StatistikSlaController extends Controller
         abort_unless(SlaMatrix::has($key), 404, 'Statistik tidak dijumpai.');
 
         $year = $this->year($request);
+        $month = $this->month($request);
 
         $pdf = Pdf::loadView('statistik.sla.pdf', [
             'key' => $key,
             'year' => $year,
-            'data' => SlaMatrix::compute($key, $year),
+            'month' => $month,
+            'data' => SlaMatrix::compute($key, $year, $month),
             'branches' => SlaMatrix::BRANCHES,
             'kategori' => SlaMatrix::KATEGORI,
             'dijana' => now()->format('d/m/Y H:i'),
@@ -63,5 +68,13 @@ class StatistikSlaController extends Controller
         $year = $request->input('tahun');
 
         return ($year !== null && $year !== '') ? (int) $year : null;
+    }
+
+    /** Optional month filter 1-12 (blank = all months). */
+    private function month(Request $request): ?int
+    {
+        $month = (int) $request->input('bulan');
+
+        return ($month >= 1 && $month <= 12) ? $month : null;
     }
 }
