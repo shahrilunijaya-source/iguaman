@@ -63,4 +63,51 @@
             </tbody>
         </table>
     </div>
+
+    @php
+        $temu = $khidmat->temuJanji;
+        $bolehUbah = $temu
+            && in_array($temu->status, ['MENUNGGU', 'DISAHKAN'])
+            && \Illuminate\Support\Carbon::parse($temu->tarikh_temu_janji)->isFuture();
+    @endphp
+
+    @if ($bolehUbah)
+        <div class="tap-card" style="margin-bottom:16px;">
+            <div class="tap-card__eyebrow">Urus Temu Janji</div>
+
+            {{-- Cancel --}}
+            <form method="POST" action="{{ route('awam.permohonan.batal', $khidmat) }}" style="margin-top:16px;">
+                @csrf
+                <button type="submit"
+                    onclick="return confirm('Adakah anda pasti untuk membatalkan temu janji ini?')"
+                    style="background:#e53e3e; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600;">
+                    Batal Temu Janji
+                </button>
+            </form>
+
+            {{-- Reschedule --}}
+            <form method="POST" action="{{ route('awam.permohonan.reschedule', $khidmat) }}" style="margin-top:20px;">
+                @csrf
+                <div style="font-size:13px; font-weight:600; margin-bottom:10px; color:var(--fg);">Jadual Semula Temu Janji</div>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+                    <div>
+                        <label style="display:block; font-size:12px; color:var(--mute); margin-bottom:4px;">Tarikh Baru</label>
+                        <input type="date" name="tarikh_temu_janji" required
+                            style="border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:12px; color:var(--mute); margin-bottom:4px;">Masa Baru</label>
+                        <input type="time" name="masa_temu_janji" required step="1800"
+                            style="border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:13px;">
+                    </div>
+                    <div>
+                        <button type="submit"
+                            style="background:var(--teal); color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600;">
+                            Jadual Semula
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    @endif
 @endsection

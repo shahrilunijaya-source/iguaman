@@ -87,6 +87,8 @@ Route::middleware(['auth', 'permission:awam.portal'])->prefix('awam')->group(fun
     Route::get('/permohonan/baharu', [PermohonanController::class, 'create'])->name('awam.permohonan.create');
     Route::post('/permohonan', [PermohonanController::class, 'store'])->middleware('throttle:10,1')->name('awam.permohonan.store');
     Route::get('/permohonan/{khidmat}', [PermohonanController::class, 'show'])->name('awam.permohonan.show')->whereNumber('khidmat');
+    Route::post('/permohonan/{khidmat}/batal', [PermohonanController::class, 'cancel'])->name('awam.permohonan.batal')->whereNumber('khidmat');
+    Route::post('/permohonan/{khidmat}/jadual-semula', [PermohonanController::class, 'reschedule'])->name('awam.permohonan.reschedule')->whereNumber('khidmat');
 });
 
 // Slot availability JSON — shared: staff (slot.view) AND citizens (awam.portal) need these.

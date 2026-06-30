@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Awam;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Awam\AwamPermohonanRequest;
+use App\Http\Requests\Awam\AwamRescheduleRequest;
 use App\Models\Cawangan;
 use App\Models\KhidmatNasihat;
 use App\Models\RefKategoriKn;
@@ -103,6 +104,45 @@ class PermohonanController extends Controller
         $khidmat->load(['cawangan', 'kategori', 'temuJanji']);
 
         return view('awam.permohonan.show', ['khidmat' => $khidmat]);
+    }
+
+    public function cancel(KhidmatNasihat $khidmat): RedirectResponse
+    {
+        Gate::authorize('update', $khidmat);
+        $this->assertCancellable($khidmat);
+
+        $this->service->releaseSlot($khidmat);
+        $khidmat->update(['status_kn' => KhidmatNasihat::STATUS_BATAL]);
+
+        Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE, "Permohonan dibatalkan oleh pemohon: {$khidmat->no_permohonan}");
+
+        return redirect()->route('awam.permohonan.show', $khidmat)->with('status', 'Temu janji dibatalkan.');
+    }
+
+    public function reschedule(AwamRescheduleRequest $request, KhidmatNasihat $khidmat): RedirectResponse
+    {
+        Gate::authorize('update', $khidmat);
+        $this->assertCancellable($khidmat);
+
+        $this->service->reschedule(
+            $khidmat,
+            $request->validated()['tarikh_temu_janji'],
+            $request->validated()['masa_temu_janji'],
+            $request->user()->name,
+        );
+
+        Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE, "Temu janji dijadual semula: {$khidmat->no_permohonan}");
+
+        return redirect()->route('awam.permohonan.show', $khidmat)->with('status', 'Temu janji dijadual semula.');
+    }
+
+    /** Self-service cancel/reschedule allowed only before attendance + on a future date. */
+    private function assertCancellable(KhidmatNasihat $khidmat): void
+    {
+        $temu = $khidmat->temuJanji()->first();
+        abort_if($temu === null, 422, 'Tiada temu janji untuk diubah.');
+        abort_if(in_array($temu->status, ['HADIR', 'TIDAK_HADIR', 'SELESAI', 'BATAL'], true), 422, 'Temu janji ini tidak boleh diubah.');
+        abort_if(\Illuminate\Support\Carbon::parse($temu->tarikh_temu_janji)->isPast(), 422, 'Temu janji lampau tidak boleh diubah.');
     }
 
     private function mapInput(AwamPermohonanRequest $request): array
