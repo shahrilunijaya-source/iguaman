@@ -76,6 +76,12 @@
             </a>
         @endcan
 
+        @can('slot.view')
+            <a href="{{ route('jadual.index') }}" class="ws-side-top {{ request()->routeIs('jadual.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">📆</span><span class="ws-side-label">Jadual Janji Temu</span>
+            </a>
+        @endcan
+
         @can('slot.manage')
             <div class="ws-side-section">Kalendar / Slot</div>
             <a href="{{ route('slot.index') }}" class="ws-side-top {{ request()->routeIs('slot.index') || request()->routeIs('slot.sesi') ? 'is-active' : '' }}">
@@ -130,6 +136,9 @@
             </a>
             <a href="{{ route('cuti.index') }}" class="ws-side-top {{ request()->routeIs('cuti.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">📅</span><span class="ws-side-label">Cuti Umum</span>
+            </a>
+            <a href="{{ route('cuti-negeri.index') }}" class="ws-side-top {{ request()->routeIs('cuti-negeri.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">🏖</span><span class="ws-side-label">Cuti Negeri</span>
             </a>
             @can('selenggara.cawangan')
                 <a href="{{ route('cawangan.index') }}" class="ws-side-top {{ request()->routeIs('cawangan.*') ? 'is-active' : '' }}">

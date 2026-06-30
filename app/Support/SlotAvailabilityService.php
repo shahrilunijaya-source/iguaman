@@ -132,6 +132,47 @@ class SlotAvailabilityService
             ->all();
     }
 
+    /**
+     * Per-day open/closed status for a branch over an inclusive date range, for the
+     * read-only month calendar (Jadual Janji Temu). Reuses the same exclusion sources
+     * as availableDates(); does NOT apply the lead-time window (the calendar shows
+     * past + near dates too — booking enforcement stays in availableDates/Times).
+     *
+     * @return array<string, array{status: string, label: string}>
+     *         'Y-m-d' => one of: weekend | holiday | closure | open
+     */
+    public function dayStatuses(int $cawanganId, string $from, string $to, ?array $weekend = null): array
+    {
+        $cawangan = Cawangan::find($cawanganId);
+        if ($cawangan === null) {
+            return [];
+        }
+
+        $weekend = $weekend ?? $cawangan->weekendDays() ?? self::WEEKEND;
+        $holidays = $this->holidayDates($cawangan->negeri_id);
+        $closures = $this->closureRanges($cawanganId);
+
+        $start = Carbon::parse($from)->startOfDay();
+        $end = Carbon::parse($to)->startOfDay();
+
+        $out = [];
+        for ($d = $start->copy(); $d->lte($end); $d->addDay()) {
+            $key = $d->toDateString();
+
+            if ($this->isWeekend($d, $weekend)) {
+                $out[$key] = ['status' => 'weekend', 'label' => 'Hujung minggu'];
+            } elseif (isset($holidays[$key])) {
+                $out[$key] = ['status' => 'holiday', 'label' => 'Cuti'];
+            } elseif ($this->isClosed($d, $closures)) {
+                $out[$key] = ['status' => 'closure', 'label' => 'Penutupan operasi'];
+            } else {
+                $out[$key] = ['status' => 'open', 'label' => 'Beroperasi'];
+            }
+        }
+
+        return $out;
+    }
+
     /** today + MIN_WORKING_DAYS working days (weekends not counted). */
     private function earliestBookable(Carbon $today, array $weekend): Carbon
     {
