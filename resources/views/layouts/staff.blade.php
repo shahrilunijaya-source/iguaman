@@ -69,6 +69,13 @@
             <span class="ws-side-top__icon">▭</span><span class="ws-side-label">Laporan</span>
         </a>
 
+        @can('khidmat.view')
+            <div class="ws-side-section">Khidmat Nasihat</div>
+            <a href="{{ route('khidmat.index') }}" class="ws-side-top {{ request()->routeIs('khidmat.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">💬</span><span class="ws-side-label">Permohonan Khidmat</span>
+            </a>
+        @endcan
+
         <div class="ws-side-section">Panel Peguam</div>
         <a href="{{ route('permohonan-peguam.index') }}" class="ws-side-top {{ request()->routeIs('permohonan-peguam.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▧</span><span class="ws-side-label">Permohonan Peguam</span>

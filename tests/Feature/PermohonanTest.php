@@ -23,7 +23,7 @@ class PermohonanTest extends TestCase
 
         config([
             'database.default' => 'mysql',
-            'database.connections.mysql.database' => 'iguaman_2in1',
+            'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1'),
         ]);
         DB::purge('mysql');
         DB::reconnect('mysql');

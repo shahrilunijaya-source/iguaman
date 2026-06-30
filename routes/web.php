@@ -14,6 +14,7 @@ use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\KemaskiniBidangController;
 use App\Http\Controllers\KesController;
 use App\Http\Controllers\KesilapanController;
+use App\Http\Controllers\KhidmatNasihatController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
@@ -315,6 +316,12 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::post('/permohonan-peguam/{butiran}/sokong', [PermohonanPeguamController::class, 'sokong'])->name('permohonan-peguam.sokong')->whereNumber('butiran');
     Route::post('/permohonan-peguam/{butiran}/keputusan', [PermohonanPeguamController::class, 'keputusan'])->name('permohonan-peguam.keputusan')->whereNumber('butiran');
     Route::post('/permohonan-peguam/{butiran}/tarik-diri', [PermohonanPeguamController::class, 'tarikDiri'])->name('permohonan-peguam.tarik')->whereNumber('butiran');
+
+    // ---- Khidmat Nasihat (legal-advisory applications) — batch 9 foundation slice (list/show; wizard create later) ----
+    Route::middleware('permission:khidmat.view')->group(function () {
+        Route::get('/khidmat-nasihat', [KhidmatNasihatController::class, 'index'])->name('khidmat.index');
+        Route::get('/khidmat-nasihat/{khidmat}', [KhidmatNasihatController::class, 'show'])->name('khidmat.show')->whereNumber('khidmat');
+    });
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----

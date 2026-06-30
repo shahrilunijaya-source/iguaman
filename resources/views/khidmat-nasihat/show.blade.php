@@ -1,0 +1,68 @@
+@extends('layouts.staff')
+
+@section('title', 'Khidmat Nasihat · '.($khidmat->no_permohonan ?: $khidmat->nama_mangsa))
+
+@php
+    $alamat = collect([$khidmat->alamat_surat1, $khidmat->alamat_surat2, $khidmat->alamat_surat3, $khidmat->poskod])
+        ->filter()->implode(', ');
+@endphp
+
+@section('content')
+    <div class="tap-nav" style="margin: -24px -20px 18px; border-radius: 0;">
+        <a href="{{ route('khidmat.index') }}" class="tap-nav__back">← Senarai Khidmat Nasihat</a>
+        <span class="tap-nav__crumb">{{ $khidmat->no_permohonan ?: 'Draf' }}</span>
+    </div>
+
+    @if (session('status'))
+        <div class="formerr" style="color: var(--success); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.18); margin-bottom:14px;">{{ session('status') }}</div>
+    @endif
+
+    <div class="tap-title" style="border:1px solid var(--line); border-radius: var(--r-lg); margin-bottom: 18px;">
+        <div>
+            <h1 class="tap-title__h1">{{ $khidmat->nama_mangsa ?: 'Tanpa Nama' }}<span class="dot"></span></h1>
+            <p class="tap-title__sub">No. Permohonan <strong>{{ $khidmat->no_permohonan ?: '—' }}</strong> · <span class="pill pill--received">{{ str_replace('_', ' ', $khidmat->status_kn) }}</span></p>
+        </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; align-items:start;">
+        <div class="tap-card">
+            <div class="tap-card__eyebrow">Permohonan</div>
+            <div class="tap-card__row"><div class="k">Jenis Permohonan</div><div class="v">{{ str_replace('_', ' ', $khidmat->jenis_permohonan) }}</div></div>
+            <div class="tap-card__row"><div class="k">Cawangan</div><div class="v">{{ $khidmat->cawangan->nama ?? '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Kategori</div><div class="v">{{ $khidmat->kategori->jenis_kategori ?? '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Subkategori</div><div class="v">{{ $khidmat->subkategori->nama ?? '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Jenis Kes</div><div class="v">{{ $khidmat->jenis_kes ?: '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Wakil</div><div class="v">{{ $khidmat->nama_wakil ?: '—' }}</div></div>
+        </div>
+
+        <div class="tap-card">
+            <div class="tap-card__eyebrow">Mangsa</div>
+            <div class="tap-card__row"><div class="k">No. Pengenalan</div><div class="v">{{ $khidmat->id_pengenalan_mangsa ?: '—' }} {{ $khidmat->jenis_pengenalan_mangsa ? '('.$khidmat->jenis_pengenalan_mangsa.')' : '' }}</div></div>
+            <div class="tap-card__row"><div class="k">Jantina</div><div class="v">{{ $khidmat->jantina_mangsa ?: '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Umur</div><div class="v">{{ $khidmat->umur_mangsa ?: '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Bangsa / Agama</div><div class="v">{{ $khidmat->bangsa ?: '—' }} {{ $khidmat->agama ? '· '.$khidmat->agama : '' }}</div></div>
+            <div class="tap-card__row"><div class="k">Tarikh Lahir</div><div class="v">{{ optional($khidmat->tarikh_lahir_mangsa)->format('d/m/Y') ?: '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Alamat Surat</div><div class="v">{{ $alamat ?: '—' }}</div></div>
+        </div>
+
+        <div class="tap-card">
+            <div class="tap-card__eyebrow">Bayaran</div>
+            <div class="tap-card__row"><div class="k">Jumlah</div><div class="v">RM {{ number_format($khidmat->jumlah_bayaran, 2) }}</div></div>
+            <div class="tap-card__row"><div class="k">Status Bayaran</div><div class="v">{{ $khidmat->status_bayaran ? 'Sudah Bayar' : 'Belum Bayar' }}</div></div>
+            <div class="tap-card__row"><div class="k">Percuma</div><div class="v">{{ $khidmat->is_percuma ? 'Ya' : 'Tidak' }}</div></div>
+            <div class="tap-card__row"><div class="k">Perakuan</div><div class="v">{{ $khidmat->perakuan ? 'Ya' : 'Tidak' }}</div></div>
+        </div>
+
+        <div class="tap-card">
+            <div class="tap-card__eyebrow">Ulasan & Rekod</div>
+            <div class="tap-card__row"><div class="k">Ulasan Permohonan</div><div class="v">{{ $khidmat->ulasan_permohonan ?: '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Ulasan Pegawai</div><div class="v">{{ $khidmat->ulasan_pegawai ?: '—' }}</div></div>
+            @if ($khidmat->cipta_oleh)
+                <div class="tap-card__row"><div class="k">Dicipta Oleh</div><div class="v">{{ $khidmat->cipta_oleh }} · {{ optional($khidmat->created_at)->format('d/m/Y') }}</div></div>
+            @endif
+            @if ($khidmat->kemaskini_oleh)
+                <div class="tap-card__row"><div class="k">Kemaskini Oleh</div><div class="v">{{ $khidmat->kemaskini_oleh }} · {{ optional($khidmat->updated_at)->format('d/m/Y') }}</div></div>
+            @endif
+        </div>
+    </div>
+@endsection
