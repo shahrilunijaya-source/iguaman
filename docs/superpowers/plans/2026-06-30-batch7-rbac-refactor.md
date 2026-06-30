@@ -266,12 +266,12 @@ to:
 - [ ] **Step 3: Run the seeder**
 
 Run: `php artisan db:seed --class=RolePermissionSeeder`
-Expected: no error; `roles` has 8 rows, `permissions` has 31 rows.
+Expected: no error; `roles` has 8 rows, `permissions` has 32 rows.
 
 - [ ] **Step 4: Verify counts**
 
 Run: `php artisan tinker --execute="echo \Spatie\Permission\Models\Role::count().' roles, '.\Spatie\Permission\Models\Permission::count().' perms';"`
-Expected: `8 roles, 31 perms`.
+Expected: `8 roles, 32 perms`.
 
 - [ ] **Step 5: Commit**
 
@@ -1306,7 +1306,7 @@ class Batch7SeederTest extends TestCase
     public function test_all_roles_and_permissions_exist(): void
     {
         $this->assertSame(8, Role::count());
-        $this->assertSame(31, Permission::count());
+        $this->assertSame(32, Permission::count());
     }
 
     public function test_admin_can_everything_via_gate_before(): void
