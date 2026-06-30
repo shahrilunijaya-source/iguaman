@@ -12,6 +12,7 @@ use App\Models\RefKes;
 use App\Models\RefNegeri;
 use App\Support\LawyerDocuments;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -81,6 +82,42 @@ class PeguamDaftarController extends Controller
             ->route('peguam.daftar')
             ->with('daftar_selesai', true)
             ->with('daftar_ref', $permohonan->id);
+    }
+
+    /** Public application-status lookup form (legacy semak.php parity — no login). */
+    public function semakStatus(): View
+    {
+        return view('peguam.semak-status', ['result' => null, 'nokp' => null]);
+    }
+
+    /**
+     * Look up a panel application's status by IC. Returns only the status label + apply
+     * date (+ rejection reason), never login credentials. Throttled to deter IC scanning.
+     */
+    public function semakStatusCheck(Request $request): View
+    {
+        $data = $request->validate(
+            [
+                'kpBaru' => ['required', 'string', 'max:20'],
+                'website' => ['prohibited'], // honeypot
+            ],
+            ['website.prohibited' => 'Permohonan tidak sah.']
+        );
+
+        $kp = trim($data['kpBaru']);
+        $p = ButiranPeguamPanel2::where('kpBaru', $kp)->orderByDesc('tarikhMohon')->first();
+
+        $result = $p
+            ? [
+                'found' => true,
+                'status' => (string) $p->permohonan_status,
+                'label' => PermohonanPeguamController::STATUS[(string) $p->permohonan_status] ?? 'Tidak diketahui',
+                'tarikhMohon' => $p->tarikhMohon,
+                'sebabTolak' => (string) $p->permohonan_status === '2' ? $p->sebabTidakDiluluskan : null,
+            ]
+            : ['found' => false];
+
+        return view('peguam.semak-status', ['result' => $result, 'nokp' => $kp]);
     }
 
     /** _2 — biographical. */

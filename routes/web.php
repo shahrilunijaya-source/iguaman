@@ -66,6 +66,12 @@ Route::post('/peguam/daftar', [PeguamDaftarController::class, 'store'])
     ->middleware('throttle:6,1')
     ->name('peguam.daftar.store');
 
+// Public application-status lookup by IC (legacy semak.php parity). Throttled + honeypot.
+Route::get('/peguam/semak-status', [PeguamDaftarController::class, 'semakStatus'])->name('peguam.semak-status');
+Route::post('/peguam/semak-status', [PeguamDaftarController::class, 'semakStatusCheck'])
+    ->middleware('throttle:10,1')
+    ->name('peguam.semak-status.check');
+
 // ---- Public Awam portal: guest auth (IC login). Captcha + throttle + honeypot. ----
 Route::middleware('guest')->group(function () {
     Route::get('/awam/daftar', [PublicAuthController::class, 'showDaftar'])->name('awam.daftar');
