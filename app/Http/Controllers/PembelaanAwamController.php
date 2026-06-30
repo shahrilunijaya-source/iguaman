@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Form;
 use App\Support\Audit;
 use App\Support\NoFailGenerator;
+use App\Support\PerakuanService;
 use App\Support\StatusAgihan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -102,6 +103,28 @@ class PembelaanAwamController extends Controller
             'kes' => $kes,
             'statusAgihan' => StatusAgihan::label($kes->status_agihan),
         ]);
+    }
+
+    /** W14 — issue an interim legal-aid certificate (SEGERA cases; override via perm). */
+    public function keluarInterim(Request $request, Form $kes, PerakuanService $svc): RedirectResponse
+    {
+        abort_unless((bool) $kes->is_pembelaan_awam, 404);
+
+        // A manager may override the SEGERA requirement.
+        $override = $request->user()->can('pembelaan.manage') && $request->boolean('override');
+        $svc->keluarInterim($kes, $request->user(), $override);
+
+        return back()->with('status', 'Perakuan interim dikeluarkan. No. Perakuan: '.$kes->fresh()->no_perakuan);
+    }
+
+    /** W14 — finalise an interim certificate to muktamad. */
+    public function muktamad(Request $request, Form $kes, PerakuanService $svc): RedirectResponse
+    {
+        abort_unless((bool) $kes->is_pembelaan_awam, 404);
+
+        $svc->muktamadkan($kes, $request->user());
+
+        return back()->with('status', 'Perakuan dimuktamadkan.');
     }
 
     /** Distinct cawangan names already present on forms (mirrors KesController). */

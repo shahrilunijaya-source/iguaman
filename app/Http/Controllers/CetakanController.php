@@ -57,6 +57,19 @@ class CetakanController extends Controller
         ]);
     }
 
+    /** W14 — legal-aid certificate (Perakuan Bantuan Guaman), interim or muktamad. */
+    public function perakuan(Request $request, Form $kes): Response
+    {
+        if (blank($kes->status_perakuan)) {
+            return redirect()->route('pembelaan.show', $kes)->withErrors(['cetak' => 'Perakuan belum dikeluarkan untuk kes ini.']);
+        }
+
+        return $this->pdf($request, 'cetakan.perakuan', "perakuan-kes-{$kes->id}", [
+            'kes' => $kes,
+            'tarikhCetak' => now()->format('d/m/Y'),
+        ]);
+    }
+
     /** Shared dompdf render: inject letterhead meta + stream inline. */
     private function pdf(Request $request, string $view, string $filename, array $data): Response
     {

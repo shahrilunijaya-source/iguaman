@@ -175,6 +175,7 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/kes/{kes}/cetak/penugasan', [CetakanController::class, 'agihan'])->name('cetak.penugasan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/laporan', [CetakanController::class, 'laporan'])->name('cetak.laporan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/penutupan', [CetakanController::class, 'penutupan'])->name('cetak.penutupan')->whereNumber('kes');
+    Route::get('/kes/{kes}/cetak/perakuan', [CetakanController::class, 'perakuan'])->name('cetak.perakuan')->whereNumber('kes'); // W14 legal-aid certificate
 
     // OYD (Orang Yang Dibantu) registry
     Route::get('/oyd', [OydController::class, 'index'])->name('oyd.index');
@@ -425,6 +426,10 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/pembelaan-awam/baharu', [PembelaanAwamController::class, 'create'])->name('pembelaan.create')->middleware('permission:pembelaan.manage');
         Route::post('/pembelaan-awam', [PembelaanAwamController::class, 'store'])->name('pembelaan.store')->middleware('permission:pembelaan.manage');
         Route::get('/pembelaan-awam/{kes}', [PembelaanAwamController::class, 'show'])->name('pembelaan.show')->whereNumber('kes');
+
+        // W14 — legal-aid certificate (Perakuan Bantuan Guaman) issue/finalise.
+        Route::post('/pembelaan-awam/{kes}/perakuan/interim', [PembelaanAwamController::class, 'keluarInterim'])->name('pembelaan.perakuan.interim')->whereNumber('kes')->middleware('permission:kes.perakuan');
+        Route::post('/pembelaan-awam/{kes}/perakuan/muktamad', [PembelaanAwamController::class, 'muktamad'])->name('pembelaan.perakuan.muktamad')->whereNumber('kes')->middleware('permission:kes.perakuan');
     });
 
     // ---- Khidmat Nasihat (legal-advisory applications) — batch 9 ----

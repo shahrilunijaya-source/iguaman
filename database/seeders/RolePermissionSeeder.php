@@ -87,6 +87,8 @@ class RolePermissionSeeder extends Seeder
         // W9 — Pembelaan Awam (public criminal defence) register on the litigation spine.
         'pembelaan.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
         'pembelaan.manage' => ['pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
+        // W14 — issue/finalise the legal-aid certificate (Perakuan Bantuan Guaman).
+        'kes.perakuan' => ['koordinator', 'pengarah', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
     ];
 
     public function run(): void
