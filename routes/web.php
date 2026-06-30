@@ -25,6 +25,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PosterController;
 use App\Http\Controllers\RefKesController;
+use App\Http\Controllers\SlotController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
@@ -221,6 +222,14 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::delete('/cawangan/{cawangan}', [CawanganController::class, 'destroy'])->name('cawangan.destroy')->whereNumber('cawangan');
         Route::post('/cawangan/{cawangan}/bilik', [CawanganController::class, 'storeBilik'])->name('cawangan.bilik.store')->whereNumber('cawangan');
         Route::delete('/cawangan/{cawangan}/bilik/{bilik}', [CawanganController::class, 'destroyBilik'])->name('cawangan.bilik.destroy')->whereNumber('cawangan')->whereNumber('bilik');
+    });
+
+    // Janji Temu slot availability (read-only JSON) — consumed by the Batch 9 appointment
+    // wizard step 3 (date/time picker) at integration. SlotAvailabilityService is the core.
+    // TODO(batch-9): also accept permission:khidmat.manage once that permission exists.
+    Route::middleware('permission:slot.view')->group(function () {
+        Route::get('/slot/tarikh', [SlotController::class, 'availability'])->name('slot.tarikh');
+        Route::get('/slot/masa', [SlotController::class, 'times'])->name('slot.masa');
     });
 
     // Jenis Khidmat (KN category tree: kategori -> kes -> subkategori)
