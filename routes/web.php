@@ -220,9 +220,11 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     });
 
     // Agihan peguam (assignment) + workload
-    Route::get('/kes/{kes}/agih', [AgihanController::class, 'form'])->name('agihan.form')->whereNumber('kes');
-    Route::post('/kes/{kes}/agih', [AgihanController::class, 'store'])->name('agihan.store')->whereNumber('kes');
-    Route::get('/peguam-panel/beban', [AgihanController::class, 'beban'])->name('agihan.beban');
+    Route::middleware('permission:agihan.manage')->group(function () {
+        Route::get('/kes/{kes}/agih', [AgihanController::class, 'form'])->name('agihan.form')->whereNumber('kes');
+        Route::post('/kes/{kes}/agih', [AgihanController::class, 'store'])->name('agihan.store')->whereNumber('kes');
+        Route::get('/peguam-panel/beban', [AgihanController::class, 'beban'])->name('agihan.beban');
+    });
 
     // 3-tier assignment spine (PPUU -> Pengarah -> Ketua Pengarah). Role-gated per action.
     Route::get('/agihan/senarai/{bucket}', [AgihanSpineController::class, 'senarai'])->name('agihan.senarai')->whereIn('bucket', ['baru', 'semasa', 'semula']);
