@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgihanController;
+use App\Http\Controllers\AgihanLuarController;
 use App\Http\Controllers\AgihanSpineController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\Awam\PermohonanController;
@@ -374,6 +375,16 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::post('/agihan/{kes}/buka-semula', [AgihanSpineController::class, 'bukaSemula'])->name('agihan.buka-semula')->whereNumber('kes')->middleware('permission:agihan.pengarah');
     Route::post('/agihan/{kes}/batal', [AgihanSpineController::class, 'batalAgihan'])->name('agihan.batal')->whereNumber('kes')->middleware('permission:agihan.pengarah');
 
+    // W5 — Agihan Peguam Luar: assign a completed (SELESAI) KN to an external panel lawyer
+    // via GRAB (open pool) or ASSIGN (W11 shortlist). Static /agihan-luar before {khidmat} (whereNumber).
+    Route::middleware('permission:agihan.luar')->group(function () {
+        Route::get('/agihan-luar', [AgihanLuarController::class, 'index'])->name('agihan-luar.index');
+        Route::post('/agihan-luar/{khidmat}/buka-grab', [AgihanLuarController::class, 'bukaGrab'])->name('agihan-luar.buka-grab')->whereNumber('khidmat');
+        Route::get('/agihan-luar/{khidmat}/agih', [AgihanLuarController::class, 'agihForm'])->name('agihan-luar.agih')->whereNumber('khidmat');
+        Route::post('/agihan-luar/{khidmat}/agih', [AgihanLuarController::class, 'assign'])->name('agihan-luar.assign')->whereNumber('khidmat');
+        Route::post('/agihan-luar/{khidmat}/tarik-semula', [AgihanLuarController::class, 'tarikSemula'])->name('agihan-luar.tarik-semula')->whereNumber('khidmat');
+    });
+
     // Tarik Diri Mewakili OYD — staff review queue (PPUU -> Pengarah -> Ketua Pengarah).
     Route::get('/tarik-diri/senarai', [TarikDiriController::class, 'senarai'])->name('tarikdiri.senarai');
     Route::get('/tarik-diri/{kes}/maklumat', [TarikDiriController::class, 'show'])->name('tarikdiri.maklumat')->whereNumber('kes');
@@ -524,6 +535,10 @@ Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(f
     Route::post('/kes/{kes}/laporan', [PeguamController::class, 'storeLaporan'])->name('peguam.laporan')->whereNumber('kes');
     Route::post('/kes/{kes}/selesai', [PeguamController::class, 'selesai'])->name('peguam.selesai')->whereNumber('kes');
 
+    // W5 — Grab Khidmat Nasihat: open pool of KN any panel lawyer may self-claim.
+    Route::get('/grab', [PeguamController::class, 'grabSenarai'])->name('peguam.grab.index');
+    Route::post('/grab/{khidmat}', [PeguamController::class, 'grab'])->name('peguam.grab')->whereNumber('khidmat');
+
     // Tarik Diri Mewakili OYD (lawyer-initiated withdrawal from an assigned case).
     Route::get('/kes/{kes}/tarik-diri', [PeguamController::class, 'tarikDiriForm'])->name('peguam.tarikdiri.form')->whereNumber('kes');
     Route::post('/kes/{kes}/tarik-diri', [PeguamController::class, 'tarikDiriStore'])->name('peguam.tarikdiri.store')->whereNumber('kes');
@@ -535,6 +550,7 @@ Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(f
     // Lejar Tuntutan — lawyer self-service (W15). File claims against assigned cases.
     Route::get('/tuntutan', [PeguamTuntutanController::class, 'index'])->name('peguam.tuntutan.index');
     Route::get('/tuntutan/{tuntutan}', [PeguamTuntutanController::class, 'show'])->name('peguam.tuntutan.show')->whereNumber('tuntutan');
+    Route::post('/tuntutan/{tuntutan}/lengkap', [PeguamTuntutanController::class, 'lengkap'])->name('peguam.tuntutan.lengkap')->whereNumber('tuntutan');
     Route::get('/kes/{kes}/tuntutan/baharu', [PeguamTuntutanController::class, 'create'])->name('peguam.tuntutan.create')->whereNumber('kes');
     Route::post('/kes/{kes}/tuntutan', [PeguamTuntutanController::class, 'store'])->name('peguam.tuntutan.store')->whereNumber('kes');
 });

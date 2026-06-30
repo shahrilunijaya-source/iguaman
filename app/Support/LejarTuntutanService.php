@@ -7,6 +7,7 @@ namespace App\Support;
 use App\Models\Cawangan;
 use App\Models\KhidmatNasihat;
 use App\Models\LejarTuntutanBayaran;
+use App\Models\PeguamPanel;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -92,6 +93,38 @@ class LejarTuntutanService
             'jenis_tuntutan' => 'Bayaran Khidmat Nasihat',
             'jumlah_tuntutan' => $kn->jumlah_bayaran,
             'status_tuntutan' => LejarTuntutanBayaran::STATUS_DIHANTAR,
+        ], $actor);
+    }
+
+    /**
+     * Seed a PEGUAM_LUAR claim row when a KN is assigned to an external panel lawyer (W5).
+     * Idempotent via the (sumber, id_khidmat_nasihat) unique key — re-assigning the same KN
+     * returns the existing row instead of throwing a duplicate-key error. The row starts as a
+     * DRAF with no amount; the lawyer fills jumlah_tuntutan + submits via self-service tuntutan.
+     */
+    public function fromPeguamLuar(KhidmatNasihat $kn, PeguamPanel $peguam, string $actor): LejarTuntutanBayaran
+    {
+        $existing = LejarTuntutanBayaran::where('sumber', LejarTuntutanBayaran::SUMBER_PEGUAM_LUAR)
+            ->where('id_khidmat_nasihat', $kn->id)
+            ->first();
+
+        if ($existing !== null) {
+            return $existing;
+        }
+
+        return $this->cipta([
+            'sumber' => LejarTuntutanBayaran::SUMBER_PEGUAM_LUAR,
+            'sumber_id' => $peguam->id,
+            'id_khidmat_nasihat' => $kn->id,
+            'id_kes' => $kn->id_forms,
+            'id_peguam_panel' => $peguam->id,
+            'kp_peguam' => $peguam->kp_peguam,
+            'id_pengguna' => $kn->id_pengguna,
+            'cawangan_id' => $kn->cawangan_id,
+            'cawangan' => Cawangan::find($kn->cawangan_id)?->nama,
+            'jenis_tuntutan' => 'Bayaran Peguam Luar (Khidmat Nasihat)',
+            'jumlah_tuntutan' => 0,
+            'status_tuntutan' => LejarTuntutanBayaran::STATUS_DRAF,
         ], $actor);
     }
 

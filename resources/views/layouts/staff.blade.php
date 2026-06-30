@@ -113,6 +113,11 @@
         <a href="{{ route('agihan.beban') }}" class="ws-side-top {{ request()->routeIs('agihan.beban') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▥</span><span class="ws-side-label">Beban Tugas Peguam</span>
         </a>
+        @can('agihan.luar')
+            <a href="{{ route('agihan-luar.index') }}" class="ws-side-top {{ request()->routeIs('agihan-luar.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">⇲</span><span class="ws-side-label">Agihan Peguam Luar</span>
+            </a>
+        @endcan
         <a href="{{ route('tarikdiri.senarai') }}" class="ws-side-top {{ request()->routeIs('tarikdiri.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">⤴</span><span class="ws-side-label">Permohonan Tarik Diri</span>
         </a>

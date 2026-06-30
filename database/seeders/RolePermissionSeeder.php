@@ -45,6 +45,8 @@ class RolePermissionSeeder extends Seeder
         'agihan.pengarah' => ['pengarah'],
         'agihan.ppuu' => ['ppuu', 'koordinator'],
         'agihan.kp' => ['ketua_pengarah'],
+        // W5: assign a completed KN to an external panel lawyer (grab pool / direct assign).
+        'agihan.luar' => ['pengarah', 'koordinator', 'ppuu'],
         // Khidmat Nasihat (legal-advisory applications) — batch 9. Citizen/PELANGGAN access deferred to batch 13.
         'khidmat.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
         'khidmat.manage' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],

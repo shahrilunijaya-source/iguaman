@@ -46,6 +46,21 @@ class TuntutanController extends Controller
     {
         $this->authorizeCase($kes);
 
+        // W5: if a KN-seeded DRAF PEGUAM_LUAR claim already exists for this case, complete it
+        // instead of filing a parallel row (the (sumber,id_khidmat_nasihat) unique key cannot
+        // catch a free-form row whose id_khidmat_nasihat is NULL).
+        $seeded = LejarTuntutanBayaran::where('sumber', LejarTuntutanBayaran::SUMBER_PEGUAM_LUAR)
+            ->where('id_kes', $kes->id)
+            ->where('kp_peguam', $this->lawyerKp())
+            ->where('status_tuntutan', LejarTuntutanBayaran::STATUS_DRAF)
+            ->whereNotNull('id_khidmat_nasihat')
+            ->first();
+
+        if ($seeded !== null) {
+            return redirect()->route('peguam.tuntutan.show', $seeded)
+                ->with('status', 'Tuntutan Peguam Luar untuk kes ini telah wujud — sila lengkapkan dan hantar di bawah.');
+        }
+
         $data = $request->validate([
             'jenis_tuntutan' => ['required', 'string', 'max:100'],
             'keterangan' => ['nullable', 'string'],
@@ -77,6 +92,32 @@ class TuntutanController extends Controller
         $tuntutan->load('form');
 
         return view('peguam.tuntutan-show', compact('tuntutan'));
+    }
+
+    /**
+     * W5 — fill the amount on a KN-seeded DRAF PEGUAM_LUAR claim and submit it (DRAF -> DIHANTAR).
+     * The only lawyer-driven way to complete a row seeded at external-lawyer assignment.
+     */
+    public function lengkap(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
+    {
+        abort_unless($tuntutan->kp_peguam === $this->lawyerKp(), 403, 'Tuntutan ini bukan milik anda.');
+        abort_unless($tuntutan->status_tuntutan === LejarTuntutanBayaran::STATUS_DRAF, 422, 'Tuntutan ini telah dihantar.');
+
+        $data = $request->validate([
+            'jenis_tuntutan' => ['required', 'string', 'max:100'],
+            'keterangan' => ['nullable', 'string'],
+            'jumlah_tuntutan' => ['required', 'numeric', 'min:0.01'],
+        ]);
+
+        // transition() fills the extra fields then guards DRAF -> DIHANTAR atomically under a row lock.
+        $this->svc->transition($tuntutan, 'hantar', Auth::user()->name, [
+            'jenis_tuntutan' => $data['jenis_tuntutan'],
+            'keterangan' => $data['keterangan'] ?? null,
+            'jumlah_tuntutan' => $data['jumlah_tuntutan'],
+        ]);
+
+        return redirect()->route('peguam.tuntutan.show', $tuntutan)
+            ->with('status', "Tuntutan {$tuntutan->no_tuntutan} dihantar.");
     }
 
     /** The signed-in lawyer's IC (kpBaru) — the ledger join key. */

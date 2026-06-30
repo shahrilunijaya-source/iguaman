@@ -26,6 +26,11 @@
                 <div class="dash-kpi__value">{{ number_format($stats['tawaran']) }}</div>
                 <div class="dash-kpi__sub">menunggu jawapan</div>
             </a>
+            <a href="{{ route('peguam.grab.index') }}" class="dash-kpi {{ $stats['kes_grab'] > 0 ? 'is-warn' : '' }}" style="text-decoration:none; color:inherit;">
+                <div class="dash-kpi__eyebrow">Kes Grab</div>
+                <div class="dash-kpi__value">{{ number_format($stats['kes_grab']) }}</div>
+                <div class="dash-kpi__sub">terbuka untuk grab</div>
+            </a>
         </div>
     </div>
 @endsection

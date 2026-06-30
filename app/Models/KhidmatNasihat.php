@@ -25,6 +25,8 @@ class KhidmatNasihat extends Model
         'is_laluan_sumbangan' => 'boolean',
         'tarikh_lahir_mangsa' => 'date',
         'tarikh_proses' => 'datetime',
+        'tarikh_buka_grab' => 'datetime',
+        'tarikh_agihan_pl' => 'datetime',
         'jumlah_bayaran' => 'decimal:2',
         'jumlah_pendapatan' => 'decimal:2',
     ];
@@ -56,6 +58,21 @@ class KhidmatNasihat extends Model
     public const SARINGAN_SIVIL_SYARIAH = 'SIVIL_SYARIAH';
 
     public const SARINGAN_PENDAMPING = 'PENDAMPING';
+
+    // ---- W5: external panel-lawyer assignment state machine (status_agihan_pl) ----
+    /** Opened to the grab pool; any panel lawyer may self-claim within 7 days. */
+    public const PL_BUKA_GRAB = 'BUKA_GRAB';
+
+    /** Assigned to (or claimed by) an external panel lawyer. Terminal. */
+    public const PL_DIAGIH = 'DIAGIH';
+
+    /** Grab pool expired with no claim (7 days) — back to officer for re-assign/re-open. */
+    public const PL_LUPUT = 'LUPUT';
+
+    /** How an external lawyer got the KN (mod_agihan_peguam). */
+    public const MOD_GRAB = 'GRAB';
+
+    public const MOD_ASSIGN = 'ASSIGN';
 
     public function pengguna(): BelongsTo
     {
@@ -99,6 +116,12 @@ class KhidmatNasihat extends Model
     public function cawangan(): BelongsTo
     {
         return $this->belongsTo(Cawangan::class, 'cawangan_id');
+    }
+
+    /** Assigned external panel lawyer (W5). Set on grab/assign; surrogate id link. */
+    public function peguamPanel(): BelongsTo
+    {
+        return $this->belongsTo(PeguamPanel::class, 'id_peguam_panel');
     }
 
     public function kategori(): BelongsTo
