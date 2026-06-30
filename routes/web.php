@@ -30,6 +30,7 @@ use App\Http\Controllers\LaporanPenuhController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
 use App\Http\Controllers\MaklumBalasController;
+use App\Http\Controllers\OcrPrefillController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PegawaiController;
@@ -177,6 +178,12 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/kes/{kes}/cetak/penutupan', [CetakanController::class, 'penutupan'])->name('cetak.penutupan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/perakuan', [CetakanController::class, 'perakuan'])->name('cetak.perakuan')->whereNumber('kes'); // W14 legal-aid certificate
     Route::get('/kes/{kes}/cetak/pembatalan', [CetakanController::class, 'pembatalan'])->name('cetak.pembatalan')->whereNumber('kes'); // W20 cancellation letter
+
+    // W13 — OCR document → form prefill (spike; feature-flagged off via config('ocr.enabled')).
+    Route::middleware('permission:kes.create')->group(function () {
+        Route::get('/ocr-prefill', [OcrPrefillController::class, 'form'])->name('ocr.prefill');
+        Route::post('/ocr-prefill/extract', [OcrPrefillController::class, 'extract'])->name('ocr.prefill.extract');
+    });
 
     // OYD (Orang Yang Dibantu) registry
     Route::get('/oyd', [OydController::class, 'index'])->name('oyd.index');
