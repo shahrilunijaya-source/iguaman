@@ -135,6 +135,13 @@
         footer.site .f-links { display: flex; gap: 24px; flex-wrap: wrap; }
         footer.site a, footer.site p { font-size: 13.5px; color: var(--mute); }
         footer.site a:hover { color: var(--pine); }
+        /* Reference-doc red pills (bottom of landing). */
+        .f-docs { flex-basis: 100%; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+            margin-top: 6px; padding-top: 20px; border-top: 1px dashed var(--line); }
+        .doc-pill { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600;
+            background: #D62828; color: #fff !important; border-radius: 30px; padding: 8px 17px;
+            box-shadow: 0 6px 16px -6px rgba(214,40,40,.55); transition: .15s; }
+        .doc-pill:hover { background: #B81E1E; transform: translateY(-1px); color: #fff !important; }
 
         @media (max-width: 860px) {
             .topnav .navlink { display: none; }
@@ -263,6 +270,10 @@
                 <a href="{{ route('system.login') }}">Kakitangan</a>
             </nav>
             <p>&copy; {{ now()->year }} Jabatan Bantuan Guaman Malaysia</p>
+            <div class="f-docs">
+                <a href="{{ route('docs.overview') }}" class="doc-pill" target="_blank" rel="noopener">📘 System Overview v2</a>
+                <a href="{{ route('docs.penambahbaikan') }}" class="doc-pill" target="_blank" rel="noopener">🔴 22 Penambahbaikan</a>
+            </div>
         </div>
     </footer>
 

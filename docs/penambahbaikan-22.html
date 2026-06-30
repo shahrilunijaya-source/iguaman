@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iGuaman 2in1 — 22 Penambahbaikan Status</title>
+<style>
+  :root{
+    --teal:#00B8A9; --teal-600:#009B8E; --teal-700:#007D72; --teal-50:#E6F8F6; --teal-100:#C7EFEA;
+    --pine:#003D3A; --pine-700:#002F2C; --pine-900:#001E1C;
+    --orange:#FF6B35; --orange-50:#FFF1EB; --orange-600:#E85A28;
+    --amber:#C77800; --amber-50:#FFF6E5;
+    --ink-navy:#0B1E3F;
+    --ink:#0A0E13; --ink-2:#1A1F26; --muted:#5A6470; --muted-2:#828b96;
+    --paper:#FAFAF7; --paper-2:#F4F3EE; --line:#E4E2DA; --line-2:#EFEDE6;
+    --white:#fff;
+    --font:'Poppins','Segoe UI',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --r:14px;
+    --shadow:0 1px 2px rgba(0,30,28,.04),0 8px 24px -12px rgba(0,30,28,.18);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{line-height:1.15;letter-spacing:-.02em;margin:0}
+  code{font-family:var(--mono);font-size:.82em;background:var(--teal-50);color:var(--teal-700);padding:1px 6px;border-radius:5px}
+
+  .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;
+    padding:12px 24px;background:rgba(0,30,28,.86);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,184,169,.22)}
+  .topbar .brand{font-weight:700;color:#fff;font-size:1.05rem;display:flex;align-items:center;gap:2px}
+  .topbar .brand .i{color:var(--teal);font-style:normal}
+  .topbar .tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.16em;color:var(--teal-100);
+    border:1px solid rgba(0,184,169,.35);padding:3px 9px;border-radius:30px}
+  .topbar .sp{flex:1}
+  .topbar .meta{color:#8aa3a0;font-size:.78rem;font-family:var(--mono)}
+  .topbar a{color:#bcd4d0;font-size:.8rem;text-decoration:none;border-bottom:1px dotted rgba(188,212,208,.5)}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,40px) 100px}
+
+  .hero{margin:0 calc(-1*clamp(18px,4vw,40px));padding:64px clamp(18px,4vw,40px) 48px;
+    background:radial-gradient(120% 140% at 80% -10%,rgba(0,184,169,.22),transparent 55%),
+               linear-gradient(160deg,var(--pine) 0%,var(--pine-900) 100%);color:#eaf4f2;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-120px;top:-80px;width:420px;height:420px;
+    background:radial-gradient(circle,rgba(255,107,53,.18),transparent 60%);pointer-events:none}
+  .hero .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.22em;color:var(--teal);font-weight:600;margin-bottom:14px}
+  .hero h1{font-size:clamp(1.9rem,4.5vw,3rem);color:#fff;max-width:20ch}
+  .hero h1 b{color:var(--teal)}
+  .hero p.lead{font-size:clamp(1rem,1.5vw,1.15rem);max-width:64ch;margin-top:16px;color:#bcd4d0}
+  .quickstats{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
+  .qs{background:rgba(0,0,0,.25);border:1px solid rgba(0,184,169,.2);border-radius:12px;padding:13px 20px}
+  .qs b{display:block;font-size:1.7rem;color:#fff;line-height:1}
+  .qs span{font-size:.7rem;color:#9fc0bc;text-transform:uppercase;letter-spacing:.1em}
+
+  .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:34px 0 14px}
+  .toolbar .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted-2);font-weight:600;margin-right:4px}
+  .fbtn{font-family:var(--font);font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid var(--line);
+    background:#fff;color:var(--ink-2);padding:6px 13px;border-radius:30px;transition:.15s}
+  .fbtn:hover{border-color:var(--teal)}
+  .fbtn.on{background:var(--pine);color:#fff;border-color:var(--pine)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:8px 0 22px;font-size:.8rem;color:var(--muted)}
+  .legend .b{display:inline-flex;align-items:center;gap:6px}
+
+  .badge{font-size:.7rem;font-weight:700;font-family:var(--mono);padding:3px 9px;border-radius:20px;white-space:nowrap;display:inline-block}
+  .badge.done{background:var(--teal-50);color:var(--teal-700);border:1px solid var(--teal-100)}
+  .badge.spike{background:var(--amber-50);color:var(--amber);border:1px solid #f3e0b0}
+
+  .area{font-size:.68rem;font-weight:600;font-family:var(--mono);padding:2px 8px;border-radius:6px;white-space:nowrap}
+  .a-kn{background:var(--orange-50);color:var(--orange-600)}
+  .a-rk{background:#eef4ff;color:#2c5bb8}
+  .a-pp{background:#f1ecff;color:#6b46c1}
+  .a-pa{background:#ffeef0;color:#c0395a}
+  .a-pg{background:var(--teal-50);color:var(--teal-700)}
+  .a-x{background:#eef0f2;color:#566}
+
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);background:#fff}
+  table{border-collapse:collapse;width:100%;font-size:.84rem;min-width:840px}
+  th{background:var(--pine);color:#dff3f0;text-align:left;padding:11px 14px;font-weight:600;font-size:.72rem;
+    text-transform:uppercase;letter-spacing:.06em;position:sticky;top:0}
+  td{padding:11px 14px;border-top:1px solid var(--line-2);vertical-align:top}
+  tr:nth-child(even) td{background:var(--paper)}
+  td.w{font-family:var(--mono);font-weight:700;color:var(--pine);white-space:nowrap}
+  td.wish{font-weight:600;color:var(--ink-2);min-width:230px}
+  td.remark{color:var(--muted);font-size:.82rem;min-width:280px}
+  td.remark code{font-size:.92em}
+  td.commit code{background:var(--pine-900);color:var(--teal-100);font-size:.78rem}
+  tr.hide{display:none}
+
+  .phase-head td{background:var(--paper-2)!important;font-weight:700;color:var(--pine);font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.08em;padding:9px 14px}
+
+  .note{display:flex;gap:14px;background:var(--teal-50);border:1px solid var(--teal-100);
+    border-left:4px solid var(--teal);border-radius:10px;padding:14px 18px;margin:22px 0;font-size:.86rem;color:#234}
+  .note b{color:var(--pine)}
+  footer{margin-top:50px;padding-top:24px;border-top:1px solid var(--line);
+    color:var(--muted-2);font-size:.78rem;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+  @media(max-width:700px){table{min-width:680px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand"><span class="i">i</span>Guaman</span>
+  <span class="tag">2in1 · v2</span>
+  <span class="sp"></span>
+  <a href="system-overview.html">← System overview</a>
+  <span class="meta">Penambahbaikan Subsistem · 22 wishes</span>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">Penambahbaikan Subsistem · Status Report</div>
+    <h1>22 enhancements, <b>shipped &amp; tested</b>.</h1>
+    <p class="lead">The full SENARAI PENAMBAHBAIKAN — every improvement request against the consolidated iGuaman 2in1 app, sequenced foundation-first around a central claim ledger, with the live status, the commit it landed in, and a one-line remark.</p>
+    <div class="quickstats">
+      <div class="qs"><b>22</b><span>Wishes in scope</span></div>
+      <div class="qs"><b>21</b><span>Fully shipped</span></div>
+      <div class="qs"><b>1</b><span>Spike / deferred</span></div>
+      <div class="qs"><b>351</b><span>Tests green</span></div>
+      <div class="qs"><b>5</b><span>Commits this round</span></div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <span class="lbl">Filter</span>
+    <button class="fbtn on" data-f="all">All 22</button>
+    <button class="fbtn" data-f="done">Done</button>
+    <button class="fbtn" data-f="spike">Spike</button>
+    <button class="fbtn" data-f="KN">Khidmat Nasihat</button>
+    <button class="fbtn" data-f="RK">Rekod Kes</button>
+    <button class="fbtn" data-f="PP">Peguam Panel</button>
+    <button class="fbtn" data-f="PA">Pembelaan Awam</button>
+    <button class="fbtn" data-f="PG">Pengantaraan</button>
+    <button class="fbtn" data-f="X">Cross-cutting</button>
+  </div>
+
+  <div class="legend">
+    <span class="b"><span class="badge done">✔ DONE</span> built, tested, on trunk</span>
+    <span class="b"><span class="badge spike">◐ SPIKE</span> seam built, feature-flagged off, full build deferred</span>
+    <span class="b"><span class="area a-kn">KN</span> Khidmat Nasihat</span>
+    <span class="b"><span class="area a-rk">RK</span> Rekod Kes</span>
+    <span class="b"><span class="area a-pp">PP</span> Peguam Panel</span>
+    <span class="b"><span class="area a-pa">PA</span> Pembelaan Awam</span>
+    <span class="b"><span class="area a-pg">PG</span> Pengantaraan</span>
+    <span class="b"><span class="area a-x">×</span> Cross-cutting</span>
+  </div>
+
+  <div class="tbl-wrap">
+    <table id="tbl">
+      <thead><tr><th>#</th><th>Wish</th><th>Area</th><th>Status</th><th>Commit</th><th>Remark</th></tr></thead>
+      <tbody>
+
+        <tr class="phase-head"><td colspan="6">Foundations — DB integrity &amp; the central ledger</td></tr>
+        <tr data-area="X" data-status="done">
+          <td class="w">W22</td>
+          <td class="wish">DB structure changes for integrity / consistency</td>
+          <td><span class="area a-x">×</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>322499a</code></td>
+          <td class="remark">FK type fixes, soft-link FKs, mediation-officer FK, <code>laporan_kes.id_kes</code> normalized; G-H6 locked with a schema-snapshot test.</td>
+        </tr>
+        <tr data-area="X" data-status="done">
+          <td class="w">W15</td>
+          <td class="wish">Panel lawyer generates a claim ledger easily &amp; accurately</td>
+          <td><span class="area a-x">×</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>e9ea8d7</code></td>
+          <td class="remark"><b>Foundational.</b> Central polymorphic <code>lejar_tuntutan_bayaran</code> (KN / Pembelaan / Mediasi / Peguam-Luar). Unblocks W5, W9, W19. Auto-creates a KN claim on paid <code>selesai()</code>.</td>
+        </tr>
+
+        <tr class="phase-head"><td colspan="6">Panel-lawyer operations &amp; sync</td></tr>
+        <tr data-area="PP" data-status="done">
+          <td class="w">W11</td>
+          <td class="wish">Automated case distribution + workload shortlist</td>
+          <td><span class="area a-pp">PP</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>365f589</code></td>
+          <td class="remark"><code>PeguamShortlistService</code> ranks lawyers by open-case load; rewired into the assignment board. Manual pick still allowed (shortlist is advisory).</td>
+        </tr>
+        <tr data-area="PP" data-status="done">
+          <td class="w">W12</td>
+          <td class="wish">Case sync Rekod Kes ↔ Peguam Panel</td>
+          <td><span class="area a-pp">PP</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>4689c45</code></td>
+          <td class="remark">Reverse case→KN sync via <code>KesKnSyncService</code> (explicit service calls, not model events) — forms state flows back to <code>khidmat_nasihat</code>.</td>
+        </tr>
+        <tr data-area="PP" data-status="done">
+          <td class="w">W10</td>
+          <td class="wish">Panel lawyer registration + approval (sivil / syariah / jenayah)</td>
+          <td><span class="area a-pp">PP</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>8385793</code></td>
+          <td class="remark">Registration <code>jalur</code> split + a forked criminal-track approver tier (<code>pengarah/ketua_pembelaan_awam</code>).</td>
+        </tr>
+        <tr data-area="PP" data-status="done">
+          <td class="w">W16</td>
+          <td class="wish">'Selesai' by lawyer → RK final confirm + close file</td>
+          <td><span class="area a-pp">PP</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>14fa06f</code></td>
+          <td class="remark">Status codes 18/19: lawyer marks Selesai → JBG confirm queue → file closed + KN synced + closure PDF. Reject bounces back to active.</td>
+        </tr>
+        <tr data-area="KN" data-status="done">
+          <td class="w">W5</td>
+          <td class="wish">Assign completed KN to an external panel lawyer + ledger</td>
+          <td><span class="area a-kn">KN</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>4c9d764</code></td>
+          <td class="remark">Grab pool (7-day) or direct assign via the W11 shortlist; writes a <code>PEGUAM_LUAR</code> ledger row. Expiry cron <code>grab:tamat-luput</code>.</td>
+        </tr>
+
+        <tr class="phase-head"><td colspan="6">Branch transfer + transfer KPI</td></tr>
+        <tr data-area="RK" data-status="done">
+          <td class="w">W7</td>
+          <td class="wish">Case file transfer between branches (no data / history loss)</td>
+          <td><span class="area a-rk">RK</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>f507a18</code></td>
+          <td class="remark">Shared <code>pemindahan_cawangan</code> engine. All history (<code>sejarah_*</code>, lampiran, ledger) keys off <code>id_kes</code> which never moves — only the branch label does. Dual-branch visibility (D2).</td>
+        </tr>
+        <tr data-area="KN" data-status="done">
+          <td class="w">W3</td>
+          <td class="wish">KN transfer between branches</td>
+          <td><span class="area a-kn">KN</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>f507a18</code></td>
+          <td class="remark">Same engine, KN side (id-based <code>cawangan_id</code> / <code>cawangan_asal_id</code>). Initiate → destination accepts / rejects (reverses).</td>
+        </tr>
+        <tr data-area="RK" data-status="done">
+          <td class="w">W8</td>
+          <td class="wish">KPI for transferred cases, both branches, by month</td>
+          <td><span class="area a-rk">RK</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>8512c27</code></td>
+          <td class="remark"><code>StatistikPemindahanController</code> — 12-month in/out matrix per branch (OUT by origin, IN by destination). Year picker.</td>
+        </tr>
+        <tr data-area="KN" data-status="done">
+          <td class="w">W4</td>
+          <td class="wish">KPI for transferred KN, both branches</td>
+          <td><span class="area a-kn">KN</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>8512c27</code></td>
+          <td class="remark">Same controller, KN tab. Reads <code>pemindahan_cawangan</code> only; rejected transfers excluded.</td>
+        </tr>
+
+        <tr class="phase-head"><td colspan="6">SKN intake + payment</td></tr>
+        <tr data-area="KN" data-status="done">
+          <td class="w">W1</td>
+          <td class="wish">KN intake separated by source (prison / clinic vs public) + fee waive/pay + attachment</td>
+          <td><span class="area a-kn">KN</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>e2487f9</code></td>
+          <td class="remark">Explicit <code>applicant_source</code> (PUBLIC/PRISON/CLINIC/COURT), indexed for KPI. New <code>prison_officer</code> role. Optional fee-waiver upload when <code>is_percuma</code>.</td>
+        </tr>
+        <tr data-area="KN" data-status="done">
+          <td class="w">W2</td>
+          <td class="wish">iPayment payment recorded in KN (counter + upload resit)</td>
+          <td><span class="area a-kn">KN</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>6740484</code></td>
+          <td class="remark">Manual counter payment → flips KN <code>status_bayaran</code> + stamps ledger DIBAYAR + resit upload. <code>kaedah_bayaran</code> future-proofed for a live gateway (TUNAI today, IPAYMENT later).</td>
+        </tr>
+
+        <tr class="phase-head"><td colspan="6">Mediation (Pengantaraan)</td></tr>
+        <tr data-area="PG" data-status="done">
+          <td class="w">W17</td>
+          <td class="wish">Mediation own file number (not reuse case no.)</td>
+          <td><span class="area a-pg">PG</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>e1bea17</code></td>
+          <td class="remark">Independent <code>PGT…</code> series via <code>NoFailGenerator::generatePengantaraan</code>; <code>no_pengantaraan</code> unique column.</td>
+        </tr>
+        <tr data-area="PG" data-status="done">
+          <td class="w">W18</td>
+          <td class="wish">Mediation application direct OR via litigation</td>
+          <td><span class="area a-pg">PG</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>e1bea17</code></td>
+          <td class="remark">Standalone intake → a <code>forms</code> row tagged <code>sumber_pengantaraan = TERUS | LITIGASI</code>.</td>
+        </tr>
+        <tr data-area="PG" data-status="done">
+          <td class="w">W19</td>
+          <td class="wish">Mediation assigned to a mediator + ledger</td>
+          <td><span class="area a-pg">PG</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>e1bea17</code></td>
+          <td class="remark"><code>id_pegawai_pengantara</code> + assign service + an idempotent <code>MEDIASI</code> ledger row. Perm <code>pengantaraan.agih</code>.</td>
+        </tr>
+
+        <tr class="phase-head"><td colspan="6">Pembelaan Awam (public criminal defence)</td></tr>
+        <tr data-area="PA" data-status="done">
+          <td class="w">W9</td>
+          <td class="wish">Pembelaan Awam: register → assign → manage → close + ledger</td>
+          <td><span class="area a-pa">PA</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>b06b13f</code></td>
+          <td class="remark">No new table — pembelaan cases are tagged <code>forms</code> rows on the existing 3-tier spine. <code>PBA…</code> number series; ledger row on close.</td>
+        </tr>
+        <tr data-area="PA" data-status="done">
+          <td class="w">W14</td>
+          <td class="wish">Criminal interim (segera) legal-aid certificate</td>
+          <td><span class="area a-pa">PA</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>ddc759d</code></td>
+          <td class="remark">Certificate state interim → muktamad on <code>forms</code> cols; <code>PRK…</code> series + dompdf certificate. Perms <code>pembelaan.*</code>, <code>kes.perakuan</code>.</td>
+        </tr>
+
+        <tr class="phase-head"><td colspan="6">Repository, reporting, integration, OCR</td></tr>
+        <tr data-area="RK" data-status="done">
+          <td class="w">W6</td>
+          <td class="wish">Supporting-document upload / store / reference (at scale)</td>
+          <td><span class="area a-rk">RK</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>09f59f9</code></td>
+          <td class="remark">25 MB cap, dedicated private <code>repositori</code> disk (legacy-fallback reads), 7-year retention report/purge command.</td>
+        </tr>
+        <tr data-area="X" data-status="done">
+          <td class="w">W20</td>
+          <td class="wish">Reports fast + multi-format download</td>
+          <td><span class="area a-x">×</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>fb00509</code></td>
+          <td class="remark">Bulk-export job queue (<code>ExportLaporanJob</code>), restored the cancellation letter, fuller pengantaraan report columns.</td>
+        </tr>
+        <tr data-area="X" data-status="done">
+          <td class="w">W21</td>
+          <td class="wish">Real-time integration between modules</td>
+          <td><span class="area a-x">×</span></td>
+          <td><span class="badge done">✔ DONE</span></td>
+          <td class="commit"><code>b5ebda0</code></td>
+          <td class="remark">Laravel events + a <b>queued</b> listener (a branch transfer notifies the destination branch). <code>CawanganScope</code> extended beyond <code>forms</code> to <code>khidmat_nasihat</code> — closes the cross-branch read gap.</td>
+        </tr>
+        <tr data-area="X" data-status="spike">
+          <td class="w">W13</td>
+          <td class="wish">Extract received docs → prefill online form (OCR)</td>
+          <td><span class="area a-x">×</span></td>
+          <td><span class="badge spike">◐ SPIKE</span></td>
+          <td class="commit"><code>ad62f1f</code></td>
+          <td class="remark">Decision doc + a feature-flagged <code>OcrPrefillService</code> seam (flag OFF). Full OCR (Tesseract vs Textract) deferred — recommend routing through the existing Python microservice. <b>Only non-shipped item.</b></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <span>🧪</span>
+    <div><b>Verification:</b> the full PHPUnit suite is <b>351/351 green</b> on a scratch MySQL DB (<code>iguaman_2in1_test</code>, never the dev DB). Every wish landed as a small atomic commit on branch <code>feat/penambahbaikan-subsistem</code>. Not yet shipped to <code>main</code> / production.</div>
+  </div>
+
+  <footer>
+    <span>iGuaman 2in1 · Penambahbaikan status — trunk <code>feat/penambahbaikan-subsistem</code> @ <code>b5ebda0</code>.</span>
+    <span>JBG · Jabatan Bantuan Guaman Malaysia</span>
+  </footer>
+
+</div>
+
+<script>
+  const btns = [...document.querySelectorAll('.fbtn')];
+  const rows = [...document.querySelectorAll('#tbl tbody tr[data-area]')];
+  const heads = [...document.querySelectorAll('#tbl tbody tr.phase-head')];
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    const f = b.dataset.f;
+    rows.forEach(r => {
+      const show = f === 'all'
+        || (f === 'done' && r.dataset.status === 'done')
+        || (f === 'spike' && r.dataset.status === 'spike')
+        || (f === r.dataset.area);
+      r.classList.toggle('hide', !show);
+    });
+    // Hide a phase header when all of its rows are filtered out.
+    heads.forEach(h => {
+      let n = h.nextElementSibling, any = false;
+      while (n && !n.classList.contains('phase-head')) {
+        if (n.dataset.area && !n.classList.contains('hide')) any = true;
+        n = n.nextElementSibling;
+      }
+      h.classList.toggle('hide', !any);
+    });
+  });
+</script>
+
+</body>
+</html>

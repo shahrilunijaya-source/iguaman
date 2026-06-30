@@ -189,8 +189,9 @@
 
 <div class="topbar">
   <span class="brand"><span class="i">i</span>Guaman</span>
-  <span class="tag">2in1</span>
+  <span class="tag">2in1 · v2</span>
   <span class="sp"></span>
+  <a href="penambahbaikan-22.html" style="color:#bcd4d0;font-size:.8rem;text-decoration:none;border-bottom:1px dotted rgba(188,212,208,.5);margin-right:14px">22 Penambahbaikan →</a>
   <span class="meta">JBG · Legal Aid System · Laravel 13 / PHP 8.3 / MySQL</span>
 </div>
 
@@ -198,6 +199,8 @@
 
   <!-- ===================== SIDE NAV ===================== -->
   <nav class="sidenav" id="sidenav">
+    <div class="grp">What's new</div>
+    <a href="#whatsnew">v2 — 22 Penambahbaikan</a>
     <div class="grp">Orientation</div>
     <a href="#overview">What is iGuaman 2in1</a>
     <a href="#modules">Module map</a>
@@ -227,7 +230,7 @@
 
     <!-- ===================== HERO ===================== -->
     <div class="hero">
-      <div class="eyebrow">System Understanding · Generated from source</div>
+      <div class="eyebrow">System Understanding · v2 · Generated from source</div>
       <h1>One workspace for <b>legal aid</b>, case records &amp; panel lawyers.</h1>
       <p class="lead">iGuaman 2in1 is the internal production system for <b>JBG — Jabatan Bantuan Guaman Malaysia</b> (the Legal Aid Department). "2in1" = two legacy systems fused into one Laravel app, plus a new public advisory + appointment layer and an AI chatbot.</p>
       <div class="chips">
@@ -241,12 +244,57 @@
       </div>
       <div class="quickstats">
         <div class="qs"><b>3</b><span>User portals</span></div>
-        <div class="qs"><b>8</b><span>Roles</span></div>
-        <div class="qs"><b>~50</b><span>Controllers</span></div>
-        <div class="qs"><b>~48</b><span>DB tables</span></div>
-        <div class="qs"><b>7</b><span>Core workflows</span></div>
+        <div class="qs"><b>12</b><span>Roles</span></div>
+        <div class="qs"><b>~55</b><span>Controllers</span></div>
+        <div class="qs"><b>~52</b><span>DB tables</span></div>
+        <div class="qs"><b>22</b><span>v2 enhancements</span></div>
       </div>
     </div>
+
+    <!-- ===================== WHAT'S NEW (v2) ===================== -->
+    <section id="whatsnew">
+      <div class="sec-eyebrow">What's new</div>
+      <h2 class="sec-h"><span class="num">v2</span>22 Penambahbaikan — shipped &amp; tested</h2>
+      <p class="sec-sub">v2 closes the full <b>SENARAI PENAMBAHBAIKAN SUBSISTEM</b>: 22 improvement requests against the consolidated app, sequenced foundation-first around a new <b>central claim ledger</b>. 21 fully shipped, 1 (OCR) a feature-flagged spike. All on branch <code>feat/penambahbaikan-subsistem</code>; suite <b>351/351 green</b>. <a href="penambahbaikan-22.html"><b>See the full 22-wish status →</b></a></p>
+
+      <div class="note">
+        <span class="ic">🆕</span>
+        <div><b>The big additions vs v1:</b> a central polymorphic <b>claim ledger</b> (W15) · a shared <b>branch-transfer engine</b> + transfer KPI (W7/W3/W8/W4) · <b>Pembelaan Awam</b> on the litigation spine + interim/muktamad certificate (W9/W14) · <b>Mediation</b> with its own number, standalone intake &amp; mediator assignment (W17/W18/W19) · a <b>prison_officer</b> intake role + manual <b>iPayment</b> receipts (W1/W2) · a real <b>event/queue</b> integration layer (W21). The role count grew 8 → <b>12</b> and permissions to <b>55</b>.</div>
+      </div>
+
+      <div class="grid g3">
+        <div class="card accent">
+          <h4><span class="ic">🧾</span> Central claim ledger</h4>
+          <p>New <code>lejar_tuntutan_bayaran</code> — one polymorphic money trail for KN, Pembelaan, Mediasi &amp; external-lawyer claims. Auto-creates on paid advisory <code>selesai()</code>.</p>
+          <div class="pillrow"><span class="pill">W15</span><span class="pill">W5</span><span class="pill">W2</span></div>
+        </div>
+        <div class="card accent">
+          <h4><span class="ic">⇄</span> Branch transfer + KPI</h4>
+          <p>Move a case or KN between branches with zero history loss (everything keys off <code>id_kes</code>) and dual-branch visibility. New 12-month in/out KPI matrix.</p>
+          <div class="pillrow"><span class="pill">W7</span><span class="pill">W3</span><span class="pill">W8</span><span class="pill">W4</span></div>
+        </div>
+        <div class="card accent-o">
+          <h4><span class="ic">🛡</span> Pembelaan Awam</h4>
+          <p>Public criminal-defence cases ride the existing 3-tier spine as tagged <code>forms</code> rows (no new table). Interim → muktamad legal-aid certificate with PDF.</p>
+          <div class="pillrow"><span class="pill o">W9</span><span class="pill o">W14</span></div>
+        </div>
+        <div class="card accent">
+          <h4><span class="ic">⚖️</span> Mediation, first-class</h4>
+          <p>Its own <code>PGT…</code> file number, standalone or via-litigation intake, and mediator assignment that opens a MEDIASI ledger row.</p>
+          <div class="pillrow"><span class="pill">W17</span><span class="pill">W18</span><span class="pill">W19</span></div>
+        </div>
+        <div class="card accent-o">
+          <h4><span class="ic">💬</span> KN intake &amp; iPayment</h4>
+          <p>Intake split by source (prison/clinic vs public) with a new <code>prison_officer</code> role; manual counter payments record a receipt into the KN + ledger.</p>
+          <div class="pillrow"><span class="pill o">W1</span><span class="pill o">W2</span></div>
+        </div>
+        <div class="card accent">
+          <h4><span class="ic">🔔</span> Real-time integration</h4>
+          <p>Laravel events + a <b>queued</b> listener (a transfer notifies the destination branch). <code>CawanganScope</code> branch-isolation extended beyond <code>forms</code> to <code>khidmat_nasihat</code>.</p>
+          <div class="pillrow"><span class="pill">W21</span><span class="pill">W12</span><span class="pill">W11</span></div>
+        </div>
+      </div>
+    </section>
 
     <!-- ===================== OVERVIEW ===================== -->
     <section id="overview">
@@ -297,6 +345,10 @@
         <div class="card"><h4>🤖 AI@JBG Chatbot</h4><p>Public widget → Laravel proxy → Python microservice. Throttled.</p></div>
         <div class="card"><h4>📝 Maklum Balas</h4><p>Public post-appointment satisfaction feedback — no login, one per advisory.</p></div>
         <div class="card"><h4>🔑 Auth &amp; Akaun</h4><p>Plain login, password reset, forced password change for migrated accounts.</p></div>
+        <div class="card accent"><h4>🧾 Lejar Tuntutan <span class="pill" style="font-size:.6rem">v2</span></h4><p>Central claim ledger across KN, Pembelaan, Mediasi &amp; external lawyers; officer lifecycle + receipt step.</p></div>
+        <div class="card accent"><h4>⇄ Pemindahan Cawangan <span class="pill" style="font-size:.6rem">v2</span></h4><p>Branch transfer engine for cases &amp; KN + dual-branch worklists + 12-month transfer KPI.</p></div>
+        <div class="card accent"><h4>🛡 Pembelaan Awam <span class="pill" style="font-size:.6rem">v2</span></h4><p>Public criminal-defence cases on the litigation spine; interim → muktamad legal-aid certificate.</p></div>
+        <div class="card accent"><h4>🔔 Events &amp; Queue <span class="pill" style="font-size:.6rem">v2</span></h4><p>Lifecycle events + queued listeners (transfer notifications); cross-module real-time integration.</p></div>
       </div>
     </section>
 
@@ -402,7 +454,7 @@
     <section id="users">
       <div class="sec-eyebrow">Who uses it</div>
       <h2 class="sec-h"><span class="num">06</span>Users &amp; roles</h2>
-      <p class="sec-sub">Three user <i>types</i> (which portal you land in) and eight <i>roles</i> (what you can do). The Malay hierarchy mirrors a real government legal-aid department.</p>
+      <p class="sec-sub">Three user <i>types</i> (which portal you land in) and <i>twelve roles</i> (what you can do) — the original eight plus three v2 additions (<code>prison_officer</code> + the two Pembelaan Awam approver tiers) and the <code>awam</code> citizen role. The Malay hierarchy mirrors a real government legal-aid department.</p>
 
       <div class="grid g3">
         <div class="card accent-o">
@@ -436,6 +488,14 @@
         <div class="card" style="border-top:3px solid var(--ink-navy)">
           <h4>👔 peguam</h4>
           <p><b>Panel lawyer (external).</b> Own portal only — accept/reject case offers, report, withdraw, manage practice areas.</p>
+        </div>
+        <div class="card accent-o">
+          <h4>🏛 prison_officer <span class="pill o" style="font-size:.6rem">v2</span></h4>
+          <p><b>Prison / clinic officer.</b> Files Khidmat Nasihat on behalf of inmates. Reaches the staff area + KN intake only (no approvals, no payments).</p>
+        </div>
+        <div class="card accent-o">
+          <h4>🛡 pembelaan-awam tiers <span class="pill o" style="font-size:.6rem">v2</span></h4>
+          <p><b>pengarah_pembelaan_awam · ketua_pembelaan_awam.</b> The forked criminal-track approver tier for panel registration (W10) — endorse / decide on the jenayah jalur.</p>
         </div>
       </div>
 
@@ -484,6 +544,11 @@
         </table>
       </div>
       <p style="font-size:.78rem;color:var(--muted-2);margin-top:10px"><code>urus.peranan</code> = admin only · <code>awam.portal</code> = citizen type only. Branch isolation: most staff see only their <code>cawangan</code>; koordinator + ketua_pengarah see all (<code>cawangan.view-all</code>).</p>
+
+      <div class="note">
+        <span class="ic">🆕</span>
+        <div><b>v2 added 6 permissions (matrix now 55 across 12 roles):</b> <code>tuntutan.view/manage/semak/lulus/bayar</code> (claim ledger, W15) · <code>agihan.luar</code> (external-lawyer KN, W5) · <code>kes.pindah</code> (branch transfer, W7) · <code>pengantaraan.agih</code> (mediator assignment, W19) · <code>pembelaan.view/manage</code> + <code>kes.perakuan</code> (Pembelaan Awam + certificate, W9/W14). New roles: <code>prison_officer</code> (KN intake) and the <code>pengarah/ketua_pembelaan_awam</code> approver tiers. <b>Branch isolation (<code>CawanganScope</code>) now also covers <code>khidmat_nasihat</code></b> (W21), closing the cross-branch read gap.</div>
+      </div>
     </section>
 
     <!-- ===================== PORTALS ===================== -->
@@ -749,7 +814,7 @@
     <section id="data">
       <div class="sec-eyebrow">The data</div>
       <h2 class="sec-h"><span class="num">15</span>Data model</h2>
-      <p class="sec-sub">~48 tables total: 20 imported legacy tables + ~15 new (batches 8–13) + 7 spatie permission tables + Laravel framework tables. Grouped by domain below.</p>
+      <p class="sec-sub">~52 tables total: 20 imported legacy tables + ~15 new (batches 8–13) + the v2 ledger &amp; transfer tables + 7 spatie permission tables + Laravel framework tables. Grouped by domain below.</p>
 
       <div class="grid g2">
         <div class="card accent">
@@ -799,6 +864,13 @@
           <div class="pillrow">
             <span class="pill g">users</span><span class="pill g">roles</span><span class="pill g">permissions</span>
             <span class="pill g">audit_trail</span><span class="pill g">uploaded_files</span><span class="pill g">posters</span>
+          </div>
+        </div>
+        <div class="card accent">
+          <h4>🆕 v2 — ledger &amp; transfer</h4>
+          <p>The central claim ledger (polymorphic across sources) and the shared branch-transfer journal. KN also gained <code>applicant_source</code>, waiver/resit links, mediation &amp; certificate columns.</p>
+          <div class="pillrow">
+            <span class="pill">lejar_tuntutan_bayaran</span><span class="pill">pemindahan_cawangan</span>
           </div>
         </div>
       </div>
@@ -902,7 +974,7 @@
 </div>
 
 <footer>
-  <span>iGuaman 2in1 · System understanding — generated from source code on 2026-06-30.</span>
+  <span>iGuaman 2in1 · System understanding <b>v2</b> — updated 2026-07-01 after the 22 penambahbaikan (trunk <code>feat/penambahbaikan-subsistem</code> @ <code>b5ebda0</code>, suite 351/351). <a href="penambahbaikan-22.html">Full status →</a></span>
   <span>JBG · Jabatan Bantuan Guaman Malaysia</span>
 </footer>
 
