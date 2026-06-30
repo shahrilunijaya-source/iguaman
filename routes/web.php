@@ -176,6 +176,7 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/kes/{kes}/cetak/laporan', [CetakanController::class, 'laporan'])->name('cetak.laporan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/penutupan', [CetakanController::class, 'penutupan'])->name('cetak.penutupan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/perakuan', [CetakanController::class, 'perakuan'])->name('cetak.perakuan')->whereNumber('kes'); // W14 legal-aid certificate
+    Route::get('/kes/{kes}/cetak/pembatalan', [CetakanController::class, 'pembatalan'])->name('cetak.pembatalan')->whereNumber('kes'); // W20 cancellation letter
 
     // OYD (Orang Yang Dibantu) registry
     Route::get('/oyd', [OydController::class, 'index'])->name('oyd.index');
@@ -193,6 +194,9 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/{type}/csv', [LaporanController::class, 'csv'])->name('laporan.csv')->whereIn('type', $laporanTypes);
     Route::get('/laporan/{type}/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf')->whereIn('type', $laporanTypes);
+    // W20 — queued bulk .xlsx export + download of the finished file.
+    Route::get('/laporan/{type}/eksport-pukal', [LaporanController::class, 'eksportPukal'])->name('laporan.eksport-pukal')->whereIn('type', $laporanTypes);
+    Route::get('/laporan/muat-turun/{fail}', [LaporanController::class, 'muatTurunEksport'])->name('laporan.muat-turun')->where('fail', '[A-Za-z0-9\-\.]+');
     // Wide-column CSV exports (EPIC F — legacy export_*.php): full legacy column parity.
     Route::get('/laporan/{type}/eksport-penuh', [LaporanPenuhController::class, 'csv'])
         ->middleware('permission:laporan.view')

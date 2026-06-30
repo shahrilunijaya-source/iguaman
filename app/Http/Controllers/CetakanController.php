@@ -57,6 +57,19 @@ class CetakanController extends Controller
         ]);
     }
 
+    /** W20 — application cancellation/rejection letter (Surat Pembatalan), restored legacy letter. */
+    public function pembatalan(Request $request, Form $kes): Response
+    {
+        if ($kes->keputusan !== 'Ditolak' && $kes->status !== 'Ditolak') {
+            return redirect()->route('kes.show', $kes)->withErrors(['cetak' => 'Surat pembatalan hanya untuk permohonan yang ditolak / dibatalkan.']);
+        }
+
+        return $this->pdf($request, 'cetakan.pembatalan', "pembatalan-kes-{$kes->id}", [
+            'kes' => $kes,
+            'tarikhCetak' => now()->format('d/m/Y'),
+        ]);
+    }
+
     /** W14 — legal-aid certificate (Perakuan Bantuan Guaman), interim or muktamad. */
     public function perakuan(Request $request, Form $kes): Response
     {
