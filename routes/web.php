@@ -127,7 +127,7 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     // Wide-column CSV exports (EPIC F — legacy export_*.php): full legacy column parity.
     Route::get('/laporan/{type}/eksport-penuh', [LaporanPenuhController::class, 'csv'])
         ->middleware('permission:laporan.view')
-        ->whereIn('type', ['permohonan', 'pendaftaran-fail', 'status-fail'])
+        ->whereIn('type', ['permohonan', 'pendaftaran-fail', 'status-fail', 'penugasan-pengantaraan', 'tidak-dirujuk'])
         ->name('laporan.penuh');
     Route::get('/laporan/{type}', [LaporanController::class, 'show'])->name('laporan.show')->whereIn('type', $laporanTypes);
 

@@ -13,7 +13,7 @@
         <span class="tap-nav__crumb">{{ $report['label'] }}</span>
         <div class="tap-nav__cluster">
             <a href="{{ route('laporan.csv', [$type] + $qs) }}" class="tap-head__btn">⬇ CSV</a>
-            @if (in_array($type, ['permohonan', 'pendaftaran-fail', 'status-fail'], true))
+            @if (\App\Support\WideExport::has($type))
                 <a href="{{ route('laporan.penuh', [$type] + $qs) }}" class="tap-head__btn">⬇ CSV Penuh</a>
             @endif
             <a href="{{ route('laporan.pdf', [$type] + $qs) }}" target="_blank" rel="noopener" class="tap-head__btn">⬇ PDF</a>

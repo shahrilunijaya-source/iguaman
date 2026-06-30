@@ -60,12 +60,28 @@ class WideExport
                 'has_status' => true,
                 'file' => 'laporan_status_fail_kes',
             ],
+            'penugasan-pengantaraan' => [
+                'title' => 'LAPORAN PENUGASAN PENGANTARAAN',
+                'tarikh_label' => 'TARIKH PENDAFTARAN FAIL JBG',
+                'tarikh_col' => 'tarikh_perakuan',
+                'kategori_col' => 'kategori_kes',
+                'has_status' => false,
+                'file' => 'laporan_penugasan_pengantaraan',
+            ],
+            'tidak-dirujuk' => [
+                'title' => 'LAPORAN PENGANTARAAN TIDAK DIRUJUK',
+                'tarikh_label' => 'TARIKH PENDAFTARAN FAIL JBG',
+                'tarikh_col' => 'tarikh_perakuan',
+                'kategori_col' => 'kategori_kes',
+                'has_status' => false,
+                'file' => 'laporan_pengantaraan_tidak_dirujuk',
+            ],
         ][$type];
     }
 
     public static function has(string $type): bool
     {
-        return in_array($type, ['permohonan', 'pendaftaran-fail', 'status-fail'], true);
+        return in_array($type, ['permohonan', 'pendaftaran-fail', 'status-fail', 'penugasan-pengantaraan', 'tidak-dirujuk'], true);
     }
 
     /** Ordered [label, resolver] column list for a report. */
@@ -75,6 +91,8 @@ class WideExport
             'permohonan' => self::permohonanColumns(),
             'pendaftaran-fail' => self::pendaftaranColumns(),
             'status-fail' => self::statusFailColumns(),
+            'penugasan-pengantaraan' => self::penugasanPengantaraanColumns(),
+            'tidak-dirujuk' => self::tidakDirujukColumns(),
         };
     }
 
@@ -415,6 +433,83 @@ class WideExport
             ['TARIKH TUTUP FAIL', fn ($r) => self::date($r->tarikh_tutup_fail)],
             ['SEBAB TUTUP FAIL', fn ($r) => self::na($r->sebab_tutup_fail)],
             ['ALASAN PEMINDAHAN FAIL ke CAWANGAN LAIN', fn ($r) => self::na($r->alasan_pemindahan_fail)],
+            ['STATUS', fn ($r) => self::na($r->status)],
+        ];
+    }
+
+    /**
+     * Penugasan Pengantaraan export columns (legacy
+     * export_laporan_penugasan_pengantaraan.php — 34 cols + BIL). Case-info
+     * prefix + full sidang/pengantaraan block. status_pengantaraan='Ya' rows.
+     *
+     * Five legacy columns are not present in the current forms spine and degrade
+     * to "-Tiada Maklumat-" until the pengantaraan workflow that writes them is
+     * ported: alasan_tidak_setuju_pengantara, alasan_gagal_pengantara,
+     * alasan_tangguh_sidang (here) and alasan_tidak_rujuk_pengantaraan (tidak-dirujuk).
+     */
+    private static function penugasanPengantaraanColumns(): array
+    {
+        return [
+            ['CAWANGAN', fn ($r) => self::na($r->cawangan)],
+            ['NO. FAIL JBG', fn ($r) => self::na($r->no_fail)],
+            ['TARIKH PERAKUAN BANTUAN GUAMAN', fn ($r) => self::date($r->tarikh_perakuan)],
+            ['BULAN PERAKUAN BANTUAN GUAMAN', fn ($r) => self::month($r->tarikh_perakuan)],
+            ['TAHUN PERAKUAN BANTUAN GUAMAN', fn ($r) => self::year($r->tarikh_perakuan)],
+            ['PERSETUJUAN PENGANTARAAN', fn ($r) => self::na($r->setuju_pengantara)],
+            ['TARIKH PERSETUJUAN PENGANTARAAN', fn ($r) => self::na($r->tarikh_persetujuan)],
+            ['ALASAN TIDAK BERSETUJU DENGAN PENGANTARAAN', fn ($r) => self::na($r->alasan_tidak_setuju_pengantara ?? null)],
+            ['TARIKH PENUGASAN PENGANTARAAN', fn ($r) => self::date($r->tarikh_penugasan)],
+            ['BULAN PENUGASAN', fn ($r) => self::month($r->tarikh_penugasan)],
+            ['TAHUN PENUGASAN', fn ($r) => self::year($r->tarikh_penugasan)],
+            ['DIRUJUK / PERMINTAAN', fn ($r) => self::na($r->pilihan)],
+            ['NAMA ORANG YANG DIBANTU', fn ($r) => self::na($r->nama)],
+            ['NO. KAD PENGENALAN', fn ($r) => self::nokp($r->nokp)],
+            ['JENIS ORANG YANG DIBANTU', fn ($r) => self::na($r->jenis_oyd)],
+            ['KATEGORI KES', fn ($r) => self::na($r->kategori_kes)],
+            ['JENIS KATEGORI', fn ($r) => self::na($r->jenis_kategori)],
+            ['KOD KES', fn ($r) => self::na($r->jenis_kes)],
+            ['JENIS KES', fn ($r) => self::na($r->jenis_kes_text ?? null)],
+            ['JENIS KES (JIKA LAIN-LAIN)', fn ($r) => self::na($r->jenis_kes_lain ?? null)],
+            ['NAMA PEMOHON', fn ($r) => self::na($r->nama_pihak)],
+            ['NAMA RESPONDEN', fn ($r) => self::na($r->nama_responden)],
+            ['KAEDAH SIDANG PENGANTARAAN', fn ($r) => self::na($r->kaedah_sidang)],
+            ['LOKASI PEMOHON', fn ($r) => self::na($r->lokasi_pihak_pertama)],
+            ['LOKASI RESPONDEN', fn ($r) => self::na($r->lokasi_pihak_kedua)],
+            ['LOKASI PEGAWAI PENGANTARA', fn ($r) => self::na($r->lokasi_pegawai_pengantara)],
+            ['STATUS SIDANG PENGANTARAAN', fn ($r) => self::na($r->status_sidang)],
+            ['CARA PENYELESAIAN PENGANTARAAN', fn ($r) => self::na($r->cara_selesai)],
+            // Legacy reuses tarikh_persetujuan here (same as col 7) — suspected mismap, ported verbatim.
+            ['TARIKH PERJANJIAN PENYELESAIAN', fn ($r) => self::na($r->tarikh_persetujuan)],
+            ['ALASAN SIDANG PENGANTARAAN GAGAL', fn ($r) => self::na($r->alasan_gagal_pengantara ?? null)],
+            ['TARIKH SIDANG BAHARU', fn ($r) => self::na($r->tarikh_sidang)],
+            ['ALASAN TANGGUH SIDANG', fn ($r) => self::na($r->alasan_tangguh_sidang ?? null)],
+            ['NAMA PEGAWAI PENGANTARA', fn ($r) => self::na($r->nama_pegawai)],
+            ['STATUS', fn ($r) => self::na($r->status)],
+        ];
+    }
+
+    /**
+     * Pengantaraan Tidak Dirujuk export columns (legacy
+     * export_laporan_pengantaraan_tidak_dirujuk.php — 14 cols + BIL).
+     * Case-info prefix + 3 "tidak dirujuk" tail cols. status_pengantaraan='Tidak'.
+     */
+    private static function tidakDirujukColumns(): array
+    {
+        return [
+            ['CAWANGAN', fn ($r) => self::na($r->cawangan)],
+            ['NO. FAIL JBG', fn ($r) => self::na($r->no_fail)],
+            // Legacy emits this raw (unformatted) — na() renders Carbon d/m/Y, strings as-is.
+            ['TARIKH PERAKUAN BANTUAN GUAMAN', fn ($r) => self::na($r->tarikh_perakuan)],
+            ['NAMA ORANG YANG DIBANTU', fn ($r) => self::na($r->nama)],
+            ['NO. KAD PENGENALAN', fn ($r) => self::nokp($r->nokp)],
+            ['JENIS ORANG YANG DIBANTU', fn ($r) => self::na($r->jenis_oyd)],
+            ['KATEGORI KES', fn ($r) => self::na($r->kategori_kes)],
+            ['JENIS KATEGORI', fn ($r) => self::na($r->jenis_kategori)],
+            ['KOD KES', fn ($r) => self::na($r->jenis_kes)],
+            ['JENIS KES', fn ($r) => self::na($r->jenis_kes_text ?? null)],
+            ['JENIS KES (JIKA LAIN-LAIN)', fn ($r) => self::na($r->jenis_kes_lain ?? null)],
+            ['PERLU PENGANTARAAN', fn ($r) => self::na($r->status_pengantaraan)],
+            ['ALASAN TIDAK DIRUJUK PENGANTARAAN', fn ($r) => self::na($r->alasan_tidak_rujuk_pengantaraan ?? null)],
             ['STATUS', fn ($r) => self::na($r->status)],
         ];
     }

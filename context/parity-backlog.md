@@ -87,7 +87,9 @@ Grouped; see matrix for per-row evidence.
 - pp-profil-daftar: pengkhususan add/drop director review, status-code maps (4=DIBATALKAN, 5=SEMAKAN KP)
 - pp-kes-oyd: OYD-specific columns, >40-day overdue red-row highlight
 - rk-permohonan: guardian auto-unlock <18, kaedah_pemakluman JSON, pembatalan kelulusan + alasan, Pendamping Guaman handling, PDF column parity (~30 cols)
-- rk-pengantaraan: completed-mediation list, monthly race/gender matrix, per-branch assignment matrices, SLA breach LISTS (60/120-day), per-branch compliance stats
+- rk-pengantaraan: completed-mediation list, monthly race/gender matrix, per-branch assignment matrices, SLA breach LISTS (60/120-day) ✅ (done in EPIC F senarai), per-branch compliance stats
+  - **Slice 1 ✅** wide CSV exports — Penugasan Pengantaraan (34-col, `status_pengantaraan='Ya'`) + Pengantaraan Tidak Dirujuk (14-col, `'Tidak'`) added to `WideExport` + `LaporanPenuhController` + `laporan.penuh` route (`eksport-penuh`), "CSV Penuh" button now gated by `WideExport::has()`. 8 tests. 5 legacy cols absent from current spine (alasan_tidak_setuju_pengantara, alasan_gagal_pengantara, alasan_tangguh_sidang, alasan_tidak_rujuk_pengantaraan, tarikh_perjanjian) → degrade to NO_DATA; add when the pengantaraan workflow that writes them is ported. Legacy col-30 mismap (reuses tarikh_persetujuan) ported verbatim w/ comment.
+  - Remaining slices: **2** penugasan matrices (branch×[Sivil/Syariah/total] + branch×12-month) · **3** pencapaian compliance (branch×9, 3 formulas) · **4** race/gender matrix + completed-mediation list + pendaftaran cetakan. Role triplets (admin_/pengarah_/plain) collapse to 1 controller + CawanganScope.
 - rk-statistik: month filter, drill-down cells, kesilapan-nombor-fail report, count matrices, per-statistik PDF buttons
 - rk-export: 11 SLA-breach / reference / inverse-filter CSVs, universal Kesilapan exclusion, HQ-vs-branch gating
 

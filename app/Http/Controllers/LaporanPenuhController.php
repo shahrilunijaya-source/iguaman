@@ -63,7 +63,7 @@ class LaporanPenuhController extends Controller
             ->orderByDesc('forms.'.$meta['tarikh_col']);
     }
 
-    /** Report-specific base WHERE (registered file / perakuan presence). */
+    /** Report-specific base WHERE (registered file / perakuan presence / pengantaraan set). */
     private function baseFilters(Builder $q, string $type): void
     {
         if ($type === 'permohonan') {
@@ -72,10 +72,14 @@ class LaporanPenuhController extends Controller
 
         $q->whereNotNull('forms.no_fail')->where('forms.no_fail', '!=', '');
 
-        if ($type === 'pendaftaran-fail') {
-            $q->whereRaw("LOWER(forms.no_fail) NOT LIKE '%null%'")
-                ->whereNotNull('forms.tarikh_perakuan');
-        }
+        match ($type) {
+            'pendaftaran-fail' => $q->whereRaw("LOWER(forms.no_fail) NOT LIKE '%null%'")
+                ->whereNotNull('forms.tarikh_perakuan'),
+            // Pengantaraan reports key off status_pengantaraan (Ya = penugasan, Tidak = tidak dirujuk).
+            'penugasan-pengantaraan' => $q->where('forms.status_pengantaraan', 'Ya'),
+            'tidak-dirujuk' => $q->where('forms.status_pengantaraan', 'Tidak'),
+            default => null,
+        };
     }
 
     /** Optional user filters: date range, kategori, cawangan, status. */
