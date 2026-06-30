@@ -152,16 +152,20 @@ class KhidmatNasihatController extends Controller
     {
         $this->assertSaringanGate($request);
 
-        $khidmat = $this->service->create($this->mapInput($request));
+        $khidmat = DB::transaction(function () use ($request) {
+            $kn = $this->service->create($this->mapInput($request));
 
-        if ($request->isHantar()) {
-            $this->service->bookSlot(
-                $khidmat,
-                $request->validated()['tarikh_temu_janji'],
-                $request->validated()['masa_temu_janji'],
-                $request->user()->name,
-            );
-        }
+            if ($request->isHantar()) {
+                $this->service->bookSlot(
+                    $kn,
+                    $request->validated()['tarikh_temu_janji'],
+                    $request->validated()['masa_temu_janji'],
+                    $request->user()->name,
+                );
+            }
+
+            return $kn;
+        });
 
         Audit::log('khidmat_nasihat', $khidmat->id, Audit::INSERT,
             "Permohonan Khidmat Nasihat baharu: {$khidmat->no_permohonan} ({$khidmat->nama_mangsa})");
