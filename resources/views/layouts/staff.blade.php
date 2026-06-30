@@ -116,6 +116,11 @@
         <a href="{{ route('tarikdiri.senarai') }}" class="ws-side-top {{ request()->routeIs('tarikdiri.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">⤴</span><span class="ws-side-label">Permohonan Tarik Diri</span>
         </a>
+        @can('kes.keputusan')
+            <a href="{{ route('keputusan.selesai') }}" class="ws-side-top {{ request()->routeIs('keputusan.selesai') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">✔</span><span class="ws-side-label">Pengesahan Selesai</span>
+            </a>
+        @endcan
         @php $bidangPending = \App\Support\PengkhususanService::pendingCount(); @endphp
         <a href="{{ route('kemaskini-bidang.index') }}" class="ws-side-top {{ request()->routeIs('kemaskini-bidang.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">◳</span><span class="ws-side-label">Kemaskini Bidang @if ($bidangPending > 0)<strong style="color:var(--brand,#00B8A9);">({{ $bidangPending }})</strong>@endif</span>

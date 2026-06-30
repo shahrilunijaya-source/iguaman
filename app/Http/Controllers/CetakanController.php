@@ -44,6 +44,19 @@ class CetakanController extends Controller
         return $this->pdf($request, 'cetakan.laporan', "laporan-kes-{$kes->id}", ['kes' => $kes]);
     }
 
+    /** W16 — case-closure letter (Surat Penutupan Fail), available once the file is closed. */
+    public function penutupan(Request $request, Form $kes): Response
+    {
+        if (blank($kes->tarikh_tutup_fail)) {
+            return redirect()->route('kes.show', $kes)->withErrors(['cetak' => 'Kes ini belum ditutup.']);
+        }
+
+        return $this->pdf($request, 'cetakan.penutupan', "penutupan-kes-{$kes->id}", [
+            'kes' => $kes,
+            'tarikhCetak' => now()->format('d/m/Y'),
+        ]);
+    }
+
     /** Shared dompdf render: inject letterhead meta + stream inline. */
     private function pdf(Request $request, string $view, string $filename, array $data): Response
     {

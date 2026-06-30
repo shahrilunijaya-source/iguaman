@@ -201,6 +201,44 @@ class PeguamController extends Controller
         return redirect()->route('peguam.kes')->with('status', 'Permohonan tarik diri dihantar untuk semakan JBG.');
     }
 
+    /**
+     * W16 — lawyer marks an actively-handled case as done (status 2 → 18 / PP_SELESAI).
+     * Writes the lawyer-side closure columns + a SejarahPeguamPanel marker; the file is
+     * not officially closed until JBG confirms (KeputusanController::sahkanSelesai → 19).
+     */
+    public function selesai(Request $request, Form $kes): RedirectResponse
+    {
+        $this->authorizeCase($kes);
+        $this->ensureKesDiterima($kes);
+        // A file already closed by JBG (tutupFail leaves status_agihan untouched) must not be re-opened.
+        abort_if(filled($kes->tarikh_tutup_fail), 422, 'Fail telah ditutup dan tidak boleh ditandakan selesai.');
+
+        $data = $request->validate(['sebab_selesai' => ['nullable', 'string', 'max:50']]);
+
+        // Record who completed the case before the state moves (mirrors tolak()).
+        SejarahPeguamPanel::create([
+            'id_kes' => $kes->id,
+            'nama_pp_lama' => $kes->nama_pegawai_yang_dapat_kes,
+            'tarikh_penugasan' => $kes->tarikh_penugasan_peguam_panel,
+            'status' => 'S',
+            'alasan' => $data['sebab_selesai'] ?? 'Kes ditandakan selesai oleh peguam',
+            'kp_pp_lama' => $this->lawyerKp(),
+            'modifiedBy' => Auth::user()->name,
+            'modifiedDate' => now(),
+            'status_agihan' => StatusAgihan::PP_SELESAI,
+        ]);
+
+        $kes->update([
+            'status_agihan' => StatusAgihan::PP_SELESAI,
+            'tarikh_selesai' => now()->toDateString(),
+            'sebab_selesai' => $data['sebab_selesai'] ?? null,
+        ]);
+
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Kes ditandakan selesai oleh peguam {$kes->nama_pegawai_yang_dapat_kes}");
+
+        return redirect()->route('peguam.kes.show', $kes)->with('status', 'Kes ditandakan selesai. Menunggu pengesahan JBG.');
+    }
+
     public function profil(): View
     {
         $profile = $this->profile();

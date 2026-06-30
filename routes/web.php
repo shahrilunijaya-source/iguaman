@@ -148,6 +148,11 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::post('/kes/{kes}/tolak', [KeputusanController::class, 'tolak'])->name('kes.tolak')->whereNumber('kes');
     Route::post('/kes/{kes}/tutup-fail', [KeputusanController::class, 'tutupFail'])->name('kes.tutupfail')->whereNumber('kes');
 
+    // W16 — Pengesahan Selesai: cases a panel lawyer marked selesai (18) → JBG confirm (19) / return (2). Gated in controller.
+    Route::get('/kes-selesai', [KeputusanController::class, 'senaraiSelesai'])->name('keputusan.selesai');
+    Route::post('/kes/{kes}/sahkan-selesai', [KeputusanController::class, 'sahkanSelesai'])->name('keputusan.kes.sahkan-selesai')->whereNumber('kes');
+    Route::post('/kes/{kes}/tolak-selesai', [KeputusanController::class, 'tolakSelesai'])->name('keputusan.kes.tolak-selesai')->whereNumber('kes');
+
     // Pengantaraan (mediation) — section edit + hearing reschedule
     Route::get('/kes/{kes}/pengantaraan', [PengantaraanController::class, 'edit'])->name('pengantaraan.edit')->whereNumber('kes');
     Route::put('/kes/{kes}/pengantaraan', [PengantaraanController::class, 'update'])->name('pengantaraan.update')->whereNumber('kes');
@@ -168,6 +173,7 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/kes/{kes}/cetak/ringkasan', [CetakanController::class, 'ringkasan'])->name('cetak.ringkasan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/penugasan', [CetakanController::class, 'agihan'])->name('cetak.penugasan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/laporan', [CetakanController::class, 'laporan'])->name('cetak.laporan')->whereNumber('kes');
+    Route::get('/kes/{kes}/cetak/penutupan', [CetakanController::class, 'penutupan'])->name('cetak.penutupan')->whereNumber('kes');
 
     // OYD (Orang Yang Dibantu) registry
     Route::get('/oyd', [OydController::class, 'index'])->name('oyd.index');
@@ -516,6 +522,7 @@ Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(f
     Route::post('/kes/{kes}/tolak', [PeguamController::class, 'tolak'])->name('peguam.tolak')->whereNumber('kes');
     Route::get('/kes/{kes}', [PeguamController::class, 'kesShow'])->name('peguam.kes.show')->whereNumber('kes');
     Route::post('/kes/{kes}/laporan', [PeguamController::class, 'storeLaporan'])->name('peguam.laporan')->whereNumber('kes');
+    Route::post('/kes/{kes}/selesai', [PeguamController::class, 'selesai'])->name('peguam.selesai')->whereNumber('kes');
 
     // Tarik Diri Mewakili OYD (lawyer-initiated withdrawal from an assigned case).
     Route::get('/kes/{kes}/tarik-diri', [PeguamController::class, 'tarikDiriForm'])->name('peguam.tarikdiri.form')->whereNumber('kes');
