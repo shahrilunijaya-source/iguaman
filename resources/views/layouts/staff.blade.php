@@ -68,6 +68,11 @@
         <a href="{{ route('laporan.index') }}" class="ws-side-top {{ request()->routeIs('laporan.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▭</span><span class="ws-side-label">Laporan</span>
         </a>
+        @can('laporan.view')
+            <a href="{{ route('laporan-kn.index') }}" class="ws-side-top {{ request()->routeIs('laporan-kn.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">📊</span><span class="ws-side-label">Laporan Khidmat Nasihat</span>
+            </a>
+        @endcan
 
         @can('khidmat.view')
             <div class="ws-side-section">Khidmat Nasihat</div>
