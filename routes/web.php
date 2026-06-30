@@ -17,6 +17,7 @@ use App\Http\Controllers\KemaskiniBidangController;
 use App\Http\Controllers\KesController;
 use App\Http\Controllers\KesilapanController;
 use App\Http\Controllers\KhidmatNasihatController;
+use App\Http\Controllers\KhidmatProsesController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
@@ -382,6 +383,20 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/jadual-janji-temu', [JadualJanjiTemuController::class, 'index'])->name('jadual.index');
     });
     // ==== END BATCH 10 SLICE 3 ====
+
+    // ==== BATCH 11 SLICES A+B: Khidmat Nasihat officer processing ====
+    // Slice A: branch-scoped officer worklist + filters + dashboard count tiles.
+    // Slice B: assign PKN officer (BAHARU->DALAM_PROSES) + pengesahan janji temu
+    // (accept/reject/attendance/complete). All gated permission:khidmat.proses.
+    Route::middleware('permission:khidmat.proses')->group(function () {
+        Route::get('/khidmat-proses', [KhidmatProsesController::class, 'index'])->name('khidmat.proses.index');
+        Route::post('/khidmat-proses/{khidmat}/agih', [KhidmatProsesController::class, 'assign'])->name('khidmat.proses.assign')->whereNumber('khidmat');
+        Route::post('/khidmat-proses/{khidmat}/temu/terima', [KhidmatProsesController::class, 'terima'])->name('khidmat.proses.temu.terima')->whereNumber('khidmat');
+        Route::post('/khidmat-proses/{khidmat}/temu/tolak', [KhidmatProsesController::class, 'tolak'])->name('khidmat.proses.temu.tolak')->whereNumber('khidmat');
+        Route::post('/khidmat-proses/{khidmat}/temu/kehadiran', [KhidmatProsesController::class, 'kehadiran'])->name('khidmat.proses.temu.kehadiran')->whereNumber('khidmat');
+        Route::post('/khidmat-proses/{khidmat}/temu/selesai', [KhidmatProsesController::class, 'selesai'])->name('khidmat.proses.temu.selesai')->whereNumber('khidmat');
+    });
+    // ==== END BATCH 11 SLICES A+B ====
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----

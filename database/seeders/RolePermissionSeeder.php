@@ -65,6 +65,9 @@ class RolePermissionSeeder extends Seeder
         'cawangan.view-all'      => ['koordinator', 'ketua_pengarah'],
         'urus.peranan'           => ['admin'],
         'lawyer.area'            => ['peguam'],
+        // Khidmat Nasihat officer processing (assign PKN + pengesahan janji temu) — batch 11.
+        // Granted to roles that process advisory cases; NOT pembantu_tadbir (clerk).
+        'khidmat.proses'         => ['koordinator', 'pegawai', 'pengarah'],
     ];
 
     public function run(): void

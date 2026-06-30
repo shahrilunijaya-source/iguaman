@@ -23,6 +23,7 @@ class KhidmatNasihat extends Model
         'saringan_lulus' => 'boolean',
         'is_laluan_sumbangan' => 'boolean',
         'tarikh_lahir_mangsa' => 'date',
+        'tarikh_proses' => 'datetime',
         'jumlah_bayaran' => 'decimal:2',
         'jumlah_pendapatan' => 'decimal:2',
     ];
@@ -59,6 +60,18 @@ class KhidmatNasihat extends Model
     {
         return $this->belongsTo(User::class, 'id_pengguna');
     }
+
+    /**
+     * Assigned advisory officer (Pegawai Khidmat Nasihat) — batch 11 slice B.
+     * Set on assign-PKN, which moves status_kn BAHARU->DALAM_PROSES.
+     */
+    public function pegawaiKn(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id_pegawai_kn');
+    }
+
+    // forms() link (KN -> forms case bridge) is reserved for slice C — the
+    // id_forms column exists but is not wired until that product decision lands.
 
     /**
      * Resolve the linked court (slice 3 MAHKAMAH context). No DB FK — id_mahkamah
