@@ -111,6 +111,46 @@
         </div>
     @endif
 
+    {{-- Dokumen Sokongan --}}
+    <div class="tap-card" style="margin-bottom:16px;">
+        <div class="tap-card__eyebrow">Dokumen Sokongan</div>
+
+        @if (session('status') && str_contains(session('status'), 'Dokumen'))
+            <p style="font-size:13px; color:var(--teal); margin:10px 0 0;">{{ session('status') }}</p>
+        @endif
+
+        @if ($lampiranList->isNotEmpty())
+            <ul style="margin:14px 0 16px; padding:0; list-style:none;">
+                @foreach ($lampiranList as $file)
+                    <li style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); font-size:13px;">
+                        <span style="flex:1; color:var(--fg);">{{ $file->nama }}</span>
+                        <a href="{{ route('awam.lampiran.download', [$khidmat, $file->id]) }}"
+                           style="color:var(--teal); font-weight:600; text-decoration:none;">Muat Turun</a>
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <p style="font-size:13px; color:var(--mute); margin:12px 0 16px;">Tiada dokumen dimuat naik.</p>
+        @endif
+
+        <form method="POST" action="{{ route('awam.lampiran.store', $khidmat) }}" enctype="multipart/form-data">
+            @csrf
+            <div style="font-size:12px; font-weight:600; color:var(--fg); margin-bottom:8px;">Muat Naik Dokumen Baharu</div>
+            @error('fail')
+                <p style="font-size:12px; color:#e53e3e; margin:0 0 8px;">{{ $message }}</p>
+            @enderror
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <input type="file" name="fail" accept=".pdf,.jpg,.jpeg,.png"
+                    style="font-size:13px; border:1px solid var(--line); border-radius:6px; padding:5px 8px;">
+                <button type="submit"
+                    style="background:var(--teal); color:#fff; border:none; padding:7px 14px; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600;">
+                    Muat Naik
+                </button>
+            </div>
+            <p style="font-size:11px; color:var(--mute); margin:6px 0 0;">Format: PDF, JPG, PNG. Saiz maksimum: 5 MB.</p>
+        </form>
+    </div>
+
     @if ($khidmat->status_kn === \App\Models\KhidmatNasihat::STATUS_SELESAI)
         <div class="tap-card" style="margin-bottom:16px;">
             <div class="tap-card__eyebrow">Maklum Balas</div>

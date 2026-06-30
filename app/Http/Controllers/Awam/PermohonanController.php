@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Awam;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Awam\AwamLampiranRequest;
 use App\Http\Requests\Awam\AwamPermohonanRequest;
 use App\Http\Requests\Awam\AwamRescheduleRequest;
 use App\Models\Cawangan;
 use App\Models\KhidmatNasihat;
 use App\Models\RefKategoriKn;
 use App\Models\RefNegeri;
+use App\Models\UploadedFile;
 use App\Support\Audit;
 use App\Support\KhidmatBayaran;
 use App\Support\KhidmatNasihatService;
@@ -16,7 +18,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PermohonanController extends Controller
 {
@@ -102,8 +106,45 @@ class PermohonanController extends Controller
     {
         Gate::authorize('view', $khidmat);
         $khidmat->load(['cawangan', 'kategori', 'temuJanji']);
+        $lampiranList = UploadedFile::where('id_khidmat', $khidmat->id)->orderBy('uploaded_at')->get();
 
-        return view('awam.permohonan.show', ['khidmat' => $khidmat]);
+        return view('awam.permohonan.show', ['khidmat' => $khidmat, 'lampiranList' => $lampiranList]);
+    }
+
+    private const DISK = 'local';
+    private const DIR  = 'lampiran';
+
+    public function upload(AwamLampiranRequest $request, KhidmatNasihat $khidmat): RedirectResponse
+    {
+        Gate::authorize('update', $khidmat);
+
+        $file = $request->file('fail');
+        $path = $file->store(self::DIR, self::DISK);
+
+        $row = UploadedFile::create([
+            'nama'        => $file->getClientOriginalName(),
+            'file_name'   => basename($path),
+            'file_path'   => $path,
+            'file_type'   => strtolower($file->getClientOriginalExtension() ?: $file->extension()),
+            'id_khidmat'  => $khidmat->id,
+            'uploaded_at' => now(),
+        ]);
+
+        Audit::log('uploaded_files', $row->id, Audit::INSERT,
+            "Dokumen awam dimuat naik untuk KN #{$khidmat->id}: {$row->nama}");
+
+        return redirect()->route('awam.permohonan.show', $khidmat)->with('status', 'Dokumen dimuat naik.');
+    }
+
+    public function download(KhidmatNasihat $khidmat, int $fail): StreamedResponse
+    {
+        Gate::authorize('view', $khidmat);
+
+        $lampiran = UploadedFile::where('id', $fail)->where('id_khidmat', $khidmat->id)->firstOrFail();
+
+        abort_unless(Storage::disk(self::DISK)->exists($lampiran->file_path), 404, 'Fail tidak dijumpai.');
+
+        return Storage::disk(self::DISK)->download($lampiran->file_path, $lampiran->nama);
     }
 
     public function cancel(KhidmatNasihat $khidmat): RedirectResponse
