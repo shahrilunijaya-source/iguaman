@@ -184,6 +184,22 @@ class Batch11BukaKesTest extends TestCase
         $this->assertSame('JBG SELANGOR', $fresh->cawangan);
     }
 
+    // ---- nokp normalization: dashed IC must not overflow forms.nokp(12) ----
+
+    public function test_buka_kes_strips_dashes_so_wide_ic_does_not_overflow_nokp(): void
+    {
+        // KN id_pengenalan_mangsa is varchar(255); a dashed IC is 14 chars and would
+        // abort the insert into the legacy forms.nokp varchar(12) without normalization.
+        $kn = $this->makeSelesaiKn('JBG PUTRAJAYA', ['id_pengenalan_mangsa' => '900101-14-5523']);
+        $actor = $this->actor('pegawai', 'JBG PUTRAJAYA');
+
+        $form = $this->svc()->bukaKes($kn, $actor);
+
+        $fresh = $this->findForm($form->id);
+        $this->assertSame('900101145523', $fresh->nokp, 'dashes stripped, fits varchar(12)');
+        $this->assertLessThanOrEqual(12, mb_strlen($fresh->nokp));
+    }
+
     // ---- guard: double-create ----
 
     public function test_buka_kes_does_not_create_second_row_when_already_opened(): void

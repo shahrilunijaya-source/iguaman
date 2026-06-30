@@ -197,7 +197,7 @@ class KhidmatProsesService
 
             $form = Form::create([
                 'nama' => $fresh->nama_mangsa,
-                'nokp' => $fresh->id_pengenalan_mangsa,
+                'nokp' => $this->normalizeNokp($fresh->id_pengenalan_mangsa),
                 'jenis_kes' => $fresh->jenis_kes,
                 'kategori_kes' => $kategori,
                 'tarikh_khidmat_nasihat' => $tarikhKn,
@@ -220,6 +220,24 @@ class KhidmatProsesService
 
             return $form;
         });
+    }
+
+    /**
+     * Fit a KN identification number into the legacy `forms.nokp` varchar(12).
+     * KN stores `id_pengenalan_mangsa` as varchar(255); a Malaysian IC keyed with
+     * dashes (XXXXXX-XX-XXXX = 14 chars) would overflow the legacy column and abort
+     * the insert. Strip dashes/spaces (IC → 12 digits) and cap at the column width
+     * so opening a case never throws on a wide identifier.
+     */
+    private function normalizeNokp(?string $nokp): ?string
+    {
+        if ($nokp === null) {
+            return null;
+        }
+
+        $clean = preg_replace('/[\s-]/', '', $nokp) ?? $nokp;
+
+        return mb_substr($clean, 0, 12);
     }
 
     /**
