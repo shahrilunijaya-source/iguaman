@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\KhidmatNasihatRequest;
+use App\Http\Requests\KhidmatSaringanRequest;
 use App\Models\Cawangan;
 use App\Models\KhidmatNasihat;
+use App\Models\MahkamahSivil;
+use App\Models\MahkamahSyariah;
 use App\Models\RefKategoriKn;
 use App\Models\RefNegeri;
 use App\Models\SlotTemuJanji;
@@ -25,6 +28,9 @@ use Illuminate\View\View;
  *    wizard (jenis_permohonan = DIRI_SENDIRI), gated permission:khidmat.manage.
  *    A final submit computes the fee (KhidmatBayaran), books an appointment slot
  *    (SlotAvailabilityService → temu_janji, both-way link), and sets status BAHARU.
+ *  - saringan/saringanSemak + Sebagai-Wakil variants (slice 3): the 3-modal
+ *    eligibility gate (screening → income declaration → terms), and the
+ *    SEBAGAI_WAKIL contexts penjara/JKM/mahkamah (penjara+JKM are fee-exempt).
  */
 class KhidmatNasihatController extends Controller
 {
@@ -59,16 +65,91 @@ class KhidmatNasihatController extends Controller
         return view('khidmat-nasihat.show', ['khidmat' => $khidmat]);
     }
 
+    /**
+     * Eligibility 3-modal screening page (slice 3 — FE khidmatnasihat/index).
+     * A citizen-context applicant must clear: (1) saringan/jenis + income
+     * declaration, (2) eligibility questions, (3) terms & conditions — before
+     * the create wizard opens. Staff-driven here; gated khidmat.manage.
+     */
+    public function saringan(): View
+    {
+        return view('khidmat-nasihat.saringan', [
+            'outcome' => session('saringan'),
+        ]);
+    }
+
+    /**
+     * Server-side screening gate. Disqualifying answers (prior advice / excluded
+     * matter) or unaccepted terms BLOCK the applicant; a clean pass stores the
+     * outcome in the session and forwards to the create wizard.
+     */
+    public function saringanSemak(KhidmatSaringanRequest $request): RedirectResponse
+    {
+        $jenis = $request->input('saringan_jenis') === 'pendamping_jenayah'
+            ? KhidmatNasihat::SARINGAN_PENDAMPING
+            : KhidmatNasihat::SARINGAN_SIVIL_SYARIAH;
+
+        $isSivilSyariah = $jenis === KhidmatNasihat::SARINGAN_SIVIL_SYARIAH;
+
+        // Eligibility questions: both must be answered "Ya" to remain eligible.
+        $eligible = $request->input('tiada_nasihat_terdahulu') === 'Ya'
+            && $request->input('tiada_perkara_dikecualikan') === 'Ya';
+
+        if (! $eligible) {
+            return redirect()->route('khidmat.saringan')
+                ->with('saringan_gagal', 'Anda tidak layak memohon kerana tidak memenuhi syarat kelayakan.');
+        }
+
+        // Income gate (sivil/syariah only): "Tidak" (income > RM50k) → Laluan Sumbangan (RM260).
+        $sumbangan = $isSivilSyariah && $request->input('pendapatan_bawah_had') === 'Tidak';
+
+        $request->session()->put('saringan', [
+            'jenis' => $jenis,
+            'lulus' => true,
+            'sumbangan' => $sumbangan,
+        ]);
+
+        return redirect()->route('khidmat.create');
+    }
+
+    /**
+     * Enforce the eligibility screening as a hard gate before a citizen-context
+     * final submit. Only DIRI_SENDIRI applications (the FE saringan flow) are
+     * gated — SEBAGAI_WAKIL is officer-driven and skips citizen screening, and a
+     * draft save is allowed through. The pass flag is read from the SESSION
+     * (authoritative), never the client-supplied hidden field, so a tampered
+     * POST cannot fake a pass.
+     */
+    private function assertSaringanGate(KhidmatNasihatRequest $request): void
+    {
+        if ($request->isWakil() || ! $request->isHantar()) {
+            return;
+        }
+
+        abort_unless(
+            session('saringan.lulus') === true,
+            403,
+            'Saringan kelayakan diperlukan sebelum permohonan dihantar.'
+        );
+    }
+
     public function create(): View
     {
+        $outcome = session('saringan');
+
         return view('khidmat-nasihat.form', $this->formData(new KhidmatNasihat([
             'jenis_permohonan' => 'DIRI_SENDIRI',
             'is_percuma' => false,
+            'saringan_jenis' => $outcome['jenis'] ?? null,
+            'saringan_lulus' => (bool) ($outcome['lulus'] ?? false),
+            'is_laluan_sumbangan' => (bool) ($outcome['sumbangan'] ?? false),
         ]), 'create'));
     }
 
     public function store(KhidmatNasihatRequest $request): RedirectResponse
     {
+        $this->assertSaringanGate($request);
+
         $khidmat = DB::transaction(function () use ($request) {
             $data = $this->mapInput($request);
             $khidmat = KhidmatNasihat::create($data);
@@ -137,13 +218,20 @@ class KhidmatNasihatController extends Controller
             ])->values(),
         ])->keyBy('id');
 
+        $cawanganList = Cawangan::where('status_aktif', true)
+            ->orderBy('nama')->get(['id', 'nama', 'kod', 'jenis', 'negeri_id']);
+
         return [
             'khidmat' => $khidmat,
             'mode' => $mode,
-            'cawanganList' => Cawangan::where('status_aktif', true)->orderBy('nama')->get(['id', 'nama', 'kod', 'negeri_id']),
+            // All branches keyed for the DIRI_SENDIRI step; grouped by jenis for wakil.
+            'cawanganList' => $cawanganList,
+            'cawanganByJenis' => $cawanganList->groupBy('jenis'),
             'kategoriList' => $kategoriList,
             'kategoriTree' => $kategoriTree,
             'negeriList' => RefNegeri::orderBy('nama')->pluck('nama', 'id')->all(),
+            'mahkamahSivilList' => MahkamahSivil::orderBy('nama_mahkamah')->get(['id', 'nama_mahkamah', 'negeri_mahkamah']),
+            'mahkamahSyariahList' => MahkamahSyariah::orderBy('nama_mahkamah')->get(['id', 'nama_mahkamah', 'negeri_mahkamah']),
         ];
     }
 
@@ -152,12 +240,30 @@ class KhidmatNasihatController extends Controller
     {
         $v = $request->validated();
         $isPercuma = $request->boolean('is_percuma');
+        $isWakil = $request->isWakil();
+        $isMahkamah = $request->isMahkamah();
+        $jenisWakil = $isWakil ? ($v['jenis_wakil'] ?? null) : null;
         $kategori = RefKategoriKn::find($v['id_kategori'] ?? null);
 
-        $fee = KhidmatBayaran::kira($kategori?->jenis_kategori, $v['jumlah_pendapatan'] ?? null, $isPercuma);
+        // Penjara/JKM wakil contexts are fee-exempt (RM0); mahkamah uses the matrix.
+        $fee = KhidmatBayaran::kira($kategori?->jenis_kategori, $v['jumlah_pendapatan'] ?? null, $isPercuma, $jenisWakil);
+
+        // Screening outcome: trust the SESSION (set by the saringan gate), not the
+        // client-supplied hidden fields, so a tampered POST can't fake a pass.
+        $saringan = $isWakil ? null : session('saringan');
 
         return [
-            'jenis_permohonan' => 'DIRI_SENDIRI',
+            'jenis_permohonan' => $isWakil ? 'SEBAGAI_WAKIL' : 'DIRI_SENDIRI',
+            'jenis_wakil' => $jenisWakil,
+            'no_pengenalan_wakil' => $isWakil ? ($v['no_pengenalan_wakil'] ?? null) : null,
+            'jawatan_wakil' => $isWakil ? ($v['jawatan_wakil'] ?? null) : null,
+            'nama_diwakili' => $isWakil ? ($v['nama_diwakili'] ?? null) : null,
+            'id_pengenalan_diwakili' => $isWakil ? ($v['id_pengenalan_diwakili'] ?? null) : null,
+            'jenis_mahkamah_pihak' => $isMahkamah ? ($v['jenis_mahkamah_pihak'] ?? null) : null,
+            'id_mahkamah' => $isMahkamah ? ($v['id_mahkamah'] ?? null) : null,
+            'saringan_jenis' => $saringan['jenis'] ?? ($v['saringan_jenis'] ?? null),
+            'saringan_lulus' => (bool) ($saringan['lulus'] ?? false),
+            'is_laluan_sumbangan' => (bool) ($saringan['sumbangan'] ?? false),
             'nama_mangsa' => $v['nama_mangsa'],
             'id_pengenalan_mangsa' => $v['id_pengenalan_mangsa'] ?? null,
             'jenis_pengenalan_mangsa' => $v['jenis_pengenalan_mangsa'] ?? null,

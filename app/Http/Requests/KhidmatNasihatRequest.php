@@ -26,13 +26,45 @@ class KhidmatNasihatRequest extends FormRequest
         return $this->input('aksi') === 'hantar';
     }
 
+    /** Whether this application is filed on behalf of someone (SEBAGAI_WAKIL). */
+    public function isWakil(): bool
+    {
+        return $this->input('jenis_permohonan') === 'SEBAGAI_WAKIL';
+    }
+
+    /** Whether the wakil context is the court (mahkamah) variant. */
+    public function isMahkamah(): bool
+    {
+        return $this->isWakil() && $this->input('jenis_wakil') === 'MAHKAMAH';
+    }
+
     public function rules(): array
     {
         $hantar = $this->isHantar();
         $req = $hantar ? 'required' : 'nullable';
+        $wakil = $this->isWakil();
+        $mahkamah = $this->isMahkamah();
 
         return [
             'aksi' => ['nullable', Rule::in(['draf', 'hantar'])],
+            'jenis_permohonan' => ['nullable', Rule::in(['DIRI_SENDIRI', 'SEBAGAI_WAKIL'])],
+
+            // ---- Sebagai-Wakil context (slice 3) ----
+            // jenis_wakil required for every SEBAGAI_WAKIL submit; null for DIRI_SENDIRI.
+            'jenis_wakil' => [Rule::requiredIf($wakil), 'nullable', Rule::in(['PENJARA', 'JKM', 'MAHKAMAH'])],
+            'no_pengenalan_wakil' => ['nullable', 'string', 'max:255'],
+            'jawatan_wakil' => ['nullable', 'string', 'max:255'],
+            'nama_diwakili' => ['nullable', 'string', 'max:255'],
+            'id_pengenalan_diwakili' => ['nullable', 'string', 'max:255'],
+
+            // MAHKAMAH context: court party-type + court id (from mahkamah_sivil|syariah).
+            'jenis_mahkamah_pihak' => [Rule::requiredIf($mahkamah), 'nullable', Rule::in(['SIVIL', 'SYARIAH'])],
+            'id_mahkamah' => [Rule::requiredIf($mahkamah), 'nullable', 'integer'],
+
+            // ---- Eligibility screening outcome (carried from the saringan gate) ----
+            'saringan_jenis' => ['nullable', 'string', 'max:255'],
+            'saringan_lulus' => ['nullable', 'boolean'],
+            'is_laluan_sumbangan' => ['nullable', 'boolean'],
 
             // ---- Maklumat: applicant / victim ----
             'nama_mangsa' => ['required', 'string', 'max:255'],
@@ -74,6 +106,9 @@ class KhidmatNasihatRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'jenis_wakil' => 'jenis wakil',
+            'jenis_mahkamah_pihak' => 'jenis mahkamah',
+            'id_mahkamah' => 'mahkamah',
             'nama_mangsa' => 'nama mangsa',
             'id_pengenalan_mangsa' => 'no. pengenalan',
             'cawangan_id' => 'cawangan',
@@ -93,6 +128,9 @@ class KhidmatNasihatRequest extends FormRequest
             'perakuan.accepted' => 'Sila tandakan perakuan sebelum menghantar permohonan.',
             'tarikh_temu_janji.required' => 'Sila pilih tarikh temu janji.',
             'masa_temu_janji.required' => 'Sila pilih masa temu janji.',
+            'jenis_wakil.required' => 'Sila pilih konteks wakil (Penjara / JKM / Mahkamah).',
+            'jenis_mahkamah_pihak.required' => 'Sila pilih jenis mahkamah (Sivil / Syariah).',
+            'id_mahkamah.required' => 'Sila pilih mahkamah.',
         ];
     }
 }

@@ -10,7 +10,8 @@
         </div>
         @can('khidmat.manage')
             <div class="tap-head__cluster">
-                <a href="{{ route('khidmat.create') }}" class="btn btn--primary">+ Permohonan Baharu</a>
+                {{-- Slice 3: route through the eligibility screening gate before the wizard. --}}
+                <a href="{{ route('khidmat.saringan') }}" class="btn btn--primary">+ Permohonan Baharu</a>
             </div>
         @endcan
     </div>

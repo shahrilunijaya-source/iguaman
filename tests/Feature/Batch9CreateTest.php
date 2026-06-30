@@ -154,7 +154,10 @@ class Batch9CreateTest extends TestCase
             'perakuan' => 1,
         ];
 
+        // Slice 3: a citizen DIRI_SENDIRI final submit must clear the screening
+        // gate first; the saringan outcome lives in the session (authoritative).
         $this->actingAs($this->user('pembantu@test.local'))
+            ->withSession(['saringan' => ['jenis' => 'SIVIL_SYARIAH', 'lulus' => true, 'sumbangan' => true]])
             ->post(route('khidmat.store'), $payload)
             ->assertRedirect();
 

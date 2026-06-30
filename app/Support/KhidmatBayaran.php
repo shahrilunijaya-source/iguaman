@@ -10,11 +10,17 @@ namespace App\Support;
  * level-1 category name + declared income + exemption flag and it returns the fee.
  *
  * Rules (first match wins):
- *   1. is_percuma          → RM0   (full exemption — overrides everything).
- *   2. PENDAMPING JENAYAH  → RM0   (penjara accompaniment — no fee).
- *      PENDAMPING GUAMAN   → RM0   (JKM accompaniment — no fee).
- *   3. SIVIL / SYARIAH AND income > RM50,000 → RM260 ("Laluan Sumbangan").
- *   4. default             → RM10.
+ *   1. is_percuma                 → RM0   (full exemption — overrides everything).
+ *   2. wakil context PENJARA|JKM  → RM0   (slice 3: prison/welfare rep — no fee,
+ *                                          mirrors FE idPenjara/idJKM → RM0.00).
+ *   3. PENDAMPING JENAYAH         → RM0   (penjara accompaniment — no fee).
+ *      PENDAMPING GUAMAN          → RM0   (JKM accompaniment — no fee).
+ *   4. SIVIL / SYARIAH AND income > RM50,000 → RM260 ("Laluan Sumbangan").
+ *   5. default                    → RM10.
+ *
+ * MAHKAMAH wakil context is intentionally NOT free — the court representative
+ * still pays per the normal income matrix (matches the Nuxt FE, where only
+ * idPenjara/idJKM zero the fee).
  */
 final class KhidmatBayaran
 {
@@ -36,16 +42,26 @@ final class KhidmatBayaran
     /** Level-1 categories eligible for the income-driven Sumbangan path. */
     public const KATEGORI_SUMBANGAN = ['SIVIL', 'SYARIAH'];
 
+    /** Wakil (representative) contexts that are fee-exempt (slice 3). */
+    public const WAKIL_PERCUMA = ['PENJARA', 'JKM'];
+
     /**
      * Compute the advisory fee.
      *
      * @param  string|null  $kategori  Level-1 category name (ref_kategori_kn.jenis_kategori).
      * @param  float|int|string|null  $pendapatan  Declared monthly/household income (RM).
      * @param  bool  $isPercuma  Full-exemption toggle.
+     * @param  string|null  $jenisWakil  SEBAGAI_WAKIL context (PENJARA|JKM|MAHKAMAH); null for DIRI_SENDIRI.
      */
-    public static function kira(?string $kategori, float|int|string|null $pendapatan = null, bool $isPercuma = false): float
+    public static function kira(?string $kategori, float|int|string|null $pendapatan = null, bool $isPercuma = false, ?string $jenisWakil = null): float
     {
         if ($isPercuma) {
+            return self::FI_PERCUMA;
+        }
+
+        $jenisWakil = $jenisWakil !== null ? strtoupper(trim($jenisWakil)) : null;
+
+        if ($jenisWakil !== null && in_array($jenisWakil, self::WAKIL_PERCUMA, true)) {
             return self::FI_PERCUMA;
         }
 

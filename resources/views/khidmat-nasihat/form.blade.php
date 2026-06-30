@@ -10,6 +10,8 @@
     // Field -> wizard step, so a server-side validation error reopens the right step.
     $steps = ['Maklumat', 'Bayaran', 'Slot Janji Temu', 'Perakuan'];
     $stepOf = [
+        'jenis_permohonan' => 0, 'jenis_wakil' => 0, 'no_pengenalan_wakil' => 0, 'jawatan_wakil' => 0,
+        'nama_diwakili' => 0, 'id_pengenalan_diwakili' => 0, 'jenis_mahkamah_pihak' => 0, 'id_mahkamah' => 0,
         'nama_mangsa' => 0, 'id_pengenalan_mangsa' => 0, 'jenis_pengenalan_mangsa' => 0, 'jantina_mangsa' => 0,
         'umur_mangsa' => 0, 'bangsa' => 0, 'agama' => 0, 'tarikh_lahir_mangsa' => 0, 'nama_wakil' => 0,
         'alamat_surat1' => 0, 'alamat_surat2' => 0, 'alamat_surat3' => 0, 'poskod' => 0,
@@ -80,8 +82,86 @@
         @unless ($isCreate) @method('PUT') @endunless
         <input type="hidden" name="aksi" id="knAksi" value="draf">
 
+        {{-- Slice 3: screening outcome carried from the saringan gate (read-only). --}}
+        <input type="hidden" name="saringan_jenis" value="{{ $val('saringan_jenis') }}">
+        <input type="hidden" name="saringan_lulus" value="{{ $val('saringan_lulus') ? 1 : 0 }}">
+        <input type="hidden" name="is_laluan_sumbangan" id="knSumbangan" value="{{ $val('is_laluan_sumbangan') ? 1 : 0 }}">
+
         {{-- ===== Step 1 · Maklumat ===== --}}
         <div class="wz-step" data-step="0">
+            {{-- Slice 3: jenis permohonan + Sebagai-Wakil context (penjara / JKM / mahkamah). --}}
+            <div class="tap-card" style="margin-bottom:18px;">
+                <div class="tap-card__eyebrow">Jenis Permohonan</div>
+                <div class="wiz-grid">
+                    <div class="wiz-field">
+                        <label class="wiz-field__label">Permohonan Untuk *</label>
+                        <select class="wiz-field__select" name="jenis_permohonan" id="knJenisPermohonan">
+                            @foreach (['DIRI_SENDIRI' => 'Diri Sendiri', 'SEBAGAI_WAKIL' => 'Sebagai Wakil'] as $v => $label)
+                                <option value="{{ $v }}" @selected($val('jenis_permohonan', 'DIRI_SENDIRI') === $v)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="wiz-field" id="knWakilCtxField" style="display:none;">
+                        <label class="wiz-field__label">Konteks Wakil *</label>
+                        <select class="wiz-field__select" name="jenis_wakil" id="knJenisWakil">
+                            <option value="">— Pilih —</option>
+                            @foreach (['PENJARA' => 'Penjara', 'JKM' => 'JKM', 'MAHKAMAH' => 'Mahkamah'] as $v => $label)
+                                <option value="{{ $v }}" @selected($val('jenis_wakil') === $v)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('jenis_wakil') <div class="wiz-field__hint" style="color:var(--danger)">{{ $message }}</div> @enderror
+                        <div class="wiz-field__hint" id="knWakilFreeHint" style="display:none; color:var(--success);">Penjara / JKM — bayaran dikecualikan (RM0).</div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Wakil identity + represented party (only for SEBAGAI_WAKIL). --}}
+            <div class="tap-card" style="margin-bottom:18px; display:none;" id="knWakilCard">
+                <div class="tap-card__eyebrow">Maklumat Wakil &amp; Orang Yang Diwakili</div>
+                <div class="wiz-grid">
+                    <div class="wiz-field">
+                        <label class="wiz-field__label">No. Pengenalan Wakil</label>
+                        <input class="wiz-field__input" name="no_pengenalan_wakil" value="{{ $val('no_pengenalan_wakil') }}">
+                    </div>
+                    <div class="wiz-field">
+                        <label class="wiz-field__label">Jawatan Wakil</label>
+                        <input class="wiz-field__input" name="jawatan_wakil" value="{{ $val('jawatan_wakil') }}" placeholder="Pegawai Penjara / Pegawai JKM">
+                    </div>
+                    <div class="wiz-field">
+                        <label class="wiz-field__label">Nama Orang Yang Diwakili</label>
+                        <input class="wiz-field__input" name="nama_diwakili" value="{{ $val('nama_diwakili') }}">
+                    </div>
+                    <div class="wiz-field">
+                        <label class="wiz-field__label">No. Pengenalan Diwakili</label>
+                        <input class="wiz-field__input" name="id_pengenalan_diwakili" value="{{ $val('id_pengenalan_diwakili') }}">
+                    </div>
+                </div>
+            </div>
+
+            {{-- Mahkamah (court) section — only for the MAHKAMAH wakil context. --}}
+            <div class="tap-card" style="margin-bottom:18px; display:none;" id="knMahkamahCard">
+                <div class="tap-card__eyebrow">Maklumat Mahkamah</div>
+                <div class="wiz-grid">
+                    <div class="wiz-field">
+                        <label class="wiz-field__label">Jenis Mahkamah *</label>
+                        <select class="wiz-field__select" name="jenis_mahkamah_pihak" id="knJenisMahkamah">
+                            <option value="">— Pilih —</option>
+                            @foreach (['SIVIL' => 'Sivil', 'SYARIAH' => 'Syariah'] as $v => $label)
+                                <option value="{{ $v }}" @selected($val('jenis_mahkamah_pihak') === $v)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('jenis_mahkamah_pihak') <div class="wiz-field__hint" style="color:var(--danger)">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="wiz-field">
+                        <label class="wiz-field__label">Mahkamah *</label>
+                        <select class="wiz-field__select" name="id_mahkamah" id="knMahkamah" data-selected="{{ $val('id_mahkamah') }}">
+                            <option value="">— Pilih jenis mahkamah dahulu —</option>
+                        </select>
+                        @error('id_mahkamah') <div class="wiz-field__hint" style="color:var(--danger)">{{ $message }}</div> @enderror
+                    </div>
+                </div>
+            </div>
+
             <div class="tap-card" style="margin-bottom:18px;">
                 <div class="tap-card__eyebrow">Maklumat Mangsa / Pemohon</div>
                 <div class="wiz-grid">
@@ -363,13 +443,18 @@
             const kategoriSel = document.getElementById('knKategori');
             const pendapatanEl = document.getElementById('knPendapatan');
             const percumaEl = document.getElementById('knPercuma');
+            const jenisPermohonanEl = document.getElementById('knJenisPermohonan');
+            const jenisWakilEl = document.getElementById('knJenisWakil');
             function fmt(n) { return 'RM ' + Number(n).toFixed(2); }
             function recalcFee() {
                 const opt = kategoriSel.options[kategoriSel.selectedIndex];
                 const jenis = (opt && opt.dataset.jenis ? opt.dataset.jenis : '').toUpperCase();
                 const income = parseFloat(pendapatanEl.value) || 0;
+                const isWakil = jenisPermohonanEl.value === 'SEBAGAI_WAKIL';
+                const wakilCtx = isWakil ? jenisWakilEl.value : '';
                 let fee = 10, path = 'Kadar asas';
                 if (percumaEl.checked) { fee = 0; path = 'Percuma (pengecualian penuh)'; }
+                else if (wakilCtx === 'PENJARA' || wakilCtx === 'JKM') { fee = 0; path = 'Wakil ' + wakilCtx + ' — tiada bayaran'; }
                 else if (jenis === 'PENDAMPING JENAYAH' || jenis === 'PENDAMPING GUAMAN') { fee = 0; path = 'Pendamping — tiada bayaran'; }
                 else if ((jenis === 'SIVIL' || jenis === 'SYARIAH') && income > 50000) { fee = 260; path = 'Laluan Sumbangan (pendapatan > RM50,000)'; }
                 feeEl.textContent = fmt(fee);
@@ -377,6 +462,43 @@
             }
             [kategoriSel, pendapatanEl, percumaEl].forEach((el) => { el.addEventListener('input', recalcFee); el.addEventListener('change', recalcFee); });
             recalcFee();
+
+            // ----- Sebagai-Wakil branching (penjara / JKM / mahkamah) -----
+            const wakilCtxField = document.getElementById('knWakilCtxField');
+            const wakilCard = document.getElementById('knWakilCard');
+            const mahkamahCard = document.getElementById('knMahkamahCard');
+            const wakilFreeHint = document.getElementById('knWakilFreeHint');
+            const jenisMahkamahEl = document.getElementById('knJenisMahkamah');
+            const mahkamahSel = document.getElementById('knMahkamah');
+            const MAHKAMAH = { SIVIL: @json($mahkamahSivilList), SYARIAH: @json($mahkamahSyariahList) };
+
+            function syncWakil() {
+                const isWakil = jenisPermohonanEl.value === 'SEBAGAI_WAKIL';
+                wakilCtxField.style.display = isWakil ? '' : 'none';
+                wakilCard.style.display = isWakil ? '' : 'none';
+                const ctx = isWakil ? jenisWakilEl.value : '';
+                mahkamahCard.style.display = ctx === 'MAHKAMAH' ? '' : 'none';
+                wakilFreeHint.style.display = (ctx === 'PENJARA' || ctx === 'JKM') ? '' : 'none';
+                jenisWakilEl.required = isWakil;
+                jenisMahkamahEl.required = ctx === 'MAHKAMAH';
+                mahkamahSel.required = ctx === 'MAHKAMAH';
+                recalcFee();
+            }
+            function loadMahkamah() {
+                const rows = MAHKAMAH[jenisMahkamahEl.value] || [];
+                mahkamahSel.innerHTML = '<option value="">' + (rows.length ? '— Pilih mahkamah —' : '— Pilih jenis mahkamah dahulu —') + '</option>';
+                rows.forEach((r) => {
+                    const o = document.createElement('option');
+                    o.value = r.id; o.textContent = r.nama_mahkamah;
+                    if (String(r.id) === String(mahkamahSel.dataset.selected)) o.selected = true;
+                    mahkamahSel.appendChild(o);
+                });
+            }
+            jenisPermohonanEl.addEventListener('change', syncWakil);
+            jenisWakilEl.addEventListener('change', syncWakil);
+            jenisMahkamahEl.addEventListener('change', loadMahkamah);
+            if (jenisMahkamahEl.value) loadMahkamah();
+            syncWakil();
 
             // ----- Cawangan -> auto-fill negeri -----
             const cawangan = document.getElementById('knCawangan');

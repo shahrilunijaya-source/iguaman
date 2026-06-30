@@ -20,6 +20,8 @@ class KhidmatNasihat extends Model
         'perakuan' => 'boolean',
         'status_bayaran' => 'boolean',
         'is_percuma' => 'boolean',
+        'saringan_lulus' => 'boolean',
+        'is_laluan_sumbangan' => 'boolean',
         'tarikh_lahir_mangsa' => 'date',
         'jumlah_bayaran' => 'decimal:2',
         'jumlah_pendapatan' => 'decimal:2',
@@ -45,9 +47,32 @@ class KhidmatNasihat extends Model
 
     public const JENIS_PERMOHONAN = ['DIRI_SENDIRI', 'SEBAGAI_WAKIL'];
 
+    /** SEBAGAI_WAKIL representative contexts (slice 3). */
+    public const JENIS_WAKIL = ['PENJARA', 'JKM', 'MAHKAMAH'];
+
+    /** Eligibility-screening jenis (FE selectedJenisKhidmat). */
+    public const SARINGAN_SIVIL_SYARIAH = 'SIVIL_SYARIAH';
+
+    public const SARINGAN_PENDAMPING = 'PENDAMPING';
+
     public function pengguna(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id_pengguna');
+    }
+
+    /**
+     * Resolve the linked court (slice 3 MAHKAMAH context). No DB FK — id_mahkamah
+     * points into mahkamah_sivil or mahkamah_syariah per jenis_mahkamah_pihak.
+     */
+    public function mahkamah(): ?Model
+    {
+        if ($this->id_mahkamah === null) {
+            return null;
+        }
+
+        $class = $this->jenis_mahkamah_pihak === 'SYARIAH' ? MahkamahSyariah::class : MahkamahSivil::class;
+
+        return $class::find($this->id_mahkamah);
     }
 
     public function cawangan(): BelongsTo
