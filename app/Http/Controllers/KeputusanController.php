@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use App\Models\LejarTuntutanBayaran;
+use App\Models\PeguamPanel;
 use App\Support\Audit;
 use App\Support\KesKnSyncService;
+use App\Support\LejarTuntutanService;
 use App\Support\StatusAgihan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -93,6 +96,9 @@ class KeputusanController extends Controller
 
         Audit::log('forms', $kes->id, Audit::UPDATE, "Fail ditutup: {$kes->nama}");
 
+        // W9: seed a Pembelaan Awam claim-ledger row on close (idempotent).
+        $this->seedPembelaanLedger($kes, $request->user()->name);
+
         // W12: propagate closure back to the originating Khidmat Nasihat, if any.
         app(KesKnSyncService::class)->pushToKn($kes, KesKnSyncService::STATE_DITUTUP, $request->user()->name);
 
@@ -131,6 +137,9 @@ class KeputusanController extends Controller
 
         Audit::log('forms', $kes->id, Audit::APPROVE, "Penyelesaian kes disahkan & fail ditutup: {$kes->nama}");
 
+        // W9: seed a Pembelaan Awam claim-ledger row on JBG-confirmed close (idempotent).
+        $this->seedPembelaanLedger($kes, $request->user()->name);
+
         // W12: propagate closure back to the originating Khidmat Nasihat, if any.
         app(KesKnSyncService::class)->pushToKn($kes, KesKnSyncService::STATE_DITUTUP, $request->user()->name);
 
@@ -165,5 +174,43 @@ class KeputusanController extends Controller
             422,
             'Status kes telah berubah. Sila muat semula senarai.'
         );
+    }
+
+    /**
+     * W9 — on closure of a Pembelaan Awam case, seed a DRAF claim-ledger row
+     * (sumber = PEMBELAAN_AWAM) so the assigned panel lawyer can file a claim against the
+     * file. No-op for civil cases. Idempotent: PEMBELAAN_AWAM rows have no DB-unique guard,
+     * so an existence check prevents duplicates across the two close paths.
+     */
+    private function seedPembelaanLedger(Form $kes, string $actor): void
+    {
+        if (! $kes->is_pembelaan_awam) {
+            return;
+        }
+
+        $exists = LejarTuntutanBayaran::where('sumber', LejarTuntutanBayaran::SUMBER_PEMBELAAN_AWAM)
+            ->where('id_kes', $kes->id)
+            ->exists();
+
+        if ($exists) {
+            return;
+        }
+
+        // Resolve the assigned panel lawyer (stored by name on the case) for the claim.
+        $peguam = filled($kes->nama_pegawai_yang_dapat_kes)
+            ? PeguamPanel::where('nama_peguam', $kes->nama_pegawai_yang_dapat_kes)->first()
+            : null;
+
+        app(LejarTuntutanService::class)->cipta([
+            'sumber' => LejarTuntutanBayaran::SUMBER_PEMBELAAN_AWAM,
+            'sumber_id' => $kes->id,
+            'id_kes' => $kes->id,
+            'id_peguam_panel' => $peguam?->id,
+            'kp_peguam' => $peguam?->kp_peguam,
+            'cawangan' => $kes->cawangan,
+            'jenis_tuntutan' => 'Pembelaan Awam',
+            'keterangan' => 'Tuntutan bagi fail pembelaan awam '.($kes->no_fail ?? ('#'.$kes->id)),
+            'jumlah_tuntutan' => 0,
+        ], $actor);
     }
 }

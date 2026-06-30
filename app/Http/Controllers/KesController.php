@@ -20,6 +20,7 @@ class KesController extends Controller
         $filters = $request->only(['cawangan', 'status', 'kategori', 'q']);
 
         $kes = Form::query()
+            ->litigasi() // W9: Pembelaan Awam rows have their own register (pembelaan.index).
             ->when($filters['cawangan'] ?? null, fn ($w, $v) => $w->where('cawangan', $v))
             ->when($filters['status'] ?? null, fn ($w, $v) => $w->where('status', $v))
             ->when($filters['kategori'] ?? null, fn ($w, $v) => $w->where('kategori_kes', $v))
@@ -103,6 +104,7 @@ class KesController extends Controller
         $filters = $request->only(['cawangan', 'q']);
 
         $kes = Form::query()
+            ->litigasi() // W9: closed Pembelaan Awam files surface in their own register.
             ->whereNotNull('tarikh_tutup_fail')
             ->when($filters['cawangan'] ?? null, fn ($w, $v) => $w->where('cawangan', $v))
             ->when($filters['q'] ?? null, function ($w, $v) {

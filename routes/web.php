@@ -36,6 +36,7 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\PeguamDaftarController;
 use App\Http\Controllers\PeguamPanelController;
+use App\Http\Controllers\PembelaanAwamController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PenutupanOperasiController;
 use App\Http\Controllers\PermohonanPeguamController;
@@ -414,6 +415,16 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/lejar-tuntutan/{tuntutan}/lulus', [LejarTuntutanController::class, 'lulus'])->name('tuntutan.lulus')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
         Route::post('/lejar-tuntutan/{tuntutan}/tolak', [LejarTuntutanController::class, 'tolak'])->name('tuntutan.tolak')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
         Route::post('/lejar-tuntutan/{tuntutan}/bayar', [LejarTuntutanController::class, 'bayar'])->name('tuntutan.bayar')->whereNumber('tuntutan')->middleware('permission:tuntutan.bayar');
+    });
+
+    // ---- Pembelaan Awam (public criminal defence) register — W9 ----
+    // Tagged forms rows (D3); assignment/closure reuse the shared agihan spine.
+    // Static /baharu declared before {kes} (whereNumber) so it never shadows.
+    Route::middleware('permission:pembelaan.view')->group(function () {
+        Route::get('/pembelaan-awam', [PembelaanAwamController::class, 'index'])->name('pembelaan.index');
+        Route::get('/pembelaan-awam/baharu', [PembelaanAwamController::class, 'create'])->name('pembelaan.create')->middleware('permission:pembelaan.manage');
+        Route::post('/pembelaan-awam', [PembelaanAwamController::class, 'store'])->name('pembelaan.store')->middleware('permission:pembelaan.manage');
+        Route::get('/pembelaan-awam/{kes}', [PembelaanAwamController::class, 'show'])->name('pembelaan.show')->whereNumber('kes');
     });
 
     // ---- Khidmat Nasihat (legal-advisory applications) — batch 9 ----
