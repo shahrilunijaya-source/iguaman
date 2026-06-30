@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Events\PemindahanCawanganDimulakan;
 use App\Models\Cawangan;
 use App\Models\Form;
 use App\Models\KhidmatNasihat;
@@ -73,6 +74,9 @@ class TransferCawanganService
         Audit::log('forms', $kes->id, Audit::UPDATE,
             "Kes dipindahkan ke cawangan {$pindah->cawangan_tujuan} (kes #{$kes->id}).", $actor->name);
 
+        // W21 — notify the destination branch (queued; never rolls back the transfer).
+        PemindahanCawanganDimulakan::dispatch($pindah);
+
         return $pindah;
     }
 
@@ -122,6 +126,9 @@ class TransferCawanganService
 
         Audit::log('khidmat_nasihat', $kn->id, Audit::UPDATE,
             "Khidmat Nasihat dipindahkan ke cawangan {$pindah->cawangan_tujuan} (KN #{$kn->id}).", $actor->name);
+
+        // W21 — notify the destination branch (queued; never rolls back the transfer).
+        PemindahanCawanganDimulakan::dispatch($pindah);
 
         return $pindah;
     }

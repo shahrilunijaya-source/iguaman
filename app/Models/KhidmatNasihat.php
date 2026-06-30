@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\CawanganScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,6 +17,17 @@ class KhidmatNasihat extends Model
     protected $table = 'khidmat_nasihat';
 
     protected $guarded = ['id'];
+
+    /**
+     * W21 — branch isolation, extending CawanganScope beyond Form. KN keys on the
+     * numeric cawangan_id (+ cawangan_asal_id for D2 dual-branch), so the scope is
+     * constructed by-branch-id. Closes the index()/route-binding cross-branch read
+     * gap; view-all / no-branch staff and lawyers still see everything.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new CawanganScope('cawangan_id', 'cawangan_asal_id', true));
+    }
 
     protected $casts = [
         'perakuan' => 'boolean',
