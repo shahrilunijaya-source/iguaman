@@ -83,6 +83,22 @@ class NoFailGenerator
         return $n + 1;
     }
 
+    /**
+     * W9 — Pembelaan Awam (public criminal defence) file number: a distinct PBA series so
+     * criminal-defence files are visually separable from the litigation `JBG.` series.
+     *   PBA.{STATE}({jenis_kes}){seq}/{MMYYYY}   e.g.  PBA.KUL(085)1/072026
+     * Sequence runs within (cawangan, jenis_kes) over Pembelaan-tagged rows only.
+     */
+    public function generatePembelaan(Form $kes): string
+    {
+        $code = $this->stateCode($kes->cawangan);
+        $jenis = $kes->jenis_kes ?: '000';
+        $seq = $this->sequencePembelaan($kes);
+        $date = $kes->tarikh_permohonan ? Carbon::parse($kes->tarikh_permohonan) : now();
+
+        return sprintf('PBA.%s(%s)%d/%s', $code, $jenis, $seq, $date->format('mY'));
+    }
+
     /** Map a branch name to its 3-letter code; fall back to the first 3 letters. */
     private function stateCode(?string $cawangan): string
     {
@@ -99,6 +115,20 @@ class NoFailGenerator
             'SELECT rn FROM (
                 SELECT id, ROW_NUMBER() OVER (ORDER BY tarikh_permohonan ASC, id ASC) AS rn
                 FROM forms WHERE cawangan = ? AND jenis_kes = ?
+            ) t WHERE id = ?',
+            [$kes->cawangan, $kes->jenis_kes, $kes->id]
+        );
+
+        return $row ? (int) $row->rn : 1;
+    }
+
+    /** ROW_NUMBER() within (cawangan, jenis_kes) over Pembelaan-tagged rows only. */
+    private function sequencePembelaan(Form $kes): int
+    {
+        $row = DB::selectOne(
+            'SELECT rn FROM (
+                SELECT id, ROW_NUMBER() OVER (ORDER BY tarikh_permohonan ASC, id ASC) AS rn
+                FROM forms WHERE cawangan = ? AND jenis_kes = ? AND is_pembelaan_awam = 1
             ) t WHERE id = ?',
             [$kes->cawangan, $kes->jenis_kes, $kes->id]
         );

@@ -30,6 +30,7 @@ use App\Http\Controllers\LejarTuntutanController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
 use App\Http\Controllers\MaklumBalasController;
+use App\Http\Controllers\OcrPrefillController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PegawaiController;
@@ -37,6 +38,7 @@ use App\Http\Controllers\Peguam\TuntutanController as PeguamTuntutanController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\PeguamDaftarController;
 use App\Http\Controllers\PeguamPanelController;
+use App\Http\Controllers\PembelaanAwamController;
 use App\Http\Controllers\PemindahanController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PenutupanOperasiController;
@@ -201,6 +203,14 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/kes/{kes}/cetak/penugasan', [CetakanController::class, 'agihan'])->name('cetak.penugasan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/laporan', [CetakanController::class, 'laporan'])->name('cetak.laporan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/penutupan', [CetakanController::class, 'penutupan'])->name('cetak.penutupan')->whereNumber('kes');
+    Route::get('/kes/{kes}/cetak/perakuan', [CetakanController::class, 'perakuan'])->name('cetak.perakuan')->whereNumber('kes'); // W14 legal-aid certificate
+    Route::get('/kes/{kes}/cetak/pembatalan', [CetakanController::class, 'pembatalan'])->name('cetak.pembatalan')->whereNumber('kes'); // W20 cancellation letter
+
+    // W13 — OCR document → form prefill (spike; feature-flagged off via config('ocr.enabled')).
+    Route::middleware('permission:kes.create')->group(function () {
+        Route::get('/ocr-prefill', [OcrPrefillController::class, 'form'])->name('ocr.prefill');
+        Route::post('/ocr-prefill/extract', [OcrPrefillController::class, 'extract'])->name('ocr.prefill.extract');
+    });
 
     // OYD (Orang Yang Dibantu) registry
     Route::get('/oyd', [OydController::class, 'index'])->name('oyd.index');
@@ -224,6 +234,9 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/{type}/csv', [LaporanController::class, 'csv'])->name('laporan.csv')->whereIn('type', $laporanTypes);
     Route::get('/laporan/{type}/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf')->whereIn('type', $laporanTypes);
+    // W20 — queued bulk .xlsx export + download of the finished file.
+    Route::get('/laporan/{type}/eksport-pukal', [LaporanController::class, 'eksportPukal'])->name('laporan.eksport-pukal')->whereIn('type', $laporanTypes);
+    Route::get('/laporan/muat-turun/{fail}', [LaporanController::class, 'muatTurunEksport'])->name('laporan.muat-turun')->where('fail', '[A-Za-z0-9\-\.]+');
     // Wide-column CSV exports (EPIC F — legacy export_*.php): full legacy column parity.
     Route::get('/laporan/{type}/eksport-penuh', [LaporanPenuhController::class, 'csv'])
         ->middleware('permission:laporan.view')
@@ -457,6 +470,20 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/lejar-tuntutan/{tuntutan}/lulus', [LejarTuntutanController::class, 'lulus'])->name('tuntutan.lulus')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
         Route::post('/lejar-tuntutan/{tuntutan}/tolak', [LejarTuntutanController::class, 'tolak'])->name('tuntutan.tolak')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
         Route::post('/lejar-tuntutan/{tuntutan}/bayar', [LejarTuntutanController::class, 'bayar'])->name('tuntutan.bayar')->whereNumber('tuntutan')->middleware('permission:tuntutan.bayar');
+    });
+
+    // ---- Pembelaan Awam (public criminal defence) register — W9 ----
+    // Tagged forms rows (D3); assignment/closure reuse the shared agihan spine.
+    // Static /baharu declared before {kes} (whereNumber) so it never shadows.
+    Route::middleware('permission:pembelaan.view')->group(function () {
+        Route::get('/pembelaan-awam', [PembelaanAwamController::class, 'index'])->name('pembelaan.index');
+        Route::get('/pembelaan-awam/baharu', [PembelaanAwamController::class, 'create'])->name('pembelaan.create')->middleware('permission:pembelaan.manage');
+        Route::post('/pembelaan-awam', [PembelaanAwamController::class, 'store'])->name('pembelaan.store')->middleware('permission:pembelaan.manage');
+        Route::get('/pembelaan-awam/{kes}', [PembelaanAwamController::class, 'show'])->name('pembelaan.show')->whereNumber('kes');
+
+        // W14 — legal-aid certificate (Perakuan Bantuan Guaman) issue/finalise.
+        Route::post('/pembelaan-awam/{kes}/perakuan/interim', [PembelaanAwamController::class, 'keluarInterim'])->name('pembelaan.perakuan.interim')->whereNumber('kes')->middleware('permission:kes.perakuan');
+        Route::post('/pembelaan-awam/{kes}/perakuan/muktamad', [PembelaanAwamController::class, 'muktamad'])->name('pembelaan.perakuan.muktamad')->whereNumber('kes')->middleware('permission:kes.perakuan');
     });
 
     // ---- Khidmat Nasihat (legal-advisory applications) — batch 9 ----

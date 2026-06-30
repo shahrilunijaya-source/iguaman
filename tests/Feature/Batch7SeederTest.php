@@ -44,9 +44,10 @@ class Batch7SeederTest extends TestCase
         // W10 added 2 roles (pengarah_pembelaan_awam, ketua_pembelaan_awam) + 2 perms
         // (peguam.sokong.jenayah, peguam.keputusan.jenayah). W5 added 'agihan.luar'
         // (external-lawyer assignment). W7 added 'kes.pindah' (branch transfer).
-        // W19 added 'pengantaraan.agih' (mediator assignment).
+        // W19 added 'pengantaraan.agih' (mediator assignment). W9/W14 added 3 perms
+        // (pembelaan.view, pembelaan.manage, kes.perakuan).
         $this->assertSame(11, Role::count());  // 9 + 2 pembelaan-awam approver roles (W10)
-        $this->assertSame(52, Permission::count());  // 49 + agihan.luar (W5) + kes.pindah (W7) + pengantaraan.agih (W19)
+        $this->assertSame(55, Permission::count());  // 49 + agihan.luar/kes.pindah/pengantaraan.agih (W5/W7/W19) + 3 pembelaan/perakuan (W9/W14)
     }
 
     public function test_admin_can_everything_via_gate_before(): void
