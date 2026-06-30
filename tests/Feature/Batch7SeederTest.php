@@ -32,11 +32,12 @@ class Batch7SeederTest extends TestCase
 
     public function test_all_roles_and_permissions_exist(): void
     {
-        // 8 roles, 33 permissions. The original RBAC seeder (commit 16e1c19) shipped 32;
-        // EPIC G cuti CRUD (commit 2d4683a, same batch) added a 33rd permission
-        // 'selenggara.cuti'. RolePermissionSeeder::MATRIX is the source of truth.
+        // 8 roles, 36 permissions. Original RBAC seeder shipped 32; EPIC G cuti CRUD
+        // added a 33rd ('selenggara.cuti'); Batch 8 foundations/masters added 3 more
+        // ('selenggara.cawangan', 'selenggara.kategori_kn', 'selenggara.jawatan').
+        // RolePermissionSeeder::MATRIX is the source of truth.
         $this->assertSame(8, Role::count());
-        $this->assertSame(33, Permission::count());
+        $this->assertSame(36, Permission::count());
     }
 
     public function test_admin_can_everything_via_gate_before(): void

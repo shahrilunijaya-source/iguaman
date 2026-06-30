@@ -114,6 +114,21 @@
             <a href="{{ route('cuti.index') }}" class="ws-side-top {{ request()->routeIs('cuti.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">📅</span><span class="ws-side-label">Cuti Umum</span>
             </a>
+            @can('selenggara.cawangan')
+                <a href="{{ route('cawangan.index') }}" class="ws-side-top {{ request()->routeIs('cawangan.*') ? 'is-active' : '' }}">
+                    <span class="ws-side-top__icon">🏢</span><span class="ws-side-label">Cawangan</span>
+                </a>
+            @endcan
+            @can('selenggara.kategori_kn')
+                <a href="{{ route('kategori-kn.index') }}" class="ws-side-top {{ request()->routeIs('kategori-kn.*') ? 'is-active' : '' }}">
+                    <span class="ws-side-top__icon">🗂</span><span class="ws-side-label">Jenis Khidmat</span>
+                </a>
+            @endcan
+            @can('selenggara.jawatan')
+                <a href="{{ route('jawatan.index') }}" class="ws-side-top {{ request()->routeIs('jawatan.*') ? 'is-active' : '' }}">
+                    <span class="ws-side-top__icon">🪪</span><span class="ws-side-label">Jawatan</span>
+                </a>
+            @endcan
             <a href="{{ route('poster.index') }}" class="ws-side-top {{ request()->routeIs('poster.*') ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">🖼</span><span class="ws-side-label">e-Poster</span>
             </a>
