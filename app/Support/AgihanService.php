@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Mail;
 /**
  * The legacy 3-tier case-assignment state machine (pp-agihan). Each method is one guarded
  * transition over forms.status_agihan + the sejarah_ppuu spine. Mirrors formAgihanBaru /
- * formAgihanBaruPengarah / formAgihanSemula. Transition emails (PPUU/Pengarah/branch
- * notifications) are added in a later slice; the lawyer offer email is sent on KP approval.
+ * formAgihanBaruPengarah / formAgihanSemula. Transition emails fan out to the next actor
+ * via NotifikasiAgihan (best-effort, outside the db transaction); the lawyer offer email
+ * is sent on KP approval.
  *
  *   Baru:  0 →[pengarahTerima] 8 →[ppuuPilih] 10 →[pengarahSokong] 13 →[kpLulus] 1
  *   reject paths: pengarahTolakBaru →9 · pengarahTidakSokong →4 · kpTolak →15
@@ -42,6 +43,7 @@ class AgihanService
         });
 
         Audit::log('forms', $kes->id, Audit::UPDATE, "Agihan baru diterima Pengarah, diserah kepada PPUU (kes #{$kes->id}).");
+        app(NotifikasiAgihan::class)->pengarahTerima($kes, $idPPUU);
     }
 
     /** Tier 1 — Pengarah rejects a new case (0→9). */
@@ -49,6 +51,7 @@ class AgihanService
     {
         $kes->update(['status_agihan' => StatusAgihan::DITOLAK_PENGARAH]);
         Audit::log('forms', $kes->id, Audit::UPDATE, "Agihan baru ditolak oleh Pengarah: {$sebab} (kes #{$kes->id}).");
+        app(NotifikasiAgihan::class)->pengarahTolak($kes, $sebab);
     }
 
     /** Tier 2 — PPUU picks a panel lawyer (Pilihan A own-cawangan / B other-negeri) (8→10). */
@@ -79,12 +82,13 @@ class AgihanService
         });
 
         Audit::log('forms', $kes->id, Audit::UPDATE, "PPUU memilih peguam ({$pick['namaPP']}) — dihantar untuk sokongan Pengarah (kes #{$kes->id}).");
+        app(NotifikasiAgihan::class)->ppuuPilih($kes, $pick['namaPP']);
     }
 
     /** Tier 2 — Pengarah endorses the PPUU pick → forward to Ketua Pengarah (10→13). */
     public function pengarahSokong(Form $kes, User $actor, ?string $ulasan): void
     {
-        DB::transaction(function () use ($kes, $actor, $ulasan) {
+        DB::transaction(function () use ($kes, $ulasan) {
             $this->aktifOrFail($kes->id)->update([
                 'status_sokonganPengarah' => '0',
                 'ulasanPengarah' => $ulasan,
@@ -179,6 +183,7 @@ class AgihanService
         });
 
         Audit::log('forms', $kes->id, Audit::REJECT, "Agihan tidak diluluskan Ketua Pengarah: {$ulasan} — dikembalikan kepada PPUU (kes #{$kes->id}).");
+        app(NotifikasiAgihan::class)->kpTolak($kes, $ulasan);
     }
 
     /** Close any open sejarah_ppuu record for a case (rotation). */
