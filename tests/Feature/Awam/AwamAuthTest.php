@@ -16,4 +16,13 @@ class AwamAuthTest extends TestCase
 
         $this->assertDatabaseHas('users', ['id' => $user->id, 'user_type' => 'awam']);
     }
+
+    public function test_awam_role_and_permission_exist(): void
+    {
+        $this->assertDatabaseHas('roles', ['name' => 'awam']);
+        $this->assertDatabaseHas('permissions', ['name' => 'awam.portal']);
+
+        $role = \Spatie\Permission\Models\Role::findByName('awam');
+        $this->assertTrue($role->hasPermissionTo('awam.portal'));
+    }
 }
