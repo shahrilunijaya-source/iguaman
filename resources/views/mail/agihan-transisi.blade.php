@@ -15,7 +15,7 @@
         <tr><td style="padding:4px 12px 4px 0; color:#555;">Cawangan</td><td style="padding:4px 0;">{{ $kes->cawangan ?: '—' }}</td></tr>
     </table>
 
-    <p>Sila log masuk ke sistem iGuaman 2in1 untuk tindakan selanjutnya.</p>
+    <p>Sila log masuk ke Sistem Integrated Bantuan Guaman untuk tindakan selanjutnya.</p>
 
     <p style="color:#003D3A;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
 </body>

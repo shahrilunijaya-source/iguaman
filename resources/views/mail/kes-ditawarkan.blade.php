@@ -13,7 +13,7 @@
         <tr><td style="padding:4px 12px 4px 0; color:#555;">Cawangan</td><td style="padding:4px 0;">{{ $kes->cawangan ?: '—' }}</td></tr>
     </table>
 
-    <p>Sila log masuk ke sistem iGuaman 2in1 dan ke ruang <strong>Tawaran</strong> untuk <strong>menerima</strong> atau <strong>menolak</strong> tawaran ini dalam tempoh <strong>7 hari</strong>.</p>
+    <p>Sila log masuk ke Sistem Integrated Bantuan Guaman dan ke ruang <strong>Tawaran</strong> untuk <strong>menerima</strong> atau <strong>menolak</strong> tawaran ini dalam tempoh <strong>7 hari</strong>.</p>
 
     <p style="color:#003D3A;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
 </body>

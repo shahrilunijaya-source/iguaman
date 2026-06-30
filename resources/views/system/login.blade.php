@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Log Masuk · iGuaman 2in1</title>
+    <title>Log Masuk · Sistem Integrated Bantuan Guaman</title>
     @vite(['resources/css/system.css'])
 </head>
 <body class="system">
@@ -15,19 +15,19 @@
         <div>
             <div class="vb-left__top">
                 <div class="wm"><span class="i">i</span>Guaman<span class="dot"></span></div>
-                <div class="meta">2IN1 · BANTUAN GUAMAN</div>
+                <div class="meta">INTEGRATED · BANTUAN GUAMAN</div>
             </div>
         </div>
 
         <div>
             <h2 class="vb-left__hero">
-                <span class="line">Dua sistem,</span>
-                <span class="line"><span class="accent">satu</span> ruang.</span>
-                <span class="line">Rekod kes &amp;</span>
+                <span class="line">Bantuan guaman,</span>
+                <span class="line"><span class="accent">satu</span> platform.</span>
+                <span class="line">Nasihat, kes &amp;</span>
                 <span class="line">panel peguam.<span class="dot dot--lg"></span></span>
             </h2>
             <p class="vb-left__lede">
-                Ruang kerja iGuaman 2in1 — rekod kes, pengantaraan, mahkamah dan panel peguam dalam satu sistem.
+                Ruang kerja iGuaman — khidmat nasihat, rekod kes, pengantaraan, mahkamah dan panel peguam, semuanya dalam satu sistem bersepadu.
             </p>
 
             <div class="vb-left__decisive">
@@ -38,7 +38,7 @@
         </div>
 
         <div class="vb-left__foot">
-            <span class="stamp">iGuaman · 2in1</span>
+            <span class="stamp">iGuaman · Sistem Integrated Bantuan Guaman</span>
             <span>Sesi disulitkan TLS 1.3</span>
         </div>
     </div>
