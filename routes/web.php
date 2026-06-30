@@ -353,6 +353,11 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
 
     // Slice 2: staff-driven create wizard + DRAF edit (slot booking + payment), gated khidmat.manage.
     Route::middleware('permission:khidmat.manage')->group(function () {
+        // Slice 3: eligibility 3-modal screening gate — clear before the wizard opens.
+        // (show uses whereNumber, so these non-numeric static paths are not shadowed.)
+        Route::get('/khidmat-nasihat/saringan', [KhidmatNasihatController::class, 'saringan'])->name('khidmat.saringan');
+        Route::post('/khidmat-nasihat/saringan', [KhidmatNasihatController::class, 'saringanSemak'])->name('khidmat.saringan.semak');
+
         Route::get('/khidmat-nasihat/baharu', [KhidmatNasihatController::class, 'create'])->name('khidmat.create');
         Route::post('/khidmat-nasihat', [KhidmatNasihatController::class, 'store'])->name('khidmat.store');
         Route::get('/khidmat-nasihat/{khidmat}/kemaskini', [KhidmatNasihatController::class, 'edit'])->name('khidmat.edit')->whereNumber('khidmat');

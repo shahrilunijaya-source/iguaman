@@ -40,6 +40,20 @@
             <div class="tap-card__row"><div class="k">Wakil</div><div class="v">{{ $khidmat->nama_wakil ?: '—' }}</div></div>
         </div>
 
+        @if ($khidmat->jenis_permohonan === 'SEBAGAI_WAKIL')
+            @php $mahkamah = $khidmat->mahkamah(); @endphp
+            <div class="tap-card">
+                <div class="tap-card__eyebrow">Wakil &amp; Diwakili</div>
+                <div class="tap-card__row"><div class="k">Konteks Wakil</div><div class="v">{{ $khidmat->jenis_wakil ?: '—' }}</div></div>
+                <div class="tap-card__row"><div class="k">Nama Wakil</div><div class="v">{{ $khidmat->nama_wakil ?: '—' }} {{ $khidmat->jawatan_wakil ? '· '.$khidmat->jawatan_wakil : '' }}</div></div>
+                <div class="tap-card__row"><div class="k">No. Pengenalan Wakil</div><div class="v">{{ $khidmat->no_pengenalan_wakil ?: '—' }}</div></div>
+                <div class="tap-card__row"><div class="k">Orang Diwakili</div><div class="v">{{ $khidmat->nama_diwakili ?: '—' }} {{ $khidmat->id_pengenalan_diwakili ? '('.$khidmat->id_pengenalan_diwakili.')' : '' }}</div></div>
+                @if ($khidmat->jenis_wakil === 'MAHKAMAH')
+                    <div class="tap-card__row"><div class="k">Mahkamah</div><div class="v">{{ $mahkamah->nama_mahkamah ?? '—' }} {{ $khidmat->jenis_mahkamah_pihak ? '('.$khidmat->jenis_mahkamah_pihak.')' : '' }}</div></div>
+                @endif
+            </div>
+        @endif
+
         <div class="tap-card">
             <div class="tap-card__eyebrow">Mangsa</div>
             <div class="tap-card__row"><div class="k">No. Pengenalan</div><div class="v">{{ $khidmat->id_pengenalan_mangsa ?: '—' }} {{ $khidmat->jenis_pengenalan_mangsa ? '('.$khidmat->jenis_pengenalan_mangsa.')' : '' }}</div></div>
