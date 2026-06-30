@@ -13,7 +13,7 @@ class Phase3dTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.default' => 'mysql', 'database.connections.mysql.database' => 'iguaman_2in1']);
+        config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
         DB::purge('mysql');
         DB::reconnect('mysql');
         app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();

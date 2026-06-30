@@ -16,7 +16,7 @@ class Batch7SeederTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        config(['database.default' => 'mysql', 'database.connections.mysql.database' => 'iguaman_2in1']);
+        config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
         DB::purge('mysql'); DB::reconnect('mysql');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
         (new RolePermissionSeeder())->run();
@@ -32,12 +32,13 @@ class Batch7SeederTest extends TestCase
 
     public function test_all_roles_and_permissions_exist(): void
     {
-        // 8 roles, 36 permissions. Original RBAC seeder shipped 32; EPIC G cuti CRUD
+        // 8 roles, 37 permissions. Original RBAC seeder shipped 32; EPIC G cuti CRUD
         // added a 33rd ('selenggara.cuti'); Batch 8 foundations/masters added 3 more
-        // ('selenggara.cawangan', 'selenggara.kategori_kn', 'selenggara.jawatan').
+        // ('selenggara.cawangan', 'selenggara.kategori_kn', 'selenggara.jawatan');
+        // Batch 10 slot/calendar added a 37th ('slot.view').
         // RolePermissionSeeder::MATRIX is the source of truth.
         $this->assertSame(8, Role::count());
-        $this->assertSame(36, Permission::count());
+        $this->assertSame(37, Permission::count());
     }
 
     public function test_admin_can_everything_via_gate_before(): void
