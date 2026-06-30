@@ -22,12 +22,17 @@ class KhidmatNasihat extends Model
         'is_percuma' => 'boolean',
         'tarikh_lahir_mangsa' => 'date',
         'jumlah_bayaran' => 'decimal:2',
+        'jumlah_pendapatan' => 'decimal:2',
     ];
 
     public const STATUS_DRAF = 'DRAF';
+
     public const STATUS_BAHARU = 'BAHARU';
+
     public const STATUS_DALAM_PROSES = 'DALAM_PROSES';
+
     public const STATUS_SELESAI = 'SELESAI';
+
     public const STATUS_BATAL = 'BATAL';
 
     public const STATUS_KN = [
@@ -58,5 +63,14 @@ class KhidmatNasihat extends Model
     public function subkategori(): BelongsTo
     {
         return $this->belongsTo(RefSubkategoriKn::class, 'id_subkategori');
+    }
+
+    /**
+     * Linked appointment (batch 10 temu_janji). No DB FK — wired at integration
+     * via khidmat_nasihat.id_temu_janji <-> temu_janji.id (see migration notes).
+     */
+    public function temuJanji(): BelongsTo
+    {
+        return $this->belongsTo(TemuJanji::class, 'id_temu_janji');
     }
 }

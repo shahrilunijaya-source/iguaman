@@ -8,6 +8,11 @@
             <h1 class="tap-head__title">Khidmat Nasihat<span class="dot"></span></h1>
             <p class="tap-head__sub"><strong>{{ number_format($khidmat->total()) }}</strong> permohonan</p>
         </div>
+        @can('khidmat.manage')
+            <div class="tap-head__cluster">
+                <a href="{{ route('khidmat.create') }}" class="btn btn--primary">+ Permohonan Baharu</a>
+            </div>
+        @endcan
     </div>
 
     @if (session('status'))

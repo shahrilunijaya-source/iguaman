@@ -22,6 +22,11 @@
             <h1 class="tap-title__h1">{{ $khidmat->nama_mangsa ?: 'Tanpa Nama' }}<span class="dot"></span></h1>
             <p class="tap-title__sub">No. Permohonan <strong>{{ $khidmat->no_permohonan ?: '—' }}</strong> · <span class="pill pill--received">{{ str_replace('_', ' ', $khidmat->status_kn) }}</span></p>
         </div>
+        @can('khidmat.manage')
+            @if ($khidmat->status_kn === \App\Models\KhidmatNasihat::STATUS_DRAF)
+                <a href="{{ route('khidmat.edit', $khidmat) }}" class="tap-head__btn">Kemaskini Draf</a>
+            @endif
+        @endcan
     </div>
 
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; align-items:start;">
@@ -51,6 +56,17 @@
             <div class="tap-card__row"><div class="k">Status Bayaran</div><div class="v">{{ $khidmat->status_bayaran ? 'Sudah Bayar' : 'Belum Bayar' }}</div></div>
             <div class="tap-card__row"><div class="k">Percuma</div><div class="v">{{ $khidmat->is_percuma ? 'Ya' : 'Tidak' }}</div></div>
             <div class="tap-card__row"><div class="k">Perakuan</div><div class="v">{{ $khidmat->perakuan ? 'Ya' : 'Tidak' }}</div></div>
+        </div>
+
+        <div class="tap-card">
+            <div class="tap-card__eyebrow">Janji Temu</div>
+            @if ($khidmat->temuJanji)
+                <div class="tap-card__row"><div class="k">Tarikh</div><div class="v">{{ optional($khidmat->temuJanji->tarikh_temu_janji)->format('d/m/Y') ?: '—' }}</div></div>
+                <div class="tap-card__row"><div class="k">Masa</div><div class="v">{{ \Illuminate\Support\Str::of($khidmat->temuJanji->masa_mula)->substr(0, 5) }} – {{ \Illuminate\Support\Str::of($khidmat->temuJanji->masa_akhir)->substr(0, 5) }}</div></div>
+                <div class="tap-card__row"><div class="k">Status</div><div class="v"><span class="pill pill--received">{{ str_replace('_', ' ', $khidmat->temuJanji->status) }}</span></div></div>
+            @else
+                <div class="tap-card__row"><div class="k">Temu Janji</div><div class="v">Belum ditetapkan</div></div>
+            @endif
         </div>
 
         <div class="tap-card">
