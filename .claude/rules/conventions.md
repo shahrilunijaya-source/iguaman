@@ -22,7 +22,7 @@
 - **"just build"** -- max 3 clarifying Qs, then execute. Clear scope, CRUD, sites.
 
 ## Deploy
-- GitHub org `shahrilunijaya-source`, repo `sys-iguaman-2in1`, branch `main`, HTTPS + Windows Credential Manager.
+- GitHub org `shahrilunijaya-source`, repo `iguaman` (https://github.com/shahrilunijaya-source/iguaman.git), branch `main`, HTTPS + Windows Credential Manager. Hostinger domain `iguaman.myappsonline.net`.
 - Push to deploy: `git add . && git commit -m "..." && git push`. Hostinger webhook auto-pulls.
 - Laravel apps: 3 deploy artifacts present — root `.htaccess` guard, `deploy.sh`, committed `public/build` (Hostinger has no node). Full guide: `Aril/MyPA/references/laravel-system-template.md`. Webhook = pull+composer only; migrate via SSH port 65002.
 
