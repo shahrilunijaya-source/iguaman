@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
             RefNegeriSeeder::class,
             Batch8MastersSeeder::class,
             DemoUserSeeder::class,
+            // Per-role staff + lawyer test accounts (password: "password").
+            // Runs last so PeguamPanel masters exist for the lawyer account.
+            // STRIP before production (use MFA + SSO).
+            TestUsersSeeder::class,
         ]);
     }
 }
