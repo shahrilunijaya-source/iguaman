@@ -110,4 +110,15 @@
             </form>
         </div>
     @endif
+
+    @if ($khidmat->status_kn === \App\Models\KhidmatNasihat::STATUS_SELESAI)
+        <div class="tap-card" style="margin-bottom:16px;">
+            <div class="tap-card__eyebrow">Maklum Balas</div>
+            <p style="font-size:13px; color:var(--mute); margin:12px 0;">Temu janji anda telah selesai. Sila kongsikan maklum balas anda untuk membantu kami menambah baik perkhidmatan.</p>
+            <a href="{{ route('maklum-balas.show', $khidmat->no_permohonan) }}"
+               style="display:inline-block; background:var(--teal); color:#fff; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:600; text-decoration:none;">
+                Beri Maklum Balas
+            </a>
+        </div>
+    @endif
 @endsection

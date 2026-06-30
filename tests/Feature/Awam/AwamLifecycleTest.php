@@ -192,4 +192,26 @@ class AwamLifecycleTest extends TestCase
             ->post(route('awam.permohonan.batal', $kn))
             ->assertStatus(403);
     }
+
+    public function test_show_links_to_batch12_feedback_when_selesai(): void
+    {
+        [$branch] = $this->seedBranchWithSlot();
+        $owner = $this->makeAwamUser('lc5');
+        $kn = KhidmatNasihat::create([
+            'no_permohonan' => self::TAG.'-FB-'.uniqid(),
+            'nama_mangsa' => self::TAG.' Mangsa FB',
+            'jenis_permohonan' => 'DIRI_SENDIRI',
+            'id_pengguna' => $owner->id,
+            'cawangan_id' => $branch->id,
+            'status_kn' => KhidmatNasihat::STATUS_SELESAI,
+            'is_percuma' => false,
+            'perakuan' => true,
+            'jumlah_bayaran' => 10,
+        ]);
+
+        $this->actingAs($owner)
+            ->get(route('awam.permohonan.show', $kn))
+            ->assertOk()
+            ->assertSee(route('maklum-balas.show', $kn->no_permohonan));
+    }
 }
