@@ -55,6 +55,11 @@ use Illuminate\Support\Facades\Route;
 // Public landing.
 Route::get('/', fn () => view('welcome'))->name('home');
 
+// Public reference docs (static HTML in /docs, served with their real .html URLs so the
+// cross-links between them resolve). Linked from the landing-page footer.
+Route::get('/docs/system-overview.html', fn () => response()->file(base_path('docs/system-overview.html')))->name('docs.overview');
+Route::get('/docs/penambahbaikan-22.html', fn () => response()->file(base_path('docs/penambahbaikan-22.html')))->name('docs.penambahbaikan');
+
 // Public AI@JBG chatbot proxy (widget on the landing page → Python microservice). Throttled.
 Route::post('/chatbot/ask', [ChatbotController::class, 'ask'])
     ->middleware('throttle:20,1')

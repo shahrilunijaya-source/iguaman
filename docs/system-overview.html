@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iGuaman 2in1 — System Understanding</title>
+<style>
+  :root{
+    --teal:#00B8A9; --teal-600:#009B8E; --teal-700:#007D72; --teal-50:#E6F8F6; --teal-100:#C7EFEA;
+    --pine:#003D3A; --pine-700:#002F2C; --pine-900:#001E1C;
+    --orange:#FF6B35; --orange-50:#FFF1EB; --orange-600:#E85A28;
+    --ink-navy:#0B1E3F;
+    --ink:#0A0E13; --ink-2:#1A1F26; --muted:#5A6470; --muted-2:#828b96;
+    --paper:#FAFAF7; --paper-2:#F4F3EE; --line:#E4E2DA; --line-2:#EFEDE6;
+    --white:#fff;
+    --font:'Poppins','Segoe UI',system-ui,-apple-system,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    --r:14px; --r-sm:9px;
+    --shadow:0 1px 2px rgba(0,30,28,.04),0 8px 24px -12px rgba(0,30,28,.18);
+    --shadow-lg:0 30px 60px -25px rgba(0,30,28,.4);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth; scroll-padding-top:84px}
+  body{margin:0;font-family:var(--font);color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4{line-height:1.15;letter-spacing:-.02em;margin:0}
+  a{color:var(--teal-700);text-decoration:none}
+  code{font-family:var(--mono);font-size:.85em;background:var(--pine-900);color:var(--teal-100);padding:1px 6px;border-radius:5px}
+  .light code{background:var(--teal-50);color:var(--teal-700)}
+
+  /* ---------- Top bar ---------- */
+  .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:14px;
+    padding:12px 24px;background:rgba(0,30,28,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(0,184,169,.22)}
+  .topbar .brand{font-weight:700;color:#fff;font-size:1.05rem;letter-spacing:-.01em;display:flex;align-items:center;gap:2px}
+  .topbar .brand .i{color:var(--teal);font-style:normal}
+  .topbar .tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.16em;color:var(--teal-100);
+    border:1px solid rgba(0,184,169,.35);padding:3px 9px;border-radius:30px}
+  .topbar .sp{flex:1}
+  .topbar .meta{color:#8aa3a0;font-size:.78rem;font-family:var(--mono)}
+
+  /* ---------- Layout ---------- */
+  .shell{display:grid;grid-template-columns:248px 1fr;max-width:1400px;margin:0 auto}
+  .sidenav{position:sticky;top:57px;align-self:start;height:calc(100vh - 57px);overflow-y:auto;
+    padding:26px 14px 60px 24px;border-right:1px solid var(--line)}
+  .sidenav .grp{font-size:.66rem;text-transform:uppercase;letter-spacing:.15em;color:var(--muted-2);
+    margin:20px 0 8px 8px;font-weight:600}
+  .sidenav a{display:block;padding:6px 10px;border-radius:8px;color:var(--ink-2);font-size:.86rem;font-weight:500}
+  .sidenav a:hover{background:var(--paper-2)}
+  .sidenav a.active{background:var(--teal-50);color:var(--teal-700);font-weight:600}
+  .main{padding:0 clamp(20px,4vw,64px) 120px;min-width:0}
+
+  /* ---------- Hero ---------- */
+  .hero{margin:0 calc(-1*clamp(20px,4vw,64px)) 0;padding:72px clamp(20px,4vw,64px) 60px;
+    background:radial-gradient(120% 140% at 80% -10%,rgba(0,184,169,.22),transparent 55%),
+               linear-gradient(160deg,var(--pine) 0%,var(--pine-900) 100%);
+    color:#eaf4f2;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-120px;top:-80px;width:420px;height:420px;
+    background:radial-gradient(circle,rgba(255,107,53,.18),transparent 60%);pointer-events:none}
+  .hero .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.22em;color:var(--teal);font-weight:600;margin-bottom:18px}
+  .hero h1{font-size:clamp(2.1rem,5vw,3.6rem);color:#fff;max-width:16ch}
+  .hero h1 b{color:var(--teal)}
+  .hero p.lead{font-size:clamp(1rem,1.6vw,1.22rem);max-width:60ch;margin-top:20px;color:#bcd4d0}
+  .hero .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+  .hero .chip{font-size:.74rem;font-family:var(--mono);background:rgba(255,255,255,.06);
+    border:1px solid rgba(0,184,169,.3);color:#d6efeb;padding:6px 12px;border-radius:30px}
+  .hero .quickstats{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+  .hero .qs{background:rgba(0,0,0,.25);border:1px solid rgba(0,184,169,.2);border-radius:12px;padding:14px 20px}
+  .hero .qs b{display:block;font-size:1.7rem;color:#fff;line-height:1}
+  .hero .qs span{font-size:.72rem;color:#9fc0bc;text-transform:uppercase;letter-spacing:.1em}
+
+  /* ---------- Sections ---------- */
+  section{padding-top:58px}
+  .sec-eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.2em;color:var(--teal-700);font-weight:600}
+  .sec-h{font-size:clamp(1.5rem,3vw,2.1rem);margin:8px 0 6px;color:var(--pine)}
+  .sec-h .num{color:var(--teal);font-family:var(--mono);font-size:.62em;margin-right:10px;font-weight:600}
+  .sec-sub{color:var(--muted);max-width:72ch;margin-bottom:26px}
+  .divider{height:1px;background:linear-gradient(90deg,var(--teal),transparent);margin-top:64px;opacity:.5}
+
+  /* ---------- Cards / grids ---------- */
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;box-shadow:var(--shadow)}
+  .card h4{font-size:1rem;color:var(--pine);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+  .card p{font-size:.86rem;color:var(--muted);margin:0}
+  .card .ic{font-size:1.1rem}
+  .card.accent{border-top:3px solid var(--teal)}
+  .card.accent-o{border-top:3px solid var(--orange)}
+
+  .pillrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .pill{font-size:.72rem;font-family:var(--mono);background:var(--teal-50);color:var(--teal-700);
+    border:1px solid var(--teal-100);padding:3px 9px;border-radius:20px;font-weight:500}
+  .pill.o{background:var(--orange-50);color:var(--orange-600);border-color:#ffd9c9}
+  .pill.g{background:#eef0f2;color:#566;border-color:#e2e5e8}
+
+  /* ---------- Tables ---------- */
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);background:#fff}
+  table{border-collapse:collapse;width:100%;font-size:.83rem;min-width:560px}
+  th{background:var(--pine);color:#dff3f0;text-align:left;padding:11px 14px;font-weight:600;font-size:.74rem;
+    text-transform:uppercase;letter-spacing:.06em;position:sticky;top:0}
+  td{padding:10px 14px;border-top:1px solid var(--line-2);vertical-align:top}
+  tr:nth-child(even) td{background:var(--paper)}
+  td code{font-size:.78rem}
+  .ck{color:var(--teal-700);font-weight:700}
+  .xk{color:#c9cdd2}
+
+  /* matrix table tighter */
+  .matrix table{min-width:760px;font-size:.78rem}
+  .matrix th{font-size:.68rem;padding:9px 8px}
+  .matrix td{padding:7px 8px;text-align:center}
+  .matrix td:first-child{text-align:left;font-family:var(--mono);font-size:.76rem;white-space:nowrap}
+  .matrix .yes{color:var(--teal-700);font-weight:700}
+  .matrix .adm{color:var(--orange-600);font-weight:700}
+
+  /* ---------- Flow / state machine ---------- */
+  .flow{background:linear-gradient(180deg,#fff,var(--paper));border:1px solid var(--line);
+    border-radius:var(--r);padding:22px;box-shadow:var(--shadow);margin-bottom:16px;overflow-x:auto}
+  .flow h4{color:var(--pine);font-size:.98rem;margin-bottom:4px}
+  .flow .desc{font-size:.82rem;color:var(--muted);margin-bottom:16px}
+  .chain{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+  .node{display:inline-flex;flex-direction:column;gap:1px;background:var(--pine);color:#fff;
+    padding:8px 13px;border-radius:9px;font-size:.78rem;font-weight:600;white-space:nowrap}
+  .node small{font-size:.62rem;color:#8fc8c2;font-weight:500;font-family:var(--mono)}
+  .node.start{background:var(--teal)}
+  .node.end{background:var(--orange)}
+  .node.alt{background:#fff;color:var(--pine);border:1.5px dashed var(--teal)}
+  .node.alt small{color:var(--teal-700)}
+  .arr{display:inline-flex;flex-direction:column;align-items:center;color:var(--muted);font-size:.66rem;
+    font-family:var(--mono);padding:0 2px;min-width:34px;text-align:center}
+  .arr .ln{font-size:1.1rem;color:var(--teal);line-height:.6}
+  .arr .who{color:var(--orange-600);font-weight:600}
+  .branchline{margin-top:12px;padding-left:14px;border-left:2px solid var(--line)}
+
+  /* ---------- Callout ---------- */
+  .note{display:flex;gap:14px;background:var(--teal-50);border:1px solid var(--teal-100);
+    border-left:4px solid var(--teal);border-radius:10px;padding:15px 18px;margin:18px 0;font-size:.87rem;color:#234}
+  .note.o{background:var(--orange-50);border-color:#ffd9c9;border-left-color:var(--orange)}
+  .note .ic{font-size:1.2rem}
+  .note b{color:var(--pine)}
+
+  /* ---------- Layer diagram ---------- */
+  .layers{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .layer{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;
+    background:#fff;border:1px solid var(--line);border-radius:11px;padding:14px 18px;box-shadow:var(--shadow)}
+  .layer .lname{font-weight:700;color:var(--pine);font-size:.9rem}
+  .layer .lname small{display:block;color:var(--teal-700);font-weight:500;font-size:.68rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em}
+  .layer .lbody{font-size:.83rem;color:var(--muted)}
+  .layer .lbody code{margin:0 1px}
+  .layer.l-route{border-left:4px solid #6aa0ff}
+  .layer.l-mw{border-left:4px solid var(--orange)}
+  .layer.l-ctrl{border-left:4px solid var(--teal)}
+  .layer.l-svc{border-left:4px solid #9b6bff}
+  .layer.l-mdl{border-left:4px solid #ffb13b}
+  .layer.l-db{border-left:4px solid var(--pine)}
+
+  /* portals */
+  .portal{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+  .portal .ph{padding:16px 20px;color:#fff;display:flex;align-items:center;gap:10px}
+  .portal.staff .ph{background:linear-gradient(120deg,var(--pine),var(--pine-700))}
+  .portal.lawyer .ph{background:linear-gradient(120deg,var(--teal-700),var(--teal-600))}
+  .portal.awam .ph{background:linear-gradient(120deg,var(--ink-navy),#13335e)}
+  .portal .ph b{font-size:1rem}
+  .portal .ph span{font-size:.72rem;opacity:.8;font-family:var(--mono)}
+  .portal .pb{padding:16px 20px}
+  .portal .pb .navsec{font-size:.66rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted-2);margin:12px 0 5px;font-weight:600}
+  .portal .pb .navsec:first-child{margin-top:0}
+  .portal .pb ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:5px}
+  .portal .pb li{font-size:.78rem;background:var(--paper-2);border:1px solid var(--line);border-radius:7px;padding:4px 9px;color:var(--ink-2)}
+
+  .gloss{column-count:2;column-gap:26px}
+  .gloss dl{margin:0;break-inside:avoid;margin-bottom:12px}
+  .gloss dt{font-weight:600;color:var(--pine);font-size:.86rem;font-family:var(--mono)}
+  .gloss dd{margin:0 0 2px;font-size:.84rem;color:var(--muted)}
+
+  footer{margin-top:80px;padding:30px clamp(20px,4vw,64px);border-top:1px solid var(--line);
+    color:var(--muted-2);font-size:.78rem;display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
+
+  @media(max-width:980px){
+    .shell{grid-template-columns:1fr}
+    .sidenav{display:none}
+    .g3,.g4,.g2{grid-template-columns:1fr 1fr}
+    .gloss{column-count:1}
+  }
+  @media(max-width:620px){.g3,.g4,.g2{grid-template-columns:1fr}.layer{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand"><span class="i">i</span>Guaman</span>
+  <span class="tag">2in1 · v2</span>
+  <span class="sp"></span>
+  <a href="penambahbaikan-22.html" style="color:#bcd4d0;font-size:.8rem;text-decoration:none;border-bottom:1px dotted rgba(188,212,208,.5);margin-right:14px">22 Penambahbaikan →</a>
+  <span class="meta">JBG · Legal Aid System · Laravel 13 / PHP 8.3 / MySQL</span>
+</div>
+
+<div class="shell">
+
+  <!-- ===================== SIDE NAV ===================== -->
+  <nav class="sidenav" id="sidenav">
+    <div class="grp">What's new</div>
+    <a href="#whatsnew">v2 — 22 Penambahbaikan</a>
+    <div class="grp">Orientation</div>
+    <a href="#overview">What is iGuaman 2in1</a>
+    <a href="#modules">Module map</a>
+    <div class="grp">How it's built</div>
+    <a href="#arch">Technical architecture</a>
+    <a href="#request">Request lifecycle</a>
+    <a href="#security">Security model</a>
+    <div class="grp">Who uses it</div>
+    <a href="#users">Users &amp; roles</a>
+    <a href="#matrix">Permission matrix</a>
+    <a href="#portals">The 3 portals</a>
+    <div class="grp">How work flows</div>
+    <a href="#flow-case">Case lifecycle</a>
+    <a href="#flow-agihan">Lawyer assignment</a>
+    <a href="#flow-kn">Khidmat Nasihat</a>
+    <a href="#flow-citizen">Citizen journey</a>
+    <a href="#flow-lawyer">Lawyer-side flows</a>
+    <a href="#flow-apply">Panel application</a>
+    <div class="grp">The data</div>
+    <a href="#data">Data model</a>
+    <a href="#kntree">KN category tree</a>
+    <div class="grp">Reference</div>
+    <a href="#gloss">Glossary (Malay)</a>
+  </nav>
+
+  <main class="main">
+
+    <!-- ===================== HERO ===================== -->
+    <div class="hero">
+      <div class="eyebrow">System Understanding · v2 · Generated from source</div>
+      <h1>One workspace for <b>legal aid</b>, case records &amp; panel lawyers.</h1>
+      <p class="lead">iGuaman 2in1 is the internal production system for <b>JBG — Jabatan Bantuan Guaman Malaysia</b> (the Legal Aid Department). "2in1" = two legacy systems fused into one Laravel app, plus a new public advisory + appointment layer and an AI chatbot.</p>
+      <div class="chips">
+        <span class="chip">PHP 8.3</span>
+        <span class="chip">Laravel 13</span>
+        <span class="chip">MySQL 8.4</span>
+        <span class="chip">Blade + vanilla JS</span>
+        <span class="chip">Vite 8 · Tailwind v4</span>
+        <span class="chip">spatie/permission RBAC</span>
+        <span class="chip">Plain custom auth (no Filament)</span>
+      </div>
+      <div class="quickstats">
+        <div class="qs"><b>3</b><span>User portals</span></div>
+        <div class="qs"><b>12</b><span>Roles</span></div>
+        <div class="qs"><b>~55</b><span>Controllers</span></div>
+        <div class="qs"><b>~52</b><span>DB tables</span></div>
+        <div class="qs"><b>22</b><span>v2 enhancements</span></div>
+      </div>
+    </div>
+
+    <!-- ===================== WHAT'S NEW (v2) ===================== -->
+    <section id="whatsnew">
+      <div class="sec-eyebrow">What's new</div>
+      <h2 class="sec-h"><span class="num">v2</span>22 Penambahbaikan — shipped &amp; tested</h2>
+      <p class="sec-sub">v2 closes the full <b>SENARAI PENAMBAHBAIKAN SUBSISTEM</b>: 22 improvement requests against the consolidated app, sequenced foundation-first around a new <b>central claim ledger</b>. 21 fully shipped, 1 (OCR) a feature-flagged spike. All on branch <code>feat/penambahbaikan-subsistem</code>; suite <b>351/351 green</b>. <a href="penambahbaikan-22.html"><b>See the full 22-wish status →</b></a></p>
+
+      <div class="note">
+        <span class="ic">🆕</span>
+        <div><b>The big additions vs v1:</b> a central polymorphic <b>claim ledger</b> (W15) · a shared <b>branch-transfer engine</b> + transfer KPI (W7/W3/W8/W4) · <b>Pembelaan Awam</b> on the litigation spine + interim/muktamad certificate (W9/W14) · <b>Mediation</b> with its own number, standalone intake &amp; mediator assignment (W17/W18/W19) · a <b>prison_officer</b> intake role + manual <b>iPayment</b> receipts (W1/W2) · a real <b>event/queue</b> integration layer (W21). The role count grew 8 → <b>12</b> and permissions to <b>55</b>.</div>
+      </div>
+
+      <div class="grid g3">
+        <div class="card accent">
+          <h4><span class="ic">🧾</span> Central claim ledger</h4>
+          <p>New <code>lejar_tuntutan_bayaran</code> — one polymorphic money trail for KN, Pembelaan, Mediasi &amp; external-lawyer claims. Auto-creates on paid advisory <code>selesai()</code>.</p>
+          <div class="pillrow"><span class="pill">W15</span><span class="pill">W5</span><span class="pill">W2</span></div>
+        </div>
+        <div class="card accent">
+          <h4><span class="ic">⇄</span> Branch transfer + KPI</h4>
+          <p>Move a case or KN between branches with zero history loss (everything keys off <code>id_kes</code>) and dual-branch visibility. New 12-month in/out KPI matrix.</p>
+          <div class="pillrow"><span class="pill">W7</span><span class="pill">W3</span><span class="pill">W8</span><span class="pill">W4</span></div>
+        </div>
+        <div class="card accent-o">
+          <h4><span class="ic">🛡</span> Pembelaan Awam</h4>
+          <p>Public criminal-defence cases ride the existing 3-tier spine as tagged <code>forms</code> rows (no new table). Interim → muktamad legal-aid certificate with PDF.</p>
+          <div class="pillrow"><span class="pill o">W9</span><span class="pill o">W14</span></div>
+        </div>
+        <div class="card accent">
+          <h4><span class="ic">⚖️</span> Mediation, first-class</h4>
+          <p>Its own <code>PGT…</code> file number, standalone or via-litigation intake, and mediator assignment that opens a MEDIASI ledger row.</p>
+          <div class="pillrow"><span class="pill">W17</span><span class="pill">W18</span><span class="pill">W19</span></div>
+        </div>
+        <div class="card accent-o">
+          <h4><span class="ic">💬</span> KN intake &amp; iPayment</h4>
+          <p>Intake split by source (prison/clinic vs public) with a new <code>prison_officer</code> role; manual counter payments record a receipt into the KN + ledger.</p>
+          <div class="pillrow"><span class="pill o">W1</span><span class="pill o">W2</span></div>
+        </div>
+        <div class="card accent">
+          <h4><span class="ic">🔔</span> Real-time integration</h4>
+          <p>Laravel events + a <b>queued</b> listener (a transfer notifies the destination branch). <code>CawanganScope</code> branch-isolation extended beyond <code>forms</code> to <code>khidmat_nasihat</code>.</p>
+          <div class="pillrow"><span class="pill">W21</span><span class="pill">W12</span><span class="pill">W11</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== OVERVIEW ===================== -->
+    <section id="overview">
+      <div class="sec-eyebrow">Orientation</div>
+      <h2 class="sec-h"><span class="num">01</span>What iGuaman 2in1 actually is</h2>
+      <p class="sec-sub">Three legacy/origin systems were merged into a single Laravel application with one login table and one permission layer. Understanding the three origins is the fastest way to understand everything else.</p>
+
+      <div class="grid g3">
+        <div class="card accent">
+          <h4><span class="ic">📂</span> 1 · Sistem Rekod Kes</h4>
+          <p>The litigation backbone. A citizen applies for legal aid → the Director approves/rejects → the case runs through <b>mediation (pengantaraan)</b> or <b>court (mahkamah)</b> → the file is closed. Centered on the 94-column <code>forms</code> table.</p>
+          <div class="pillrow"><span class="pill">Kes</span><span class="pill">OYD</span><span class="pill">Mahkamah</span><span class="pill">Laporan</span></div>
+        </div>
+        <div class="card accent">
+          <h4><span class="ic">⚖️</span> 2 · Sistem Peguam Panel</h4>
+          <p>The panel-lawyer side. Private lawyers apply to join the panel, get vetted, and are <b>assigned cases through a 3-tier approval spine</b> (PPUU → Director → Director General). Tracks workload, withdrawals, and practice areas.</p>
+          <div class="pillrow"><span class="pill">Agihan</span><span class="pill">Permohonan Peguam</span><span class="pill">Tarik Diri</span></div>
+        </div>
+        <div class="card accent-o">
+          <h4><span class="ic">💬</span> 3 · Khidmat Nasihat + Janji Temu</h4>
+          <p>New layer (ported from <i>iGuaman Janji Temu</i>). Legal-advisory applications with <b>eligibility screening</b>, <b>appointment booking</b> on a slot calendar, attendance tracking, feedback, and a bridge to open a full case. Includes a public citizen portal + AI chatbot.</p>
+          <div class="pillrow"><span class="pill o">Advisory</span><span class="pill o">Appointments</span><span class="pill o">Citizen portal</span></div>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="ic">🧭</span>
+        <div><b>The unifying idea:</b> one <code>users</code> table with a <code>user_type</code> of <code>staff</code>, <code>lawyer</code>, or <code>awam</code> (citizen). On login each type lands in its own portal. One <code>spatie/laravel-permission</code> layer governs everything; <code>admin</code> is a super-admin that bypasses all checks via <code>Gate::before</code>.</div>
+      </div>
+    </section>
+
+    <!-- ===================== MODULE MAP ===================== -->
+    <section id="modules">
+      <div class="sec-eyebrow">Orientation</div>
+      <h2 class="sec-h"><span class="num">02</span>Module map — what's inside</h2>
+      <p class="sec-sub">Every functional area, grouped. This is the table of contents of the actual app menu.</p>
+
+      <div class="grid g4">
+        <div class="card"><h4>🗂 Rekod Kes</h4><p>Case CRUD, OYD registry, closed files, attachments, per-case PDF printouts.</p></div>
+        <div class="card"><h4>⚖️ Pengantaraan / Mahkamah</h4><p>Mediation sections + hearing reschedule; civil/syariah court records &amp; case reports.</p></div>
+        <div class="card"><h4>⇄ Agihan Peguam</h4><p>3-tier case-to-lawyer assignment, workload board, over-time auto-reassign.</p></div>
+        <div class="card"><h4>👔 Panel Peguam</h4><p>Lawyer applications, vetting, withdrawals, practice-area add/drop, activate/deactivate.</p></div>
+        <div class="card"><h4>💬 Khidmat Nasihat</h4><p>Advisory applications, eligibility screening, officer processing, KN→case bridge.</p></div>
+        <div class="card"><h4>📆 Janji Temu / Slot</h4><p>Slot generation per branch/room, session config, operational closures, calendar.</p></div>
+        <div class="card"><h4>📊 Statistik &amp; Laporan</h4><p>SLA matrices, mediation stats, file-number error log, KPI, 8 KN reports, CSV/Excel/PDF.</p></div>
+        <div class="card"><h4>🛠 Pentadbiran &amp; Selenggara</h4><p>Users, roles &amp; access matrix, staff registry, audit log, all reference masters, e-Poster.</p></div>
+        <div class="card"><h4>🌐 Portal Awam</h4><p>Citizen IC-login, self-service KN application wizard, upload, reschedule/cancel.</p></div>
+        <div class="card"><h4>🤖 AI@JBG Chatbot</h4><p>Public widget → Laravel proxy → Python microservice. Throttled.</p></div>
+        <div class="card"><h4>📝 Maklum Balas</h4><p>Public post-appointment satisfaction feedback — no login, one per advisory.</p></div>
+        <div class="card"><h4>🔑 Auth &amp; Akaun</h4><p>Plain login, password reset, forced password change for migrated accounts.</p></div>
+        <div class="card accent"><h4>🧾 Lejar Tuntutan <span class="pill" style="font-size:.6rem">v2</span></h4><p>Central claim ledger across KN, Pembelaan, Mediasi &amp; external lawyers; officer lifecycle + receipt step.</p></div>
+        <div class="card accent"><h4>⇄ Pemindahan Cawangan <span class="pill" style="font-size:.6rem">v2</span></h4><p>Branch transfer engine for cases &amp; KN + dual-branch worklists + 12-month transfer KPI.</p></div>
+        <div class="card accent"><h4>🛡 Pembelaan Awam <span class="pill" style="font-size:.6rem">v2</span></h4><p>Public criminal-defence cases on the litigation spine; interim → muktamad legal-aid certificate.</p></div>
+        <div class="card accent"><h4>🔔 Events &amp; Queue <span class="pill" style="font-size:.6rem">v2</span></h4><p>Lifecycle events + queued listeners (transfer notifications); cross-module real-time integration.</p></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===================== ARCHITECTURE ===================== -->
+    <section id="arch">
+      <div class="sec-eyebrow">How it's built</div>
+      <h2 class="sec-h"><span class="num">03</span>Technical architecture</h2>
+      <p class="sec-sub">A conventional Laravel MVC stack with a thin-controller / service-layer split. Business rules live in <code>app/Support/*Service.php</code>; controllers handle transport + gating; Eloquent models map the legacy schema.</p>
+
+      <div class="grid g2" style="margin-bottom:24px">
+        <div class="card">
+          <h4>🧱 Stack</h4>
+          <div class="tbl-wrap" style="box-shadow:none;border:none;margin-top:6px">
+          <table style="min-width:auto">
+            <tr><td><b>Language</b></td><td>PHP 8.3</td></tr>
+            <tr><td><b>Framework</b></td><td>Laravel 13</td></tr>
+            <tr><td><b>Database</b></td><td>MySQL 8.4 (<code>iguaman_2in1</code>)</td></tr>
+            <tr><td><b>Views</b></td><td>Blade + vanilla JS</td></tr>
+            <tr><td><b>Assets</b></td><td>Vite 8 + Tailwind v4</td></tr>
+            <tr><td><b>Auth</b></td><td>Custom controller + <code>Auth::attempt</code></td></tr>
+            <tr><td><b>RBAC</b></td><td>spatie/laravel-permission</td></tr>
+            <tr><td><b>PDF / Excel</b></td><td>dompdf · maatwebsite/excel</td></tr>
+            <tr><td><b>Chatbot</b></td><td>Python microservice + Laravel proxy</td></tr>
+          </table>
+          </div>
+        </div>
+        <div class="card">
+          <h4>⚙️ Service layer <small style="font-weight:400;color:var(--muted)">(app/Support)</small></h4>
+          <p style="margin-bottom:10px">Domain logic extracted out of controllers:</p>
+          <div class="pillrow">
+            <span class="pill">AgihanService</span>
+            <span class="pill">StatusAgihan</span>
+            <span class="pill">KhidmatNasihatService</span>
+            <span class="pill">KhidmatProsesService</span>
+            <span class="pill">SlotAvailabilityService</span>
+            <span class="pill">LaporanKnService</span>
+            <span class="pill">LebihMasaService</span>
+            <span class="pill">PengkhususanService</span>
+            <span class="pill">PeguamLifecycleService</span>
+            <span class="pill">TarikDiriService</span>
+          </div>
+          <p style="margin-top:12px">Plus one policy (<code>KhidmatNasihatPolicy</code>) and a <code>Gate::before</code> super-admin bypass for <code>admin</code>.</p>
+        </div>
+      </div>
+
+      <h3 style="font-size:1.05rem;color:var(--pine);margin:10px 0 12px">The 6 layers a request passes through</h3>
+      <div class="layers">
+        <div class="layer l-route"><div class="lname">Routes<small>routes/web.php</small></div><div class="lbody">One web route file. Groups by portal &amp; permission. URL patterns constrained with <code>whereNumber</code> / <code>whereIn</code>.</div></div>
+        <div class="layer l-mw"><div class="lname">Middleware<small>auth · permission · role · throttle</small></div><div class="lbody"><code>auth</code>, <code>guest</code>, <code>permission:x</code>, <code>role:x|y</code>, <code>throttle:n,1</code>, plus custom <code>ForcePasswordChange</code> &amp; <code>SecurityHeaders</code>.</div></div>
+        <div class="layer l-ctrl"><div class="lname">Controllers<small>~50 · thin</small></div><div class="lbody">Validate input, call a service, return a Blade view / PDF / CSV / JSON. Resource-style action methods.</div></div>
+        <div class="layer l-svc"><div class="lname">Services<small>app/Support</small></div><div class="lbody">State-machine transitions, slot availability math, report aggregation, redistribution rules. The brain of the app.</div></div>
+        <div class="layer l-mdl"><div class="lname">Models<small>~38 Eloquent</small></div><div class="lbody">Map the legacy + new schema. Relationships, status constants, casts. Mass-assignment whitelisted via <code>#[Fillable]</code>.</div></div>
+        <div class="layer l-db"><div class="lname">Database<small>MySQL · ~48 tables</small></div><div class="lbody">20 imported legacy tables + 15 new (batches 8–13) + 7 spatie + framework tables. bigint tables have real FKs; legacy int tables use indexes only.</div></div>
+      </div>
+    </section>
+
+    <!-- ===================== REQUEST LIFECYCLE ===================== -->
+    <section id="request">
+      <div class="sec-eyebrow">How it's built</div>
+      <h2 class="sec-h"><span class="num">04</span>Request lifecycle</h2>
+      <p class="sec-sub">A typical authenticated, permission-gated request — e.g. a PPUU picking a lawyer for a case.</p>
+      <div class="flow">
+        <div class="chain">
+          <span class="node start">Browser<small>POST /agihan/12/ppuu-pilih</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node">Route<small>web.php</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">auth</span></span>
+          <span class="node">Middleware<small>permission:agihan.ppuu</span></small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node">Controller<small>AgihanSpineController</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node alt">Service<small>AgihanService::ppuuPilih</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node">Model<small>Form / sejarah</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node end">MySQL + Audit</span>
+        </div>
+        <div class="branchline" style="margin-top:16px;font-size:.83rem;color:var(--muted)">
+          Response: redirect back with status flash → Blade re-renders the assignment queue. Failed gate → 403. Guest → redirect to <code>system.login</code> (wired in <code>bootstrap/app.php</code> via <code>redirectGuestsTo</code>).
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SECURITY ===================== -->
+    <section id="security">
+      <div class="sec-eyebrow">How it's built</div>
+      <h2 class="sec-h"><span class="num">05</span>Security model</h2>
+      <div class="grid g3">
+        <div class="card"><h4>🔐 Auth &amp; sessions</h4><p>Plain <code>Auth::attempt</code>, bcrypt-hashed passwords, session-based. No SPA tokens. Three login surfaces (staff / lawyer share one, citizen separate).</p></div>
+        <div class="card"><h4>🧱 RBAC + super-admin</h4><p>Every staff route gated by a named permission. <code>admin</code> bypasses all via <code>Gate::before</code>. Role/permission matrix editable in-app (Peranan &amp; Akses).</p></div>
+        <div class="card"><h4>🔁 Forced password change</h4><p>Migrated legacy accounts pinned to <code>/password/change</code> via <code>ForcePasswordChange</code> middleware until <code>must_change_password</code> clears.</p></div>
+        <div class="card"><h4>⏱ Throttling</h4><p>Login (10/min), public forms &amp; uploads (6–20/min), chatbot (20/min), feedback (6/min). Honeypot + captcha on public application forms.</p></div>
+        <div class="card"><h4>📎 Private file access</h4><p>Attachments stored on a private disk, streamed only through auth + ownership checks. Citizens can only download their own KN documents.</p></div>
+        <div class="card"><h4>🧾 Audit + headers</h4><p><code>audit_trail</code> records sensitive actions; <code>SecurityHeaders</code> middleware sets hardening headers; CSRF on all state-changing forms.</p></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===================== USERS & ROLES ===================== -->
+    <section id="users">
+      <div class="sec-eyebrow">Who uses it</div>
+      <h2 class="sec-h"><span class="num">06</span>Users &amp; roles</h2>
+      <p class="sec-sub">Three user <i>types</i> (which portal you land in) and <i>twelve roles</i> (what you can do) — the original eight plus three v2 additions (<code>prison_officer</code> + the two Pembelaan Awam approver tiers) and the <code>awam</code> citizen role. The Malay hierarchy mirrors a real government legal-aid department.</p>
+
+      <div class="grid g3">
+        <div class="card accent-o">
+          <h4>🛡 admin</h4>
+          <p><b>Super-admin.</b> Bypasses every permission via <code>Gate::before</code>. Only role granted role/permission management (<code>urus.peranan</code>).</p>
+        </div>
+        <div class="card accent">
+          <h4>👑 ketua_pengarah</h4>
+          <p><b>Director General.</b> Final approver — the top of every 3-tier chain (assignment, withdrawal, practice-area, panel application).</p>
+        </div>
+        <div class="card accent">
+          <h4>🎖 pengarah</h4>
+          <p><b>Director.</b> Approves/rejects case applications, endorses (sokong) lawyer picks, closes files. The middle tier.</p>
+        </div>
+        <div class="card accent">
+          <h4>🧭 koordinator</h4>
+          <p><b>Coordinator.</b> Branch-wide operations, maintenance masters, can also act as case distributor. Sees all branches.</p>
+        </div>
+        <div class="card accent">
+          <h4>🧑‍💼 pegawai</h4>
+          <p><b>Officer.</b> Case data entry, advisory (KN) processing. The everyday operational role.</p>
+        </div>
+        <div class="card accent">
+          <h4>📑 ppuu</h4>
+          <p><b>Penolong Pegawai Undang-Undang.</b> The case <i>distributor</i> — vets new cases and picks panel lawyers (<code>ppuuPilih</code>).</p>
+        </div>
+        <div class="card accent">
+          <h4>🗃 pembantu_tadbir</h4>
+          <p><b>Admin assistant / clerk.</b> Screening, data, KN viewing. Excluded from KN processing &amp; approvals.</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--ink-navy)">
+          <h4>👔 peguam</h4>
+          <p><b>Panel lawyer (external).</b> Own portal only — accept/reject case offers, report, withdraw, manage practice areas.</p>
+        </div>
+        <div class="card accent-o">
+          <h4>🏛 prison_officer <span class="pill o" style="font-size:.6rem">v2</span></h4>
+          <p><b>Prison / clinic officer.</b> Files Khidmat Nasihat on behalf of inmates. Reaches the staff area + KN intake only (no approvals, no payments).</p>
+        </div>
+        <div class="card accent-o">
+          <h4>🛡 pembelaan-awam tiers <span class="pill o" style="font-size:.6rem">v2</span></h4>
+          <p><b>pengarah_pembelaan_awam · ketua_pembelaan_awam.</b> The forked criminal-track approver tier for panel registration (W10) — endorse / decide on the jenayah jalur.</p>
+        </div>
+      </div>
+
+      <div class="note o">
+        <span class="ic">👥</span>
+        <div><b>Citizens (awam)</b> are a user <i>type</i>, not a staff role. They authenticate by IC number and get the single <code>awam.portal</code> permission — enough to run the self-service advisory wizard and nothing else. Lawyers (<code>peguam</code>) similarly hold only <code>lawyer.area</code>.</div>
+      </div>
+    </section>
+
+    <!-- ===================== PERMISSION MATRIX ===================== -->
+    <section id="matrix">
+      <div class="sec-eyebrow">Who uses it</div>
+      <h2 class="sec-h"><span class="num">07</span>Permission matrix</h2>
+      <p class="sec-sub">Exact role→permission grants from <code>RolePermissionSeeder</code>. <span class="adm" style="color:var(--orange-600);font-weight:700">admin</span> is omitted from rows — it implicitly has all via Gate::before. Read down a column to see what a role can reach.</p>
+
+      <div class="tbl-wrap matrix">
+        <table>
+          <thead><tr>
+            <th>Permission</th>
+            <th>pengarah</th><th>koord.</th><th>pegawai</th><th>ppuu</th><th>p.tadbir</th><th>ketua_p.</th><th>peguam</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>system.view</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>kes.view / create / update</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>kes.keputusan <small>(approve/close)</small></td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>pengantaraan / mahkamah / lampiran</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>oyd.manage · cetakan · kpi · laporan</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>statistik.view</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>agihan.manage</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>agihan.ppuu <small>(pick lawyer)</small></td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td></tr>
+            <tr><td>agihan.pengarah <small>(endorse)</small></td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td></tr>
+            <tr><td>agihan.kp <small>(final approve)</small></td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>khidmat.view / manage</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>khidmat.proses <small>(advisory processing)</small></td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td></tr>
+            <tr><td>slot.view / slot.manage</td><td class="yes">✔</td><td class="yes">✔</td><td class="yes">✔ <small>view</small></td><td class="xk">·</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>peguam.semak <small>(vet application)</small></td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td></tr>
+            <tr><td>peguam.sokong <small>(endorse)</small></td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td></tr>
+            <tr><td>peguam.keputusan <small>(decide)</small></td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>selenggara.* <small>(maintenance masters)</small></td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>urus.pengguna · audit.view</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>menu.selenggara</td><td class="yes">✔</td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td></tr>
+            <tr><td>cawangan.view-all <small>(cross-branch)</small></td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="yes">✔</td><td class="xk">·</td></tr>
+            <tr><td>urus.peranan</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td></tr>
+            <tr><td>lawyer.area / awam.portal</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="xk">·</td><td class="yes">✔</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted-2);margin-top:10px"><code>urus.peranan</code> = admin only · <code>awam.portal</code> = citizen type only. Branch isolation: most staff see only their <code>cawangan</code>; koordinator + ketua_pengarah see all (<code>cawangan.view-all</code>).</p>
+
+      <div class="note">
+        <span class="ic">🆕</span>
+        <div><b>v2 added 6 permissions (matrix now 55 across 12 roles):</b> <code>tuntutan.view/manage/semak/lulus/bayar</code> (claim ledger, W15) · <code>agihan.luar</code> (external-lawyer KN, W5) · <code>kes.pindah</code> (branch transfer, W7) · <code>pengantaraan.agih</code> (mediator assignment, W19) · <code>pembelaan.view/manage</code> + <code>kes.perakuan</code> (Pembelaan Awam + certificate, W9/W14). New roles: <code>prison_officer</code> (KN intake) and the <code>pengarah/ketua_pembelaan_awam</code> approver tiers. <b>Branch isolation (<code>CawanganScope</code>) now also covers <code>khidmat_nasihat</code></b> (W21), closing the cross-branch read gap.</div>
+      </div>
+    </section>
+
+    <!-- ===================== PORTALS ===================== -->
+    <section id="portals">
+      <div class="sec-eyebrow">Who uses it</div>
+      <h2 class="sec-h"><span class="num">08</span>The 3 portals</h2>
+      <p class="sec-sub">Each user type gets a different shell after login (chosen by <code>User::homeRoute()</code>). Menu items appear/disappear by permission (<code>@can</code>).</p>
+
+      <div class="grid g3">
+        <div class="portal staff">
+          <div class="ph"><span>▣</span><div><b>Ruang Pegawai</b><br><span>staff · sidebar shell · /system</span></div></div>
+          <div class="pb">
+            <div class="navsec">Rekod Kes</div>
+            <ul><li>Senarai Kes</li><li>Permohonan Baharu</li><li>OYD</li><li>Fail Tutup</li><li>Statistik</li><li>Statistik SLA</li><li>Kesilapan No. Fail</li><li>Statistik Pengantaraan</li><li>KPI</li><li>Laporan</li><li>Laporan KN</li></ul>
+            <div class="navsec">Khidmat Nasihat</div>
+            <ul><li>Permohonan Khidmat</li><li>Pemprosesan KN</li><li>Jadual Janji Temu</li></ul>
+            <div class="navsec">Kalendar / Slot</div>
+            <ul><li>Penjanaan Slot</li><li>Penutupan Operasi</li></ul>
+            <div class="navsec">Panel Peguam</div>
+            <ul><li>Permohonan Peguam</li><li>Agihan Kes</li><li>Beban Tugas</li><li>Tarik Diri</li><li>Kemaskini Bidang</li></ul>
+            <div class="navsec">Pentadbiran / Selenggara</div>
+            <ul><li>Pengguna</li><li>Pegawai JBG</li><li>Log Audit</li><li>Peranan &amp; Akses</li><li>Jenis Kes</li><li>Mahkamah</li><li>Cuti</li><li>Cawangan</li><li>Jenis Khidmat</li><li>Jawatan</li><li>e-Poster</li></ul>
+          </div>
+        </div>
+
+        <div class="portal lawyer">
+          <div class="ph"><span>👔</span><div><b>Ruang Peguam Panel</b><br><span>lawyer · topbar shell · /peguam</span></div></div>
+          <div class="pb">
+            <div class="navsec">Top nav</div>
+            <ul><li>Dashboard</li><li>Kes Saya</li><li>Tawaran</li><li>Profil</li></ul>
+            <div class="navsec">Actions</div>
+            <ul><li>Terima / Tolak tawaran</li><li>Hantar laporan kes</li><li>Tarik diri dari kes</li><li>Tambah / gugur bidang</li><li>Kemaskini profil</li></ul>
+            <div class="navsec">Public entry</div>
+            <ul><li>/peguam/daftar (apply to panel — no login)</li></ul>
+          </div>
+        </div>
+
+        <div class="portal awam">
+          <div class="ph"><span>🌐</span><div><b>Portal Khidmat Nasihat</b><br><span>citizen · /awam · IC login</span></div></div>
+          <div class="pb">
+            <div class="navsec">Auth</div>
+            <ul><li>Daftar (IC)</li><li>Log Masuk</li></ul>
+            <div class="navsec">Self-service</div>
+            <ul><li>Permohonan Saya (dashboard)</li><li>Saringan kelayakan</li><li>Permohonan baharu (wizard)</li><li>Tempah slot janji temu</li><li>Muat naik lampiran</li><li>Jadual semula / Batal</li></ul>
+            <div class="navsec">Public (no login)</div>
+            <ul><li>AI@JBG chatbot</li><li>Maklum balas selepas temu janji</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===================== PROCESS FLOWS ===================== -->
+    <section id="flow-case">
+      <div class="sec-eyebrow">How work flows</div>
+      <h2 class="sec-h"><span class="num">09</span>Process flow · Case lifecycle</h2>
+      <p class="sec-sub">A legal-aid case (the <code>forms</code> row). Two status fields run in parallel: <code>status</code> (the high-level file state) and <code>status_agihan</code> (the assignment sub-state, see next section).</p>
+
+      <div class="flow">
+        <h4>File status — <code>forms.status</code></h4>
+        <div class="desc">High-level case stages (the "peringkat"). Approval &amp; closure are Director / Director-General actions.</div>
+        <div class="chain">
+          <span class="node start">Permohonan<small>citizen applies / KN bridge</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Pengarah / KP</span></span>
+          <span class="node">Diterima<small>accepted → assign</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">mediation / court</span></span>
+          <span class="node">In progress<small>pengantaraan · mahkamah</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Pengarah / KP</span></span>
+          <span class="node end">Fail Tutup<small>file closed</small></span>
+        </div>
+        <div class="branchline">
+          <div class="chain">
+            <span class="node alt">Permohonan</span>
+            <span class="arr"><span class="ln">→</span><span class="who">tolak</span></span>
+            <span class="node end">Ditolak<small>rejected</small></span>
+          </div>
+        </div>
+      </div>
+      <div class="note"><span class="ic">🧩</span><div>Inside the "in progress" stage, staff edit <b>Pengantaraan</b> (mediation sections, reschedule hearings) and <b>Mahkamah</b> (court records + <code>laporan_kes</code> child reports), attach files, and print per-case PDFs (ringkasan, penugasan, laporan).</div></div>
+    </section>
+
+    <section id="flow-agihan">
+      <div class="sec-eyebrow">How work flows</div>
+      <h2 class="sec-h"><span class="num">10</span>Process flow · 3-tier lawyer assignment (Agihan)</h2>
+      <p class="sec-sub">The heart of the panel system. <code>forms.status_agihan</code> is a numeric state machine (0–17). A new case climbs PPUU → Pengarah → Ketua Pengarah before it's offered to a lawyer, who accepts or bounces it back.</p>
+
+      <div class="flow">
+        <h4>Happy path — new case to accepted</h4>
+        <div class="desc">Codes are canonical (<code>StatusAgihan</code>); each arrow names the acting role.</div>
+        <div class="chain">
+          <span class="node start">0<small>BARU_PENGARAH</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Pengarah</span><span>terima</span></span>
+          <span class="node">8<small>DIAGIH_PPUU</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">PPUU</span><span>pilih</span></span>
+          <span class="node">10<small>SOKONGAN_PENGARAH</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Pengarah</span><span>sokong</span></span>
+          <span class="node">13<small>KELULUSAN_KP</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Ketua P.</span><span>lulus</span></span>
+          <span class="node">1<small>DITAWARKAN</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Peguam</span><span>terima</span></span>
+          <span class="node end">2<small>DITERIMA · active</small></span>
+        </div>
+        <div class="branchline">
+          <div class="desc" style="margin:0 0 8px;color:var(--orange-600);font-weight:600">Rejection &amp; re-pick loops</div>
+          <div class="chain" style="margin-bottom:8px">
+            <span class="node">0</span><span class="arr"><span class="ln">→</span><span class="who">Pengarah tolak</span></span><span class="node end">9 DITOLAK_PENGARAH</span>
+            <span class="arr" style="min-width:20px"></span>
+            <span class="node">10</span><span class="arr"><span class="ln">→</span><span class="who">tidak sokong</span></span><span class="node alt">4 PPUU_AGIH_SEMULA</span>
+          </div>
+          <div class="chain">
+            <span class="node">13</span><span class="arr"><span class="ln">→</span><span class="who">KP tolak</span></span><span class="node alt">15 KELULUSAN_KP_SEMULA</span>
+            <span class="arr" style="min-width:20px"></span>
+            <span class="node">1</span><span class="arr"><span class="ln">→</span><span class="who">Peguam tolak</span></span><span class="node alt">4 PPUU_AGIH_SEMULA</span>
+            <span class="arr"><span class="ln">↺</span><span class="who">PPUU re-pick</span></span><span class="node">10</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid g3" style="margin-top:6px">
+        <div class="card"><h4>📥 Bucket: Baru</h4><p>New &amp; in-approval cases. Statuses <code>0, 8, 10, 13, 9, 15, 14</code>.</p></div>
+        <div class="card"><h4>📤 Bucket: Semasa</h4><p>Offered / active / over-time. Statuses <code>1, 2, 7</code>.</p></div>
+        <div class="card"><h4>🔁 Bucket: Semula</h4><p>Re-assignment loop. Statuses <code>4, 15</code>.</p></div>
+      </div>
+      <div class="note o"><span class="ic">⏱</span><div><b>Over-time auto-reassign (LebihMasaService):</b> if a lawyer doesn't respond to an offer (status <code>1</code>) within the SLA window, the case flips to <code>7 LEBIH_MASA</code> and re-enters the re-pick loop. Deactivating a lawyer (<code>nyahaktif</code>) similarly redistributes their active cases.</div></div>
+    </section>
+
+    <section id="flow-kn">
+      <div class="sec-eyebrow">How work flows</div>
+      <h2 class="sec-h"><span class="num">11</span>Process flow · Khidmat Nasihat (advisory + appointment)</h2>
+      <p class="sec-sub">The advisory record (<code>khidmat_nasihat.status_kn</code>) and its appointment (<code>temu_janji.status</code>) move together. A completed advisory can spawn a full litigation case ("Buka Kes").</p>
+
+      <div class="flow">
+        <h4>Advisory status — <code>status_kn</code></h4>
+        <div class="desc">Created by staff wizard or by a citizen in the portal; screened for eligibility first.</div>
+        <div class="chain">
+          <span class="node alt">Saringan<small>3-modal eligibility gate</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node start">DRAF<small>unsubmitted</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">hantar</span></span>
+          <span class="node">BAHARU<small>pending officer</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">officer agih PKN</span></span>
+          <span class="node">DALAM_PROSES<small>assigned</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">attended + selesai</span></span>
+          <span class="node end">SELESAI</span>
+        </div>
+        <div class="branchline">
+          <div class="chain"><span class="node">any</span><span class="arr"><span class="ln">→</span><span class="who">cancel</span></span><span class="node end">BATAL</span>
+          <span class="arr" style="min-width:24px"></span>
+          <span class="node end">SELESAI</span><span class="arr"><span class="ln">→</span><span class="who">officer · Buka Kes</span></span><span class="node start">forms (new case)</span></div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <h4>Appointment status — <code>temu_janji.status</code></h4>
+        <div class="desc">Officer confirms the booked slot, marks attendance, then closes.</div>
+        <div class="chain">
+          <span class="node start">MENUNGGU<small>slot booked</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">officer terima</span></span>
+          <span class="node">DISAHKAN<small>confirmed</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">kehadiran</span></span>
+          <span class="node">HADIR<small>attended</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">selesai</span></span>
+          <span class="node end">SELESAI</span>
+        </div>
+        <div class="branchline">
+          <div class="chain">
+            <span class="node">MENUNGGU</span><span class="arr"><span class="ln">→</span><span class="who">tolak</span></span><span class="node end">BATAL</span>
+            <span class="arr" style="min-width:24px"></span>
+            <span class="node">DISAHKAN</span><span class="arr"><span class="ln">→</span><span class="who">no-show</span></span><span class="node end">TIDAK_HADIR</span>
+          </div>
+        </div>
+      </div>
+      <div class="note"><span class="ic">🎟</span><div><b>Slot engine:</b> <code>SlotAvailabilityService</code> generates bookable slots per <code>cawangan</code> + <code>bilik</code> + date, honoring weekends, public holidays (<code>ref_cuti</code> / cuti negeri) and operational closures (<code>penutupan_operasi</code>). The <code>/slot/tarikh</code> &amp; <code>/slot/masa</code> JSON endpoints are shared by staff and citizens.</div></div>
+    </section>
+
+    <section id="flow-citizen">
+      <div class="sec-eyebrow">How work flows</div>
+      <h2 class="sec-h"><span class="num">12</span>Process flow · Citizen journey (Awam)</h2>
+      <p class="sec-sub">The self-service path a member of the public takes — no staff involvement until officer processing.</p>
+      <div class="flow">
+        <div class="chain">
+          <span class="node start">Daftar / Login<small>by IC (nokp)</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node">Saringan<small>eligibility 3-modal</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">lulus</span></span>
+          <span class="node">Wizard<small>fill application</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node">Tempah slot<small>pick date + time</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node">Hantar<small>BAHARU + MENUNGGU</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node end">Dashboard<small>upload · reschedule · cancel</small></span>
+        </div>
+        <div class="branchline" style="font-size:.83rem;color:var(--muted)">
+          After the appointment: officer marks attendance &amp; completes → citizen opens a public <b>Maklum Balas</b> link (no login, one per advisory) to rate satisfaction. Income &gt; threshold during screening routes to <i>Laluan Sumbangan</i> (contribution path).
+        </div>
+      </div>
+    </section>
+
+    <section id="flow-lawyer">
+      <div class="sec-eyebrow">How work flows</div>
+      <h2 class="sec-h"><span class="num">13</span>Process flow · Lawyer-side &amp; staff review queues</h2>
+      <p class="sec-sub">What a panel lawyer initiates, and the 3-tier staff queues that approve it. Both withdrawal and practice-area changes climb PPUU/Pengarah → Pengarah → Ketua Pengarah.</p>
+
+      <div class="flow">
+        <h4>Tarik Diri — lawyer withdraws from an active case</h4>
+        <div class="chain">
+          <span class="node start">2 DITERIMA<small>active case</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Peguam</span><span>tarik diri</span></span>
+          <span class="node">12<small>DALAM_PROSES_TD</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">PPUU</span><span>semak</span></span>
+          <span class="node">16<small>SEMAKAN_PENGARAH</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Pengarah</span></span>
+          <span class="node">17<small>SEMAKAN_KP</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">KP lulus</span></span>
+          <span class="node end">6 TARIK_DIRI_LULUS<small>→ re-pool</small></span>
+        </div>
+        <div class="branchline"><div class="chain"><span class="node">17</span><span class="arr"><span class="ln">→</span><span class="who">KP tolak</span></span><span class="node alt">2 DITERIMA<small>lawyer keeps case</small></span></div></div>
+      </div>
+
+      <div class="flow">
+        <h4>Kemaskini Bidang — add / drop a practice area</h4>
+        <div class="desc"><code>butiran_peguam_panel_6.checkbox_value_status</code>. Drop is blocked if the lawyer still has an active case in that category.</div>
+        <div class="chain">
+          <span class="node start">4 ADD_MOHON<small>or 3 DROP_MOHON</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">Pengarah sokong</span></span>
+          <span class="node">9 ADD_DISOKONG<small>/ 7 DROP_DISOKONG</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">KP lulus</span></span>
+          <span class="node end">2 AKTIF<small>or row deleted (drop)</small></span>
+        </div>
+        <div class="branchline"><div class="chain"><span class="node">any</span><span class="arr"><span class="ln">→</span><span class="who">tolak</span></span><span class="node alt">revert / delete</span></div></div>
+      </div>
+    </section>
+
+    <section id="flow-apply">
+      <div class="sec-eyebrow">How work flows</div>
+      <h2 class="sec-h"><span class="num">14</span>Process flow · Panel lawyer application</h2>
+      <p class="sec-sub">A prospective lawyer applies publicly; staff vet in three tiers. On approval the application becomes a live <code>peguam_panel</code> record. <code>butiran_peguam_panel_2.permohonan_status</code>.</p>
+      <div class="flow">
+        <div class="chain">
+          <span class="node start">Public apply<small>/peguam/daftar · honeypot</small></span>
+          <span class="arr"><span class="ln">→</span></span>
+          <span class="node">0 Baharu<small>new</small></span>
+          <span class="arr"><span class="ln">→</span><span class="who">PPUU semak</span></span>
+          <span class="node">vetted</span>
+          <span class="arr"><span class="ln">→</span><span class="who">Pengarah sokong</span></span>
+          <span class="node">endorsed</span>
+          <span class="arr"><span class="ln">→</span><span class="who">KP keputusan</span></span>
+          <span class="node end">1 Lulus<small>→ peguam_panel + login</small></span>
+        </div>
+        <div class="branchline"><div class="chain">
+          <span class="node">vetting</span><span class="arr"><span class="ln">→</span><span class="who">KP tolak</span></span><span class="node end">2 Tidak Lulus</span>
+          <span class="arr" style="min-width:24px"></span>
+          <span class="node">any</span><span class="arr"><span class="ln">→</span><span class="who">applicant</span></span><span class="node end">3 Tarik Diri</span>
+        </div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===================== DATA MODEL ===================== -->
+    <section id="data">
+      <div class="sec-eyebrow">The data</div>
+      <h2 class="sec-h"><span class="num">15</span>Data model</h2>
+      <p class="sec-sub">~52 tables total: 20 imported legacy tables + ~15 new (batches 8–13) + the v2 ledger &amp; transfer tables + 7 spatie permission tables + Laravel framework tables. Grouped by domain below.</p>
+
+      <div class="grid g2">
+        <div class="card accent">
+          <h4>📂 Core case records</h4>
+          <p><code>forms</code> is the 94-column case spine. History &amp; child tables hang off it via <code>id_kes</code>.</p>
+          <div class="pillrow">
+            <span class="pill">forms</span><span class="pill">laporan_kes</span><span class="pill">butiran_oyd</span>
+            <span class="pill">sejarah_sidang</span><span class="pill">sejarah_pegawai</span><span class="pill">sejarah_ppuu</span>
+            <span class="pill">mahkamah_sivil</span><span class="pill">mahkamah_syariah</span>
+          </div>
+        </div>
+        <div class="card accent">
+          <h4>👔 Lawyer panel</h4>
+          <p>IC-keyed (<code>kp_peguam</code> / <code>kpBaru</code>). One master + 6 detail tables (qual, firm, bank, specialization).</p>
+          <div class="pillrow">
+            <span class="pill">peguam_panel</span><span class="pill">butiran_peguam_panel</span><span class="pill">…_2 → _6</span>
+            <span class="pill">sejarah_peguam_panel</span>
+          </div>
+        </div>
+        <div class="card accent-o">
+          <h4>💬 Khidmat Nasihat</h4>
+          <p>Advisory master + 3-level category tree + feedback.</p>
+          <div class="pillrow">
+            <span class="pill o">khidmat_nasihat</span><span class="pill o">ref_kategori_kn</span><span class="pill o">ref_kategori_kes_kn</span>
+            <span class="pill o">ref_subkategori_kn</span><span class="pill o">maklum_balas</span>
+          </div>
+        </div>
+        <div class="card accent-o">
+          <h4>📆 Appointments / calendar</h4>
+          <p>Slot engine + branches/rooms + closures.</p>
+          <div class="pillrow">
+            <span class="pill o">temu_janji</span><span class="pill o">slot_temu_janji</span><span class="pill o">cawangan</span>
+            <span class="pill o">bilik</span><span class="pill o">penutupan_operasi</span><span class="pill o">ref_cuti</span>
+          </div>
+        </div>
+        <div class="card">
+          <h4>📚 Reference / master</h4>
+          <p>Flat lookup tables. <code>ref_kes</code> (litigation taxonomy) is separate from the KN category tree.</p>
+          <div class="pillrow">
+            <span class="pill g">ref_negeri</span><span class="pill g">ref_kes</span><span class="pill g">ref_jawatan</span>
+            <span class="pill g">ref_lokasi_berguam</span><span class="pill g">pegawai_jbg</span>
+          </div>
+        </div>
+        <div class="card">
+          <h4>🔧 System / auth</h4>
+          <p>Unified login, RBAC, audit, uploads, announcements.</p>
+          <div class="pillrow">
+            <span class="pill g">users</span><span class="pill g">roles</span><span class="pill g">permissions</span>
+            <span class="pill g">audit_trail</span><span class="pill g">uploaded_files</span><span class="pill g">posters</span>
+          </div>
+        </div>
+        <div class="card accent">
+          <h4>🆕 v2 — ledger &amp; transfer</h4>
+          <p>The central claim ledger (polymorphic across sources) and the shared branch-transfer journal. KN also gained <code>applicant_source</code>, waiver/resit links, mediation &amp; certificate columns.</p>
+          <div class="pillrow">
+            <span class="pill">lejar_tuntutan_bayaran</span><span class="pill">pemindahan_cawangan</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:1.05rem;color:var(--pine);margin:26px 0 10px">Key relationships</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>From</th><th>→</th><th>To</th><th>Via</th></tr></thead>
+          <tbody>
+            <tr><td>forms</td><td>→</td><td>laporan_kes · sejarah_* </td><td><code>id_kes</code></td></tr>
+            <tr><td>khidmat_nasihat</td><td>→</td><td>users (applicant + assigned officer)</td><td><code>id_pengguna</code> · <code>id_pegawai_kn</code></td></tr>
+            <tr><td>khidmat_nasihat</td><td>→</td><td>cawangan · ref_kategori_kn · ref_subkategori_kn</td><td>FK nullOnDelete</td></tr>
+            <tr><td>khidmat_nasihat</td><td>→</td><td>temu_janji · forms (Buka Kes bridge)</td><td><code>id_temu_janji</code> · <code>id_forms</code></td></tr>
+            <tr><td>khidmat_nasihat</td><td>→</td><td>maklum_balas (1:1, unique)</td><td><code>khidmat_nasihat_id</code></td></tr>
+            <tr><td>temu_janji</td><td>→</td><td>slot_temu_janji · cawangan</td><td>FK</td></tr>
+            <tr><td>slot_temu_janji</td><td>→</td><td>cawangan · bilik</td><td>FK cascade/null</td></tr>
+            <tr><td>bilik · penutupan_operasi</td><td>→</td><td>cawangan</td><td><code>cawangan_id</code></td></tr>
+            <tr><td>butiran_peguam_panel_3…6</td><td>→</td><td>butiran_peguam_panel_2</td><td><code>kpBaru</code> (IC index, no FK)</td></tr>
+            <tr><td>uploaded_files</td><td>→</td><td>forms · khidmat_nasihat · users</td><td><code>id_kes</code> · <code>id_khidmat</code> · <code>user_doc_id</code></td></tr>
+            <tr><td>users</td><td>↔</td><td>roles ↔ permissions (spatie)</td><td>pivot tables</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note"><span class="ic">🔑</span><div><b><code>users</code> extra columns:</b> <code>user_type</code> (staff/lawyer/awam), <code>role</code>, <code>cawangan</code>, <code>nokp</code> (IC), <code>id_peguam_panel</code> (links a lawyer login to their panel record), <code>is_active</code>, <code>must_change_password</code>, <code>last_login_at</code>. FK strategy: bigint (new) tables get real FKs; legacy int tables (<code>ref_negeri</code>, <code>forms.id</code>) use plain indexes only.</div></div>
+    </section>
+
+    <section id="kntree">
+      <div class="sec-eyebrow">The data</div>
+      <h2 class="sec-h"><span class="num">16</span>The KN category tree</h2>
+      <p class="sec-sub">A 3-level taxonomy used only for advisory (Khidmat Nasihat) — deliberately separate from the litigation <code>ref_kes</code>.</p>
+      <div class="flow">
+        <div class="chain">
+          <span class="node start">ref_kategori_kn<small>L1 · Jenis Kategori</small></span>
+          <span class="arr"><span class="ln">→</span><span>kategori_id</span></span>
+          <span class="node">ref_kategori_kes_kn<small>L2 · Jenis Kes</small></span>
+          <span class="arr"><span class="ln">→</span><span>kategori_kes_id</span></span>
+          <span class="node end">ref_subkategori_kn<small>L3 · Sub</small></span>
+        </div>
+        <div class="branchline" style="font-size:.83rem;color:var(--muted)">
+          L1 values: <b>SIVIL · SYARIAH · PENDAMPING JENAYAH · PENDAMPING GUAMAN</b>. Each level cascades on delete. <code>khidmat_nasihat</code> references L1 (<code>id_kategori</code>) + L3 (<code>id_subkategori</code>), both nullOnDelete so reference data outlives advisory records.
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ===================== GLOSSARY ===================== -->
+    <section id="gloss">
+      <div class="sec-eyebrow">Reference</div>
+      <h2 class="sec-h"><span class="num">17</span>Glossary — Malay → English</h2>
+      <p class="sec-sub">The UI and code are in Malay. This decodes the recurring terms.</p>
+      <div class="gloss light">
+        <dl><dt>JBG</dt><dd>Jabatan Bantuan Guaman — the Legal Aid Department</dd></dl>
+        <dl><dt>Guaman</dt><dd>Litigation / legal (suit)</dd></dl>
+        <dl><dt>Kes</dt><dd>Case (the <code>forms</code> record)</dd></dl>
+        <dl><dt>Permohonan</dt><dd>Application / request</dd></dl>
+        <dl><dt>Peguam Panel</dt><dd>Panel lawyer (private lawyer on the roster)</dd></dl>
+        <dl><dt>Agihan</dt><dd>Assignment / distribution (of cases to lawyers)</dd></dl>
+        <dl><dt>OYD</dt><dd>Orang Yang Dibantu — the assisted person / client</dd></dl>
+        <dl><dt>Pengantaraan</dt><dd>Mediation</dd></dl>
+        <dl><dt>Mahkamah</dt><dd>Court (sivil = civil, syariah = syariah)</dd></dl>
+        <dl><dt>Sidang</dt><dd>Court hearing / session</dd></dl>
+        <dl><dt>Khidmat Nasihat</dt><dd>Legal advisory service (KN)</dd></dl>
+        <dl><dt>Janji Temu / Temu Janji</dt><dd>Appointment</dd></dl>
+        <dl><dt>Saringan</dt><dd>Screening (eligibility check)</dd></dl>
+        <dl><dt>Slot / Penjanaan Slot</dt><dd>Appointment slot / slot generation</dd></dl>
+        <dl><dt>Cawangan</dt><dd>Branch (office)</dd></dl>
+        <dl><dt>Bilik</dt><dd>Room</dd></dl>
+        <dl><dt>Penutupan Operasi</dt><dd>Operational closure (block dates)</dd></dl>
+        <dl><dt>Cuti</dt><dd>Holiday (umum = public, negeri = state)</dd></dl>
+        <dl><dt>Pengarah</dt><dd>Director</dd></dl>
+        <dl><dt>Ketua Pengarah</dt><dd>Director General (KP)</dd></dl>
+        <dl><dt>Koordinator</dt><dd>Coordinator</dd></dl>
+        <dl><dt>Pegawai</dt><dd>Officer</dd></dl>
+        <dl><dt>PPUU</dt><dd>Penolong Pegawai Undang-Undang — assistant legal officer (case distributor)</dd></dl>
+        <dl><dt>Pembantu Tadbir</dt><dd>Administrative assistant (clerk)</dd></dl>
+        <dl><dt>Semak / Semakan</dt><dd>Review / check (vetting step)</dd></dl>
+        <dl><dt>Sokong / Sokongan</dt><dd>Endorse / recommendation</dd></dl>
+        <dl><dt>Keputusan</dt><dd>Decision</dd></dl>
+        <dl><dt>Lulus / Tolak</dt><dd>Approve / Reject</dd></dl>
+        <dl><dt>Tawaran</dt><dd>Offer (case offered to a lawyer)</dd></dl>
+        <dl><dt>Tarik Diri</dt><dd>Withdraw / withdrawal</dd></dl>
+        <dl><dt>Bidang Pengkhususan</dt><dd>Practice area / specialization</dd></dl>
+        <dl><dt>Lebih Masa</dt><dd>Over-time (offer not answered in SLA)</dd></dl>
+        <dl><dt>Fail Tutup</dt><dd>Closed file</dd></dl>
+        <dl><dt>Beban Tugas</dt><dd>Workload</dd></dl>
+        <dl><dt>Laporan</dt><dd>Report</dd></dl>
+        <dl><dt>Maklum Balas</dt><dd>Feedback</dd></dl>
+        <dl><dt>Selenggara</dt><dd>Maintenance (reference data admin)</dd></dl>
+        <dl><dt>Pengguna</dt><dd>User</dd></dl>
+        <dl><dt>Peranan &amp; Akses</dt><dd>Role &amp; access (permission matrix)</dd></dl>
+        <dl><dt>Awam</dt><dd>Public / citizen</dd></dl>
+        <dl><dt>No. KP / NoKP</dt><dd>IC number (national identity card)</dd></dl>
+        <dl><dt>Buka Kes</dt><dd>Open a case (KN → litigation bridge)</dd></dl>
+        <dl><dt>Laluan Sumbangan</dt><dd>Contribution path (when income exceeds the aid threshold)</dd></dl>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <span>iGuaman 2in1 · System understanding <b>v2</b> — updated 2026-07-01 after the 22 penambahbaikan (trunk <code>feat/penambahbaikan-subsistem</code> @ <code>b5ebda0</code>, suite 351/351). <a href="penambahbaikan-22.html">Full status →</a></span>
+  <span>JBG · Jabatan Bantuan Guaman Malaysia</span>
+</footer>
+
+<script>
+  // Active section highlight in the side nav.
+  const links = [...document.querySelectorAll('#sidenav a')];
+  const map = {};
+  links.forEach(a => { const id = a.getAttribute('href').slice(1); map[id] = a; });
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const a = map[e.target.id];
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+  document.querySelectorAll('main section[id]').forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>
