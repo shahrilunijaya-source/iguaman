@@ -147,7 +147,7 @@
 
         <div class="demo-modal__head">
             <div class="demo-modal__eyebrow">Akaun Demo · Prototaip</div>
-            <h2 class="demo-modal__h" id="demoModalTitle">2 kawasan akses · 6 akaun ujian<span class="dot"></span></h2>
+            <h2 class="demo-modal__h" id="demoModalTitle">2 kawasan akses · 9 akaun ujian<span class="dot"></span></h2>
             <p class="demo-modal__sub">
                 iGuaman menyokong kawasan kakitangan (rekod kes, pengantaraan, mahkamah, statistik) dan kawasan peguam panel. Klik mana-mana akaun di bawah untuk mengisi borang log masuk secara automatik.
             </p>
@@ -176,7 +176,7 @@
                     </div>
 
                     <div class="demo-tier__accounts">
-                        <div class="demo-tier__accounts-label">Akaun ujian (2)</div>
+                        <div class="demo-tier__accounts-label">Akaun ujian (3)</div>
 
                         <button type="button" class="demo-tier__btn js-demo-login" data-email="demo@example.com">
                             <div class="demo-tier__btn-body">
@@ -190,6 +190,14 @@
                             <div class="demo-tier__btn-body">
                                 <div class="demo-tier__btn-name">Test Pegawai</div>
                                 <div class="demo-tier__btn-email">pegawai@test.local</div>
+                            </div>
+                            <svg class="demo-tier__btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                        </button>
+
+                        <button type="button" class="demo-tier__btn js-demo-login" data-email="pembantu@test.local">
+                            <div class="demo-tier__btn-body">
+                                <div class="demo-tier__btn-name">Test Pembantu Tadbir</div>
+                                <div class="demo-tier__btn-email">pembantu@test.local</div>
                             </div>
                             <svg class="demo-tier__btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                         </button>
@@ -215,7 +223,7 @@
                     </div>
 
                     <div class="demo-tier__accounts">
-                        <div class="demo-tier__accounts-label">Akaun ujian (2)</div>
+                        <div class="demo-tier__accounts-label">Akaun ujian (3)</div>
 
                         <button type="button" class="demo-tier__btn js-demo-login" data-email="koordinator@test.local">
                             <div class="demo-tier__btn-body">
@@ -229,6 +237,14 @@
                             <div class="demo-tier__btn-body">
                                 <div class="demo-tier__btn-name">Test Pengarah</div>
                                 <div class="demo-tier__btn-email">pengarah@test.local</div>
+                            </div>
+                            <svg class="demo-tier__btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                        </button>
+
+                        <button type="button" class="demo-tier__btn js-demo-login" data-email="ppuu@test.local">
+                            <div class="demo-tier__btn-body">
+                                <div class="demo-tier__btn-name">Test PPUU</div>
+                                <div class="demo-tier__btn-email">ppuu@test.local</div>
                             </div>
                             <svg class="demo-tier__btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                         </button>
@@ -255,12 +271,20 @@
                     </div>
 
                     <div class="demo-tier__accounts">
-                        <div class="demo-tier__accounts-label">Akaun ujian (1)</div>
+                        <div class="demo-tier__accounts-label">Akaun ujian (2)</div>
 
                         <button type="button" class="demo-tier__btn js-demo-login" data-email="admin@test.local">
                             <div class="demo-tier__btn-body">
                                 <div class="demo-tier__btn-name">Test Admin</div>
                                 <div class="demo-tier__btn-email">admin@test.local</div>
+                            </div>
+                            <svg class="demo-tier__btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                        </button>
+
+                        <button type="button" class="demo-tier__btn js-demo-login" data-email="kp@test.local">
+                            <div class="demo-tier__btn-body">
+                                <div class="demo-tier__btn-name">Test Ketua Pengarah</div>
+                                <div class="demo-tier__btn-email">kp@test.local</div>
                             </div>
                             <svg class="demo-tier__btn-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
                         </button>
