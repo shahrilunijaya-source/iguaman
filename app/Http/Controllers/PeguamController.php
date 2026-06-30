@@ -144,7 +144,7 @@ class PeguamController extends Controller
         ]);
 
         $laporan = LaporanKes::create($data + [
-            'id_kes' => (string) $kes->id,
+            'id_kes' => $kes->id,
             'no_fail' => $kes->no_fail,
             'nama_pegawai' => Auth::user()->name,
         ]);
