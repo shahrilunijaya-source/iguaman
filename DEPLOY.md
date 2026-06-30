@@ -8,14 +8,14 @@ Plain Laravel 13. No node on the shared host → `public/build` is committed. We
 
 ```bash
 # from the project root (already a git repo, branch main)
-gh repo create shahrilunijaya-source/sys-iguaman-2in1 --private --source=. --remote=origin
+gh repo create shahrilunijaya-source/iguaman --private --source=. --remote=origin
 git push -u origin main
 ```
 
 ## 2. Hostinger hPanel (one-time)
 
 1. **MySQL** → create database + user (auto-prefixed `u<acct>_iguaman_2in1`); note creds.
-2. **Git** → connect repo `sys-iguaman-2in1`, branch `main`, deploy path = domain `public_html`.
+2. **Git** → connect repo `iguaman`, branch `main`, deploy path = domain `public_html`.
 3. Enable the auto-deploy **webhook** (pull + composer install on push).
 
 ## 3. Production `.env` (on server, edit once)
