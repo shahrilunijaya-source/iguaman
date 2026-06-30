@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Portal Khidmat Nasihat') — JBG</title>
-    @vite(['resources/css/theme.css', 'resources/css/system.css', 'resources/js/app.js'])
+    @vite(['resources/css/system.css'])
 </head>
 <body class="awam-shell">
     <header class="awam-header">
