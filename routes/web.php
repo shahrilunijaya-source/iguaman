@@ -21,7 +21,9 @@ use App\Http\Controllers\KhidmatProsesController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\LaporanKhidmatNasihatController;
 use App\Http\Controllers\LaporanPenuhController;
+use App\Http\Controllers\MaklumBalasController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
@@ -420,6 +422,42 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/khidmat-proses/{khidmat}/buka-kes', [KhidmatProsesController::class, 'bukaKes'])->name('khidmat.proses.buka-kes')->whereNumber('khidmat');
     });
     // ==== END BATCH 11 SLICES A+B ====
+
+    // ==== BATCH 12 — LAPORAN KHIDMAT NASIHAT (8 statistical reports) ====
+    // 8 KN reports (detail + bucket-aggregate + month pivots), all reusing the
+    // existing permission:laporan.view. Branch isolation is applied explicitly
+    // (KN has no CawanganScope) inside LaporanKnService. Detail reports (Pandangan
+    // UU, Pendaftaran) export to .xlsx via maatwebsite; print via the view's CSS.
+    Route::middleware('permission:laporan.view')->prefix('laporan-kn')->name('laporan-kn.')->group(function () {
+        Route::get('/', [LaporanKhidmatNasihatController::class, 'index'])->name('index');
+
+        // 1. Pandangan Undang-Undang (detail + Excel)
+        Route::get('/pandangan-uu', [LaporanKhidmatNasihatController::class, 'pandanganUu'])->name('pandangan-uu');
+        Route::get('/pandangan-uu/excel', [LaporanKhidmatNasihatController::class, 'pandanganUuExcel'])->name('pandangan-uu.excel');
+
+        // 2. Cara Mengetahui JBG (pie + table)
+        Route::get('/cara-mengetahui', [LaporanKhidmatNasihatController::class, 'caraMengetahui'])->name('cara-mengetahui');
+
+        // 3. Mengikut Cawangan (stacked bar + table)
+        Route::get('/mengikut-cawangan', [LaporanKhidmatNasihatController::class, 'mengikutCawangan'])->name('mengikut-cawangan');
+
+        // 4. Mengikut Kategori Kes (stacked bar + table)
+        Route::get('/mengikut-kategori', [LaporanKhidmatNasihatController::class, 'mengikutKategori'])->name('mengikut-kategori');
+
+        // 5. Mengikut Sub Kategori (table only)
+        Route::get('/mengikut-subkategori', [LaporanKhidmatNasihatController::class, 'mengikutSubkategori'])->name('mengikut-subkategori');
+
+        // 6. Pendaftaran Khidmat Nasihat (detail + Excel)
+        Route::get('/pendaftaran', [LaporanKhidmatNasihatController::class, 'pendaftaran'])->name('pendaftaran');
+        Route::get('/pendaftaran/excel', [LaporanKhidmatNasihatController::class, 'pendaftaranExcel'])->name('pendaftaran.excel');
+
+        // 7. Tahap Kepuasan Pelanggan (pie + table)
+        Route::get('/kepuasan', [LaporanKhidmatNasihatController::class, 'kepuasan'])->name('kepuasan');
+
+        // 8. Mengikut Kaum/Jantina (stacked bar + table)
+        Route::get('/kaum-jantina', [LaporanKhidmatNasihatController::class, 'kaumJantina'])->name('kaum-jantina');
+    });
+    // ==== END BATCH 12 ====
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----
@@ -445,3 +483,15 @@ Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(f
     Route::post('/pengkhususan/tambah', [PeguamController::class, 'pengkhususanAdd'])->name('peguam.pengkhususan.add');
     Route::post('/pengkhususan/{row}/gugur', [PeguamController::class, 'pengkhususanDrop'])->name('peguam.pengkhususan.drop')->whereNumber('row');
 });
+
+// ==== BATCH 12 — MAKLUM BALAS (public) ====
+// Post-appointment satisfaction feedback. PUBLIC (no auth) per locked decision —
+// citizen opens the link after a SELESAI advisory appointment; no login. One
+// feedback per KN (DB-unique + app guard). Throttled (6/min) for light anti-abuse.
+Route::get('/maklum-balas/{no_permohonan}', [MaklumBalasController::class, 'show'])
+    ->middleware('throttle:6,1')
+    ->name('maklum-balas.show');
+Route::post('/maklum-balas/{no_permohonan}', [MaklumBalasController::class, 'store'])
+    ->middleware('throttle:6,1')
+    ->name('maklum-balas.store');
+// ==== END BATCH 12 ====
