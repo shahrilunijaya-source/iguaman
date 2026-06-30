@@ -3,12 +3,45 @@
 namespace Tests\Feature\Awam;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\RolePermissionSeeder;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
+/**
+ * Public awam (citizen) auth — register/login/logout by No. KP (IC).
+ * Live mysql per repo convention (NOT RefreshDatabase, which would migrate:fresh
+ * the shared DB and wipe seeded masters other tests depend on). The awam role +
+ * awam.portal permission live in the DB via migration 130002; RolePermissionSeeder
+ * seeds only the 8 staff/lawyer roles and does not touch awam, so assignRole('awam')
+ * still works. No awam users are seeded, so deleting all awam users is a clean reset.
+ */
 class AwamAuthTest extends TestCase
 {
-    use RefreshDatabase;
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
+        DB::purge('mysql');
+        DB::reconnect('mysql');
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        (new RolePermissionSeeder)->run();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        $this->cleanup();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->cleanup();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        parent::tearDown();
+    }
+
+    /** No awam users are seeded, so deleting all awam users cleans every test-created row. */
+    private function cleanup(): void
+    {
+        User::where('user_type', 'awam')->delete();
+    }
 
     public function test_user_can_be_created_with_awam_type(): void
     {

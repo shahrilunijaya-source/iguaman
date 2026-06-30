@@ -39,8 +39,8 @@ class Batch7SeederTest extends TestCase
         // 'slot.manage' (slot generation + penutupan operasi); Batch 11 added 'khidmat.proses'
         // (officer processing: assign PKN + pengesahan janji temu).
         // RolePermissionSeeder::MATRIX is the source of truth.
-        $this->assertSame(8, Role::count());
-        $this->assertSame(41, Permission::count());
+        $this->assertSame(9, Role::count());  // +1 awam role (batch-13)
+        $this->assertSame(42, Permission::count());  // +1 awam.portal permission (batch-13)
     }
 
     public function test_admin_can_everything_via_gate_before(): void
