@@ -4,9 +4,12 @@ use App\Http\Controllers\AgihanController;
 use App\Http\Controllers\AgihanSpineController;
 use App\Http\Controllers\TarikDiriController;
 use App\Http\Controllers\AuditController;
+use App\Http\Controllers\CawanganController;
 use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\CutiController;
+use App\Http\Controllers\JawatanController;
+use App\Http\Controllers\KategoriKnController;
 use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\KemaskiniBidangController;
 use App\Http\Controllers\KesController;
@@ -29,6 +32,7 @@ use App\Http\Controllers\PeguamDaftarController;
 use App\Http\Controllers\PeguamPanelController;
 use App\Http\Controllers\PermohonanPeguamController;
 use App\Http\Controllers\StatistikController;
+use App\Http\Controllers\StatistikPengantaraanController;
 use App\Http\Controllers\StatistikSlaController;
 use App\Http\Controllers\SystemAuthController;
 use App\Http\Controllers\SystemController;
@@ -147,6 +151,13 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         // Kesilapan Penjanaan Nombor Fail — per-month count matrix + wide CSV (P1).
         Route::get('/statistik-kesilapan', [KesilapanController::class, 'index'])->name('statistik-kesilapan.index');
         Route::get('/statistik-kesilapan/csv', [KesilapanController::class, 'csv'])->name('statistik-kesilapan.csv');
+
+        // Statistik Penugasan Pengantaraan — branch×kategori + branch×month assignment matrices (P1).
+        Route::get('/statistik-pengantaraan', [StatistikPengantaraanController::class, 'index'])->name('statistik-pengantaraan.index');
+        Route::get('/statistik-pengantaraan/kategori', [StatistikPengantaraanController::class, 'kategori'])->name('statistik-pengantaraan.kategori');
+        Route::get('/statistik-pengantaraan/bulanan', [StatistikPengantaraanController::class, 'bulanan'])->name('statistik-pengantaraan.bulanan');
+        Route::get('/statistik-pengantaraan/{jenis}/pdf', [StatistikPengantaraanController::class, 'pdf'])
+            ->whereIn('jenis', ['kategori', 'bulanan'])->name('statistik-pengantaraan.pdf');
     });
 
     // Selenggara (maintenance) + Pegawai JBG registry + Audit log — gated per-resource permission
@@ -197,6 +208,42 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/cuti/{cuti}/edit', [CutiController::class, 'edit'])->name('cuti.edit')->whereNumber('cuti');
         Route::put('/cuti/{cuti}', [CutiController::class, 'update'])->name('cuti.update')->whereNumber('cuti');
         Route::delete('/cuti/{cuti}', [CutiController::class, 'destroy'])->name('cuti.destroy')->whereNumber('cuti');
+    });
+
+    // Cawangan master (JBG/JKM/Penjara) + bilik (rooms) — Janji Temu foundation
+    Route::middleware('permission:selenggara.cawangan')->group(function () {
+        Route::get('/cawangan', [CawanganController::class, 'index'])->name('cawangan.index');
+        Route::get('/cawangan/create', [CawanganController::class, 'create'])->name('cawangan.create');
+        Route::post('/cawangan', [CawanganController::class, 'store'])->name('cawangan.store');
+        Route::get('/cawangan/{cawangan}/edit', [CawanganController::class, 'edit'])->name('cawangan.edit')->whereNumber('cawangan');
+        Route::put('/cawangan/{cawangan}', [CawanganController::class, 'update'])->name('cawangan.update')->whereNumber('cawangan');
+        Route::delete('/cawangan/{cawangan}', [CawanganController::class, 'destroy'])->name('cawangan.destroy')->whereNumber('cawangan');
+        Route::post('/cawangan/{cawangan}/bilik', [CawanganController::class, 'storeBilik'])->name('cawangan.bilik.store')->whereNumber('cawangan');
+        Route::delete('/cawangan/{cawangan}/bilik/{bilik}', [CawanganController::class, 'destroyBilik'])->name('cawangan.bilik.destroy')->whereNumber('cawangan')->whereNumber('bilik');
+    });
+
+    // Jenis Khidmat (KN category tree: kategori -> kes -> subkategori)
+    Route::middleware('permission:selenggara.kategori_kn')->group(function () {
+        Route::get('/kategori-kn', [KategoriKnController::class, 'index'])->name('kategori-kn.index');
+        Route::post('/kategori-kn', [KategoriKnController::class, 'store'])->name('kategori-kn.store');
+        Route::put('/kategori-kn/{kategori}', [KategoriKnController::class, 'update'])->name('kategori-kn.update')->whereNumber('kategori');
+        Route::delete('/kategori-kn/{kategori}', [KategoriKnController::class, 'destroy'])->name('kategori-kn.destroy')->whereNumber('kategori');
+        Route::get('/kategori-kn/{kategori}/kes', [KategoriKnController::class, 'kes'])->name('kategori-kn.kes')->whereNumber('kategori');
+        Route::post('/kategori-kn/{kategori}/kes', [KategoriKnController::class, 'storeKes'])->name('kategori-kn.kes.store')->whereNumber('kategori');
+        Route::put('/kategori-kn/kes/{kes}', [KategoriKnController::class, 'updateKes'])->name('kategori-kn.kes.update')->whereNumber('kes');
+        Route::delete('/kategori-kn/kes/{kes}', [KategoriKnController::class, 'destroyKes'])->name('kategori-kn.kes.destroy')->whereNumber('kes');
+        Route::get('/kategori-kn/kes/{kes}/sub', [KategoriKnController::class, 'sub'])->name('kategori-kn.sub')->whereNumber('kes');
+        Route::post('/kategori-kn/kes/{kes}/sub', [KategoriKnController::class, 'storeSub'])->name('kategori-kn.sub.store')->whereNumber('kes');
+        Route::put('/kategori-kn/sub/{sub}', [KategoriKnController::class, 'updateSub'])->name('kategori-kn.sub.update')->whereNumber('sub');
+        Route::delete('/kategori-kn/sub/{sub}', [KategoriKnController::class, 'destroySub'])->name('kategori-kn.sub.destroy')->whereNumber('sub');
+    });
+
+    // Jawatan (staff job titles)
+    Route::middleware('permission:selenggara.jawatan')->group(function () {
+        Route::get('/jawatan', [JawatanController::class, 'index'])->name('jawatan.index');
+        Route::post('/jawatan', [JawatanController::class, 'store'])->name('jawatan.store');
+        Route::put('/jawatan/{jawatan}', [JawatanController::class, 'update'])->name('jawatan.update')->whereNumber('jawatan');
+        Route::delete('/jawatan/{jawatan}', [JawatanController::class, 'destroy'])->name('jawatan.destroy')->whereNumber('jawatan');
     });
 
     // Pengurusan Pengguna

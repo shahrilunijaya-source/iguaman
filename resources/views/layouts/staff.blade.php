@@ -59,6 +59,9 @@
         <a href="{{ route('statistik-kesilapan.index') }}" class="ws-side-top {{ request()->routeIs('statistik-kesilapan.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">⚠</span><span class="ws-side-label">Kesilapan No. Fail</span>
         </a>
+        <a href="{{ route('statistik-pengantaraan.index') }}" class="ws-side-top {{ request()->routeIs('statistik-pengantaraan.*') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">⇆</span><span class="ws-side-label">Statistik Pengantaraan</span>
+        </a>
         <a href="{{ route('kpi.index') }}" class="ws-side-top {{ request()->routeIs('kpi.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">◔</span><span class="ws-side-label">KPI</span>
         </a>
