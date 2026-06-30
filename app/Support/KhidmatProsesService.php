@@ -247,6 +247,9 @@ class KhidmatProsesService
             Audit::log('khidmat_nasihat', $fresh->id, Audit::UPDATE,
                 "Buka Kes — forms #{$form->id} (No. Fail: {$form->no_fail}).", $actor->name);
 
+            // W12: stamp the downstream case state back onto the KN.
+            app(KesKnSyncService::class)->pushToKn($form, KesKnSyncService::STATE_TERBUKA, $actor->name);
+
             return $form;
         });
     }

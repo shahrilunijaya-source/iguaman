@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Scopes\CawanganScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * forms — the case spine (94 cols): legal-aid application, mediation, court case, assignment.
@@ -60,5 +61,11 @@ class Form extends Model
     public function lampiran(): HasMany
     {
         return $this->hasMany(UploadedFile::class, 'id_kes', 'id');
+    }
+
+    /** Originating Khidmat Nasihat (W12 reverse sync), linked via khidmat_nasihat.id_forms. */
+    public function khidmatNasihat(): HasOne
+    {
+        return $this->hasOne(KhidmatNasihat::class, 'id_forms', 'id');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Form;
 use App\Support\Audit;
+use App\Support\KesKnSyncService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -89,6 +90,9 @@ class KeputusanController extends Controller
         ]);
 
         Audit::log('forms', $kes->id, Audit::UPDATE, "Fail ditutup: {$kes->nama}");
+
+        // W12: propagate closure back to the originating Khidmat Nasihat, if any.
+        app(KesKnSyncService::class)->pushToKn($kes, KesKnSyncService::STATE_DITUTUP, $request->user()->name);
 
         return back()->with('status', 'Fail ditutup secara rasmi.');
     }
