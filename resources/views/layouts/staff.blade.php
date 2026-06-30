@@ -71,8 +71,14 @@
 
         @can('khidmat.view')
             <div class="ws-side-section">Khidmat Nasihat</div>
-            <a href="{{ route('khidmat.index') }}" class="ws-side-top {{ request()->routeIs('khidmat.*') ? 'is-active' : '' }}">
+            <a href="{{ route('khidmat.index') }}" class="ws-side-top {{ (request()->routeIs('khidmat.*') && ! request()->routeIs('khidmat.proses.*')) ? 'is-active' : '' }}">
                 <span class="ws-side-top__icon">💬</span><span class="ws-side-label">Permohonan Khidmat</span>
+            </a>
+        @endcan
+
+        @can('khidmat.proses')
+            <a href="{{ route('khidmat.proses.index') }}" class="ws-side-top {{ request()->routeIs('khidmat.proses.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">🗂</span><span class="ws-side-label">Pemprosesan KN</span>
             </a>
         @endcan
 

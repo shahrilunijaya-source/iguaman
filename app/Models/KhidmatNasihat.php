@@ -23,6 +23,7 @@ class KhidmatNasihat extends Model
         'saringan_lulus' => 'boolean',
         'is_laluan_sumbangan' => 'boolean',
         'tarikh_lahir_mangsa' => 'date',
+        'tarikh_proses' => 'datetime',
         'jumlah_bayaran' => 'decimal:2',
         'jumlah_pendapatan' => 'decimal:2',
     ];
@@ -58,6 +59,25 @@ class KhidmatNasihat extends Model
     public function pengguna(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id_pengguna');
+    }
+
+    /**
+     * Assigned advisory officer (Pegawai Khidmat Nasihat) — batch 11 slice B.
+     * Set on assign-PKN, which moves status_kn BAHARU->DALAM_PROSES.
+     */
+    public function pegawaiKn(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id_pegawai_kn');
+    }
+
+    /**
+     * Linked litigation case (forms row) — batch 11 slice C "Buka Kes" bridge.
+     * Set once, when an officer opens a case from a SELESAI KN. id_forms is
+     * mass-assignable ($guarded = ['id']); no DB FK (forms is the legacy spine).
+     */
+    public function forms(): BelongsTo
+    {
+        return $this->belongsTo(Form::class, 'id_forms');
     }
 
     /**
