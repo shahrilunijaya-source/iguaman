@@ -91,4 +91,22 @@ class Batch7RbacMatrixTest extends TestCase
         $this->actingAs($this->user('pegawai'))->get(route('peguam.dashboard'))
             ->assertRedirect(route('system.utama'));
     }
+
+    /**
+     * Spatie role/permission middleware delimits multiple values with a PIPE. A COMMA
+     * makes the 2nd value a guard name (Auth guard [x] not defined -> HTTP 500), the
+     * exact regression that broke the tarik-diri / kemaskini-bidang / peguam-panel
+     * lifecycle routes. Guard against any comma-delimited Spatie middleware returning.
+     */
+    public function test_no_comma_delimited_spatie_middleware(): void
+    {
+        foreach (\Illuminate\Support\Facades\Route::getRoutes() as $route) {
+            foreach ($route->gatherMiddleware() as $mw) {
+                if (is_string($mw) && preg_match('/^(role|permission|role_or_permission):(.+)$/', $mw, $m)) {
+                    $this->assertStringNotContainsString(',', $m[2],
+                        "Route [{$route->getName()}] middleware '{$mw}' uses a comma — Spatie needs '|' (comma = guard name).");
+                }
+            }
+        }
+    }
 }

@@ -236,20 +236,20 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     // Tarik Diri Mewakili OYD — staff review queue (PPUU -> Pengarah -> Ketua Pengarah).
     Route::get('/tarik-diri/senarai', [TarikDiriController::class, 'senarai'])->name('tarikdiri.senarai');
     Route::get('/tarik-diri/{kes}/maklumat', [TarikDiriController::class, 'show'])->name('tarikdiri.maklumat')->whereNumber('kes');
-    Route::post('/tarik-diri/{kes}/ppuu', [TarikDiriController::class, 'ppuu'])->name('tarikdiri.ppuu')->whereNumber('kes')->middleware('role:ppuu,koordinator,admin');
-    Route::post('/tarik-diri/{kes}/pengarah', [TarikDiriController::class, 'pengarah'])->name('tarikdiri.pengarah')->whereNumber('kes')->middleware('role:pengarah,admin');
-    Route::post('/tarik-diri/{kes}/kp', [TarikDiriController::class, 'kp'])->name('tarikdiri.kp')->whereNumber('kes')->middleware('role:ketua_pengarah,admin');
+    Route::post('/tarik-diri/{kes}/ppuu', [TarikDiriController::class, 'ppuu'])->name('tarikdiri.ppuu')->whereNumber('kes')->middleware('role:ppuu|koordinator|admin');
+    Route::post('/tarik-diri/{kes}/pengarah', [TarikDiriController::class, 'pengarah'])->name('tarikdiri.pengarah')->whereNumber('kes')->middleware('role:pengarah|admin');
+    Route::post('/tarik-diri/{kes}/kp', [TarikDiriController::class, 'kp'])->name('tarikdiri.kp')->whereNumber('kes')->middleware('role:ketua_pengarah|admin');
 
     // Kemaskini Bidang Pengkhususan — staff review of lawyer add/drop requests.
     Route::get('/kemaskini-bidang', [KemaskiniBidangController::class, 'index'])->name('kemaskini-bidang.index');
-    Route::post('/kemaskini-bidang/{row}/pengarah', [KemaskiniBidangController::class, 'pengarah'])->name('kemaskini-bidang.pengarah')->whereNumber('row')->middleware('role:pengarah,admin');
-    Route::post('/kemaskini-bidang/{row}/kp', [KemaskiniBidangController::class, 'kp'])->name('kemaskini-bidang.kp')->whereNumber('row')->middleware('role:ketua_pengarah,admin');
+    Route::post('/kemaskini-bidang/{row}/pengarah', [KemaskiniBidangController::class, 'pengarah'])->name('kemaskini-bidang.pengarah')->whereNumber('row')->middleware('role:pengarah|admin');
+    Route::post('/kemaskini-bidang/{row}/kp', [KemaskiniBidangController::class, 'kp'])->name('kemaskini-bidang.kp')->whereNumber('row')->middleware('role:ketua_pengarah|admin');
     Route::get('/peguam-panel/{peguam}', [PeguamPanelController::class, 'show'])->name('peguam-panel.show')->whereNumber('peguam');
     Route::get('/peguam-panel/{peguam}/edit', [PeguamPanelController::class, 'edit'])->name('peguam-panel.edit')->whereNumber('peguam');
     Route::put('/peguam-panel/{peguam}', [PeguamPanelController::class, 'update'])->name('peguam-panel.update')->whereNumber('peguam');
     // Lawyer active/inactive lifecycle (deactivation triggers death-redistribution of active cases).
-    Route::post('/peguam-panel/{peguam}/nyahaktif', [PeguamPanelController::class, 'nyahaktif'])->name('peguam-panel.nyahaktif')->whereNumber('peguam')->middleware('role:admin,koordinator,pengarah,ketua_pengarah');
-    Route::post('/peguam-panel/{peguam}/aktif-semula', [PeguamPanelController::class, 'aktifSemula'])->name('peguam-panel.aktif')->whereNumber('peguam')->middleware('role:admin,koordinator,pengarah,ketua_pengarah');
+    Route::post('/peguam-panel/{peguam}/nyahaktif', [PeguamPanelController::class, 'nyahaktif'])->name('peguam-panel.nyahaktif')->whereNumber('peguam')->middleware('role:admin|koordinator|pengarah|ketua_pengarah');
+    Route::post('/peguam-panel/{peguam}/aktif-semula', [PeguamPanelController::class, 'aktifSemula'])->name('peguam-panel.aktif')->whereNumber('peguam')->middleware('role:admin|koordinator|pengarah|ketua_pengarah');
 
     // Permohonan peguam panel (application approval workflow)
     Route::get('/permohonan-peguam', [PermohonanPeguamController::class, 'index'])->name('permohonan-peguam.index');
