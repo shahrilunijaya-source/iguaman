@@ -73,6 +73,12 @@ class RolePermissionSeeder extends Seeder
         // Khidmat Nasihat officer processing (assign PKN + pengesahan janji temu) — batch 11.
         // Granted to roles that process advisory cases; NOT pembantu_tadbir (clerk).
         'khidmat.proses' => ['koordinator', 'pegawai', 'pengarah'],
+        // Central claim ledger (lejar tuntutan bayaran) — W15. view/manage/semak/lulus/bayar.
+        'tuntutan.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'ppuu'],
+        'tuntutan.manage' => ['koordinator', 'pegawai', 'pembantu_tadbir', 'pengarah'],
+        'tuntutan.semak' => ['ppuu', 'koordinator', 'pembantu_tadbir'],
+        'tuntutan.lulus' => ['pengarah', 'ketua_pengarah'],
+        'tuntutan.bayar' => ['koordinator', 'pengarah', 'ketua_pengarah'],
     ];
 
     public function run(): void

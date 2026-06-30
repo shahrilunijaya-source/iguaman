@@ -186,6 +186,11 @@ class KhidmatProsesService
         $this->transitionTemu($khidmat, 'selesai', $actor, function (KhidmatNasihat $kn) use ($actor) {
             $kn->update(['status_kn' => KhidmatNasihat::STATUS_SELESAI, 'kemaskini_oleh' => $actor]);
         });
+
+        // W15 (D4): auto-create a claim-ledger row for a paid advisory so the receipt
+        // step exists (closes audit gap G-M3). No-op for free (is_percuma) advisories;
+        // idempotent via the (sumber, id_khidmat_nasihat) unique key.
+        app(LejarTuntutanService::class)->fromKhidmatNasihat($khidmat->fresh(), $actor);
     }
 
     /**

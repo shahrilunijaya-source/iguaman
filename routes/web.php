@@ -20,6 +20,8 @@ use App\Http\Controllers\KesController;
 use App\Http\Controllers\KesilapanController;
 use App\Http\Controllers\KhidmatNasihatController;
 use App\Http\Controllers\KhidmatProsesController;
+use App\Http\Controllers\LejarTuntutanController;
+use App\Http\Controllers\Peguam\TuntutanController as PeguamTuntutanController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
@@ -392,6 +394,22 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::post('/permohonan-peguam/{butiran}/keputusan', [PermohonanPeguamController::class, 'keputusan'])->name('permohonan-peguam.keputusan')->whereNumber('butiran');
     Route::post('/permohonan-peguam/{butiran}/tarik-diri', [PermohonanPeguamController::class, 'tarikDiri'])->name('permohonan-peguam.tarik')->whereNumber('butiran');
 
+    // ---- Lejar Tuntutan Bayaran (central claim ledger) — W15 ----
+    // Static segments declared before {tuntutan} (whereNumber) so they never shadow.
+    Route::middleware('permission:tuntutan.view')->group(function () {
+        Route::get('/lejar-tuntutan', [LejarTuntutanController::class, 'index'])->name('tuntutan.index');
+        Route::get('/lejar-tuntutan/eksport', [LejarTuntutanController::class, 'eksport'])->name('tuntutan.eksport');
+        Route::get('/lejar-tuntutan/baharu', [LejarTuntutanController::class, 'create'])->name('tuntutan.create')->middleware('permission:tuntutan.manage');
+        Route::post('/lejar-tuntutan', [LejarTuntutanController::class, 'store'])->name('tuntutan.store')->middleware('permission:tuntutan.manage');
+        Route::get('/lejar-tuntutan/{tuntutan}', [LejarTuntutanController::class, 'show'])->name('tuntutan.show')->whereNumber('tuntutan');
+        Route::put('/lejar-tuntutan/{tuntutan}', [LejarTuntutanController::class, 'update'])->name('tuntutan.update')->whereNumber('tuntutan')->middleware('permission:tuntutan.manage');
+        Route::post('/lejar-tuntutan/{tuntutan}/hantar', [LejarTuntutanController::class, 'hantar'])->name('tuntutan.hantar')->whereNumber('tuntutan')->middleware('permission:tuntutan.manage');
+        Route::post('/lejar-tuntutan/{tuntutan}/semak', [LejarTuntutanController::class, 'semak'])->name('tuntutan.semak')->whereNumber('tuntutan')->middleware('permission:tuntutan.semak');
+        Route::post('/lejar-tuntutan/{tuntutan}/lulus', [LejarTuntutanController::class, 'lulus'])->name('tuntutan.lulus')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
+        Route::post('/lejar-tuntutan/{tuntutan}/tolak', [LejarTuntutanController::class, 'tolak'])->name('tuntutan.tolak')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
+        Route::post('/lejar-tuntutan/{tuntutan}/bayar', [LejarTuntutanController::class, 'bayar'])->name('tuntutan.bayar')->whereNumber('tuntutan')->middleware('permission:tuntutan.bayar');
+    });
+
     // ---- Khidmat Nasihat (legal-advisory applications) — batch 9 ----
     // Slice 1: list/show (read-only), gated khidmat.view.
     Route::middleware('permission:khidmat.view')->group(function () {
@@ -506,6 +524,12 @@ Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(f
     // Bidang Pengkhususan add/drop requests (lawyer-initiated).
     Route::post('/pengkhususan/tambah', [PeguamController::class, 'pengkhususanAdd'])->name('peguam.pengkhususan.add');
     Route::post('/pengkhususan/{row}/gugur', [PeguamController::class, 'pengkhususanDrop'])->name('peguam.pengkhususan.drop')->whereNumber('row');
+
+    // Lejar Tuntutan — lawyer self-service (W15). File claims against assigned cases.
+    Route::get('/tuntutan', [PeguamTuntutanController::class, 'index'])->name('peguam.tuntutan.index');
+    Route::get('/tuntutan/{tuntutan}', [PeguamTuntutanController::class, 'show'])->name('peguam.tuntutan.show')->whereNumber('tuntutan');
+    Route::get('/kes/{kes}/tuntutan/baharu', [PeguamTuntutanController::class, 'create'])->name('peguam.tuntutan.create')->whereNumber('kes');
+    Route::post('/kes/{kes}/tuntutan', [PeguamTuntutanController::class, 'store'])->name('peguam.tuntutan.store')->whereNumber('kes');
 });
 
 // ==== BATCH 12 — MAKLUM BALAS (public) ====

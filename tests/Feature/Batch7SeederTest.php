@@ -37,10 +37,11 @@ class Batch7SeederTest extends TestCase
         // '.kategori_kn', '.jawatan'); Batch 10 slot/calendar added 'slot.view'; Batch 9
         // Khidmat Nasihat added 'khidmat.view' + 'khidmat.manage'; Batch 10 slice 2 added
         // 'slot.manage' (slot generation + penutupan operasi); Batch 11 added 'khidmat.proses'
-        // (officer processing: assign PKN + pengesahan janji temu).
+        // (officer processing: assign PKN + pengesahan janji temu); W15 added 5 claim-ledger
+        // permissions ('tuntutan.view/manage/semak/lulus/bayar').
         // RolePermissionSeeder::MATRIX is the source of truth.
         $this->assertSame(9, Role::count());  // +1 awam role (batch-13)
-        $this->assertSame(42, Permission::count());  // +1 awam.portal permission (batch-13)
+        $this->assertSame(47, Permission::count());  // 42 + 5 tuntutan.* (W15)
     }
 
     public function test_admin_can_everything_via_gate_before(): void
