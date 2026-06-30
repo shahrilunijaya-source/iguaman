@@ -33,6 +33,7 @@ class User extends Authenticatable
 
     public const TYPE_STAFF = 'staff';
     public const TYPE_LAWYER = 'lawyer';
+    public const TYPE_AWAM = 'awam';
 
     protected function casts(): array
     {
@@ -55,6 +56,11 @@ class User extends Authenticatable
         return $this->user_type === self::TYPE_LAWYER;
     }
 
+    public function isAwam(): bool
+    {
+        return $this->user_type === self::TYPE_AWAM;
+    }
+
     /** Staff roles that share the internal (rekod-kes + panel admin) area. */
     public const STAFF_ROLES = [
         self::ROLE_ADMIN, self::ROLE_PENGARAH, self::ROLE_KOORDINATOR, self::ROLE_PEGAWAI,
@@ -67,6 +73,10 @@ class User extends Authenticatable
     /** Landing route name for this user's area. */
     public function homeRoute(): string
     {
+        if ($this->isAwam()) {
+            return 'awam.dashboard';
+        }
+
         return $this->isLawyer() ? 'peguam.dashboard' : 'system.utama';
     }
 

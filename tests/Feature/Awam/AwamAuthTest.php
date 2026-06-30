@@ -25,4 +25,12 @@ class AwamAuthTest extends TestCase
         $role = \Spatie\Permission\Models\Role::findByName('awam');
         $this->assertTrue($role->hasPermissionTo('awam.portal'));
     }
+
+    public function test_awam_user_home_route_is_awam_dashboard(): void
+    {
+        $user = \App\Models\User::factory()->create(['user_type' => 'awam']);
+
+        $this->assertTrue($user->isAwam());
+        $this->assertSame('awam.dashboard', $user->homeRoute());
+    }
 }
