@@ -18,9 +18,35 @@ class Cawangan extends Model
 
     protected $casts = [
         'status_aktif' => 'boolean',
+        'masa_buka' => 'string',
+        'masa_tutup' => 'string',
+        'tempoh_slot_minit' => 'integer',
     ];
 
     public const JENIS = ['JBG', 'JKM', 'PENJARA'];
+
+    /**
+     * Weekend day-numbers (ISO: 1=Mon … 7=Sun) for this branch, parsed from the
+     * hari_minggu comma string. Returns null when unset so callers can fall back
+     * to SlotAvailabilityService::WEEKEND (Sat/Sun).
+     *
+     * @return list<int>|null
+     */
+    public function weekendDays(): ?array
+    {
+        if ($this->hari_minggu === null || trim($this->hari_minggu) === '') {
+            return null;
+        }
+
+        $days = collect(explode(',', $this->hari_minggu))
+            ->map(fn ($d) => (int) trim($d))
+            ->filter(fn ($d) => $d >= 1 && $d <= 7)
+            ->unique()
+            ->values()
+            ->all();
+
+        return $days ?: null;
+    }
 
     public function bilik(): HasMany
     {

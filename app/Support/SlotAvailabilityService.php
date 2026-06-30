@@ -7,7 +7,6 @@ use App\Models\PenutupanOperasi;
 use App\Models\RefCuti;
 use App\Models\SlotTemuJanji;
 use Carbon\Carbon;
-use Carbon\CarbonInterface;
 
 /**
  * Slot-availability engine (parity map §4 — the hard core of Batch 10).
@@ -32,11 +31,13 @@ class SlotAvailabilityService
     public const MIN_WORKING_DAYS = 4;
 
     /**
-     * Weekend day-of-week set (ISO: 1=Mon … 7=Sun). Default Sat+Sun.
-     * Branch-specific weekend config (some states Fri/Sat) is a later slice;
-     * pass $weekend to override per call until then.
+     * Default weekend day-of-week set in ISO numbering (1=Mon … 7=Sun): Sat(6)+Sun(7).
+     * NOTE: ISO literals, NOT Carbon's SATURDAY/SUNDAY constants — Carbon::SUNDAY is 0,
+     * which never matches dayOfWeekIso (Sunday = 7) and would leave Sundays bookable.
+     * Per-branch override comes from cawangan.hari_minggu (Cawangan::weekendDays());
+     * an explicit $weekend argument still wins over both.
      */
-    public const WEEKEND = [CarbonInterface::SATURDAY, CarbonInterface::SUNDAY];
+    public const WEEKEND = [6, 7];
 
     /**
      * Available booking dates for a branch, from $from (default = today) over $days.
@@ -51,7 +52,7 @@ class SlotAvailabilityService
         }
 
         $today = ($today ? $today->copy() : Carbon::today())->startOfDay();
-        $weekend = $weekend ?? self::WEEKEND;
+        $weekend = $weekend ?? $cawangan->weekendDays() ?? self::WEEKEND;
 
         $earliest = $this->earliestBookable($today, $weekend);
         $start = $from ? Carbon::parse($from)->startOfDay() : $today->copy();
@@ -101,7 +102,7 @@ class SlotAvailabilityService
         }
 
         $today = ($today ? $today->copy() : Carbon::today())->startOfDay();
-        $weekend = $weekend ?? self::WEEKEND;
+        $weekend = $weekend ?? $cawangan->weekendDays() ?? self::WEEKEND;
         $day = Carbon::parse($date)->startOfDay();
 
         // The date must clear every date-level rule before times are offered.

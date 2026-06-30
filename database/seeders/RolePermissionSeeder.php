@@ -55,6 +55,8 @@ class RolePermissionSeeder extends Seeder
         'selenggara.cuti'        => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.cawangan'    => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'slot.view'              => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
+        // Slot generation + operational-closure management (calendar/slot admin) — batch 10.
+        'slot.manage'            => ['pembantu_tadbir', 'pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.kategori_kn' => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.jawatan'     => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'urus.pengguna'          => ['pengarah', 'koordinator', 'ketua_pengarah'],
