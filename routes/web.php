@@ -48,6 +48,7 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SlotController;
 use App\Http\Controllers\SlotGenerationController;
 use App\Http\Controllers\StatistikController;
+use App\Http\Controllers\StatistikPemindahanController;
 use App\Http\Controllers\StatistikPengantaraanController;
 use App\Http\Controllers\StatistikSlaController;
 use App\Http\Controllers\SystemAuthController;
@@ -202,6 +203,12 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
 
     // KPI dashboard (yearly SLA prestasi)
     Route::get('/kpi', [KpiController::class, 'index'])->name('kpi.index');
+
+    // W8/W4 — branch-transfer statistics (KPI Pemindahan). Reads pemindahan_cawangan only.
+    Route::middleware('permission:kpi.view')->group(function () {
+        Route::get('/kpi/pemindahan/kes', [StatistikPemindahanController::class, 'kes'])->name('kpi.pindah.kes');
+        Route::get('/kpi/pemindahan/khidmat-nasihat', [StatistikPemindahanController::class, 'khidmatNasihat'])->name('kpi.pindah.kn');
+    });
 
     // Laporan (litigasi + pengantaraan) — table + CSV/PDF export
     $laporanTypes = ['permohonan', 'pendaftaran-fail', 'status-fail', 'penugasan-pengantaraan', 'pencapaian-pengantaraan', 'tidak-dirujuk'];

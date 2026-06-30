@@ -62,9 +62,14 @@
         <a href="{{ route('statistik-pengantaraan.index') }}" class="ws-side-top {{ request()->routeIs('statistik-pengantaraan.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">⇆</span><span class="ws-side-label">Statistik Pengantaraan</span>
         </a>
-        <a href="{{ route('kpi.index') }}" class="ws-side-top {{ request()->routeIs('kpi.*') ? 'is-active' : '' }}">
+        <a href="{{ route('kpi.index') }}" class="ws-side-top {{ request()->routeIs('kpi.index') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">◔</span><span class="ws-side-label">KPI</span>
         </a>
+        @can('kpi.view')
+            <a href="{{ route('kpi.pindah.kes') }}" class="ws-side-top {{ request()->routeIs('kpi.pindah.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">⇄</span><span class="ws-side-label">Statistik Pemindahan</span>
+            </a>
+        @endcan
         <a href="{{ route('laporan.index') }}" class="ws-side-top {{ request()->routeIs('laporan.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▭</span><span class="ws-side-label">Laporan</span>
         </a>

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\StatistikPemindahanController;
 use App\Models\Cawangan;
 use App\Models\Form;
 use App\Models\KhidmatNasihat;
@@ -250,5 +251,33 @@ class Phase3TransferTest extends TestCase
         $this->svc()->terima($pindah, $this->makeUser('pengarah', self::NAMA_B));
 
         $this->assertSame(PemindahanCawangan::STATUS_DITERIMA, $pindah->fresh()->status);
+    }
+
+    public function test_w8_stat_matrix_counts_in_out_and_excludes_rejected(): void
+    {
+        $actorA = $this->makeUser('pengarah', self::NAMA_A);
+        $actorB = $this->makeUser('pengarah', self::NAMA_B);
+
+        // Two A->B case transfers: one accepted, one rejected (rejected must NOT count).
+        $accepted = $this->kesAt(self::NAMA_A);
+        $p1 = $this->svc()->pindahKes($accepted, $this->cawB->id, 'a', $actorA);
+        $this->svc()->terima($p1, $actorB);
+
+        $rejected = $this->kesAt(self::NAMA_A);
+        $p2 = $this->svc()->pindahKes($rejected, $this->cawB->id, 'b', $actorA);
+        $this->svc()->tolak($p2, 'tak setuju', $actorB);
+
+        $svc = new StatistikPemindahanController;
+        $compute = (new \ReflectionClass($svc))->getMethod('compute');
+        $compute->setAccessible(true);
+        [$matrix, $totals] = $compute->invoke($svc, PemindahanCawangan::JENIS_KES, (int) now()->year);
+
+        // Exactly one live movement: A keluar 1, B masuk 1; rejected excluded.
+        $this->assertSame(1, $totals['keluar']);
+        $this->assertSame(1, $totals['masuk']);
+        $month = (int) now()->month;
+        $this->assertSame(1, $matrix[self::NAMA_A][$month]['keluar']);
+        $this->assertSame(0, $matrix[self::NAMA_A][$month]['masuk']);
+        $this->assertSame(1, $matrix[self::NAMA_B][$month]['masuk']);
     }
 }
