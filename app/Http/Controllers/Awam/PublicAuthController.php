@@ -36,6 +36,7 @@ class PublicAuthController extends Controller
             'user_type' => User::TYPE_AWAM,
             'role' => User::TYPE_AWAM,
             'is_active' => true,
+            'must_change_password' => false, // citizens never carry the legacy forced-change flag
         ]);
         $user->assignRole(User::TYPE_AWAM);
 

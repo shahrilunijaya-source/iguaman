@@ -125,7 +125,7 @@ class PermohonanController extends Controller
             'nama'        => $file->getClientOriginalName(),
             'file_name'   => basename($path),
             'file_path'   => $path,
-            'file_type'   => strtolower($file->getClientOriginalExtension() ?: $file->extension()),
+            'file_type'   => strtolower($file->extension()), // MIME-derived, not client-controlled
             'id_khidmat'  => $khidmat->id,
             'uploaded_at' => now(),
         ]);

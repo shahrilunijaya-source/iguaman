@@ -89,7 +89,7 @@ Route::middleware(['auth', 'permission:awam.portal'])->prefix('awam')->group(fun
     Route::get('/permohonan/{khidmat}', [PermohonanController::class, 'show'])->name('awam.permohonan.show')->whereNumber('khidmat');
     Route::post('/permohonan/{khidmat}/batal', [PermohonanController::class, 'cancel'])->name('awam.permohonan.batal')->whereNumber('khidmat');
     Route::post('/permohonan/{khidmat}/jadual-semula', [PermohonanController::class, 'reschedule'])->name('awam.permohonan.reschedule')->whereNumber('khidmat');
-    Route::post('/permohonan/{khidmat}/lampiran', [PermohonanController::class, 'upload'])->name('awam.lampiran.store')->whereNumber('khidmat');
+    Route::post('/permohonan/{khidmat}/lampiran', [PermohonanController::class, 'upload'])->middleware('throttle:20,1')->name('awam.lampiran.store')->whereNumber('khidmat');
     Route::get('/permohonan/{khidmat}/lampiran/{fail}/muat-turun', [PermohonanController::class, 'download'])->name('awam.lampiran.download')->whereNumber('khidmat')->whereNumber('fail');
 });
 

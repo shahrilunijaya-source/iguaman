@@ -14,7 +14,7 @@ class AwamRescheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tarikh_temu_janji' => ['required', 'date'],
+            'tarikh_temu_janji' => ['required', 'date', 'after:today'],
             'masa_temu_janji' => ['required', 'date_format:H:i'],
         ];
     }

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ForcePasswordChange
 {
-    private array $allowed = ['password.change', 'password.change.update', 'system.logout'];
+    private array $allowed = ['password.change', 'password.change.update', 'system.logout', 'awam.logout'];
 
     public function handle(Request $request, Closure $next): Response
     {
