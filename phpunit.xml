@@ -26,7 +26,7 @@
         <env name="DB_CONNECTION" value="mysql"/>
         <!-- DB name intentionally NOT set here: per-worktree .env drives it
              (main=iguaman_2in1, worktrees=iguaman_2in1_b9/_b10). Tests read
-             env('DB_DATABASE','iguaman_2in1') in setUp. -->
+             env('DB_DATABASE','iguaman_2in1') in setUp and force mysql. -->
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

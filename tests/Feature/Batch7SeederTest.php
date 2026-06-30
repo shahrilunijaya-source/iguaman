@@ -32,13 +32,13 @@ class Batch7SeederTest extends TestCase
 
     public function test_all_roles_and_permissions_exist(): void
     {
-        // 8 roles, 37 permissions. Original RBAC seeder shipped 32; EPIC G cuti CRUD
-        // added a 33rd ('selenggara.cuti'); Batch 8 foundations/masters added 3 more
-        // ('selenggara.cawangan', 'selenggara.kategori_kn', 'selenggara.jawatan');
-        // Batch 10 slot/calendar added a 37th ('slot.view').
+        // 8 roles, 39 permissions. Original RBAC seeder shipped 32; EPIC G cuti CRUD
+        // added a 33rd ('selenggara.cuti'); Batch 8 masters added 3 ('selenggara.cawangan',
+        // '.kategori_kn', '.jawatan'); Batch 10 slot/calendar added 'slot.view'; Batch 9
+        // Khidmat Nasihat added 'khidmat.view' + 'khidmat.manage'.
         // RolePermissionSeeder::MATRIX is the source of truth.
         $this->assertSame(8, Role::count());
-        $this->assertSame(37, Permission::count());
+        $this->assertSame(39, Permission::count());
     }
 
     public function test_admin_can_everything_via_gate_before(): void

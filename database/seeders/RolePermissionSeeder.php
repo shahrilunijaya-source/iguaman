@@ -40,6 +40,9 @@ class RolePermissionSeeder extends Seeder
         'agihan.pengarah'        => ['pengarah'],
         'agihan.ppuu'            => ['ppuu', 'koordinator'],
         'agihan.kp'              => ['ketua_pengarah'],
+        // Khidmat Nasihat (legal-advisory applications) — batch 9. Citizen/PELANGGAN access deferred to batch 13.
+        'khidmat.view'           => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
+        'khidmat.manage'         => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
         'peguam_panel.manage'    => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'peguam.permohonan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'peguam.semak'           => ['ppuu', 'pembantu_tadbir', 'koordinator'],
