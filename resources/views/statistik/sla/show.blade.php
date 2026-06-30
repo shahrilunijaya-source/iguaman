@@ -19,6 +19,7 @@
             </p>
         </div>
         <div class="tap-head__cluster">
+            <a href="{{ route('statistik-sla.senarai', ['key' => $key] + $qs) }}" class="tap-head__btn">⬇ Senarai TIDAK CAPAI (CSV)</a>
             <a href="{{ route('statistik-sla.pdf', ['key' => $key] + $qs) }}" class="tap-head__btn">⬇ PDF</a>
         </div>
     </div>
@@ -39,6 +40,6 @@
     </form>
 
     <div class="tap-card" style="overflow-x:auto;">
-        @include('statistik.sla._table', ['data' => $data, 'branches' => $branches, 'kategori' => $kategori])
+        @include('statistik.sla._table', ['data' => $data, 'branches' => $branches, 'kategori' => $kategori, 'drill' => true, 'key' => $key, 'qs' => $qs])
     </div>
 @endsection

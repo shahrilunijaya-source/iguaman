@@ -4,6 +4,9 @@
     Expects: $data (SlaMatrix::compute result), $branches, $kategori.
 --}}
 @php
+    $drill = $drill ?? false; // browser-only: linkify TIDAK counts to the breach senarai CSV. Off in PDF.
+    $key = $key ?? null;
+    $qs = $qs ?? [];
     $pct = fn ($cell) => $cell['peratus'] === null ? '–' : number_format($cell['peratus'], 2).'%';
     $th = 'border:1px solid #cdd6d4; padding:5px 7px; font-size:10px; text-align:center; background:#003D3A; color:#fff; font-weight:700;';
     $td = 'border:1px solid #d7dedc; padding:4px 7px; font-size:10px; text-align:center;';
@@ -36,7 +39,11 @@
                 @foreach ($kategori as $k)
                     @php $c = $data['matrix'][$b][$k]; @endphp
                     <td style="{{ $td }}">{{ $c['capai'] }}</td>
-                    <td style="{{ $td }}">{{ $c['tidak'] }}</td>
+                    @if ($drill && $key && $c['tidak'] > 0)
+                        <td style="{{ $td }}"><a href="{{ route('statistik-sla.senarai', ['key' => $key, 'cawangan' => $b, 'kategori' => $k] + $qs) }}" style="color:#b3261e; font-weight:700; text-decoration:none;" title="Muat turun senarai kes TIDAK CAPAI">{{ $c['tidak'] }}</a></td>
+                    @else
+                        <td style="{{ $td }}">{{ $c['tidak'] }}</td>
+                    @endif
                     <td style="{{ $td }}">{{ $pct($c) }}</td>
                 @endforeach
             </tr>

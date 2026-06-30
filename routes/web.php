@@ -141,6 +141,8 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/statistik-sla', [StatistikSlaController::class, 'index'])->name('statistik-sla.index');
         Route::get('/statistik-sla/{key}', [StatistikSlaController::class, 'show'])->name('statistik-sla.show');
         Route::get('/statistik-sla/{key}/pdf', [StatistikSlaController::class, 'pdf'])->name('statistik-sla.pdf');
+        // Breach "senarai" CSV — the TIDAK CAPAI drill-down behind each matrix (P1, legacy export_senarai_*).
+        Route::get('/statistik-sla/{key}/senarai', [StatistikSlaController::class, 'senarai'])->name('statistik-sla.senarai');
 
         // Kesilapan Penjanaan Nombor Fail — per-month count matrix + wide CSV (P1).
         Route::get('/statistik-kesilapan', [KesilapanController::class, 'index'])->name('statistik-kesilapan.index');
