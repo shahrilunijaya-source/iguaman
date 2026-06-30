@@ -64,6 +64,8 @@ class AgihanSpineController extends Controller
             'ppuuList' => User::whereIn('role', [User::ROLE_PPUU, User::ROLE_KOORDINATOR, User::ROLE_PEMBANTU_TADBIR, User::ROLE_ADMIN])
                 ->where('is_active', true)->orderBy('name')->get(['id', 'name', 'role']),
             'peguamList' => PeguamPanel::orderBy('nama_peguam')->get(['id', 'nama_peguam', 'kp_peguam', 'nama_firma']),
+            // W11: workload-ranked shortlist (least-loaded first) for the PPUU pick.
+            'peguamShortlist' => app(\App\Support\PeguamShortlistService::class)->shortlist(['limit' => 15]),
             'sejarahPpuu' => SejarahPpuu::where('id_kes', $kes->id)->orderByDesc('id')->get(),
             'sejarahPp' => SejarahPeguamPanel::where('id_kes', $kes->id)->orderByDesc('id')->get(),
         ]);
