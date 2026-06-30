@@ -15,59 +15,64 @@ use Spatie\Permission\PermissionRegistrar;
  */
 class RolePermissionSeeder extends Seeder
 {
-    /** All roles (must match User::ROLE_* + lawyer). */
+    /** All roles (must match User::ROLE_* + lawyer + awam citizen). */
     private const ROLES = [
         'admin', 'pengarah', 'koordinator', 'pegawai',
         'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'peguam',
+        // Citizen self-service role (mirrors migration 130002 so a fresh db:seed
+        // reproduces the /awam portal gate without depending on the migration alone).
+        'awam',
     ];
 
     /** permission => roles granted (admin omitted — Gate::before). */
     private const MATRIX = [
-        'system.view'            => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'kes.view'               => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'kes.create'             => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'kes.update'             => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'kes.keputusan'          => ['pengarah', 'ketua_pengarah'],
-        'pengantaraan.manage'    => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'mahkamah.manage'        => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'lampiran.manage'        => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'cetakan.view'           => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'oyd.manage'             => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'kpi.view'               => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'laporan.view'           => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'statistik.view'         => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'agihan.manage'          => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'agihan.pengarah'        => ['pengarah'],
-        'agihan.ppuu'            => ['ppuu', 'koordinator'],
-        'agihan.kp'              => ['ketua_pengarah'],
+        'system.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'kes.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'kes.create' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'kes.update' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'kes.keputusan' => ['pengarah', 'ketua_pengarah'],
+        'pengantaraan.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'mahkamah.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'lampiran.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'cetakan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'oyd.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'kpi.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'laporan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'statistik.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'agihan.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'agihan.pengarah' => ['pengarah'],
+        'agihan.ppuu' => ['ppuu', 'koordinator'],
+        'agihan.kp' => ['ketua_pengarah'],
         // Khidmat Nasihat (legal-advisory applications) — batch 9. Citizen/PELANGGAN access deferred to batch 13.
-        'khidmat.view'           => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
-        'khidmat.manage'         => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
-        'peguam_panel.manage'    => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'khidmat.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
+        'khidmat.manage' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
+        'peguam_panel.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'peguam.permohonan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'peguam.semak'           => ['ppuu', 'pembantu_tadbir', 'koordinator'],
-        'peguam.sokong'          => ['pengarah'],
-        'peguam.keputusan'       => ['ketua_pengarah'],
-        'selenggara.pegawai'     => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'selenggara.poster'      => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'selenggara.ref_kes'     => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'selenggara.mahkamah_ref'=> ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'selenggara.cuti'        => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'selenggara.cawangan'    => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'slot.view'              => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
+        'peguam.semak' => ['ppuu', 'pembantu_tadbir', 'koordinator'],
+        'peguam.sokong' => ['pengarah'],
+        'peguam.keputusan' => ['ketua_pengarah'],
+        'selenggara.pegawai' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'selenggara.poster' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'selenggara.ref_kes' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'selenggara.mahkamah_ref' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'selenggara.cuti' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'selenggara.cawangan' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'slot.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
         // Slot generation + operational-closure management (calendar/slot admin) — batch 10.
-        'slot.manage'            => ['pembantu_tadbir', 'pengarah', 'koordinator', 'ketua_pengarah'],
+        'slot.manage' => ['pembantu_tadbir', 'pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.kategori_kn' => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'selenggara.jawatan'     => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'urus.pengguna'          => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'audit.view'             => ['pengarah', 'koordinator', 'ketua_pengarah'],
-        'menu.selenggara'        => ['pengarah', 'koordinator'],
-        'cawangan.view-all'      => ['koordinator', 'ketua_pengarah'],
-        'urus.peranan'           => ['admin'],
-        'lawyer.area'            => ['peguam'],
+        'selenggara.jawatan' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'urus.pengguna' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'audit.view' => ['pengarah', 'koordinator', 'ketua_pengarah'],
+        'menu.selenggara' => ['pengarah', 'koordinator'],
+        'cawangan.view-all' => ['koordinator', 'ketua_pengarah'],
+        'urus.peranan' => ['admin'],
+        'lawyer.area' => ['peguam'],
+        // Citizen portal gate (the /awam group + shared slot lookup) — batch 13.
+        'awam.portal' => ['awam'],
         // Khidmat Nasihat officer processing (assign PKN + pengesahan janji temu) — batch 11.
         // Granted to roles that process advisory cases; NOT pembantu_tadbir (clerk).
-        'khidmat.proses'         => ['koordinator', 'pegawai', 'pengarah'],
+        'khidmat.proses' => ['koordinator', 'pegawai', 'pengarah'],
     ];
 
     public function run(): void

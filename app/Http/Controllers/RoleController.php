@@ -16,6 +16,9 @@ class RoleController extends Controller
     public const SYSTEM_ROLES = [
         'admin', 'pengarah', 'koordinator', 'pegawai',
         'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'peguam',
+        // Citizen role: seeded by migration 130002 + RolePermissionSeeder; gates the
+        // whole /awam portal (permission:awam.portal). Protect it from rename/delete.
+        'awam',
     ];
 
     public function index(): View
@@ -28,7 +31,7 @@ class RoleController extends Controller
 
     public function create(): View
     {
-        return view('peranan.form', ['role' => new Role(), 'mode' => 'create']);
+        return view('peranan.form', ['role' => new Role, 'mode' => 'create']);
     }
 
     public function store(Request $request): RedirectResponse

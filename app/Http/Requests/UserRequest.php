@@ -12,7 +12,20 @@ class UserRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // route gated to admin role
+        $actor = $this->user();
+        if (! $actor) {
+            return false;
+        }
+
+        // A non-admin must not touch an existing admin account at all (password,
+        // role, lock). The /pengguna route is held by pengarah/koordinator/
+        // ketua_pengarah too — not admin-only — so guard the target here.
+        $target = $this->route('user');
+        if ($target instanceof User && $target->hasRole(User::ROLE_ADMIN) && ! $actor->hasRole(User::ROLE_ADMIN)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function rules(): array
@@ -25,8 +38,30 @@ class UserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($ignoreId)],
             'username' => ['nullable', 'string', 'max:255'],
-            'role' => ['required', Rule::in(array_keys(UserController::ROLES))],
-            'user_type' => ['required', Rule::in([User::TYPE_STAFF, User::TYPE_LAWYER])],
+            'role' => [
+                'required',
+                Rule::in(array_keys(UserController::ROLES)),
+                // Privilege-escalation guard: only an admin may mint/keep an admin.
+                function (string $attr, mixed $value, callable $fail): void {
+                    if ($value === User::ROLE_ADMIN && ! $this->user()?->hasRole(User::ROLE_ADMIN)) {
+                        $fail('Hanya Admin boleh menetapkan peranan Admin.');
+                    }
+                },
+            ],
+            'user_type' => [
+                'required',
+                Rule::in([User::TYPE_STAFF, User::TYPE_LAWYER]),
+                // Role <-> user_type must agree: peguam is the only lawyer-type role.
+                function (string $attr, mixed $value, callable $fail): void {
+                    $role = $this->input('role');
+                    if ($role === User::ROLE_PEGUAM && $value !== User::TYPE_LAWYER) {
+                        $fail('Peranan Peguam mesti berjenis pengguna Peguam.');
+                    }
+                    if ($role !== User::ROLE_PEGUAM && $value === User::TYPE_LAWYER) {
+                        $fail('Hanya peranan Peguam boleh berjenis pengguna Peguam.');
+                    }
+                },
+            ],
             'cawangan' => ['nullable', 'string', 'max:50'],
             'nokp' => ['nullable', 'string', 'max:20'],
             'password' => [$isCreate ? 'required' : 'nullable', 'string', 'min:8'],
