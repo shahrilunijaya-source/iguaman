@@ -15,7 +15,7 @@
         <tr><td style="padding:4px 12px 4px 0; color:#555;">Sebab</td><td style="padding:4px 0;">{{ $pindah->sebab ?: '—' }}</td></tr>
     </table>
 
-    <p>Sila log masuk ke sistem iGuaman 2in1 untuk menerima atau menolak pemindahan ini.</p>
+    <p>Sila log masuk ke Sistem Integrated Bantuan Guaman untuk menerima atau menolak pemindahan ini.</p>
 
     <p style="color:#003D3A;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
 </body>

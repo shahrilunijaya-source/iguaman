@@ -2,7 +2,7 @@
 <html lang="ms">
 <head>
     <meta charset="utf-8">
-    <title>@yield('tajuk', 'Cetakan') · iGuaman 2in1</title>
+    <title>@yield('tajuk', 'Cetakan') · Sistem Integrated Bantuan Guaman</title>
     <style>
         @page { margin: 120px 42px 70px; }
         * { box-sizing: border-box; }
@@ -49,7 +49,7 @@
         <table class="kepala">
             <tr>
                 <td>
-                    <div class="brand"><span class="teal">i</span>Guaman <span style="font-weight:400; color:#666; font-size:12px;">2in1</span></div>
+                    <div class="brand"><span class="teal">i</span>Guaman <span style="font-weight:400; color:#666; font-size:12px;">Sistem Integrated Bantuan Guaman</span></div>
                     <div class="org">Jabatan Bantuan Guaman · Bantuan Guaman</div>
                 </td>
                 <td class="right">

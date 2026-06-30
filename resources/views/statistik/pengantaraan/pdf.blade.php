@@ -18,7 +18,7 @@
 </head>
 <body>
     <header>
-        <div class="brand"><span class="teal">i</span>Guaman 2in1</div>
+        <div class="brand"><span class="teal">i</span>Guaman · Sistem Integrated Bantuan Guaman</div>
         <div class="sub">Jabatan Bantuan Guaman</div>
     </header>
     <footer>

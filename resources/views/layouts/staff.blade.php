@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'iGuaman 2in1') · iGuaman 2in1</title>
+    <title>@yield('title', 'Sistem Integrated Bantuan Guaman') · Sistem Integrated Bantuan Guaman</title>
     @vite(['resources/css/system.css'])
 </head>
 <body class="system">
@@ -13,7 +13,7 @@
     <header class="ws-topbar">
         <a href="{{ route('system.utama') }}" class="ws-topbar__brand"><span class="i">i</span>Guaman</a>
         <span class="ws-topbar__sep"></span>
-        <span class="ws-topbar__context">2in1 · Ruang Pegawai</span>
+        <span class="ws-topbar__context">iGuaman · Ruang Pegawai</span>
         <span class="ws-topbar__spacer"></span>
 
         <div class="ws-topbar__cluster">

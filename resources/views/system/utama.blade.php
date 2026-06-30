@@ -23,7 +23,7 @@
     <div class="dash-greet">
         <div>
             <h1 class="dash-greet__h1">Selamat datang, {{ auth()->user()->name }}.<span class="dot"></span></h1>
-            <p class="dash-greet__sub">Ruang kerja <strong>iGuaman 2in1</strong> — rekod kes &amp; panel peguam dalam satu sistem.</p>
+            <p class="dash-greet__sub">Ruang kerja <strong>Sistem Integrated Bantuan Guaman</strong> — khidmat nasihat, rekod kes, pengantaraan, mahkamah dan panel peguam dalam satu sistem bersepadu.</p>
         </div>
     </div>
 

@@ -42,7 +42,7 @@
         <p class="body"><strong>Sebab:</strong> {{ $sebab }}</p>
     @endif
     <p class="body muted">
-        Surat ini dijana secara automatik daripada Sistem iGuaman 2in1 dan sah tanpa tandatangan.
+        Surat ini dijana secara automatik daripada Sistem Integrated Bantuan Guaman dan sah tanpa tandatangan.
     </p>
 
     <table class="sign">

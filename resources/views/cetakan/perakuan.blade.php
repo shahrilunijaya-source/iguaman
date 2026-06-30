@@ -60,7 +60,7 @@
         @endif
     </p>
     <p class="body muted">
-        Surat ini dijana secara automatik daripada Sistem iGuaman 2in1 dan sah tanpa tandatangan.
+        Surat ini dijana secara automatik daripada Sistem Integrated Bantuan Guaman dan sah tanpa tandatangan.
     </p>
 
     <table class="sign">

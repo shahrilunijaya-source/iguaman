@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Set Semula Kata Laluan · iGuaman 2in1</title>
+    <title>Set Semula Kata Laluan · Sistem Integrated Bantuan Guaman</title>
     @vite(['resources/css/system.css'])
 </head>
 <body class="system">
@@ -12,7 +12,7 @@
     <div class="vb-left">
         <div class="vb-left__top">
             <div class="wm"><span class="i">i</span>Guaman<span class="dot"></span></div>
-            <div class="meta">2IN1 · PEMULIHAN AKAUN</div>
+            <div class="meta">INTEGRATED · PEMULIHAN AKAUN</div>
         </div>
         <div>
             <h2 class="vb-left__hero">
@@ -21,7 +21,7 @@
             </h2>
             <p class="vb-left__lede">Pilih kata laluan kukuh — minimum 8 aksara.</p>
         </div>
-        <div class="vb-left__foot"><span class="stamp">iGuaman · 2in1</span></div>
+        <div class="vb-left__foot"><span class="stamp">iGuaman · Sistem Integrated Bantuan Guaman</span></div>
     </div>
 
     <div class="vb-right">

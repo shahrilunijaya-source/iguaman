@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Daftar Peguam Panel · iGuaman 2in1</title>
+    <title>Daftar Peguam Panel · Sistem Integrated Bantuan Guaman</title>
     @vite(['resources/css/system.css'])
     <style>
         /* ---- Page chrome (consistent with split-screen login) ---- */
@@ -101,7 +101,7 @@
 <div class="daftar-topbar">
     <div class="daftar-topbar__left">
         <div class="wm"><span class="i">i</span>Guaman<span class="dot"></span></div>
-        <span class="daftar-topbar__meta">2IN1 · PERMOHONAN PEGUAM PANEL</span>
+        <span class="daftar-topbar__meta">INTEGRATED · PERMOHONAN PEGUAM PANEL</span>
     </div>
     <a href="{{ route('system.login') }}" class="daftar-topbar__back">← Log masuk</a>
 </div>
