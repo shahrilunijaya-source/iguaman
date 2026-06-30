@@ -10,6 +10,7 @@ use App\Http\Controllers\CutiController;
 use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\KemaskiniBidangController;
 use App\Http\Controllers\KesController;
+use App\Http\Controllers\KesilapanController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
@@ -140,6 +141,10 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/statistik-sla', [StatistikSlaController::class, 'index'])->name('statistik-sla.index');
         Route::get('/statistik-sla/{key}', [StatistikSlaController::class, 'show'])->name('statistik-sla.show');
         Route::get('/statistik-sla/{key}/pdf', [StatistikSlaController::class, 'pdf'])->name('statistik-sla.pdf');
+
+        // Kesilapan Penjanaan Nombor Fail — per-month count matrix + wide CSV (P1).
+        Route::get('/statistik-kesilapan', [KesilapanController::class, 'index'])->name('statistik-kesilapan.index');
+        Route::get('/statistik-kesilapan/csv', [KesilapanController::class, 'csv'])->name('statistik-kesilapan.csv');
     });
 
     // Selenggara (maintenance) + Pegawai JBG registry + Audit log — gated per-resource permission

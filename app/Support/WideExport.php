@@ -84,6 +84,64 @@ class WideExport
         return array_map(fn ($c) => $c[0], self::columns($type));
     }
 
+    /**
+     * Kesilapan Penjanaan Nombor Fail export columns (legacy
+     * export_kesilapan_nombor_fail.php — 36 cols + BIL). Reuses the shared
+     * cell formatters; adds the alasan_kesilapan_no_fail column.
+     */
+    public static function kesilapanColumns(): array
+    {
+        return [
+            ['CAWANGAN', fn ($r) => self::na($r->cawangan)],
+            ['NO. FAIL JBG', fn ($r) => self::na($r->no_fail)],
+            ['TARIKH KHIDMAT NASIHAT', fn ($r) => self::na($r->tarikh_khidmat_nasihat)],
+            ['TARIKH PENERIMAAN PERMOHONAN BANTUAN GUAMAN', fn ($r) => self::date($r->tarikh_permohonan)],
+            ['BULAN PENERIMAAN BORANG 1', fn ($r) => self::month($r->tarikh_permohonan)],
+            ['TAHUN PENERIMAAN BORANG 1', fn ($r) => self::year($r->tarikh_permohonan)],
+            ['NAMA ORANG YANG DIBANTU', fn ($r) => self::na($r->nama)],
+            ['NO. KAD PENGENALAN', fn ($r) => self::nokp($r->nokp)],
+            ['UMUR', fn ($r) => self::na($r->umur)],
+            ['JANTINA', fn ($r) => self::na($r->jantina)],
+            ['KAUM', fn ($r) => self::na($r->bangsa)],
+            ['ETNIK/ SUKU KAUM', fn ($r) => self::na($r->etnik)],
+            ['AGAMA', fn ($r) => self::na($r->agama)],
+            ['AGAMA (LAIN-LAIN)', fn ($r) => self::na($r->agamaLain)],
+            ['STATUS OKU', fn ($r) => self::na($r->oku)],
+            ['KATEGORI BIDANG KUASA', fn ($r) => self::na($r->kategori_kes2)],
+            ['KELULUSAN MENTERI', fn ($r) => self::na($r->kelulusan)],
+            ['KEPUTUSAN MENTERI', fn ($r) => self::na($r->keputusan_menteri)],
+            ['KEPUTUSAN PERMOHONAN', fn ($r) => self::na($r->keputusan)],
+            ['TARIKH PERAKUAN BANTUAN GUAMAN (BORANG II)', fn ($r) => self::date($r->tarikh_perakuan)],
+            ['BULAN BORANG II', fn ($r) => self::month($r->tarikh_perakuan)],
+            ['TAHUN BORANG II', fn ($r) => self::year($r->tarikh_perakuan)],
+            ['TARIKH PEMBERITAHUAN PEMBERIAN PERAKUAN BANTUAN GUAMAN (BORANG IV)', fn ($r) => self::date($r->tarikh_pemberitahuan_perakuan)],
+            ['BULAN BORANG IV', fn ($r) => self::month($r->tarikh_pemberitahuan_perakuan)],
+            ['TAHUN BORANG IV', fn ($r) => self::year($r->tarikh_pemberitahuan_perakuan)],
+            ['PEGAWAI PENYIASAT', fn ($r) => self::na($r->nama_pegawai_penyiasat)],
+            ['JENIS ORANG YANG DIBANTU', fn ($r) => self::na($r->jenis_oyd)],
+            ['KATEGORI KES', fn ($r) => self::na($r->kategori_kes)],
+            ['JENIS KATEGORI', fn ($r) => self::na($r->jenis_kategori)],
+            ['JENIS JENAYAH DALAM BIDANG KUASA', fn ($r) => self::na($r->jenis_jenayah)],
+            ['JENIS KES', fn ($r) => self::na($r->jenis_kes_text ?? null)],
+            ['JENIS KES (JIKA LAIN-LAIN)', fn ($r) => self::na($r->jenis_kes_lain ?? null)],
+            ['TARIKH TUTUP FAIL', fn ($r) => self::date($r->tarikh_tutup_fail)],
+            ['SEBAB TUTUP FAIL', fn ($r) => self::na($r->sebab_tutup_fail)],
+            ['ALASAN KESILAPAN NOMBOR FAIL', fn ($r) => self::na($r->alasan_kesilapan_no_fail)],
+            ['STATUS', fn ($r) => self::na($r->status)],
+        ];
+    }
+
+    /** Resolve a kesilapan row (BIL injected) to an ordered value list. */
+    public static function kesilapanRow(object $r, int $bil): array
+    {
+        $out = [$bil];
+        foreach (self::kesilapanColumns() as $c) {
+            $out[] = $c[1]($r);
+        }
+
+        return $out;
+    }
+
     /** Resolve one data row (BIL injected by caller) to an ordered value list. */
     public static function row(object $r, string $type, int $bil): array
     {

@@ -79,6 +79,9 @@ The original complaint (the JBG profile screenshot). Legacy `daftar.php` = 7-ste
 
 ## P1 — High (73 features)
 Grouped; see matrix for per-row evidence.
+
+**In progress (rk-statistik / rk-export):** ✅ month filter on SLA matrices (`08210a2`) · ✅ Kesilapan Penjanaan Nombor Fail report — per-branch×month count matrix (`KesilapanMatrix`) + 36-col wide CSV (`WideExport::kesilapanColumns`) at `/statistik-kesilapan`, the inverse of EPIC F's universal Kesilapan exclusion. Remaining in group: drill-down cells, per-statistik PDF buttons, the 11 SLA-breach/reference/inverse-filter CSVs.
+
 - pp-agihan: re-assignment list/history, role detail views, multi-row Laporan Kes Mahkamah + closure reasons, draft endorsement
 - pp-selenggara: combined officer list (last_login+status), temp-password flows, full read-only dossier (YBGK/ADR/sijil/eVendor), public registration full form
 - pp-profil-daftar: pengkhususan add/drop director review, status-code maps (4=DIBATALKAN, 5=SEMAKAN KP)
