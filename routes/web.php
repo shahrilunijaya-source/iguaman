@@ -22,6 +22,7 @@ use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LaporanPenuhController;
+use App\Http\Controllers\MaklumBalasController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
@@ -424,3 +425,15 @@ Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(f
     Route::post('/pengkhususan/tambah', [PeguamController::class, 'pengkhususanAdd'])->name('peguam.pengkhususan.add');
     Route::post('/pengkhususan/{row}/gugur', [PeguamController::class, 'pengkhususanDrop'])->name('peguam.pengkhususan.drop')->whereNumber('row');
 });
+
+// ==== BATCH 12 — MAKLUM BALAS (public) ====
+// Post-appointment satisfaction feedback. PUBLIC (no auth) per locked decision —
+// citizen opens the link after a SELESAI advisory appointment; no login. One
+// feedback per KN (DB-unique + app guard). Throttled (6/min) for light anti-abuse.
+Route::get('/maklum-balas/{no_permohonan}', [MaklumBalasController::class, 'show'])
+    ->middleware('throttle:6,1')
+    ->name('maklum-balas.show');
+Route::post('/maklum-balas/{no_permohonan}', [MaklumBalasController::class, 'store'])
+    ->middleware('throttle:6,1')
+    ->name('maklum-balas.store');
+// ==== END BATCH 12 ====

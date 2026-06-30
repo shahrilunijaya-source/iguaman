@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Khidmat Nasihat — legal-advisory application (batch 9 core record).
@@ -117,5 +118,14 @@ class KhidmatNasihat extends Model
     public function temuJanji(): BelongsTo
     {
         return $this->belongsTo(TemuJanji::class, 'id_temu_janji');
+    }
+
+    /**
+     * Post-appointment satisfaction feedback (batch 12). One per KN, captured
+     * through the public maklum-balas link once status_kn is SELESAI.
+     */
+    public function maklumBalas(): HasOne
+    {
+        return $this->hasOne(MaklumBalas::class, 'khidmat_nasihat_id');
     }
 }
