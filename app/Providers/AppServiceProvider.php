@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\KhidmatNasihat;
 use App\Models\User;
+use App\Policies\KhidmatNasihatPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,5 +27,7 @@ class AppServiceProvider extends ServiceProvider
         // "admin is in every role: list" behavior and future-proofs new modules).
         // Return null (not false) so non-admins fall through to normal gate checks.
         Gate::before(fn (User $user) => $user->hasRole('admin') ? true : null);
+
+        Gate::policy(KhidmatNasihat::class, KhidmatNasihatPolicy::class);
     }
 }

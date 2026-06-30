@@ -43,6 +43,8 @@ use App\Http\Controllers\PermohonanPeguamController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\StatistikPengantaraanController;
 use App\Http\Controllers\StatistikSlaController;
+use App\Http\Controllers\Awam\PermohonanController;
+use App\Http\Controllers\Awam\PortalController;
 use App\Http\Controllers\Awam\PublicAuthController;
 use App\Http\Controllers\SystemAuthController;
 use App\Http\Controllers\SystemController;
@@ -76,10 +78,21 @@ Route::middleware('guest')->group(function () {
 Route::post('/awam/logout', [PublicAuthController::class, 'logout'])
     ->middleware('auth')->name('awam.logout');
 
-// Placeholder citizen dashboard route — registers the `awam.dashboard` name so the
-// awam layout + post-auth redirects resolve. REPLACED by PortalController@index in Batch 13 Slice B.
-Route::middleware(['auth', 'permission:awam.portal'])->group(function () {
-    Route::get('/awam', fn () => view('layouts.awam'))->name('awam.dashboard');
+// Citizen portal (Batch 13): dashboard + KN application wizard.
+Route::middleware(['auth', 'permission:awam.portal'])->prefix('awam')->group(function () {
+    Route::get('/', [PortalController::class, 'index'])->name('awam.dashboard');
+
+    Route::get('/permohonan/saringan', [PermohonanController::class, 'saringan'])->name('awam.permohonan.saringan');
+    Route::post('/permohonan/saringan', [PermohonanController::class, 'saringanSemak'])->name('awam.permohonan.saringan.semak');
+    Route::get('/permohonan/baharu', [PermohonanController::class, 'create'])->name('awam.permohonan.create');
+    Route::post('/permohonan', [PermohonanController::class, 'store'])->middleware('throttle:10,1')->name('awam.permohonan.store');
+    Route::get('/permohonan/{khidmat}', [PermohonanController::class, 'show'])->name('awam.permohonan.show')->whereNumber('khidmat');
+});
+
+// Slot availability JSON — shared: staff (slot.view) AND citizens (awam.portal) need these.
+Route::middleware(['auth', 'permission:slot.view|awam.portal'])->group(function () {
+    Route::get('/slot/tarikh', [SlotController::class, 'availability'])->name('slot.tarikh');
+    Route::get('/slot/masa', [SlotController::class, 'times'])->name('slot.masa');
 });
 
 // ---- Guest: login + password reset (plain Laravel, no Filament) ----
@@ -253,13 +266,8 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::delete('/cawangan/{cawangan}/bilik/{bilik}', [CawanganController::class, 'destroyBilik'])->name('cawangan.bilik.destroy')->whereNumber('cawangan')->whereNumber('bilik');
     });
 
-    // Janji Temu slot availability (read-only JSON) — consumed by the Batch 9 appointment
-    // wizard step 3 (date/time picker) at integration. SlotAvailabilityService is the core.
-    // TODO(batch-9): also accept permission:khidmat.manage once that permission exists.
-    Route::middleware('permission:slot.view')->group(function () {
-        Route::get('/slot/tarikh', [SlotController::class, 'availability'])->name('slot.tarikh');
-        Route::get('/slot/masa', [SlotController::class, 'times'])->name('slot.masa');
-    });
+    // Janji Temu slot availability (read-only JSON) — slot.tarikh/slot.masa moved to
+    // a shared group below (staff + citizen both need these; see permission:slot.view|awam.portal).
 
     // Kalendar / Slot admin (batch 10 slice 2): slot auto-generation + per-branch session
     // config ("penetapan sesi") + operational closures. Gated permission:slot.manage.
