@@ -59,6 +59,10 @@
         .btn-orange { background: var(--orange); color: #fff; }
         .btn-orange:hover { background: #E85A28; transform: translateY(-1px); }
         .btn-lg { padding: 14px 26px; font-size: 15px; border-radius: 12px; }
+        .logout-form { display: inline-flex; align-items: center; margin: 0; }
+        .logout-btn { border: none; cursor: pointer; font-family: inherit; }
+        .f-logout { background: none; border: none; padding: 0; color: inherit; font: inherit; cursor: pointer; }
+        .f-logout:hover { text-decoration: underline; }
 
         /* ---- hero ---- */
         .hero { position: relative; overflow: hidden; padding: 84px 0 8px; }
@@ -160,11 +164,19 @@
                 <span>Khidmat Nasihat<span class="dot" style="margin-left:6px;"></span></span>
             </a>
             <nav class="topnav">
-                <a href="{{ route('awam.login') }}" class="navlink">Khidmat Nasihat</a>
-                <a href="{{ route('awam.daftar') }}" class="navlink">Daftar</a>
-                <a href="{{ route('peguam.daftar') }}" class="navlink">Peguam Panel</a>
-                <a href="{{ route('system.login') }}" class="navlink">Kakitangan</a>
-                <a href="{{ route('awam.login') }}" class="btn btn-primary">Log Masuk</a>
+                @auth
+                    <a href="{{ route(auth()->user()->homeRoute()) }}" class="navlink">Ruang Saya</a>
+                    <form method="POST" action="{{ route('awam.logout') }}" class="logout-form">
+                        @csrf
+                        <button type="submit" class="btn btn-primary logout-btn">Log Keluar</button>
+                    </form>
+                @else
+                    <a href="{{ route('awam.login') }}" class="navlink">Khidmat Nasihat</a>
+                    <a href="{{ route('awam.daftar') }}" class="navlink">Daftar</a>
+                    <a href="{{ route('peguam.daftar') }}" class="navlink">Peguam Panel</a>
+                    <a href="{{ route('system.login') }}" class="navlink">Kakitangan</a>
+                    <a href="{{ route('awam.login') }}" class="btn btn-primary">Log Masuk</a>
+                @endauth
             </nav>
         </div>
     </header>
@@ -179,12 +191,18 @@
                     cawangan JBG berhampiran — semuanya dalam talian, tanpa kos.
                 </p>
                 <div class="hero-cta">
-                    <a href="{{ route('awam.login') }}" class="btn btn-primary btn-lg">Mohon Khidmat Nasihat &rarr;</a>
-                    <a href="{{ route('awam.daftar') }}" class="btn btn-ghost btn-lg">Daftar Akaun</a>
+                    @auth
+                        <a href="{{ route(auth()->user()->homeRoute()) }}" class="btn btn-primary btn-lg">Pergi ke Ruang Saya &rarr;</a>
+                    @else
+                        <a href="{{ route('awam.login') }}" class="btn btn-primary btn-lg">Mohon Khidmat Nasihat &rarr;</a>
+                        <a href="{{ route('awam.daftar') }}" class="btn btn-ghost btn-lg">Daftar Akaun</a>
+                    @endauth
                 </div>
-                <p class="hero-note">
-                    Sudah ada akaun? <a href="{{ route('awam.login') }}">Log masuk dengan No. Kad Pengenalan</a>.
-                </p>
+                @guest
+                    <p class="hero-note">
+                        Sudah ada akaun? <a href="{{ route('awam.login') }}">Log masuk dengan No. Kad Pengenalan</a>.
+                    </p>
+                @endguest
 
                 <div class="stats">
                     <div class="stat"><b>Percuma</b><span>Tiada bayaran untuk nasihat awal</span></div>
@@ -264,10 +282,18 @@
                 <span>Khidmat Nasihat</span>
             </a>
             <nav class="f-links">
-                <a href="{{ route('awam.login') }}">Log Masuk</a>
-                <a href="{{ route('awam.daftar') }}">Daftar</a>
-                <a href="{{ route('peguam.daftar') }}">Peguam Panel</a>
-                <a href="{{ route('system.login') }}">Kakitangan</a>
+                @auth
+                    <a href="{{ route(auth()->user()->homeRoute()) }}">Ruang Saya</a>
+                    <form method="POST" action="{{ route('awam.logout') }}" class="logout-form">
+                        @csrf
+                        <button type="submit" class="f-logout">Log Keluar</button>
+                    </form>
+                @else
+                    <a href="{{ route('awam.login') }}">Log Masuk</a>
+                    <a href="{{ route('awam.daftar') }}">Daftar</a>
+                    <a href="{{ route('peguam.daftar') }}">Peguam Panel</a>
+                    <a href="{{ route('system.login') }}">Kakitangan</a>
+                @endauth
             </nav>
             <p>&copy; {{ now()->year }} Jabatan Bantuan Guaman Malaysia</p>
             <div class="f-docs">
