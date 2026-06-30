@@ -12,6 +12,7 @@ use App\Models\MahkamahSyariah;
 use App\Models\PemindahanCawangan;
 use App\Models\RefKategoriKn;
 use App\Models\RefNegeri;
+use App\Models\UploadedFile;
 use App\Support\Audit;
 use App\Support\KhidmatBayaran;
 use App\Support\KhidmatNasihatService;
@@ -211,6 +212,8 @@ class KhidmatNasihatController extends Controller
         Audit::log('khidmat_nasihat', $khidmat->id, Audit::INSERT,
             "Permohonan Khidmat Nasihat baharu: {$khidmat->no_permohonan} ({$khidmat->nama_mangsa})");
 
+        $this->storeWaiver($khidmat, $request);
+
         return redirect()->route('khidmat.show', $khidmat)
             ->with('status', $request->isHantar() ? 'Permohonan dihantar.' : 'Draf disimpan.');
     }
@@ -249,6 +252,8 @@ class KhidmatNasihatController extends Controller
 
         Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE,
             "Kemaskini Khidmat Nasihat: {$khidmat->no_permohonan} ({$khidmat->nama_mangsa})");
+
+        $this->storeWaiver($khidmat, $request);
 
         return redirect()->route('khidmat.show', $khidmat)
             ->with('status', $request->isHantar() ? 'Permohonan dihantar.' : 'Draf dikemaskini.');
@@ -338,6 +343,8 @@ class KhidmatNasihatController extends Controller
         return [
             'jenis_permohonan' => $isWakil ? 'SEBAGAI_WAKIL' : 'DIRI_SENDIRI',
             'jenis_wakil' => $jenisWakil,
+            // W1 — explicit source tag for KPI/reporting (prison/clinic vs public).
+            'applicant_source' => KhidmatNasihat::deriveSource($isWakil ? 'SEBAGAI_WAKIL' : 'DIRI_SENDIRI', $jenisWakil),
             'no_pengenalan_wakil' => $isWakil ? ($v['no_pengenalan_wakil'] ?? null) : null,
             'jawatan_wakil' => $isWakil ? ($v['jawatan_wakil'] ?? null) : null,
             'nama_diwakili' => $isWakil ? ($v['nama_diwakili'] ?? null) : null,
@@ -374,5 +381,34 @@ class KhidmatNasihatController extends Controller
             'cipta_oleh' => $request->user()->name,
             'kemaskini_oleh' => $request->user()->name,
         ];
+    }
+
+    /**
+     * W1 — store the optional fee-waiver proof when the application is fee-exempt.
+     * Reuses the W6 repository disk (mirrors LampiranController) and links the file
+     * to the KN via uploaded_files.id_khidmat + khidmat_nasihat.id_lampiran_waiver.
+     */
+    private function storeWaiver(KhidmatNasihat $khidmat, KhidmatNasihatRequest $request): void
+    {
+        if (! $request->boolean('is_percuma') || ! $request->hasFile('lampiran_waiver')) {
+            return;
+        }
+
+        $file = $request->file('lampiran_waiver');
+        $path = $file->store('lampiran', config('filesystems.lampiran_disk', 'repositori'));
+
+        $row = UploadedFile::create([
+            'nama' => 'Bukti Pengecualian Bayaran — '.$khidmat->no_permohonan,
+            'file_name' => basename($path),
+            'file_path' => $path,
+            'file_type' => strtolower($file->getClientOriginalExtension() ?: $file->extension()),
+            'id_khidmat' => $khidmat->id,
+            'uploaded_at' => now(),
+        ]);
+
+        $khidmat->update(['id_lampiran_waiver' => $row->id]);
+
+        Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE,
+            "Bukti pengecualian bayaran dimuat naik: {$row->nama}");
     }
 }

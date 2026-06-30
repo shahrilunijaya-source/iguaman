@@ -24,11 +24,13 @@ class RolePermissionSeeder extends Seeder
         'awam',
         // Pembelaan Awam approver tier (W10) — criminal panel-registration approvals.
         'pengarah_pembelaan_awam', 'ketua_pembelaan_awam',
+        // Prison/clinic officer (W1) — files Khidmat Nasihat on behalf of inmates.
+        'prison_officer',
     ];
 
     /** permission => roles granted (admin omitted — Gate::before). */
     private const MATRIX = [
-        'system.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
+        'system.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam', 'prison_officer'],
         'kes.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'kes.create' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'kes.update' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
@@ -51,8 +53,8 @@ class RolePermissionSeeder extends Seeder
         // W5: assign a completed KN to an external panel lawyer (grab pool / direct assign).
         'agihan.luar' => ['pengarah', 'koordinator', 'ppuu'],
         // Khidmat Nasihat (legal-advisory applications) — batch 9. Citizen/PELANGGAN access deferred to batch 13.
-        'khidmat.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
-        'khidmat.manage' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
+        'khidmat.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'prison_officer'],
+        'khidmat.manage' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'prison_officer'],
         'peguam_panel.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'peguam.permohonan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
         'peguam.semak' => ['ppuu', 'pembantu_tadbir', 'koordinator'],

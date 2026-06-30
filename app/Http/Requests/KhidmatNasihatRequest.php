@@ -93,6 +93,8 @@ class KhidmatNasihatRequest extends FormRequest
             // ---- Bayaran ----
             'jumlah_pendapatan' => ['nullable', 'numeric', 'min:0'],
             'is_percuma' => ['nullable', 'boolean'],
+            // W1 — optional fee-waiver proof (only stored when is_percuma is set).
+            'lampiran_waiver' => ['nullable', 'file', 'max:25600', 'mimes:pdf,jpg,jpeg,png,doc,docx'],
 
             // ---- Slot janji temu (required only on final submit) ----
             'tarikh_temu_janji' => [$hantar ? 'required' : 'nullable', 'date'],

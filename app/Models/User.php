@@ -30,6 +30,7 @@ class User extends Authenticatable
     public const ROLE_PPUU = 'ppuu';                       // Penolong Pegawai Undang-Undang — case distributor
     public const ROLE_PEMBANTU_TADBIR = 'pembantu_tadbir'; // clerk
     public const ROLE_KETUA_PENGARAH = 'ketua_pengarah';   // Director General — final approval
+    public const ROLE_PRISON_OFFICER = 'prison_officer';   // W1 — files KN on behalf of inmates (prison/clinic source)
 
     public const TYPE_STAFF = 'staff';
     public const TYPE_LAWYER = 'lawyer';

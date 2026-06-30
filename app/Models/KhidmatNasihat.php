@@ -54,6 +54,32 @@ class KhidmatNasihat extends Model
     /** SEBAGAI_WAKIL representative contexts (slice 3). */
     public const JENIS_WAKIL = ['PENJARA', 'JKM', 'MAHKAMAH'];
 
+    // ---- W1: explicit applicant source (derived from jenis_permohonan + jenis_wakil) ----
+    public const SOURCE_PUBLIC = 'PUBLIC';   // DIRI_SENDIRI walk-in
+
+    public const SOURCE_PRISON = 'PRISON';   // SEBAGAI_WAKIL + PENJARA
+
+    public const SOURCE_CLINIC = 'CLINIC';   // SEBAGAI_WAKIL + JKM (welfare/clinic referral)
+
+    public const SOURCE_COURT = 'COURT';     // SEBAGAI_WAKIL + MAHKAMAH
+
+    public const APPLICANT_SOURCE = [self::SOURCE_PUBLIC, self::SOURCE_PRISON, self::SOURCE_CLINIC, self::SOURCE_COURT];
+
+    /** Derive the explicit applicant_source tag from the intake type + wakil context. */
+    public static function deriveSource(?string $jenisPermohonan, ?string $jenisWakil): string
+    {
+        if ($jenisPermohonan !== 'SEBAGAI_WAKIL') {
+            return self::SOURCE_PUBLIC;
+        }
+
+        return match ($jenisWakil) {
+            'PENJARA' => self::SOURCE_PRISON,
+            'JKM' => self::SOURCE_CLINIC,
+            'MAHKAMAH' => self::SOURCE_COURT,
+            default => self::SOURCE_PUBLIC,
+        };
+    }
+
     /** Eligibility-screening jenis (FE selectedJenisKhidmat). */
     public const SARINGAN_SIVIL_SYARIAH = 'SIVIL_SYARIAH';
 
@@ -122,6 +148,12 @@ class KhidmatNasihat extends Model
     public function peguamPanel(): BelongsTo
     {
         return $this->belongsTo(PeguamPanel::class, 'id_peguam_panel');
+    }
+
+    /** Fee-waiver proof (W1). Set when is_percuma + a waiver document is uploaded at intake. */
+    public function lampiranWaiver(): BelongsTo
+    {
+        return $this->belongsTo(UploadedFile::class, 'id_lampiran_waiver');
     }
 
     public function kategori(): BelongsTo
