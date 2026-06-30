@@ -38,8 +38,16 @@ return Application::configure(basePath: dirname(__DIR__))
             }
             $user = $request->user();
 
-            return $user
-                ? redirect()->route($user->homeRoute())
-                : redirect()->route('system.login');
+            if (! $user) {
+                return redirect()->route('system.login');
+            }
+
+            // Awam (citizen) users hitting a staff/lawyer route get an explicit 403.
+            // Staff/lawyer users hitting a gated area redirect to their own landing.
+            if ($user->isAwam()) {
+                abort(403, 'Akses tidak dibenarkan.');
+            }
+
+            return redirect()->route($user->homeRoute());
         });
     })->create();

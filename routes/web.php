@@ -41,6 +41,7 @@ use App\Http\Controllers\PermohonanPeguamController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\StatistikPengantaraanController;
 use App\Http\Controllers\StatistikSlaController;
+use App\Http\Controllers\Awam\PublicAuthController;
 use App\Http\Controllers\SystemAuthController;
 use App\Http\Controllers\SystemController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,26 @@ Route::get('/peguam/daftar', [PeguamDaftarController::class, 'create'])->name('p
 Route::post('/peguam/daftar', [PeguamDaftarController::class, 'store'])
     ->middleware('throttle:6,1')
     ->name('peguam.daftar.store');
+
+// ---- Public Awam portal: guest auth (IC login). Captcha + throttle + honeypot. ----
+Route::middleware('guest')->group(function () {
+    Route::get('/awam/daftar', [PublicAuthController::class, 'showDaftar'])->name('awam.daftar');
+    Route::post('/awam/daftar', [PublicAuthController::class, 'daftar'])
+        ->middleware('throttle:6,1')->name('awam.daftar.store');
+
+    Route::get('/awam/login', [PublicAuthController::class, 'showLogin'])->name('awam.login');
+    Route::post('/awam/login', [PublicAuthController::class, 'login'])
+        ->middleware('throttle:10,1')->name('awam.login.attempt');
+});
+
+Route::post('/awam/logout', [PublicAuthController::class, 'logout'])
+    ->middleware('auth')->name('awam.logout');
+
+// Placeholder citizen dashboard route — registers the `awam.dashboard` name so the
+// awam layout + post-auth redirects resolve. REPLACED by PortalController@index in Batch 13 Slice B.
+Route::middleware(['auth', 'permission:awam.portal'])->group(function () {
+    Route::get('/awam', fn () => view('layouts.awam'))->name('awam.dashboard');
+});
 
 // ---- Guest: login + password reset (plain Laravel, no Filament) ----
 Route::middleware('guest')->group(function () {
