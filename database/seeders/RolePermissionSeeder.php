@@ -35,6 +35,8 @@ class RolePermissionSeeder extends Seeder
         'kes.keputusan' => ['pengarah', 'ketua_pengarah'],
         'kes.pindah' => ['pengarah', 'koordinator', 'ppuu'],
         'pengantaraan.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        // W19: assign a mediator (pegawai pengantara) + open a MEDIASI claim-ledger row.
+        'pengantaraan.agih' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'mahkamah.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'lampiran.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'cetakan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],

@@ -176,6 +176,15 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::put('/kes/{kes}/pengantaraan', [PengantaraanController::class, 'update'])->name('pengantaraan.update')->whereNumber('kes');
     Route::post('/kes/{kes}/sidang', [PengantaraanController::class, 'tangguhSidang'])->name('sidang.tangguh')->whereNumber('kes');
 
+    // W18/W19 — Pengantaraan: standalone intake + worklist + mediator assignment.
+    Route::middleware('permission:pengantaraan.manage')->group(function () {
+        Route::get('/pengantaraan', [PengantaraanController::class, 'senarai'])->name('pengantaraan.senarai');
+        Route::get('/pengantaraan/baharu', [PengantaraanController::class, 'create'])->name('pengantaraan.create');
+        Route::post('/pengantaraan', [PengantaraanController::class, 'store'])->name('pengantaraan.store');
+    });
+    Route::post('/kes/{kes}/pengantaraan/agih', [PengantaraanController::class, 'agihPengantara'])
+        ->middleware('permission:pengantaraan.agih')->name('pengantaraan.agih')->whereNumber('kes');
+
     // Kes Mahkamah (court) — section edit + laporan_kes child records
     Route::get('/kes/{kes}/mahkamah', [MahkamahController::class, 'edit'])->name('mahkamah.edit')->whereNumber('kes');
     Route::put('/kes/{kes}/mahkamah', [MahkamahController::class, 'update'])->name('mahkamah.update')->whereNumber('kes');

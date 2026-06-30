@@ -53,6 +53,36 @@ class NoFailGenerator
         return sprintf('JBG.%s(%s)%d/%s', $code, $jenis, $seq, $date->format('mY'));
     }
 
+    /**
+     * W17 — a mediation's OWN file number, an independent PGT series that never
+     * reuses the litigation no_fail. Format mirrors generate() with a PGT prefix:
+     *   PGT.{STATE}({jenis_kes}){seq}/{MMYYYY}
+     * seq is the next running number within the (cawangan, jenis_kes) partition of
+     * rows that already carry a no_pengantaraan. The unique column is the backstop
+     * against the rare concurrent-generation race.
+     */
+    public function generatePengantaraan(Form $kes): string
+    {
+        $code = $this->stateCode($kes->cawangan);
+        $jenis = $kes->jenis_kes ?: '000';
+        $seq = $this->pengantaraanSequence($kes);
+
+        return sprintf('PGT.%s(%s)%d/%s', $code, $jenis, $seq, now()->format('mY'));
+    }
+
+    /** Next mediation sequence within the (cawangan, jenis_kes) partition. */
+    private function pengantaraanSequence(Form $kes): int
+    {
+        $n = Form::withoutGlobalScope(\App\Models\Scopes\CawanganScope::class)
+            ->whereNotNull('no_pengantaraan')
+            ->where('no_pengantaraan', '!=', '')
+            ->where('cawangan', $kes->cawangan)
+            ->where('jenis_kes', $kes->jenis_kes)
+            ->count();
+
+        return $n + 1;
+    }
+
     /** Map a branch name to its 3-letter code; fall back to the first 3 letters. */
     private function stateCode(?string $cawangan): string
     {

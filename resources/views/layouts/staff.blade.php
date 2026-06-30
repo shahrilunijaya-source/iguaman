@@ -129,6 +129,9 @@
                 <span class="ws-side-top__icon">⇄</span><span class="ws-side-label">Pemindahan Cawangan @if ($pindahMasuk > 0)<strong style="color:var(--brand,#00B8A9);">({{ $pindahMasuk }})</strong>@endif</span>
             </a>
         @endcanany
+        <a href="{{ route('pengantaraan.senarai') }}" class="ws-side-top {{ request()->routeIs('pengantaraan.senarai') || request()->routeIs('pengantaraan.create') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">⚖</span><span class="ws-side-label">Pengantaraan</span>
+        </a>
         <a href="{{ route('tarikdiri.senarai') }}" class="ws-side-top {{ request()->routeIs('tarikdiri.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">⤴</span><span class="ws-side-label">Permohonan Tarik Diri</span>
         </a>
