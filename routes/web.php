@@ -342,10 +342,19 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::post('/permohonan-peguam/{butiran}/keputusan', [PermohonanPeguamController::class, 'keputusan'])->name('permohonan-peguam.keputusan')->whereNumber('butiran');
     Route::post('/permohonan-peguam/{butiran}/tarik-diri', [PermohonanPeguamController::class, 'tarikDiri'])->name('permohonan-peguam.tarik')->whereNumber('butiran');
 
-    // ---- Khidmat Nasihat (legal-advisory applications) — batch 9 foundation slice (list/show; wizard create later) ----
+    // ---- Khidmat Nasihat (legal-advisory applications) — batch 9 ----
+    // Slice 1: list/show (read-only), gated khidmat.view.
     Route::middleware('permission:khidmat.view')->group(function () {
         Route::get('/khidmat-nasihat', [KhidmatNasihatController::class, 'index'])->name('khidmat.index');
         Route::get('/khidmat-nasihat/{khidmat}', [KhidmatNasihatController::class, 'show'])->name('khidmat.show')->whereNumber('khidmat');
+    });
+
+    // Slice 2: staff-driven create wizard + DRAF edit (slot booking + payment), gated khidmat.manage.
+    Route::middleware('permission:khidmat.manage')->group(function () {
+        Route::get('/khidmat-nasihat/baharu', [KhidmatNasihatController::class, 'create'])->name('khidmat.create');
+        Route::post('/khidmat-nasihat', [KhidmatNasihatController::class, 'store'])->name('khidmat.store');
+        Route::get('/khidmat-nasihat/{khidmat}/kemaskini', [KhidmatNasihatController::class, 'edit'])->name('khidmat.edit')->whereNumber('khidmat');
+        Route::put('/khidmat-nasihat/{khidmat}', [KhidmatNasihatController::class, 'update'])->name('khidmat.update')->whereNumber('khidmat');
     });
 });
 
