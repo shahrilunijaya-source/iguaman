@@ -75,7 +75,10 @@ class KhidmatProsesService
 
         return KhidmatNasihat::query()
             ->with(['cawangan', 'kategori', 'pegawaiKn', 'temuJanji'])
-            ->when($branchId !== null, fn ($w) => $w->where('cawangan_id', $branchId))
+            // W3 (D2 dual-branch): origin keeps a transferred KN via cawangan_asal_id.
+            ->when($branchId !== null, fn ($w) => $w->where(fn ($b) => $b
+                ->where('cawangan_id', $branchId)
+                ->orWhere('cawangan_asal_id', $branchId)))
             ->when($filters['status_kn'] ?? null, fn ($w, $v) => $w->where('status_kn', $v))
             ->when($filters['id_pegawai_kn'] ?? null, fn ($w, $v) => $w->where('id_pegawai_kn', $v))
             ->when($filters['id_kategori'] ?? null, fn ($w, $v) => $w->where('id_kategori', $v))
@@ -95,7 +98,9 @@ class KhidmatProsesService
     public function dashboardCounts(?int $branchId): array
     {
         $rows = KhidmatNasihat::query()
-            ->when($branchId !== null, fn ($w) => $w->where('cawangan_id', $branchId))
+            ->when($branchId !== null, fn ($w) => $w->where(fn ($b) => $b
+                ->where('cawangan_id', $branchId)
+                ->orWhere('cawangan_asal_id', $branchId)))
             ->whereIn('status_kn', self::DASHBOARD_STATUSES)
             ->selectRaw('status_kn, COUNT(*) as total')
             ->groupBy('status_kn')

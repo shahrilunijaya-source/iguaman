@@ -17,9 +17,10 @@ class Batch7SeederTest extends TestCase
     {
         parent::setUp();
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
-        DB::purge('mysql'); DB::reconnect('mysql');
+        DB::purge('mysql');
+        DB::reconnect('mysql');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
-        (new RolePermissionSeeder())->run();
+        (new RolePermissionSeeder)->run();
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
@@ -41,9 +42,10 @@ class Batch7SeederTest extends TestCase
         // permissions ('tuntutan.view/manage/semak/lulus/bayar').
         // RolePermissionSeeder::MATRIX is the source of truth.
         // W10 added 2 roles (pengarah_pembelaan_awam, ketua_pembelaan_awam) + 2 perms
-        // (peguam.sokong.jenayah, peguam.keputusan.jenayah).
+        // (peguam.sokong.jenayah, peguam.keputusan.jenayah). W5 added 'agihan.luar'
+        // (external-lawyer assignment). W7 added 'kes.pindah' (branch transfer).
         $this->assertSame(11, Role::count());  // 9 + 2 pembelaan-awam approver roles (W10)
-        $this->assertSame(49, Permission::count());  // 47 + 2 peguam.*.jenayah (W10)
+        $this->assertSame(51, Permission::count());  // 49 + agihan.luar (W5) + kes.pindah (W7)
     }
 
     public function test_admin_can_everything_via_gate_before(): void

@@ -21,22 +21,23 @@ use App\Http\Controllers\KesController;
 use App\Http\Controllers\KesilapanController;
 use App\Http\Controllers\KhidmatNasihatController;
 use App\Http\Controllers\KhidmatProsesController;
-use App\Http\Controllers\LejarTuntutanController;
-use App\Http\Controllers\Peguam\TuntutanController as PeguamTuntutanController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LaporanKhidmatNasihatController;
 use App\Http\Controllers\LaporanPenuhController;
+use App\Http\Controllers\LejarTuntutanController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
 use App\Http\Controllers\MaklumBalasController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\Peguam\TuntutanController as PeguamTuntutanController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\PeguamDaftarController;
 use App\Http\Controllers\PeguamPanelController;
+use App\Http\Controllers\PemindahanController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PenutupanOperasiController;
 use App\Http\Controllers\PermohonanPeguamController;
@@ -143,6 +144,21 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/kes/{kes}/edit', [KesController::class, 'edit'])->name('kes.edit')->whereNumber('kes');
     Route::put('/kes/{kes}', [KesController::class, 'update'])->name('kes.update')->whereNumber('kes');
     Route::get('/kes/{kes}', [KesController::class, 'show'])->name('kes.show')->whereNumber('kes');
+
+    // W7 — Pindah Cawangan (case branch transfer): initiate on the case. Needs kes.pindah.
+    Route::middleware('permission:kes.pindah')->group(function () {
+        Route::get('/kes/{kes}/pindah', [KesController::class, 'pindahForm'])->name('kes.pindah-borang')->whereNumber('kes');
+        Route::post('/kes/{kes}/pindah', [KesController::class, 'pindah'])->name('kes.pindah')->whereNumber('kes');
+    });
+
+    // W7/W3 — shared accept/reject inbox for BOTH case (kes.pindah) and KN (khidmat.manage)
+    // transfers, so either population can reach it; per-row capability + destination branch
+    // are enforced in TransferCawanganService::canActOn.
+    Route::middleware('permission:kes.pindah|khidmat.manage')->group(function () {
+        Route::get('/pemindahan', [PemindahanController::class, 'index'])->name('pemindahan.index');
+        Route::post('/pemindahan/{pindah}/terima', [PemindahanController::class, 'terima'])->name('pemindahan.terima')->whereNumber('pindah');
+        Route::post('/pemindahan/{pindah}/tolak', [PemindahanController::class, 'tolak'])->name('pemindahan.tolak')->whereNumber('pindah');
+    });
 
     // Keputusan Pengarah (peringkat 2 approve/reject) + Tutup Fail (peringkat 7) — gated in controller
     Route::post('/kes/{kes}/lulus', [KeputusanController::class, 'lulus'])->name('kes.lulus')->whereNumber('kes');
@@ -445,6 +461,10 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/khidmat-nasihat', [KhidmatNasihatController::class, 'store'])->name('khidmat.store');
         Route::get('/khidmat-nasihat/{khidmat}/kemaskini', [KhidmatNasihatController::class, 'edit'])->name('khidmat.edit')->whereNumber('khidmat');
         Route::put('/khidmat-nasihat/{khidmat}', [KhidmatNasihatController::class, 'update'])->name('khidmat.update')->whereNumber('khidmat');
+
+        // W3 — Pindah Cawangan (KN branch transfer). Service guards origin-branch + status.
+        Route::get('/khidmat-nasihat/{khidmat}/pindah', [KhidmatNasihatController::class, 'pindahForm'])->name('khidmat.pindah-borang')->whereNumber('khidmat');
+        Route::post('/khidmat-nasihat/{khidmat}/pindah', [KhidmatNasihatController::class, 'pindah'])->name('khidmat.pindah')->whereNumber('khidmat');
     });
 
     // ==== BATCH 10 SLICE 3 (kalendar): Cuti Negeri CRUD + Jadual Janji Temu ====

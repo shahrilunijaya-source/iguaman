@@ -65,6 +65,9 @@
             <a href="{{ route('pengantaraan.edit', $kes) }}" class="tap-head__btn">Pengantaraan</a>
             <a href="{{ route('mahkamah.edit', $kes) }}" class="tap-head__btn">Kes Mahkamah</a>
             <a href="{{ route('kes.edit', $kes) }}" class="tap-head__btn">✎ Kemaskini</a>
+            @can('kes.pindah')
+                <a href="{{ route('kes.pindah-borang', $kes) }}" class="tap-head__btn">⇄ Pindah Cawangan</a>
+            @endcan
             <a href="{{ route('cetak.ringkasan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Ringkasan</a>
             @if ($kes->nama_pegawai_yang_dapat_kes)
                 <a href="{{ route('cetak.penugasan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Surat Penugasan</a>

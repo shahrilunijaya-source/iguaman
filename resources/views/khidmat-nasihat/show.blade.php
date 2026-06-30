@@ -23,9 +23,14 @@
             <p class="tap-title__sub">No. Permohonan <strong>{{ $khidmat->no_permohonan ?: '—' }}</strong> · <span class="pill pill--received">{{ str_replace('_', ' ', $khidmat->status_kn) }}</span></p>
         </div>
         @can('khidmat.manage')
-            @if ($khidmat->status_kn === \App\Models\KhidmatNasihat::STATUS_DRAF)
-                <a href="{{ route('khidmat.edit', $khidmat) }}" class="tap-head__btn">Kemaskini Draf</a>
-            @endif
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                @if ($khidmat->status_kn === \App\Models\KhidmatNasihat::STATUS_DRAF)
+                    <a href="{{ route('khidmat.edit', $khidmat) }}" class="tap-head__btn">Kemaskini Draf</a>
+                @endif
+                @if (! in_array($khidmat->status_kn, [\App\Models\KhidmatNasihat::STATUS_DRAF, \App\Models\KhidmatNasihat::STATUS_BATAL], true))
+                    <a href="{{ route('khidmat.pindah-borang', $khidmat) }}" class="tap-head__btn">⇄ Pindah Cawangan</a>
+                @endif
+            </div>
         @endcan
     </div>
 

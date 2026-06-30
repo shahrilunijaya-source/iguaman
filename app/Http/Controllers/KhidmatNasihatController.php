@@ -4,20 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\KhidmatNasihatRequest;
 use App\Http\Requests\KhidmatSaringanRequest;
+use App\Http\Requests\PindahKnRequest;
 use App\Models\Cawangan;
 use App\Models\KhidmatNasihat;
 use App\Models\MahkamahSivil;
 use App\Models\MahkamahSyariah;
+use App\Models\PemindahanCawangan;
 use App\Models\RefKategoriKn;
 use App\Models\RefNegeri;
 use App\Support\Audit;
 use App\Support\KhidmatBayaran;
 use App\Support\KhidmatNasihatService;
 use App\Support\SlotAvailabilityService;
+use App\Support\TransferCawanganService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use RuntimeException;
 
 /**
  * Khidmat Nasihat (legal-advisory applications) — batch 9.
@@ -60,11 +64,48 @@ class KhidmatNasihatController extends Controller
         ]);
     }
 
-    public function show(KhidmatNasihat $khidmat): View
+    public function show(KhidmatNasihat $khidmat): View|RedirectResponse
     {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
         $khidmat->load(['pengguna', 'cawangan', 'kategori', 'subkategori', 'temuJanji']);
 
         return view('khidmat-nasihat.show', ['khidmat' => $khidmat]);
+    }
+
+    /** W3 — transfer form: pick a destination branch for this advisory. Gated permission:khidmat.manage. */
+    public function pindahForm(Request $request, KhidmatNasihat $khidmat): View|RedirectResponse
+    {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
+        $pending = PemindahanCawangan::where('jenis_rekod', PemindahanCawangan::JENIS_KN)
+            ->where('id_rekod', $khidmat->id)
+            ->where('status', PemindahanCawangan::STATUS_DIPINDAH)
+            ->first();
+
+        return view('khidmat-nasihat.pindah', [
+            'khidmat' => $khidmat,
+            'cawanganList' => Cawangan::orderBy('nama')->get(['id', 'nama']),
+            'pending' => $pending,
+        ]);
+    }
+
+    /** W3 — execute the KN transfer. The service moves cawangan_id + records the move. */
+    public function pindah(PindahKnRequest $request, KhidmatNasihat $khidmat): RedirectResponse
+    {
+        $data = $request->validated();
+
+        try {
+            app(TransferCawanganService::class)->pindahKn($khidmat, (int) $data['cawangan_tujuan_id'], $data['sebab'], $request->user());
+        } catch (RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('khidmat.show', $khidmat)->with('status', 'Khidmat Nasihat dipindahkan. Menunggu cawangan tujuan mengesahkan terima.');
     }
 
     /**
@@ -174,8 +215,12 @@ class KhidmatNasihatController extends Controller
             ->with('status', $request->isHantar() ? 'Permohonan dihantar.' : 'Draf disimpan.');
     }
 
-    public function edit(KhidmatNasihat $khidmat): View
+    public function edit(KhidmatNasihat $khidmat): View|RedirectResponse
     {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
         abort_unless($khidmat->status_kn === KhidmatNasihat::STATUS_DRAF, 403, 'Hanya draf boleh dikemaskini.');
 
         return view('khidmat-nasihat.form', $this->formData($khidmat, 'edit'));
@@ -183,6 +228,10 @@ class KhidmatNasihatController extends Controller
 
     public function update(KhidmatNasihatRequest $request, KhidmatNasihat $khidmat): RedirectResponse
     {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
         abort_unless($khidmat->status_kn === KhidmatNasihat::STATUS_DRAF, 403, 'Hanya draf boleh dikemaskini.');
 
         DB::transaction(function () use ($request, $khidmat) {
@@ -206,6 +255,30 @@ class KhidmatNasihatController extends Controller
     }
 
     // ---- Internals ----
+
+    /**
+     * Branch read/write guard for a route-model-bound KN. KhidmatNasihat has no
+     * CawanganScope, so a branch-pinned officer (without cawangan.view-all) could
+     * otherwise read/edit any branch's KN by id (cross-branch IDOR). Mirrors the
+     * D2 dual-branch rule: own-branch OR origin-of-a-transfer (cawangan_asal_id).
+     * Returns a redirect to bounce the request, or null when access is allowed.
+     */
+    private function assertBranchAccess(KhidmatNasihat $khidmat): ?RedirectResponse
+    {
+        $user = request()->user();
+
+        if ($user && $user->isStaff() && filled($user->cawangan) && ! $user->can('cawangan.view-all')) {
+            $branchId = Cawangan::where('nama', $user->cawangan)->value('id');
+
+            if ($branchId !== null
+                && (int) $khidmat->cawangan_id !== $branchId
+                && (int) $khidmat->cawangan_asal_id !== $branchId) {
+                return redirect()->route('khidmat.index')->with('error', 'Khidmat Nasihat ini bukan di bawah cawangan anda.');
+            }
+        }
+
+        return null;
+    }
 
     /** Shared view payload for create + edit. */
     private function formData(KhidmatNasihat $khidmat, string $mode): array
@@ -302,5 +375,4 @@ class KhidmatNasihatController extends Controller
             'kemaskini_oleh' => $request->user()->name,
         ];
     }
-
 }

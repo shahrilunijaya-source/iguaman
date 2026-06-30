@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PermohonanRequest;
+use App\Http\Requests\PindahKesRequest;
+use App\Models\Cawangan;
 use App\Models\Form;
+use App\Models\PemindahanCawangan;
 use App\Models\RefKes;
 use App\Support\NoFailGenerator;
+use App\Support\TransferCawanganService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use RuntimeException;
 
 // Kes (Case) backbone over the `forms` spine — list/filter/search, detail, and permohonan CRUD.
 // Foundation for the rekod-kes domain (pengantaraan/mahkamah build on this).
@@ -52,7 +57,7 @@ class KesController extends Controller
 
     public function create(): View
     {
-        return view('kes.form', $this->formData(new Form()) + ['mode' => 'create']);
+        return view('kes.form', $this->formData(new Form) + ['mode' => 'create']);
     }
 
     public function store(PermohonanRequest $request): RedirectResponse
@@ -132,6 +137,35 @@ class KesController extends Controller
         $kes->update($request->validated() + ['tarikh_KPKemaskini' => now()]);
 
         return redirect()->route('kes.show', $kes)->with('status', 'Kes dikemaskini.');
+    }
+
+    /** W7 — transfer form: pick a destination branch for this case. Gated permission:kes.pindah. */
+    public function pindahForm(Form $kes): View
+    {
+        $pending = PemindahanCawangan::where('jenis_rekod', PemindahanCawangan::JENIS_KES)
+            ->where('id_rekod', $kes->id)
+            ->where('status', PemindahanCawangan::STATUS_DIPINDAH)
+            ->first();
+
+        return view('kes.pindah', [
+            'kes' => $kes,
+            'cawanganList' => Cawangan::orderBy('nama')->get(['id', 'nama']),
+            'pending' => $pending,
+        ]);
+    }
+
+    /** W7 — execute the case transfer. The service moves the branch label + records the move. */
+    public function pindah(PindahKesRequest $request, Form $kes): RedirectResponse
+    {
+        $data = $request->validated();
+
+        try {
+            app(TransferCawanganService::class)->pindahKes($kes, (int) $data['cawangan_tujuan_id'], $data['sebab'], $request->user());
+        } catch (RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('kes.show', $kes)->with('status', 'Kes dipindahkan. Menunggu cawangan tujuan mengesahkan terima.');
     }
 
     private function formData(Form $kes): array

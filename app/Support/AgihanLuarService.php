@@ -208,7 +208,10 @@ class AgihanLuarService
         return KhidmatNasihat::query()
             ->with(['cawangan', 'kategori', 'peguamPanel'])
             ->where('status_kn', KhidmatNasihat::STATUS_SELESAI)
-            ->when($branchId !== null, fn ($w) => $w->where('cawangan_id', $branchId))
+            // W3 (D2 dual-branch): origin keeps a transferred KN via cawangan_asal_id.
+            ->when($branchId !== null, fn ($w) => $w->where(fn ($b) => $b
+                ->where('cawangan_id', $branchId)
+                ->orWhere('cawangan_asal_id', $branchId)))
             ->when($filters['status_agihan_pl'] ?? null, fn ($w, $v) => $w->where('status_agihan_pl', $v))
             ->when($filters['q'] ?? null, fn ($w, $v) => $w->where(fn ($q) => $q
                 ->where('no_permohonan', 'like', "%{$v}%")
