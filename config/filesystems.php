@@ -17,6 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Case-attachment (lampiran) disk — W6
+    |--------------------------------------------------------------------------
+    |
+    | Active disk new case attachments are written to. Defaults to the dedicated
+    | private `repositori` disk (a mounted document-repository server in prod,
+    | local storage otherwise). Downloads/deletes fall back to the legacy `local`
+    | disk so pre-existing attachments stay reachable after the switch.
+    |
+    */
+
+    'lampiran_disk' => env('LAMPIRAN_DISK', 'repositori'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
     |
@@ -34,6 +48,17 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/private'),
             'serve' => true,
+            'throw' => false,
+            'report' => false,
+        ],
+
+        // W6 — dedicated private repository for legal case documents (25 MB cap,
+        // 7-yr retention). Point REPOSITORI_ROOT at a mounted repository server in prod.
+        'repositori' => [
+            'driver' => 'local',
+            'root' => env('REPOSITORI_ROOT', storage_path('app/repositori')),
+            // Not HTTP-served — legal documents are auth-streamed via LampiranController only.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],

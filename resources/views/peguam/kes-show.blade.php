@@ -45,19 +45,38 @@
             </div>
         </div>
 
-        <div class="tap-card">
-            <div class="tap-card__eyebrow">Rekod Laporan Baharu</div>
-            <form method="POST" action="{{ route('peguam.laporan', $kes) }}" class="va-form">
-                @csrf
-                <input class="field__input" name="no_kes" placeholder="No. Kes Mahkamah">
-                <input class="field__input" name="pihak_pihak" placeholder="Pihak-pihak">
-                <input type="date" class="field__input" name="tarikh_sebutan">
-                <input class="field__input" name="isu" placeholder="Isu">
-                <input class="field__input" name="status_kes" placeholder="Status kes">
-                <textarea class="field__input" name="fakta_ringkas" rows="2" placeholder="Fakta ringkas"></textarea>
-                <textarea class="field__input" name="ringkasan" rows="2" placeholder="Ringkasan / perkembangan"></textarea>
-                <button type="submit" class="btn btn--primary btn--block">Rekod Laporan</button>
-            </form>
+        <div style="display:flex; flex-direction:column; gap:18px;">
+            <div class="tap-card">
+                <div class="tap-card__eyebrow">Rekod Laporan Baharu</div>
+                <form method="POST" action="{{ route('peguam.laporan', $kes) }}" class="va-form">
+                    @csrf
+                    <input class="field__input" name="no_kes" placeholder="No. Kes Mahkamah">
+                    <input class="field__input" name="pihak_pihak" placeholder="Pihak-pihak">
+                    <input type="date" class="field__input" name="tarikh_sebutan">
+                    <input class="field__input" name="isu" placeholder="Isu">
+                    <input class="field__input" name="status_kes" placeholder="Status kes">
+                    <textarea class="field__input" name="fakta_ringkas" rows="2" placeholder="Fakta ringkas"></textarea>
+                    <textarea class="field__input" name="ringkasan" rows="2" placeholder="Ringkasan / perkembangan"></textarea>
+                    <button type="submit" class="btn btn--primary btn--block">Rekod Laporan</button>
+                </form>
+            </div>
+
+            @if (\App\Support\StatusAgihan::normalise($kes->status_agihan) === \App\Support\StatusAgihan::DITERIMA && blank($kes->tarikh_tutup_fail))
+                <div class="tap-card" style="border-left:3px solid var(--success, #10b981);">
+                    <div class="tap-card__eyebrow">Tandakan Kes Selesai</div>
+                    <p class="dash-empty__sub" style="margin:0 0 10px;">Setelah ditandakan selesai, kes akan dihantar kepada JBG untuk pengesahan &amp; penutupan fail.</p>
+                    <form method="POST" action="{{ route('peguam.selesai', $kes) }}" class="va-form" onsubmit="return confirm('Tandakan kes ini selesai?')">
+                        @csrf
+                        <input class="field__input" name="sebab_selesai" placeholder="Sebab / cara selesai (pilihan)" maxlength="50">
+                        <button type="submit" class="btn btn--primary btn--block">✓ Tandakan Selesai</button>
+                    </form>
+                </div>
+            @elseif (\App\Support\StatusAgihan::normalise($kes->status_agihan) === \App\Support\StatusAgihan::PP_SELESAI)
+                <div class="tap-card" style="border-left:3px solid var(--success, #10b981);">
+                    <div class="tap-card__eyebrow">Status Penyelesaian</div>
+                    <p class="dash-empty__sub" style="margin:0;">Kes telah ditandakan selesai@if ($kes->tarikh_selesai) pada {{ optional($kes->tarikh_selesai)->format('d/m/Y') }}@endif. Menunggu pengesahan JBG.</p>
+                </div>
+            @endif
         </div>
     </div>
 @endsection

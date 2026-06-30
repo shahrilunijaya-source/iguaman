@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ExportLaporanJob;
 use App\Models\Form;
+use App\Support\LaporanRegistry;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -19,43 +23,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class LaporanController extends Controller
 {
-    /** Report registry: key => [label, group, filter, columns]. */
+    /** Report registry (shared with the queued bulk-export job). */
     private function reports(): array
     {
-        $base = ['no_fail' => 'No. Fail', 'nama' => 'Pemohon', 'nokp' => 'No. KP', 'kategori_kes' => 'Kategori', 'cawangan' => 'Cawangan'];
-
-        return [
-            'permohonan' => [
-                'label' => 'Laporan Permohonan', 'group' => 'Litigasi',
-                'filter' => null,
-                'columns' => $base + ['status' => 'Status', 'tarikh_permohonan' => 'Tarikh Mohon'],
-            ],
-            'pendaftaran-fail' => [
-                'label' => 'Pendaftaran Fail', 'group' => 'Litigasi',
-                'filter' => fn (Builder $q) => $q->whereNotNull('no_fail')->where('no_fail', '!=', ''),
-                'columns' => $base + ['nama_pegawai' => 'Pegawai', 'tarikh_daftar' => 'Tarikh Daftar'],
-            ],
-            'status-fail' => [
-                'label' => 'Status Fail', 'group' => 'Litigasi',
-                'filter' => null,
-                'columns' => $base + ['status' => 'Status', 'tarikh_tutup_fail' => 'Tarikh Tutup'],
-            ],
-            'penugasan-pengantaraan' => [
-                'label' => 'Penugasan Pengantaraan', 'group' => 'Pengantaraan',
-                'filter' => fn (Builder $q) => $q->whereNotNull('status_pengantaraan')->where('status_pengantaraan', '!=', ''),
-                'columns' => $base + ['nama_pegawai' => 'Pengantara', 'tarikh_penugasan' => 'Tarikh Penugasan', 'status_pengantaraan' => 'Status'],
-            ],
-            'pencapaian-pengantaraan' => [
-                'label' => 'Pencapaian Pengantaraan', 'group' => 'Pengantaraan',
-                'filter' => fn (Builder $q) => $q->whereNotNull('cara_selesai')->where('cara_selesai', '!=', ''),
-                'columns' => $base + ['cara_selesai' => 'Cara Selesai', 'tarikh_selesai' => 'Tarikh Selesai'],
-            ],
-            'tidak-dirujuk' => [
-                'label' => 'Tidak Dirujuk Pengantaraan', 'group' => 'Pengantaraan',
-                'filter' => fn (Builder $q) => $q->where(fn ($w) => $w->whereNull('status_pengantaraan')->orWhere('status_pengantaraan', '')),
-                'columns' => $base + ['status' => 'Status', 'tarikh_permohonan' => 'Tarikh Mohon'],
-            ],
-        ];
+        return LaporanRegistry::all();
     }
 
     public function index(): View
@@ -112,7 +83,7 @@ class LaporanController extends Controller
 
     private function report(string $type): array
     {
-        $report = $this->reports()[$type] ?? null;
+        $report = LaporanRegistry::find($type);
         abort_if($report === null, 404, 'Laporan tidak dijumpai.');
 
         return $report;
@@ -121,12 +92,39 @@ class LaporanController extends Controller
     /** Build the filtered query for a report (cawangan + date range on tarikh_permohonan). */
     private function query(array $report, Request $request): Builder
     {
-        return Form::query()
-            ->when($report['filter'], fn ($q) => tap($q, $report['filter']))
-            ->when($request->input('cawangan'), fn ($q, $v) => $q->where('cawangan', $v))
-            ->when($request->input('dari'), fn ($q, $v) => $q->whereDate('tarikh_permohonan', '>=', $v))
-            ->when($request->input('hingga'), fn ($q, $v) => $q->whereDate('tarikh_permohonan', '<=', $v))
-            ->orderByDesc('id');
+        return LaporanRegistry::buildQuery($report, $request->only(['cawangan', 'dari', 'hingga']));
+    }
+
+    /**
+     * W20 — queue a bulk .xlsx export off the request cycle. The user's effective branch is
+     * resolved here (the queue has no auth user) and passed to the job for isolation.
+     */
+    public function eksportPukal(Request $request, string $type): RedirectResponse
+    {
+        $this->report($type); // 404 on unknown type
+
+        $filters = $request->only(['cawangan', 'dari', 'hingga']);
+        $user = $request->user();
+
+        // Restrict to the user's own branch unless they may view all branches.
+        if ($user->isStaff() && filled($user->cawangan) && ! $user->can('cawangan.view-all')) {
+            $filters['cawangan'] = $user->cawangan;
+        }
+
+        $file = $type.'-'.now()->format('Ymd-His').'.xlsx';
+        ExportLaporanJob::dispatch($type, $filters, 'exports/'.$file);
+
+        return back()->with('status', 'Eksport pukal dalam baris gilir. Fail akan tersedia untuk dimuat turun sebentar lagi: '.$file)
+            ->with('eksport_fail', $file);
+    }
+
+    /** W20 — stream a finished bulk-export file (filename validated by the route pattern). */
+    public function muatTurunEksport(string $fail): StreamedResponse
+    {
+        $path = 'exports/'.$fail;
+        abort_unless(Storage::disk('local')->exists($path), 404, 'Fail belum siap atau tidak dijumpai.');
+
+        return Storage::disk('local')->download($path, $fail);
     }
 
     /** Render one cell, formatting Carbon dates. */

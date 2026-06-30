@@ -23,9 +23,14 @@
             <p class="tap-title__sub">No. Permohonan <strong>{{ $khidmat->no_permohonan ?: '—' }}</strong> · <span class="pill pill--received">{{ str_replace('_', ' ', $khidmat->status_kn) }}</span></p>
         </div>
         @can('khidmat.manage')
-            @if ($khidmat->status_kn === \App\Models\KhidmatNasihat::STATUS_DRAF)
-                <a href="{{ route('khidmat.edit', $khidmat) }}" class="tap-head__btn">Kemaskini Draf</a>
-            @endif
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                @if ($khidmat->status_kn === \App\Models\KhidmatNasihat::STATUS_DRAF)
+                    <a href="{{ route('khidmat.edit', $khidmat) }}" class="tap-head__btn">Kemaskini Draf</a>
+                @endif
+                @if (! in_array($khidmat->status_kn, [\App\Models\KhidmatNasihat::STATUS_DRAF, \App\Models\KhidmatNasihat::STATUS_BATAL], true))
+                    <a href="{{ route('khidmat.pindah-borang', $khidmat) }}" class="tap-head__btn">⇄ Pindah Cawangan</a>
+                @endif
+            </div>
         @endcan
     </div>
 
@@ -70,6 +75,27 @@
             <div class="tap-card__row"><div class="k">Status Bayaran</div><div class="v">{{ $khidmat->status_bayaran ? 'Sudah Bayar' : 'Belum Bayar' }}</div></div>
             <div class="tap-card__row"><div class="k">Percuma</div><div class="v">{{ $khidmat->is_percuma ? 'Ya' : 'Tidak' }}</div></div>
             <div class="tap-card__row"><div class="k">Perakuan</div><div class="v">{{ $khidmat->perakuan ? 'Ya' : 'Tidak' }}</div></div>
+
+            {{-- W2: manual iPayment — record a counter payment of the intake fee. --}}
+            @if (! $khidmat->is_percuma && (float) $khidmat->jumlah_bayaran > 0 && ! $khidmat->status_bayaran && auth()->user()?->can('khidmat.proses'))
+                <form method="POST" action="{{ route('khidmat.bayar', $khidmat) }}" enctype="multipart/form-data" style="margin-top:12px; display:grid; gap:8px;">
+                    @csrf
+                    <div class="tap-card__eyebrow">Rekod Bayaran (Kaunter)</div>
+                    <input type="text" name="nombor_resit" placeholder="No. Resit" required class="wiz-field__input">
+                    <input type="date" name="tarikh_resit" required class="wiz-field__input">
+                    <select name="kaedah_bayaran" required class="wiz-field__select">
+                        <option value="TUNAI">Tunai</option>
+                        <option value="KAD">Kad</option>
+                        <option value="BANK_IN">Bank-In</option>
+                        <option value="EWALLET">e-Wallet</option>
+                        <option value="IPAYMENT">iPayment</option>
+                    </select>
+                    <input type="text" name="rujukan_bayaran" placeholder="Rujukan (pilihan)" class="wiz-field__input">
+                    <input type="file" name="lampiran_resit" accept=".pdf,.jpg,.jpeg,.png" class="wiz-field__input">
+                    <button type="submit" class="btn btn--primary">Rekod Bayaran</button>
+                    @error('nombor_resit') <div style="color:var(--danger); font-size:12px;">{{ $message }}</div> @enderror
+                </form>
+            @endif
         </div>
 
         <div class="tap-card">

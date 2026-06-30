@@ -75,7 +75,10 @@ class KhidmatProsesService
 
         return KhidmatNasihat::query()
             ->with(['cawangan', 'kategori', 'pegawaiKn', 'temuJanji'])
-            ->when($branchId !== null, fn ($w) => $w->where('cawangan_id', $branchId))
+            // W3 (D2 dual-branch): origin keeps a transferred KN via cawangan_asal_id.
+            ->when($branchId !== null, fn ($w) => $w->where(fn ($b) => $b
+                ->where('cawangan_id', $branchId)
+                ->orWhere('cawangan_asal_id', $branchId)))
             ->when($filters['status_kn'] ?? null, fn ($w, $v) => $w->where('status_kn', $v))
             ->when($filters['id_pegawai_kn'] ?? null, fn ($w, $v) => $w->where('id_pegawai_kn', $v))
             ->when($filters['id_kategori'] ?? null, fn ($w, $v) => $w->where('id_kategori', $v))
@@ -95,7 +98,9 @@ class KhidmatProsesService
     public function dashboardCounts(?int $branchId): array
     {
         $rows = KhidmatNasihat::query()
-            ->when($branchId !== null, fn ($w) => $w->where('cawangan_id', $branchId))
+            ->when($branchId !== null, fn ($w) => $w->where(fn ($b) => $b
+                ->where('cawangan_id', $branchId)
+                ->orWhere('cawangan_asal_id', $branchId)))
             ->whereIn('status_kn', self::DASHBOARD_STATUSES)
             ->selectRaw('status_kn, COUNT(*) as total')
             ->groupBy('status_kn')
@@ -186,6 +191,11 @@ class KhidmatProsesService
         $this->transitionTemu($khidmat, 'selesai', $actor, function (KhidmatNasihat $kn) use ($actor) {
             $kn->update(['status_kn' => KhidmatNasihat::STATUS_SELESAI, 'kemaskini_oleh' => $actor]);
         });
+
+        // W15 (D4): auto-create a claim-ledger row for a paid advisory so the receipt
+        // step exists (closes audit gap G-M3). No-op for free (is_percuma) advisories;
+        // idempotent via the (sumber, id_khidmat_nasihat) unique key.
+        app(LejarTuntutanService::class)->fromKhidmatNasihat($khidmat->fresh(), $actor);
     }
 
     /**
@@ -241,6 +251,9 @@ class KhidmatProsesService
 
             Audit::log('khidmat_nasihat', $fresh->id, Audit::UPDATE,
                 "Buka Kes — forms #{$form->id} (No. Fail: {$form->no_fail}).", $actor->name);
+
+            // W12: stamp the downstream case state back onto the KN.
+            app(KesKnSyncService::class)->pushToKn($form, KesKnSyncService::STATE_TERBUKA, $actor->name);
 
             return $form;
         });

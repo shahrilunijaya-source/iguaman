@@ -16,6 +16,7 @@ class LaporanKes extends Model
 
     protected $casts = [
         'tarikh_sebutan' => 'date',
+        'id_kes' => 'integer',
     ];
 
     public function form(): BelongsTo

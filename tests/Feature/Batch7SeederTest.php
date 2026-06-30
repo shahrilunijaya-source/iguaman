@@ -17,9 +17,10 @@ class Batch7SeederTest extends TestCase
     {
         parent::setUp();
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
-        DB::purge('mysql'); DB::reconnect('mysql');
+        DB::purge('mysql');
+        DB::reconnect('mysql');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
-        (new RolePermissionSeeder())->run();
+        (new RolePermissionSeeder)->run();
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
@@ -37,10 +38,17 @@ class Batch7SeederTest extends TestCase
         // '.kategori_kn', '.jawatan'); Batch 10 slot/calendar added 'slot.view'; Batch 9
         // Khidmat Nasihat added 'khidmat.view' + 'khidmat.manage'; Batch 10 slice 2 added
         // 'slot.manage' (slot generation + penutupan operasi); Batch 11 added 'khidmat.proses'
-        // (officer processing: assign PKN + pengesahan janji temu).
+        // (officer processing: assign PKN + pengesahan janji temu); W15 added 5 claim-ledger
+        // permissions ('tuntutan.view/manage/semak/lulus/bayar').
         // RolePermissionSeeder::MATRIX is the source of truth.
-        $this->assertSame(9, Role::count());  // +1 awam role (batch-13)
-        $this->assertSame(42, Permission::count());  // +1 awam.portal permission (batch-13)
+        // W10 added 2 roles (pengarah_pembelaan_awam, ketua_pembelaan_awam) + 2 perms
+        // (peguam.sokong.jenayah, peguam.keputusan.jenayah). W5 added 'agihan.luar'
+        // (external-lawyer assignment). W7 added 'kes.pindah' (branch transfer).
+        // W19 added 'pengantaraan.agih' (mediator assignment). W9/W14 added 3 perms
+        // (pembelaan.view, pembelaan.manage, kes.perakuan). W1 added the prison_officer
+        // role (reuses system.view/khidmat.view/khidmat.manage — no new permission).
+        $this->assertSame(12, Role::count());  // 9 + 2 pembelaan-awam approver roles (W10) + prison_officer (W1)
+        $this->assertSame(55, Permission::count());  // 49 + agihan.luar/kes.pindah/pengantaraan.agih (W5/W7/W19) + 3 pembelaan/perakuan (W9/W14)
     }
 
     public function test_admin_can_everything_via_gate_before(): void

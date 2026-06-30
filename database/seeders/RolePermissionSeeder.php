@@ -22,16 +22,23 @@ class RolePermissionSeeder extends Seeder
         // Citizen self-service role (mirrors migration 130002 so a fresh db:seed
         // reproduces the /awam portal gate without depending on the migration alone).
         'awam',
+        // Pembelaan Awam approver tier (W10) — criminal panel-registration approvals.
+        'pengarah_pembelaan_awam', 'ketua_pembelaan_awam',
+        // Prison/clinic officer (W1) — files Khidmat Nasihat on behalf of inmates.
+        'prison_officer',
     ];
 
     /** permission => roles granted (admin omitted — Gate::before). */
     private const MATRIX = [
-        'system.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'system.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam', 'prison_officer'],
         'kes.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'kes.create' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'kes.update' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'kes.keputusan' => ['pengarah', 'ketua_pengarah'],
+        'kes.pindah' => ['pengarah', 'koordinator', 'ppuu'],
         'pengantaraan.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        // W19: assign a mediator (pegawai pengantara) + open a MEDIASI claim-ledger row.
+        'pengantaraan.agih' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'mahkamah.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'lampiran.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'cetakan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
@@ -43,14 +50,19 @@ class RolePermissionSeeder extends Seeder
         'agihan.pengarah' => ['pengarah'],
         'agihan.ppuu' => ['ppuu', 'koordinator'],
         'agihan.kp' => ['ketua_pengarah'],
+        // W5: assign a completed KN to an external panel lawyer (grab pool / direct assign).
+        'agihan.luar' => ['pengarah', 'koordinator', 'ppuu'],
         // Khidmat Nasihat (legal-advisory applications) — batch 9. Citizen/PELANGGAN access deferred to batch 13.
-        'khidmat.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
-        'khidmat.manage' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
+        'khidmat.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'prison_officer'],
+        'khidmat.manage' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'prison_officer'],
         'peguam_panel.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'peguam.permohonan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'peguam.permohonan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
         'peguam.semak' => ['ppuu', 'pembantu_tadbir', 'koordinator'],
         'peguam.sokong' => ['pengarah'],
         'peguam.keputusan' => ['ketua_pengarah'],
+        // W10: criminal-track endorsement/decision route to the Pembelaan Awam tier.
+        'peguam.sokong.jenayah' => ['pengarah_pembelaan_awam'],
+        'peguam.keputusan.jenayah' => ['ketua_pembelaan_awam'],
         'selenggara.pegawai' => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.poster' => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.ref_kes' => ['pengarah', 'koordinator', 'ketua_pengarah'],
@@ -73,6 +85,17 @@ class RolePermissionSeeder extends Seeder
         // Khidmat Nasihat officer processing (assign PKN + pengesahan janji temu) — batch 11.
         // Granted to roles that process advisory cases; NOT pembantu_tadbir (clerk).
         'khidmat.proses' => ['koordinator', 'pegawai', 'pengarah'],
+        // Central claim ledger (lejar tuntutan bayaran) — W15. view/manage/semak/lulus/bayar.
+        'tuntutan.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'ppuu'],
+        'tuntutan.manage' => ['koordinator', 'pegawai', 'pembantu_tadbir', 'pengarah'],
+        'tuntutan.semak' => ['ppuu', 'koordinator', 'pembantu_tadbir'],
+        'tuntutan.lulus' => ['pengarah', 'ketua_pengarah'],
+        'tuntutan.bayar' => ['koordinator', 'pengarah', 'ketua_pengarah'],
+        // W9 — Pembelaan Awam (public criminal defence) register on the litigation spine.
+        'pembelaan.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
+        'pembelaan.manage' => ['pegawai', 'koordinator', 'pengarah', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
+        // W14 — issue/finalise the legal-aid certificate (Perakuan Bantuan Guaman).
+        'kes.perakuan' => ['koordinator', 'pengarah', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
     ];
 
     public function run(): void

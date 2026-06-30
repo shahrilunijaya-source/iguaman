@@ -10,12 +10,14 @@ use App\Models\ButiranPeguamPanel4;
 use App\Models\ButiranPeguamPanel5;
 use App\Models\ButiranPeguamPanel6;
 use App\Models\Form;
+use App\Models\KhidmatNasihat;
 use App\Models\LaporanKes;
 use App\Models\PeguamPanel;
 use App\Models\RefKes;
 use App\Models\RefNegeri;
 use App\Models\SejarahPeguamPanel;
 use App\Models\UploadedFile;
+use App\Support\AgihanLuarService;
 use App\Support\Audit;
 use App\Support\LawyerDocuments;
 use App\Support\PengkhususanService;
@@ -28,6 +30,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use RuntimeException;
 
 // External lawyer (peguam) area — assigned cases, offer accept/reject (tawaran),
 // lawyer-side case reporting, and profile.
@@ -44,6 +47,8 @@ class PeguamController extends Controller
         $stats = [
             'kes_saya' => $nama ? $this->kesQuery($nama)->whereIn('status_agihan', StatusAgihan::bucketValues([StatusAgihan::DITERIMA]))->count() : 0,
             'tawaran' => $nama ? $this->kesQuery($nama)->whereIn('status_agihan', StatusAgihan::bucketValues([StatusAgihan::DITAWARKAN]))->count() : 0,
+            // W5: open-grab KN pool any panel lawyer can self-claim (branch-agnostic).
+            'kes_grab' => app(AgihanLuarService::class)->grabPool()->count(),
             'nama' => $nama ?? Auth::user()->name,
         ];
 
@@ -144,7 +149,7 @@ class PeguamController extends Controller
         ]);
 
         $laporan = LaporanKes::create($data + [
-            'id_kes' => (string) $kes->id,
+            'id_kes' => $kes->id,
             'no_fail' => $kes->no_fail,
             'nama_pegawai' => Auth::user()->name,
         ]);
@@ -199,6 +204,72 @@ class PeguamController extends Controller
         Audit::log('forms', $kes->id, Audit::UPDATE, "Permohonan tarik diri dihantar oleh peguam {$kes->nama_pegawai_yang_dapat_kes}.");
 
         return redirect()->route('peguam.kes')->with('status', 'Permohonan tarik diri dihantar untuk semakan JBG.');
+    }
+
+    /**
+     * W16 — lawyer marks an actively-handled case as done (status 2 → 18 / PP_SELESAI).
+     * Writes the lawyer-side closure columns + a SejarahPeguamPanel marker; the file is
+     * not officially closed until JBG confirms (KeputusanController::sahkanSelesai → 19).
+     */
+    public function selesai(Request $request, Form $kes): RedirectResponse
+    {
+        $this->authorizeCase($kes);
+        $this->ensureKesDiterima($kes);
+        // A file already closed by JBG (tutupFail leaves status_agihan untouched) must not be re-opened.
+        abort_if(filled($kes->tarikh_tutup_fail), 422, 'Fail telah ditutup dan tidak boleh ditandakan selesai.');
+
+        $data = $request->validate(['sebab_selesai' => ['nullable', 'string', 'max:50']]);
+
+        // Record who completed the case before the state moves (mirrors tolak()).
+        SejarahPeguamPanel::create([
+            'id_kes' => $kes->id,
+            'nama_pp_lama' => $kes->nama_pegawai_yang_dapat_kes,
+            'tarikh_penugasan' => $kes->tarikh_penugasan_peguam_panel,
+            'status' => 'S',
+            'alasan' => $data['sebab_selesai'] ?? 'Kes ditandakan selesai oleh peguam',
+            'kp_pp_lama' => $this->lawyerKp(),
+            'modifiedBy' => Auth::user()->name,
+            'modifiedDate' => now(),
+            'status_agihan' => StatusAgihan::PP_SELESAI,
+        ]);
+
+        $kes->update([
+            'status_agihan' => StatusAgihan::PP_SELESAI,
+            'tarikh_selesai' => now()->toDateString(),
+            'sebab_selesai' => $data['sebab_selesai'] ?? null,
+        ]);
+
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Kes ditandakan selesai oleh peguam {$kes->nama_pegawai_yang_dapat_kes}");
+
+        return redirect()->route('peguam.kes.show', $kes)->with('status', 'Kes ditandakan selesai. Menunggu pengesahan JBG.');
+    }
+
+    /** W5 — open-grab Khidmat Nasihat pool any active panel lawyer may self-claim. */
+    public function grabSenarai(): View
+    {
+        $pool = app(AgihanLuarService::class)->grabPool()->get();
+
+        return view('peguam.grab', [
+            'pool' => $pool,
+            'profile' => $this->profile(),
+            'grabDays' => AgihanLuarService::GRAB_DAYS,
+        ]);
+    }
+
+    /** W5 — claim an open-grab KN for the signed-in lawyer (race-safe in the service). */
+    public function grab(KhidmatNasihat $khidmat): RedirectResponse
+    {
+        $profile = $this->profile();
+        abort_if($profile === null, 403, 'Akaun anda belum dipautkan ke rekod peguam panel.');
+
+        try {
+            app(AgihanLuarService::class)->grab($khidmat, $profile, Auth::user());
+        } catch (RuntimeException $e) {
+            return redirect()->route('peguam.grab.index')->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('peguam.grab.index')
+            ->with('status', 'Kes berjaya di-grab. Sila failkan tuntutan apabila kerja siap.');
     }
 
     public function profil(): View

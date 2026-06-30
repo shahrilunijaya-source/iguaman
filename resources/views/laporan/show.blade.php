@@ -17,8 +17,18 @@
                 <a href="{{ route('laporan.penuh', [$type] + $qs) }}" class="tap-head__btn">⬇ CSV Penuh</a>
             @endif
             <a href="{{ route('laporan.pdf', [$type] + $qs) }}" target="_blank" rel="noopener" class="tap-head__btn">⬇ PDF</a>
+            <a href="{{ route('laporan.eksport-pukal', [$type] + $qs) }}" class="tap-head__btn">⬇ XLSX (Pukal)</a>
         </div>
     </div>
+
+    @if (session('status'))
+        <div class="formerr" style="color: var(--success); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.18); margin-bottom:14px;">
+            {{ session('status') }}
+            @if (session('eksport_fail'))
+                <a href="{{ route('laporan.muat-turun', session('eksport_fail')) }}" style="margin-left:10px; font-weight:600;">Muat Turun Fail</a>
+            @endif
+        </div>
+    @endif
 
     <div class="tap-head">
         <div>

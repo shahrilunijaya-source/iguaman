@@ -50,6 +50,11 @@
         <a href="{{ route('kes.tutup') }}" class="ws-side-top {{ request()->routeIs('kes.tutup') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">🔒</span><span class="ws-side-label">Fail Tutup</span>
         </a>
+        @can('pembelaan.view')
+            <a href="{{ route('pembelaan.index') }}" class="ws-side-top {{ request()->routeIs('pembelaan.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">⚖</span><span class="ws-side-label">Pembelaan Awam</span>
+            </a>
+        @endcan
         <a href="{{ route('statistik.index') }}" class="ws-side-top {{ request()->routeIs('statistik.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▦</span><span class="ws-side-label">Statistik</span>
         </a>
@@ -62,9 +67,14 @@
         <a href="{{ route('statistik-pengantaraan.index') }}" class="ws-side-top {{ request()->routeIs('statistik-pengantaraan.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">⇆</span><span class="ws-side-label">Statistik Pengantaraan</span>
         </a>
-        <a href="{{ route('kpi.index') }}" class="ws-side-top {{ request()->routeIs('kpi.*') ? 'is-active' : '' }}">
+        <a href="{{ route('kpi.index') }}" class="ws-side-top {{ request()->routeIs('kpi.index') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">◔</span><span class="ws-side-label">KPI</span>
         </a>
+        @can('kpi.view')
+            <a href="{{ route('kpi.pindah.kes') }}" class="ws-side-top {{ request()->routeIs('kpi.pindah.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">⇄</span><span class="ws-side-label">Statistik Pemindahan</span>
+            </a>
+        @endcan
         <a href="{{ route('laporan.index') }}" class="ws-side-top {{ request()->routeIs('laporan.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▭</span><span class="ws-side-label">Laporan</span>
         </a>
@@ -113,9 +123,28 @@
         <a href="{{ route('agihan.beban') }}" class="ws-side-top {{ request()->routeIs('agihan.beban') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▥</span><span class="ws-side-label">Beban Tugas Peguam</span>
         </a>
+        @can('agihan.luar')
+            <a href="{{ route('agihan-luar.index') }}" class="ws-side-top {{ request()->routeIs('agihan-luar.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">⇲</span><span class="ws-side-label">Agihan Peguam Luar</span>
+            </a>
+        @endcan
+        @canany(['kes.pindah', 'khidmat.manage'])
+            @php $pindahMasuk = app(\App\Support\TransferCawanganService::class)->inboxCount(auth()->user()); @endphp
+            <a href="{{ route('pemindahan.index') }}" class="ws-side-top {{ request()->routeIs('pemindahan.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">⇄</span><span class="ws-side-label">Pemindahan Cawangan @if ($pindahMasuk > 0)<strong style="color:var(--brand,#00B8A9);">({{ $pindahMasuk }})</strong>@endif</span>
+            </a>
+        @endcanany
+        <a href="{{ route('pengantaraan.senarai') }}" class="ws-side-top {{ request()->routeIs('pengantaraan.senarai') || request()->routeIs('pengantaraan.create') ? 'is-active' : '' }}">
+            <span class="ws-side-top__icon">⚖</span><span class="ws-side-label">Pengantaraan</span>
+        </a>
         <a href="{{ route('tarikdiri.senarai') }}" class="ws-side-top {{ request()->routeIs('tarikdiri.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">⤴</span><span class="ws-side-label">Permohonan Tarik Diri</span>
         </a>
+        @can('kes.keputusan')
+            <a href="{{ route('keputusan.selesai') }}" class="ws-side-top {{ request()->routeIs('keputusan.selesai') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">✔</span><span class="ws-side-label">Pengesahan Selesai</span>
+            </a>
+        @endcan
         @php $bidangPending = \App\Support\PengkhususanService::pendingCount(); @endphp
         <a href="{{ route('kemaskini-bidang.index') }}" class="ws-side-top {{ request()->routeIs('kemaskini-bidang.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">◳</span><span class="ws-side-label">Kemaskini Bidang @if ($bidangPending > 0)<strong style="color:var(--brand,#00B8A9);">({{ $bidangPending }})</strong>@endif</span>

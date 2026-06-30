@@ -16,7 +16,20 @@ class TestUsersSeeder extends Seeder
     public function run(): void
     {
         // Wire the lawyer test account to a real panel record so its profile loads.
+        // On a from-scratch DB (CI / migrate:fresh) the peguam_panel table is empty, so
+        // create a minimal fallback row — otherwise the lawyer test account has a NULL
+        // id_peguam_panel and lawyerProfile()-dependent tests fail.
         $panelKp = PeguamPanel::where('kp_peguam', '!=', '')->whereNotNull('kp_peguam')->value('kp_peguam');
+
+        if ($panelKp === null) {
+            $panelKp = PeguamPanel::create([
+                'nama_peguam' => 'Test Peguam Panel', 'kp_peguam' => '900101015555',
+                'tel_peguam' => '0123456789', 'emel_peguam' => 'panel@test.local',
+                'nama_firma' => 'Firma Ujian', 'alamat_firma_1' => 'A1', 'alamat_firma_2' => 'A2',
+                'poskod_firma' => '40000', 'negeri_firma' => 'Selangor', 'tel_firma' => '0312345678',
+                'statusAktif' => PeguamPanel::AKTIF,
+            ])->kp_peguam;
+        }
 
         $users = [
             ['email' => 'admin@test.local',          'name' => 'Test Admin',          'user_type' => User::TYPE_STAFF,  'role' => User::ROLE_ADMIN],

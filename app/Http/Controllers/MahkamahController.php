@@ -41,7 +41,7 @@ class MahkamahController extends Controller
         ]);
 
         LaporanKes::create($data + [
-            'id_kes' => (string) $kes->id,
+            'id_kes' => $kes->id,
             'no_fail' => $kes->no_fail,
         ]);
 
@@ -50,7 +50,7 @@ class MahkamahController extends Controller
 
     public function destroyLaporan(Form $kes, LaporanKes $laporan): RedirectResponse
     {
-        abort_unless((string) $laporan->id_kes === (string) $kes->id, 404);
+        abort_unless((int) $laporan->id_kes === (int) $kes->id, 404);
 
         $laporan->delete();
 

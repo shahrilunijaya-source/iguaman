@@ -100,6 +100,31 @@
 
         <div style="display:flex; flex-direction:column; gap:14px;">
             <div class="tap-card">
+                <div class="tap-card__eyebrow">Agihan Pengantara</div>
+                <div class="tap-card__row"><div class="k">No. Pengantaraan</div><div class="v">{{ $kes->no_pengantaraan ?: '—' }}</div></div>
+                <div class="tap-card__row"><div class="k">Sumber</div><div class="v">{{ $kes->sumber_pengantaraan ?: '—' }}</div></div>
+                <div class="tap-card__row"><div class="k">Pegawai Pengantara</div><div class="v">{{ $kes->nama_pegawai_pengantara ?: 'Belum diagih' }}</div></div>
+                @if ($kes->tarikh_agih_pengantara)
+                    <div class="tap-card__row"><div class="k">Tarikh Agih</div><div class="v">{{ optional($kes->tarikh_agih_pengantara)->format('d/m/Y') }}</div></div>
+                @endif
+                @can('pengantaraan.agih')
+                    <form method="POST" action="{{ route('pengantaraan.agih', $kes) }}" style="margin-top:10px;" onsubmit="return confirm('Tetapkan pegawai pengantara ini?')">
+                        @csrf
+                        <div class="field">
+                            <label class="field__label">Pegawai Pengantara</label>
+                            <select class="field__input" name="id_pegawai_pengantara" required>
+                                <option value="">— Pilih pegawai —</option>
+                                @foreach ($pegawaiList as $id => $nama)
+                                    <option value="{{ $id }}" @selected($kes->id_pegawai_pengantara == $id)>{{ $nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--block">Agih Pengantara</button>
+                    </form>
+                @endcan
+            </div>
+
+            <div class="tap-card">
                 <div class="tap-card__eyebrow">Tangguh Sidang</div>
                 <form method="POST" action="{{ route('sidang.tangguh', $kes) }}" class="va-form">
                     @csrf

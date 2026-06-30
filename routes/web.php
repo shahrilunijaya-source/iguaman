@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgihanController;
+use App\Http\Controllers\AgihanLuarController;
 use App\Http\Controllers\AgihanSpineController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\Awam\PermohonanController;
@@ -25,15 +26,20 @@ use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LaporanKhidmatNasihatController;
 use App\Http\Controllers\LaporanPenuhController;
+use App\Http\Controllers\LejarTuntutanController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
 use App\Http\Controllers\MaklumBalasController;
+use App\Http\Controllers\OcrPrefillController;
 use App\Http\Controllers\OydController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\Peguam\TuntutanController as PeguamTuntutanController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\PeguamDaftarController;
 use App\Http\Controllers\PeguamPanelController;
+use App\Http\Controllers\PembelaanAwamController;
+use App\Http\Controllers\PemindahanController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PenutupanOperasiController;
 use App\Http\Controllers\PermohonanPeguamController;
@@ -44,6 +50,7 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SlotController;
 use App\Http\Controllers\SlotGenerationController;
 use App\Http\Controllers\StatistikController;
+use App\Http\Controllers\StatistikPemindahanController;
 use App\Http\Controllers\StatistikPengantaraanController;
 use App\Http\Controllers\StatistikSlaController;
 use App\Http\Controllers\SystemAuthController;
@@ -146,15 +153,44 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::put('/kes/{kes}', [KesController::class, 'update'])->name('kes.update')->whereNumber('kes');
     Route::get('/kes/{kes}', [KesController::class, 'show'])->name('kes.show')->whereNumber('kes');
 
+    // W7 — Pindah Cawangan (case branch transfer): initiate on the case. Needs kes.pindah.
+    Route::middleware('permission:kes.pindah')->group(function () {
+        Route::get('/kes/{kes}/pindah', [KesController::class, 'pindahForm'])->name('kes.pindah-borang')->whereNumber('kes');
+        Route::post('/kes/{kes}/pindah', [KesController::class, 'pindah'])->name('kes.pindah')->whereNumber('kes');
+    });
+
+    // W7/W3 — shared accept/reject inbox for BOTH case (kes.pindah) and KN (khidmat.manage)
+    // transfers, so either population can reach it; per-row capability + destination branch
+    // are enforced in TransferCawanganService::canActOn.
+    Route::middleware('permission:kes.pindah|khidmat.manage')->group(function () {
+        Route::get('/pemindahan', [PemindahanController::class, 'index'])->name('pemindahan.index');
+        Route::post('/pemindahan/{pindah}/terima', [PemindahanController::class, 'terima'])->name('pemindahan.terima')->whereNumber('pindah');
+        Route::post('/pemindahan/{pindah}/tolak', [PemindahanController::class, 'tolak'])->name('pemindahan.tolak')->whereNumber('pindah');
+    });
+
     // Keputusan Pengarah (peringkat 2 approve/reject) + Tutup Fail (peringkat 7) — gated in controller
     Route::post('/kes/{kes}/lulus', [KeputusanController::class, 'lulus'])->name('kes.lulus')->whereNumber('kes');
     Route::post('/kes/{kes}/tolak', [KeputusanController::class, 'tolak'])->name('kes.tolak')->whereNumber('kes');
     Route::post('/kes/{kes}/tutup-fail', [KeputusanController::class, 'tutupFail'])->name('kes.tutupfail')->whereNumber('kes');
 
+    // W16 — Pengesahan Selesai: cases a panel lawyer marked selesai (18) → JBG confirm (19) / return (2). Gated in controller.
+    Route::get('/kes-selesai', [KeputusanController::class, 'senaraiSelesai'])->name('keputusan.selesai');
+    Route::post('/kes/{kes}/sahkan-selesai', [KeputusanController::class, 'sahkanSelesai'])->name('keputusan.kes.sahkan-selesai')->whereNumber('kes');
+    Route::post('/kes/{kes}/tolak-selesai', [KeputusanController::class, 'tolakSelesai'])->name('keputusan.kes.tolak-selesai')->whereNumber('kes');
+
     // Pengantaraan (mediation) — section edit + hearing reschedule
     Route::get('/kes/{kes}/pengantaraan', [PengantaraanController::class, 'edit'])->name('pengantaraan.edit')->whereNumber('kes');
     Route::put('/kes/{kes}/pengantaraan', [PengantaraanController::class, 'update'])->name('pengantaraan.update')->whereNumber('kes');
     Route::post('/kes/{kes}/sidang', [PengantaraanController::class, 'tangguhSidang'])->name('sidang.tangguh')->whereNumber('kes');
+
+    // W18/W19 — Pengantaraan: standalone intake + worklist + mediator assignment.
+    Route::middleware('permission:pengantaraan.manage')->group(function () {
+        Route::get('/pengantaraan', [PengantaraanController::class, 'senarai'])->name('pengantaraan.senarai');
+        Route::get('/pengantaraan/baharu', [PengantaraanController::class, 'create'])->name('pengantaraan.create');
+        Route::post('/pengantaraan', [PengantaraanController::class, 'store'])->name('pengantaraan.store');
+    });
+    Route::post('/kes/{kes}/pengantaraan/agih', [PengantaraanController::class, 'agihPengantara'])
+        ->middleware('permission:pengantaraan.agih')->name('pengantaraan.agih')->whereNumber('kes');
 
     // Kes Mahkamah (court) — section edit + laporan_kes child records
     Route::get('/kes/{kes}/mahkamah', [MahkamahController::class, 'edit'])->name('mahkamah.edit')->whereNumber('kes');
@@ -171,6 +207,15 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::get('/kes/{kes}/cetak/ringkasan', [CetakanController::class, 'ringkasan'])->name('cetak.ringkasan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/penugasan', [CetakanController::class, 'agihan'])->name('cetak.penugasan')->whereNumber('kes');
     Route::get('/kes/{kes}/cetak/laporan', [CetakanController::class, 'laporan'])->name('cetak.laporan')->whereNumber('kes');
+    Route::get('/kes/{kes}/cetak/penutupan', [CetakanController::class, 'penutupan'])->name('cetak.penutupan')->whereNumber('kes');
+    Route::get('/kes/{kes}/cetak/perakuan', [CetakanController::class, 'perakuan'])->name('cetak.perakuan')->whereNumber('kes'); // W14 legal-aid certificate
+    Route::get('/kes/{kes}/cetak/pembatalan', [CetakanController::class, 'pembatalan'])->name('cetak.pembatalan')->whereNumber('kes'); // W20 cancellation letter
+
+    // W13 — OCR document → form prefill (spike; feature-flagged off via config('ocr.enabled')).
+    Route::middleware('permission:kes.create')->group(function () {
+        Route::get('/ocr-prefill', [OcrPrefillController::class, 'form'])->name('ocr.prefill');
+        Route::post('/ocr-prefill/extract', [OcrPrefillController::class, 'extract'])->name('ocr.prefill.extract');
+    });
 
     // OYD (Orang Yang Dibantu) registry
     Route::get('/oyd', [OydController::class, 'index'])->name('oyd.index');
@@ -183,11 +228,20 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     // KPI dashboard (yearly SLA prestasi)
     Route::get('/kpi', [KpiController::class, 'index'])->name('kpi.index');
 
+    // W8/W4 — branch-transfer statistics (KPI Pemindahan). Reads pemindahan_cawangan only.
+    Route::middleware('permission:kpi.view')->group(function () {
+        Route::get('/kpi/pemindahan/kes', [StatistikPemindahanController::class, 'kes'])->name('kpi.pindah.kes');
+        Route::get('/kpi/pemindahan/khidmat-nasihat', [StatistikPemindahanController::class, 'khidmatNasihat'])->name('kpi.pindah.kn');
+    });
+
     // Laporan (litigasi + pengantaraan) — table + CSV/PDF export
     $laporanTypes = ['permohonan', 'pendaftaran-fail', 'status-fail', 'penugasan-pengantaraan', 'pencapaian-pengantaraan', 'tidak-dirujuk'];
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/{type}/csv', [LaporanController::class, 'csv'])->name('laporan.csv')->whereIn('type', $laporanTypes);
     Route::get('/laporan/{type}/pdf', [LaporanController::class, 'pdf'])->name('laporan.pdf')->whereIn('type', $laporanTypes);
+    // W20 — queued bulk .xlsx export + download of the finished file.
+    Route::get('/laporan/{type}/eksport-pukal', [LaporanController::class, 'eksportPukal'])->name('laporan.eksport-pukal')->whereIn('type', $laporanTypes);
+    Route::get('/laporan/muat-turun/{fail}', [LaporanController::class, 'muatTurunEksport'])->name('laporan.muat-turun')->where('fail', '[A-Za-z0-9\-\.]+');
     // Wide-column CSV exports (EPIC F — legacy export_*.php): full legacy column parity.
     Route::get('/laporan/{type}/eksport-penuh', [LaporanPenuhController::class, 'csv'])
         ->middleware('permission:laporan.view')
@@ -371,6 +425,16 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::post('/agihan/{kes}/buka-semula', [AgihanSpineController::class, 'bukaSemula'])->name('agihan.buka-semula')->whereNumber('kes')->middleware('permission:agihan.pengarah');
     Route::post('/agihan/{kes}/batal', [AgihanSpineController::class, 'batalAgihan'])->name('agihan.batal')->whereNumber('kes')->middleware('permission:agihan.pengarah');
 
+    // W5 — Agihan Peguam Luar: assign a completed (SELESAI) KN to an external panel lawyer
+    // via GRAB (open pool) or ASSIGN (W11 shortlist). Static /agihan-luar before {khidmat} (whereNumber).
+    Route::middleware('permission:agihan.luar')->group(function () {
+        Route::get('/agihan-luar', [AgihanLuarController::class, 'index'])->name('agihan-luar.index');
+        Route::post('/agihan-luar/{khidmat}/buka-grab', [AgihanLuarController::class, 'bukaGrab'])->name('agihan-luar.buka-grab')->whereNumber('khidmat');
+        Route::get('/agihan-luar/{khidmat}/agih', [AgihanLuarController::class, 'agihForm'])->name('agihan-luar.agih')->whereNumber('khidmat');
+        Route::post('/agihan-luar/{khidmat}/agih', [AgihanLuarController::class, 'assign'])->name('agihan-luar.assign')->whereNumber('khidmat');
+        Route::post('/agihan-luar/{khidmat}/tarik-semula', [AgihanLuarController::class, 'tarikSemula'])->name('agihan-luar.tarik-semula')->whereNumber('khidmat');
+    });
+
     // Tarik Diri Mewakili OYD — staff review queue (PPUU -> Pengarah -> Ketua Pengarah).
     Route::get('/tarik-diri/senarai', [TarikDiriController::class, 'senarai'])->name('tarikdiri.senarai');
     Route::get('/tarik-diri/{kes}/maklumat', [TarikDiriController::class, 'show'])->name('tarikdiri.maklumat')->whereNumber('kes');
@@ -397,6 +461,36 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::post('/permohonan-peguam/{butiran}/keputusan', [PermohonanPeguamController::class, 'keputusan'])->name('permohonan-peguam.keputusan')->whereNumber('butiran');
     Route::post('/permohonan-peguam/{butiran}/tarik-diri', [PermohonanPeguamController::class, 'tarikDiri'])->name('permohonan-peguam.tarik')->whereNumber('butiran');
 
+    // ---- Lejar Tuntutan Bayaran (central claim ledger) — W15 ----
+    // Static segments declared before {tuntutan} (whereNumber) so they never shadow.
+    Route::middleware('permission:tuntutan.view')->group(function () {
+        Route::get('/lejar-tuntutan', [LejarTuntutanController::class, 'index'])->name('tuntutan.index');
+        Route::get('/lejar-tuntutan/eksport', [LejarTuntutanController::class, 'eksport'])->name('tuntutan.eksport');
+        Route::get('/lejar-tuntutan/baharu', [LejarTuntutanController::class, 'create'])->name('tuntutan.create')->middleware('permission:tuntutan.manage');
+        Route::post('/lejar-tuntutan', [LejarTuntutanController::class, 'store'])->name('tuntutan.store')->middleware('permission:tuntutan.manage');
+        Route::get('/lejar-tuntutan/{tuntutan}', [LejarTuntutanController::class, 'show'])->name('tuntutan.show')->whereNumber('tuntutan');
+        Route::put('/lejar-tuntutan/{tuntutan}', [LejarTuntutanController::class, 'update'])->name('tuntutan.update')->whereNumber('tuntutan')->middleware('permission:tuntutan.manage');
+        Route::post('/lejar-tuntutan/{tuntutan}/hantar', [LejarTuntutanController::class, 'hantar'])->name('tuntutan.hantar')->whereNumber('tuntutan')->middleware('permission:tuntutan.manage');
+        Route::post('/lejar-tuntutan/{tuntutan}/semak', [LejarTuntutanController::class, 'semak'])->name('tuntutan.semak')->whereNumber('tuntutan')->middleware('permission:tuntutan.semak');
+        Route::post('/lejar-tuntutan/{tuntutan}/lulus', [LejarTuntutanController::class, 'lulus'])->name('tuntutan.lulus')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
+        Route::post('/lejar-tuntutan/{tuntutan}/tolak', [LejarTuntutanController::class, 'tolak'])->name('tuntutan.tolak')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
+        Route::post('/lejar-tuntutan/{tuntutan}/bayar', [LejarTuntutanController::class, 'bayar'])->name('tuntutan.bayar')->whereNumber('tuntutan')->middleware('permission:tuntutan.bayar');
+    });
+
+    // ---- Pembelaan Awam (public criminal defence) register — W9 ----
+    // Tagged forms rows (D3); assignment/closure reuse the shared agihan spine.
+    // Static /baharu declared before {kes} (whereNumber) so it never shadows.
+    Route::middleware('permission:pembelaan.view')->group(function () {
+        Route::get('/pembelaan-awam', [PembelaanAwamController::class, 'index'])->name('pembelaan.index');
+        Route::get('/pembelaan-awam/baharu', [PembelaanAwamController::class, 'create'])->name('pembelaan.create')->middleware('permission:pembelaan.manage');
+        Route::post('/pembelaan-awam', [PembelaanAwamController::class, 'store'])->name('pembelaan.store')->middleware('permission:pembelaan.manage');
+        Route::get('/pembelaan-awam/{kes}', [PembelaanAwamController::class, 'show'])->name('pembelaan.show')->whereNumber('kes');
+
+        // W14 — legal-aid certificate (Perakuan Bantuan Guaman) issue/finalise.
+        Route::post('/pembelaan-awam/{kes}/perakuan/interim', [PembelaanAwamController::class, 'keluarInterim'])->name('pembelaan.perakuan.interim')->whereNumber('kes')->middleware('permission:kes.perakuan');
+        Route::post('/pembelaan-awam/{kes}/perakuan/muktamad', [PembelaanAwamController::class, 'muktamad'])->name('pembelaan.perakuan.muktamad')->whereNumber('kes')->middleware('permission:kes.perakuan');
+    });
+
     // ---- Khidmat Nasihat (legal-advisory applications) — batch 9 ----
     // Slice 1: list/show (read-only), gated khidmat.view.
     Route::middleware('permission:khidmat.view')->group(function () {
@@ -415,6 +509,10 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/khidmat-nasihat', [KhidmatNasihatController::class, 'store'])->name('khidmat.store');
         Route::get('/khidmat-nasihat/{khidmat}/kemaskini', [KhidmatNasihatController::class, 'edit'])->name('khidmat.edit')->whereNumber('khidmat');
         Route::put('/khidmat-nasihat/{khidmat}', [KhidmatNasihatController::class, 'update'])->name('khidmat.update')->whereNumber('khidmat');
+
+        // W3 — Pindah Cawangan (KN branch transfer). Service guards origin-branch + status.
+        Route::get('/khidmat-nasihat/{khidmat}/pindah', [KhidmatNasihatController::class, 'pindahForm'])->name('khidmat.pindah-borang')->whereNumber('khidmat');
+        Route::post('/khidmat-nasihat/{khidmat}/pindah', [KhidmatNasihatController::class, 'pindah'])->name('khidmat.pindah')->whereNumber('khidmat');
     });
 
     // ==== BATCH 10 SLICE 3 (kalendar): Cuti Negeri CRUD + Jadual Janji Temu ====
@@ -449,6 +547,8 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/khidmat-proses/{khidmat}/temu/selesai', [KhidmatProsesController::class, 'selesai'])->name('khidmat.proses.temu.selesai')->whereNumber('khidmat');
         // Slice C: KN -> forms case bridge ("Buka Kes") — open a litigation case from a SELESAI KN.
         Route::post('/khidmat-proses/{khidmat}/buka-kes', [KhidmatProsesController::class, 'bukaKes'])->name('khidmat.proses.buka-kes')->whereNumber('khidmat');
+        // W2 — manual iPayment: record a counter payment of the KN intake fee + ledger sync.
+        Route::post('/khidmat-nasihat/{khidmat}/bayar', [KhidmatNasihatController::class, 'rekodBayaran'])->name('khidmat.bayar')->whereNumber('khidmat');
     });
     // ==== END BATCH 11 SLICES A+B ====
 
@@ -503,6 +603,11 @@ Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(f
     Route::post('/kes/{kes}/tolak', [PeguamController::class, 'tolak'])->name('peguam.tolak')->whereNumber('kes');
     Route::get('/kes/{kes}', [PeguamController::class, 'kesShow'])->name('peguam.kes.show')->whereNumber('kes');
     Route::post('/kes/{kes}/laporan', [PeguamController::class, 'storeLaporan'])->name('peguam.laporan')->whereNumber('kes');
+    Route::post('/kes/{kes}/selesai', [PeguamController::class, 'selesai'])->name('peguam.selesai')->whereNumber('kes');
+
+    // W5 — Grab Khidmat Nasihat: open pool of KN any panel lawyer may self-claim.
+    Route::get('/grab', [PeguamController::class, 'grabSenarai'])->name('peguam.grab.index');
+    Route::post('/grab/{khidmat}', [PeguamController::class, 'grab'])->name('peguam.grab')->whereNumber('khidmat');
 
     // Tarik Diri Mewakili OYD (lawyer-initiated withdrawal from an assigned case).
     Route::get('/kes/{kes}/tarik-diri', [PeguamController::class, 'tarikDiriForm'])->name('peguam.tarikdiri.form')->whereNumber('kes');
@@ -511,6 +616,13 @@ Route::middleware(['auth', 'permission:lawyer.area'])->prefix('peguam')->group(f
     // Bidang Pengkhususan add/drop requests (lawyer-initiated).
     Route::post('/pengkhususan/tambah', [PeguamController::class, 'pengkhususanAdd'])->name('peguam.pengkhususan.add');
     Route::post('/pengkhususan/{row}/gugur', [PeguamController::class, 'pengkhususanDrop'])->name('peguam.pengkhususan.drop')->whereNumber('row');
+
+    // Lejar Tuntutan — lawyer self-service (W15). File claims against assigned cases.
+    Route::get('/tuntutan', [PeguamTuntutanController::class, 'index'])->name('peguam.tuntutan.index');
+    Route::get('/tuntutan/{tuntutan}', [PeguamTuntutanController::class, 'show'])->name('peguam.tuntutan.show')->whereNumber('tuntutan');
+    Route::post('/tuntutan/{tuntutan}/lengkap', [PeguamTuntutanController::class, 'lengkap'])->name('peguam.tuntutan.lengkap')->whereNumber('tuntutan');
+    Route::get('/kes/{kes}/tuntutan/baharu', [PeguamTuntutanController::class, 'create'])->name('peguam.tuntutan.create')->whereNumber('kes');
+    Route::post('/kes/{kes}/tuntutan', [PeguamTuntutanController::class, 'store'])->name('peguam.tuntutan.store')->whereNumber('kes');
 });
 
 // ==== BATCH 12 — MAKLUM BALAS (public) ====

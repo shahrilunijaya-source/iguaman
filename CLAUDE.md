@@ -55,7 +55,8 @@ Laravel + MySQL production system. Officer/user workspace scaffolded from the `i
 
 ## Deploy
 
-- GitHub: `shahrilunijaya-source/sys-iguaman-2in1`, branch `main`, HTTPS + Windows Credential Manager.
+- GitHub: `shahrilunijaya-source/iguaman` (https://github.com/shahrilunijaya-source/iguaman.git), branch `main`, HTTPS + Windows Credential Manager.
+- Hostinger domain: `iguaman.myappsonline.net` — webhook pulls branch `main`.
 - **Wire Hostinger Git + webhook BEFORE first push.** Create MySQL DB + user in hPanel (auto-prefix `u<account>_`), put creds in prod `.env`.
 - Push to deploy: `git add . && git commit -m "..." && git push` — webhook auto-pulls + `composer install`.
 - Laravel-in-public_html: root `.htaccess` guard routes into `public/`; `public/build` is committed (Hostinger has no node); migrations run manually via SSH (port 65002, use `ln -s` for storage link — `artisan storage:link` fails).

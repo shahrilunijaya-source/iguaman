@@ -4,20 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\KhidmatNasihatRequest;
 use App\Http\Requests\KhidmatSaringanRequest;
+use App\Http\Requests\PindahKnRequest;
 use App\Models\Cawangan;
 use App\Models\KhidmatNasihat;
 use App\Models\MahkamahSivil;
 use App\Models\MahkamahSyariah;
+use App\Models\PemindahanCawangan;
 use App\Models\RefKategoriKn;
 use App\Models\RefNegeri;
+use App\Models\UploadedFile;
 use App\Support\Audit;
 use App\Support\KhidmatBayaran;
 use App\Support\KhidmatNasihatService;
+use App\Support\LejarTuntutanService;
 use App\Support\SlotAvailabilityService;
+use App\Support\TransferCawanganService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use RuntimeException;
 
 /**
  * Khidmat Nasihat (legal-advisory applications) — batch 9.
@@ -36,6 +43,7 @@ class KhidmatNasihatController extends Controller
     public function __construct(
         private readonly SlotAvailabilityService $slots,
         private readonly KhidmatNasihatService $service,
+        private readonly LejarTuntutanService $lejar,
     ) {}
 
     public function index(Request $request): View
@@ -60,11 +68,48 @@ class KhidmatNasihatController extends Controller
         ]);
     }
 
-    public function show(KhidmatNasihat $khidmat): View
+    public function show(KhidmatNasihat $khidmat): View|RedirectResponse
     {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
         $khidmat->load(['pengguna', 'cawangan', 'kategori', 'subkategori', 'temuJanji']);
 
         return view('khidmat-nasihat.show', ['khidmat' => $khidmat]);
+    }
+
+    /** W3 — transfer form: pick a destination branch for this advisory. Gated permission:khidmat.manage. */
+    public function pindahForm(Request $request, KhidmatNasihat $khidmat): View|RedirectResponse
+    {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
+        $pending = PemindahanCawangan::where('jenis_rekod', PemindahanCawangan::JENIS_KN)
+            ->where('id_rekod', $khidmat->id)
+            ->where('status', PemindahanCawangan::STATUS_DIPINDAH)
+            ->first();
+
+        return view('khidmat-nasihat.pindah', [
+            'khidmat' => $khidmat,
+            'cawanganList' => Cawangan::orderBy('nama')->get(['id', 'nama']),
+            'pending' => $pending,
+        ]);
+    }
+
+    /** W3 — execute the KN transfer. The service moves cawangan_id + records the move. */
+    public function pindah(PindahKnRequest $request, KhidmatNasihat $khidmat): RedirectResponse
+    {
+        $data = $request->validated();
+
+        try {
+            app(TransferCawanganService::class)->pindahKn($khidmat, (int) $data['cawangan_tujuan_id'], $data['sebab'], $request->user());
+        } catch (RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('khidmat.show', $khidmat)->with('status', 'Khidmat Nasihat dipindahkan. Menunggu cawangan tujuan mengesahkan terima.');
     }
 
     /**
@@ -170,12 +215,18 @@ class KhidmatNasihatController extends Controller
         Audit::log('khidmat_nasihat', $khidmat->id, Audit::INSERT,
             "Permohonan Khidmat Nasihat baharu: {$khidmat->no_permohonan} ({$khidmat->nama_mangsa})");
 
+        $this->storeWaiver($khidmat, $request);
+
         return redirect()->route('khidmat.show', $khidmat)
             ->with('status', $request->isHantar() ? 'Permohonan dihantar.' : 'Draf disimpan.');
     }
 
-    public function edit(KhidmatNasihat $khidmat): View
+    public function edit(KhidmatNasihat $khidmat): View|RedirectResponse
     {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
         abort_unless($khidmat->status_kn === KhidmatNasihat::STATUS_DRAF, 403, 'Hanya draf boleh dikemaskini.');
 
         return view('khidmat-nasihat.form', $this->formData($khidmat, 'edit'));
@@ -183,6 +234,10 @@ class KhidmatNasihatController extends Controller
 
     public function update(KhidmatNasihatRequest $request, KhidmatNasihat $khidmat): RedirectResponse
     {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
         abort_unless($khidmat->status_kn === KhidmatNasihat::STATUS_DRAF, 403, 'Hanya draf boleh dikemaskini.');
 
         DB::transaction(function () use ($request, $khidmat) {
@@ -201,11 +256,78 @@ class KhidmatNasihatController extends Controller
         Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE,
             "Kemaskini Khidmat Nasihat: {$khidmat->no_permohonan} ({$khidmat->nama_mangsa})");
 
+        $this->storeWaiver($khidmat, $request);
+
         return redirect()->route('khidmat.show', $khidmat)
             ->with('status', $request->isHantar() ? 'Permohonan dihantar.' : 'Draf dikemaskini.');
     }
 
+    /**
+     * W2 — record a manual (counter) payment of the KN intake fee: receipt details +
+     * an optional resit upload. Flips the KN payment flag and stamps the central ledger
+     * row (DIBAYAR). Gated permission:khidmat.proses. Schema future-proofed for a live
+     * iPayment gateway by the open kaedah_bayaran set (TUNAI today, IPAYMENT later).
+     */
+    public function rekodBayaran(Request $request, KhidmatNasihat $khidmat): RedirectResponse
+    {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
+        abort_if($khidmat->is_percuma || (float) $khidmat->jumlah_bayaran <= 0, 403,
+            'Tiada bayaran untuk direkod bagi permohonan ini.');
+        abort_if((bool) $khidmat->status_bayaran, 403, 'Bayaran telah direkod.');
+
+        $data = $request->validate([
+            'nombor_resit' => ['required', 'string', 'max:50'],
+            'tarikh_resit' => ['required', 'date'],
+            'kaedah_bayaran' => ['required', Rule::in(['TUNAI', 'KAD', 'BANK_IN', 'EWALLET', 'IPAYMENT'])],
+            'rujukan_bayaran' => ['nullable', 'string', 'max:100'],
+            'lampiran_resit' => ['nullable', 'file', 'max:25600', 'mimes:pdf,jpg,jpeg,png'],
+        ]);
+
+        DB::transaction(function () use ($request, $khidmat, $data) {
+            if ($request->hasFile('lampiran_resit')) {
+                $row = $this->storeKnLampiran($khidmat, $request->file('lampiran_resit'), 'Resit Bayaran');
+                $khidmat->update(['id_lampiran_resit' => $row->id]);
+            }
+
+            $this->lejar->rekodBayaranKn($khidmat, [
+                'nombor_resit' => $data['nombor_resit'],
+                'tarikh_resit' => $data['tarikh_resit'],
+                'kaedah_bayaran' => $data['kaedah_bayaran'],
+                'rujukan_bayaran' => $data['rujukan_bayaran'] ?? null,
+            ], $request->user()->name);
+        });
+
+        return redirect()->route('khidmat.show', $khidmat)->with('status', 'Bayaran direkod.');
+    }
+
     // ---- Internals ----
+
+    /**
+     * Branch read/write guard for a route-model-bound KN. KhidmatNasihat has no
+     * CawanganScope, so a branch-pinned officer (without cawangan.view-all) could
+     * otherwise read/edit any branch's KN by id (cross-branch IDOR). Mirrors the
+     * D2 dual-branch rule: own-branch OR origin-of-a-transfer (cawangan_asal_id).
+     * Returns a redirect to bounce the request, or null when access is allowed.
+     */
+    private function assertBranchAccess(KhidmatNasihat $khidmat): ?RedirectResponse
+    {
+        $user = request()->user();
+
+        if ($user && $user->isStaff() && filled($user->cawangan) && ! $user->can('cawangan.view-all')) {
+            $branchId = Cawangan::where('nama', $user->cawangan)->value('id');
+
+            if ($branchId !== null
+                && (int) $khidmat->cawangan_id !== $branchId
+                && (int) $khidmat->cawangan_asal_id !== $branchId) {
+                return redirect()->route('khidmat.index')->with('error', 'Khidmat Nasihat ini bukan di bawah cawangan anda.');
+            }
+        }
+
+        return null;
+    }
 
     /** Shared view payload for create + edit. */
     private function formData(KhidmatNasihat $khidmat, string $mode): array
@@ -265,6 +387,8 @@ class KhidmatNasihatController extends Controller
         return [
             'jenis_permohonan' => $isWakil ? 'SEBAGAI_WAKIL' : 'DIRI_SENDIRI',
             'jenis_wakil' => $jenisWakil,
+            // W1 — explicit source tag for KPI/reporting (prison/clinic vs public).
+            'applicant_source' => KhidmatNasihat::deriveSource($isWakil ? 'SEBAGAI_WAKIL' : 'DIRI_SENDIRI', $jenisWakil),
             'no_pengenalan_wakil' => $isWakil ? ($v['no_pengenalan_wakil'] ?? null) : null,
             'jawatan_wakil' => $isWakil ? ($v['jawatan_wakil'] ?? null) : null,
             'nama_diwakili' => $isWakil ? ($v['nama_diwakili'] ?? null) : null,
@@ -303,4 +427,38 @@ class KhidmatNasihatController extends Controller
         ];
     }
 
+    /**
+     * W1 — store the optional fee-waiver proof when the application is fee-exempt.
+     * Linked to the KN via khidmat_nasihat.id_lampiran_waiver.
+     */
+    private function storeWaiver(KhidmatNasihat $khidmat, KhidmatNasihatRequest $request): void
+    {
+        if (! $request->boolean('is_percuma') || ! $request->hasFile('lampiran_waiver')) {
+            return;
+        }
+
+        $row = $this->storeKnLampiran($khidmat, $request->file('lampiran_waiver'), 'Bukti Pengecualian Bayaran');
+        $khidmat->update(['id_lampiran_waiver' => $row->id]);
+
+        Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE,
+            "Bukti pengecualian bayaran dimuat naik: {$row->nama}");
+    }
+
+    /**
+     * Persist a KN-linked document on the W6 repository disk (mirrors LampiranController)
+     * and link it via uploaded_files.id_khidmat. Caller wires the specific FK column.
+     */
+    private function storeKnLampiran(KhidmatNasihat $khidmat, \Illuminate\Http\UploadedFile $file, string $nama): UploadedFile
+    {
+        $path = $file->store('lampiran', config('filesystems.lampiran_disk', 'repositori'));
+
+        return UploadedFile::create([
+            'nama' => "{$nama} — {$khidmat->no_permohonan}",
+            'file_name' => basename($path),
+            'file_path' => $path,
+            'file_type' => strtolower($file->getClientOriginalExtension() ?: $file->extension()),
+            'id_khidmat' => $khidmat->id,
+            'uploaded_at' => now(),
+        ]);
+    }
 }

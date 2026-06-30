@@ -47,6 +47,10 @@ final class StatusAgihan
 
     public const SEMAKAN_KP_TD = '17';       // withdrawal: awaiting Ketua Pengarah review
 
+    public const PP_SELESAI = '18';          // W16: lawyer marked case work done — awaiting JBG confirmation
+
+    public const KES_DITUTUP = '19';         // W16: JBG confirmed lawyer's selesai → file closed
+
     /** Numeric code → human label (Bahasa Melayu). */
     public const LABELS = [
         '0' => 'Dalam Proses Kelulusan Pengarah',
@@ -65,6 +69,8 @@ final class StatusAgihan
         '15' => 'Dalam Proses Kelulusan Ketua Pengarah (Semula)',
         '16' => 'Dalam Proses Semakan Pengarah (Tarik Diri)',
         '17' => 'Dalam Proses Semakan Ketua Pengarah (Tarik Diri)',
+        '18' => 'Selesai Oleh Peguam Panel (Menunggu Pengesahan JBG)',
+        '19' => 'Kes Ditutup (Pengesahan JBG)',
     ];
 
     /** Legacy string labels written by the pre-parity build → numeric code. */
@@ -86,6 +92,15 @@ final class StatusAgihan
 
     /** Pengarah-rejected new cases (status 9) — recovery queue so they are never stranded. */
     public const BUCKET_DITOLAK = ['9'];
+
+    /**
+     * W16 closure states: lawyer-selesai awaiting JBG confirm (18) + JBG-closed (19).
+     * Intentionally NOT registered in the AgihanSpine assignment buckets — these are
+     * closure-workflow states, surfaced via KeputusanController::senaraiSelesai (18,
+     * the dedicated Pengesahan Selesai queue + sidebar link) and the closed-files list
+     * keyed on tarikh_tutup_fail (19), not the case-assignment spine.
+     */
+    public const BUCKET_SELESAI = ['18', '19'];
 
     /** Human label for any stored value (numeric or legacy string). */
     public static function label(?string $code): string

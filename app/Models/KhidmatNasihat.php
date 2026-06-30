@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\CawanganScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -17,6 +18,17 @@ class KhidmatNasihat extends Model
 
     protected $guarded = ['id'];
 
+    /**
+     * W21 — branch isolation, extending CawanganScope beyond Form. KN keys on the
+     * numeric cawangan_id (+ cawangan_asal_id for D2 dual-branch), so the scope is
+     * constructed by-branch-id. Closes the index()/route-binding cross-branch read
+     * gap; view-all / no-branch staff and lawyers still see everything.
+     */
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new CawanganScope('cawangan_id', 'cawangan_asal_id', true));
+    }
+
     protected $casts = [
         'perakuan' => 'boolean',
         'status_bayaran' => 'boolean',
@@ -25,6 +37,8 @@ class KhidmatNasihat extends Model
         'is_laluan_sumbangan' => 'boolean',
         'tarikh_lahir_mangsa' => 'date',
         'tarikh_proses' => 'datetime',
+        'tarikh_buka_grab' => 'datetime',
+        'tarikh_agihan_pl' => 'datetime',
         'jumlah_bayaran' => 'decimal:2',
         'jumlah_pendapatan' => 'decimal:2',
     ];
@@ -52,10 +66,51 @@ class KhidmatNasihat extends Model
     /** SEBAGAI_WAKIL representative contexts (slice 3). */
     public const JENIS_WAKIL = ['PENJARA', 'JKM', 'MAHKAMAH'];
 
+    // ---- W1: explicit applicant source (derived from jenis_permohonan + jenis_wakil) ----
+    public const SOURCE_PUBLIC = 'PUBLIC';   // DIRI_SENDIRI walk-in
+
+    public const SOURCE_PRISON = 'PRISON';   // SEBAGAI_WAKIL + PENJARA
+
+    public const SOURCE_CLINIC = 'CLINIC';   // SEBAGAI_WAKIL + JKM (welfare/clinic referral)
+
+    public const SOURCE_COURT = 'COURT';     // SEBAGAI_WAKIL + MAHKAMAH
+
+    public const APPLICANT_SOURCE = [self::SOURCE_PUBLIC, self::SOURCE_PRISON, self::SOURCE_CLINIC, self::SOURCE_COURT];
+
+    /** Derive the explicit applicant_source tag from the intake type + wakil context. */
+    public static function deriveSource(?string $jenisPermohonan, ?string $jenisWakil): string
+    {
+        if ($jenisPermohonan !== 'SEBAGAI_WAKIL') {
+            return self::SOURCE_PUBLIC;
+        }
+
+        return match ($jenisWakil) {
+            'PENJARA' => self::SOURCE_PRISON,
+            'JKM' => self::SOURCE_CLINIC,
+            'MAHKAMAH' => self::SOURCE_COURT,
+            default => self::SOURCE_PUBLIC,
+        };
+    }
+
     /** Eligibility-screening jenis (FE selectedJenisKhidmat). */
     public const SARINGAN_SIVIL_SYARIAH = 'SIVIL_SYARIAH';
 
     public const SARINGAN_PENDAMPING = 'PENDAMPING';
+
+    // ---- W5: external panel-lawyer assignment state machine (status_agihan_pl) ----
+    /** Opened to the grab pool; any panel lawyer may self-claim within 7 days. */
+    public const PL_BUKA_GRAB = 'BUKA_GRAB';
+
+    /** Assigned to (or claimed by) an external panel lawyer. Terminal. */
+    public const PL_DIAGIH = 'DIAGIH';
+
+    /** Grab pool expired with no claim (7 days) — back to officer for re-assign/re-open. */
+    public const PL_LUPUT = 'LUPUT';
+
+    /** How an external lawyer got the KN (mod_agihan_peguam). */
+    public const MOD_GRAB = 'GRAB';
+
+    public const MOD_ASSIGN = 'ASSIGN';
 
     public function pengguna(): BelongsTo
     {
@@ -99,6 +154,18 @@ class KhidmatNasihat extends Model
     public function cawangan(): BelongsTo
     {
         return $this->belongsTo(Cawangan::class, 'cawangan_id');
+    }
+
+    /** Assigned external panel lawyer (W5). Set on grab/assign; surrogate id link. */
+    public function peguamPanel(): BelongsTo
+    {
+        return $this->belongsTo(PeguamPanel::class, 'id_peguam_panel');
+    }
+
+    /** Fee-waiver proof (W1). Set when is_percuma + a waiver document is uploaded at intake. */
+    public function lampiranWaiver(): BelongsTo
+    {
+        return $this->belongsTo(UploadedFile::class, 'id_lampiran_waiver');
     }
 
     public function kategori(): BelongsTo

@@ -65,12 +65,18 @@
             <a href="{{ route('pengantaraan.edit', $kes) }}" class="tap-head__btn">Pengantaraan</a>
             <a href="{{ route('mahkamah.edit', $kes) }}" class="tap-head__btn">Kes Mahkamah</a>
             <a href="{{ route('kes.edit', $kes) }}" class="tap-head__btn">✎ Kemaskini</a>
+            @can('kes.pindah')
+                <a href="{{ route('kes.pindah-borang', $kes) }}" class="tap-head__btn">⇄ Pindah Cawangan</a>
+            @endcan
             <a href="{{ route('cetak.ringkasan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Ringkasan</a>
             @if ($kes->nama_pegawai_yang_dapat_kes)
                 <a href="{{ route('cetak.penugasan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Surat Penugasan</a>
             @endif
             @if ($kes->laporanKes->count())
                 <a href="{{ route('cetak.laporan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Laporan</a>
+            @endif
+            @if (filled($kes->tarikh_tutup_fail))
+                <a href="{{ route('cetak.penutupan', $kes) }}" target="_blank" rel="noopener" class="tap-head__btn">⎙ Surat Penutupan</a>
             @endif
         </div>
     </div>
@@ -170,7 +176,21 @@
                         @if ($kes->keputusan) · {{ $kes->keputusan }} @endif
                     </p>
 
-                    @if (blank($kes->tarikh_tutup_fail))
+                    @if (\App\Support\StatusAgihan::normalise($kes->status_agihan) === \App\Support\StatusAgihan::PP_SELESAI)
+                        {{-- W16: lawyer marked this case selesai — JBG confirms or returns it. --}}
+                        <div class="formerr" style="color: var(--success); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.18); margin-bottom:10px;">
+                            Peguam menandakan kes ini <strong>selesai</strong>@if ($kes->tarikh_selesai) pada {{ optional($kes->tarikh_selesai)->format('d/m/Y') }}@endif. Menunggu pengesahan JBG.
+                        </div>
+                        <form method="POST" action="{{ route('keputusan.kes.sahkan-selesai', $kes) }}" style="margin-bottom:10px;" onsubmit="return confirm('Sahkan penyelesaian & tutup fail ini secara rasmi?')">
+                            @csrf
+                            <button type="submit" class="btn btn--primary btn--block">✓ Sahkan Selesai &amp; Tutup Fail</button>
+                        </form>
+                        <form method="POST" action="{{ route('keputusan.kes.tolak-selesai', $kes) }}" class="va-form" onsubmit="return confirm('Kembalikan kes ini kepada peguam?')">
+                            @csrf
+                            <input class="field__input" name="reason" placeholder="Sebab tolak (pilihan)" maxlength="255">
+                            <button type="submit" class="btn btn--ghost btn--block" style="color:var(--danger);">↩ Kembalikan Kepada Peguam</button>
+                        </form>
+                    @elseif (blank($kes->tarikh_tutup_fail))
                         <form method="POST" action="{{ route('kes.lulus', $kes) }}" class="va-form" style="margin-bottom:10px;">
                             @csrf
                             <input class="field__input" name="kelulusan" placeholder="Kelulusan (pilihan)" maxlength="20">

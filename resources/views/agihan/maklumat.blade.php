@@ -120,9 +120,19 @@
                     <label class="field__label">Peguam Panel <span class="req">*</span></label>
                     <select name="peguam_id" class="field__input" required>
                         <option value="" disabled selected>Pilih peguam…</option>
-                        @foreach ($peguamList as $p)
-                            <option value="{{ $p->id }}">{{ $p->nama_peguam }} — {{ $p->nama_firma ?: 'Firma tidak dinyatakan' }}</option>
-                        @endforeach
+                        {{-- W11: workload-ranked shortlist (least-loaded first). --}}
+                        @isset($peguamShortlist)
+                            <optgroup label="Disyorkan (beban paling rendah)">
+                                @foreach ($peguamShortlist as $p)
+                                    <option value="{{ $p['id'] }}">{{ $p['nama'] }} — {{ $p['firma'] ?: 'Firma tidak dinyatakan' }} · beban: {{ $p['beban'] }}</option>
+                                @endforeach
+                            </optgroup>
+                        @endisset
+                        <optgroup label="Semua peguam panel">
+                            @foreach ($peguamList as $p)
+                                <option value="{{ $p->id }}">{{ $p->nama_peguam }} — {{ $p->nama_firma ?: 'Firma tidak dinyatakan' }}</option>
+                            @endforeach
+                        </optgroup>
                     </select>
                 </div>
                 <div class="field">

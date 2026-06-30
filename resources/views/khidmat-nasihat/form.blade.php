@@ -77,7 +77,8 @@
     </div>
 
     <form method="POST" action="{{ $action }}" id="knWiz" data-error-step="{{ $errorStep ?? '' }}"
-          data-tarikh-url="{{ route('slot.tarikh') }}" data-masa-url="{{ route('slot.masa') }}" novalidate>
+          data-tarikh-url="{{ route('slot.tarikh') }}" data-masa-url="{{ route('slot.masa') }}"
+          enctype="multipart/form-data" novalidate>
         @csrf
         @unless ($isCreate) @method('PUT') @endunless
         <input type="hidden" name="aksi" id="knAksi" value="draf">
@@ -308,6 +309,17 @@
                             <input type="checkbox" name="is_percuma" id="knPercuma" value="1" @checked($val('is_percuma'))>
                             Percuma (dikecualikan sepenuhnya)
                         </label>
+                    </div>
+                    {{-- W1: fee-waiver proof — only meaningful when Percuma is ticked. --}}
+                    <div class="wiz-field wiz-field--span-2">
+                        <label class="wiz-field__label">Bukti Pengecualian Bayaran (jika percuma)</label>
+                        <input type="file" class="wiz-field__input" name="lampiran_waiver" id="knWaiver"
+                               accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                        <div class="wiz-field__hint">Muat naik dokumen sokongan pengecualian (PDF/imej/Word, maks 25 MB).</div>
+                        @if ($khidmat->lampiranWaiver)
+                            <div class="wiz-field__hint">Sedia ada: {{ $khidmat->lampiranWaiver->nama }}</div>
+                        @endif
+                        @error('lampiran_waiver') <div class="wiz-field__hint" style="color:var(--danger)">{{ $message }}</div> @enderror
                     </div>
                     <div class="wiz-field wiz-field--span-2">
                         <div style="border:1px dashed var(--line); border-radius:var(--r-lg); padding:18px; background:rgba(0,184,169,0.04);">
