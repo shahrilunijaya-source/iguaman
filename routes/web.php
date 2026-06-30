@@ -542,6 +542,8 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/khidmat-proses/{khidmat}/temu/selesai', [KhidmatProsesController::class, 'selesai'])->name('khidmat.proses.temu.selesai')->whereNumber('khidmat');
         // Slice C: KN -> forms case bridge ("Buka Kes") — open a litigation case from a SELESAI KN.
         Route::post('/khidmat-proses/{khidmat}/buka-kes', [KhidmatProsesController::class, 'bukaKes'])->name('khidmat.proses.buka-kes')->whereNumber('khidmat');
+        // W2 — manual iPayment: record a counter payment of the KN intake fee + ledger sync.
+        Route::post('/khidmat-nasihat/{khidmat}/bayar', [KhidmatNasihatController::class, 'rekodBayaran'])->name('khidmat.bayar')->whereNumber('khidmat');
     });
     // ==== END BATCH 11 SLICES A+B ====
 

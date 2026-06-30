@@ -16,11 +16,13 @@ use App\Models\UploadedFile;
 use App\Support\Audit;
 use App\Support\KhidmatBayaran;
 use App\Support\KhidmatNasihatService;
+use App\Support\LejarTuntutanService;
 use App\Support\SlotAvailabilityService;
 use App\Support\TransferCawanganService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use RuntimeException;
 
@@ -41,6 +43,7 @@ class KhidmatNasihatController extends Controller
     public function __construct(
         private readonly SlotAvailabilityService $slots,
         private readonly KhidmatNasihatService $service,
+        private readonly LejarTuntutanService $lejar,
     ) {}
 
     public function index(Request $request): View
@@ -259,6 +262,47 @@ class KhidmatNasihatController extends Controller
             ->with('status', $request->isHantar() ? 'Permohonan dihantar.' : 'Draf dikemaskini.');
     }
 
+    /**
+     * W2 — record a manual (counter) payment of the KN intake fee: receipt details +
+     * an optional resit upload. Flips the KN payment flag and stamps the central ledger
+     * row (DIBAYAR). Gated permission:khidmat.proses. Schema future-proofed for a live
+     * iPayment gateway by the open kaedah_bayaran set (TUNAI today, IPAYMENT later).
+     */
+    public function rekodBayaran(Request $request, KhidmatNasihat $khidmat): RedirectResponse
+    {
+        if ($block = $this->assertBranchAccess($khidmat)) {
+            return $block;
+        }
+
+        abort_if($khidmat->is_percuma || (float) $khidmat->jumlah_bayaran <= 0, 403,
+            'Tiada bayaran untuk direkod bagi permohonan ini.');
+        abort_if((bool) $khidmat->status_bayaran, 403, 'Bayaran telah direkod.');
+
+        $data = $request->validate([
+            'nombor_resit' => ['required', 'string', 'max:50'],
+            'tarikh_resit' => ['required', 'date'],
+            'kaedah_bayaran' => ['required', Rule::in(['TUNAI', 'KAD', 'BANK_IN', 'EWALLET', 'IPAYMENT'])],
+            'rujukan_bayaran' => ['nullable', 'string', 'max:100'],
+            'lampiran_resit' => ['nullable', 'file', 'max:25600', 'mimes:pdf,jpg,jpeg,png'],
+        ]);
+
+        DB::transaction(function () use ($request, $khidmat, $data) {
+            if ($request->hasFile('lampiran_resit')) {
+                $row = $this->storeKnLampiran($khidmat, $request->file('lampiran_resit'), 'Resit Bayaran');
+                $khidmat->update(['id_lampiran_resit' => $row->id]);
+            }
+
+            $this->lejar->rekodBayaranKn($khidmat, [
+                'nombor_resit' => $data['nombor_resit'],
+                'tarikh_resit' => $data['tarikh_resit'],
+                'kaedah_bayaran' => $data['kaedah_bayaran'],
+                'rujukan_bayaran' => $data['rujukan_bayaran'] ?? null,
+            ], $request->user()->name);
+        });
+
+        return redirect()->route('khidmat.show', $khidmat)->with('status', 'Bayaran direkod.');
+    }
+
     // ---- Internals ----
 
     /**
@@ -385,8 +429,7 @@ class KhidmatNasihatController extends Controller
 
     /**
      * W1 — store the optional fee-waiver proof when the application is fee-exempt.
-     * Reuses the W6 repository disk (mirrors LampiranController) and links the file
-     * to the KN via uploaded_files.id_khidmat + khidmat_nasihat.id_lampiran_waiver.
+     * Linked to the KN via khidmat_nasihat.id_lampiran_waiver.
      */
     private function storeWaiver(KhidmatNasihat $khidmat, KhidmatNasihatRequest $request): void
     {
@@ -394,21 +437,28 @@ class KhidmatNasihatController extends Controller
             return;
         }
 
-        $file = $request->file('lampiran_waiver');
+        $row = $this->storeKnLampiran($khidmat, $request->file('lampiran_waiver'), 'Bukti Pengecualian Bayaran');
+        $khidmat->update(['id_lampiran_waiver' => $row->id]);
+
+        Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE,
+            "Bukti pengecualian bayaran dimuat naik: {$row->nama}");
+    }
+
+    /**
+     * Persist a KN-linked document on the W6 repository disk (mirrors LampiranController)
+     * and link it via uploaded_files.id_khidmat. Caller wires the specific FK column.
+     */
+    private function storeKnLampiran(KhidmatNasihat $khidmat, \Illuminate\Http\UploadedFile $file, string $nama): UploadedFile
+    {
         $path = $file->store('lampiran', config('filesystems.lampiran_disk', 'repositori'));
 
-        $row = UploadedFile::create([
-            'nama' => 'Bukti Pengecualian Bayaran — '.$khidmat->no_permohonan,
+        return UploadedFile::create([
+            'nama' => "{$nama} — {$khidmat->no_permohonan}",
             'file_name' => basename($path),
             'file_path' => $path,
             'file_type' => strtolower($file->getClientOriginalExtension() ?: $file->extension()),
             'id_khidmat' => $khidmat->id,
             'uploaded_at' => now(),
         ]);
-
-        $khidmat->update(['id_lampiran_waiver' => $row->id]);
-
-        Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE,
-            "Bukti pengecualian bayaran dimuat naik: {$row->nama}");
     }
 }

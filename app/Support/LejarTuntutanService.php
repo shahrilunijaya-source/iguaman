@@ -128,6 +128,50 @@ class LejarTuntutanService
         ], $actor);
     }
 
+    /**
+     * W2 — record a manual counter payment of a KN intake fee. Ensures the central
+     * SUMBER_KN ledger row exists, stamps the receipt, marks it DIBAYAR, and flips the
+     * KN payment flag. A counter payment IS the payment, so it skips the panel-claim
+     * approval chain (DIHANTAR->SEMAKAN->DILULUS). Idempotent: re-recording overwrites
+     * the receipt on the same row. Returns null when the KN has no fee to collect.
+     *
+     * @param  array{nombor_resit:string,tarikh_resit:string,kaedah_bayaran:string,rujukan_bayaran?:?string}  $receipt
+     */
+    public function rekodBayaranKn(KhidmatNasihat $kn, array $receipt, string $actor): ?LejarTuntutanBayaran
+    {
+        if ($kn->is_percuma || (float) $kn->jumlah_bayaran <= 0) {
+            return null;
+        }
+
+        return DB::transaction(function () use ($kn, $receipt, $actor): LejarTuntutanBayaran {
+            $row = $this->fromKhidmatNasihat($kn, $actor);
+
+            if ($row === null) {
+                throw new RuntimeException('Tiada baris lejar untuk Khidmat Nasihat ini.');
+            }
+
+            $fresh = LejarTuntutanBayaran::whereKey($row->id)->lockForUpdate()->firstOrFail();
+            $fresh->fill([
+                'nombor_resit' => $receipt['nombor_resit'],
+                'tarikh_resit' => $receipt['tarikh_resit'],
+                'kaedah_bayaran' => $receipt['kaedah_bayaran'],
+                'rujukan_bayaran' => $receipt['rujukan_bayaran'] ?? null,
+                'jumlah_bayaran' => $kn->jumlah_bayaran,
+                'status_bayaran' => true,
+                'status_tuntutan' => LejarTuntutanBayaran::STATUS_DIBAYAR,
+                'kemaskini_oleh' => $actor,
+            ]);
+            $fresh->save();
+
+            KhidmatNasihat::whereKey($kn->id)->update(['status_bayaran' => true]);
+
+            Audit::log('lejar_tuntutan_bayaran', $fresh->id, Audit::UPDATE,
+                "Bayaran kaunter KN direkod (resit {$receipt['nombor_resit']}).", $actor);
+
+            return $fresh;
+        });
+    }
+
     /** Apply one guarded lifecycle transition under a row lock. */
     public function transition(LejarTuntutanBayaran $row, string $action, string $actor, array $extra = []): void
     {
