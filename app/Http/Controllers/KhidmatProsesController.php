@@ -104,6 +104,22 @@ class KhidmatProsesController extends Controller
         );
     }
 
+    /**
+     * Buka Kes (slice C): open a litigation case (forms row) from a SELESAI KN.
+     * On success redirect to the new case; on a guard failure redirect back.
+     */
+    public function bukaKes(Request $request, KhidmatNasihat $khidmat): RedirectResponse
+    {
+        try {
+            $form = $this->svc->bukaKes($khidmat, $request->user());
+        } catch (RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('kes.show', $form)
+            ->with('status', 'Kes dibuka. No. Fail: '.$form->no_fail);
+    }
+
     /** Run a service action; redirect back with success or the guard error message. */
     private function guarded(callable $action, string $success): RedirectResponse
     {

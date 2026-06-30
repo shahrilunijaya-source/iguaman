@@ -70,8 +70,15 @@ class KhidmatNasihat extends Model
         return $this->belongsTo(User::class, 'id_pegawai_kn');
     }
 
-    // forms() link (KN -> forms case bridge) is reserved for slice C — the
-    // id_forms column exists but is not wired until that product decision lands.
+    /**
+     * Linked litigation case (forms row) — batch 11 slice C "Buka Kes" bridge.
+     * Set once, when an officer opens a case from a SELESAI KN. id_forms is
+     * mass-assignable ($guarded = ['id']); no DB FK (forms is the legacy spine).
+     */
+    public function forms(): BelongsTo
+    {
+        return $this->belongsTo(Form::class, 'id_forms');
+    }
 
     /**
      * Resolve the linked court (slice 3 MAHKAMAH context). No DB FK — id_mahkamah

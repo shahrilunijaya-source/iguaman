@@ -395,6 +395,8 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/khidmat-proses/{khidmat}/temu/tolak', [KhidmatProsesController::class, 'tolak'])->name('khidmat.proses.temu.tolak')->whereNumber('khidmat');
         Route::post('/khidmat-proses/{khidmat}/temu/kehadiran', [KhidmatProsesController::class, 'kehadiran'])->name('khidmat.proses.temu.kehadiran')->whereNumber('khidmat');
         Route::post('/khidmat-proses/{khidmat}/temu/selesai', [KhidmatProsesController::class, 'selesai'])->name('khidmat.proses.temu.selesai')->whereNumber('khidmat');
+        // Slice C: KN -> forms case bridge ("Buka Kes") — open a litigation case from a SELESAI KN.
+        Route::post('/khidmat-proses/{khidmat}/buka-kes', [KhidmatProsesController::class, 'bukaKes'])->name('khidmat.proses.buka-kes')->whereNumber('khidmat');
     });
     // ==== END BATCH 11 SLICES A+B ====
 });

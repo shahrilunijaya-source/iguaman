@@ -45,3 +45,15 @@
         <button type="submit" class="btn btn--primary" style="padding:4px 10px;">Selesai</button>
     </form>
 @endif
+
+{{-- Buka Kes (slice C): open a litigation case from a SELESAI KN, or link to the one already opened. --}}
+@if ($row->id_forms)
+    <a href="{{ route('kes.show', $row->id_forms) }}" class="btn" style="padding:4px 10px;">Lihat Kes</a>
+@elseif ($row->status_kn === \App\Models\KhidmatNasihat::STATUS_SELESAI)
+    @can('khidmat.proses')
+        <form method="POST" action="{{ route('khidmat.proses.buka-kes', $row) }}" onsubmit="return confirm('Buka kes litigasi daripada permohonan ini?');">
+            @csrf
+            <button type="submit" class="btn btn--primary" style="padding:4px 10px;">Buka Kes</button>
+        </form>
+    @endcan
+@endif

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Support;
 
 use App\Models\Cawangan;
+use App\Models\Form;
 use App\Models\KhidmatNasihat;
+use App\Models\RefKategoriKn;
 use App\Models\TemuJanji;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -159,6 +161,64 @@ class KhidmatProsesService
     {
         $this->transitionTemu($khidmat, 'selesai', $actor, function (KhidmatNasihat $kn) use ($actor) {
             $kn->update(['status_kn' => KhidmatNasihat::STATUS_SELESAI, 'kemaskini_oleh' => $actor]);
+        });
+    }
+
+    /**
+     * Buka Kes — slice C: open a litigation case (a forms row) from a completed
+     * Khidmat Nasihat. Manual officer action (not auto-on-attendance).
+     *
+     * Guards:
+     *   - the KN must be SELESAI (appointment attended + completed);
+     *   - it must not already be linked to a case (id_forms === null) — no second row.
+     *
+     * Prefill mirrors KesController::store: created_at/tarikh_daftar/didaftarkan_oleh
+     * and diterima='' (NOT NULL legacy col), then no_fail via NoFailGenerator when blank.
+     * The branch string lands in forms.cawangan so CawanganScope lines up.
+     *
+     * @throws RuntimeException when the KN is not SELESAI or a case already exists.
+     */
+    public function bukaKes(KhidmatNasihat $kn, User $actor): Form
+    {
+        return DB::transaction(function () use ($kn, $actor): Form {
+            $fresh = KhidmatNasihat::whereKey($kn->id)->lockForUpdate()->firstOrFail();
+
+            if ($fresh->status_kn !== KhidmatNasihat::STATUS_SELESAI) {
+                throw new RuntimeException('KN belum selesai — kes hanya boleh dibuka selepas khidmat nasihat selesai.');
+            }
+
+            if ($fresh->id_forms !== null) {
+                throw new RuntimeException('Kes telah dibuka untuk permohonan ini.');
+            }
+
+            $cawangan = Cawangan::find($fresh->cawangan_id)?->nama ?? $actor->cawangan;
+            $tarikhKn = $fresh->temuJanji?->tarikh_temu_janji;
+            $kategori = $fresh->id_kategori ? RefKategoriKn::find($fresh->id_kategori)?->jenis_kategori : null;
+
+            $form = Form::create([
+                'nama' => $fresh->nama_mangsa,
+                'nokp' => $fresh->id_pengenalan_mangsa,
+                'jenis_kes' => $fresh->jenis_kes,
+                'kategori_kes' => $kategori,
+                'tarikh_khidmat_nasihat' => $tarikhKn,
+                'cawangan' => $cawangan,
+                'created_at' => now(),
+                'tarikh_daftar' => now()->toDateString(),
+                'didaftarkan_oleh' => $actor->name,
+                'diterima' => '', // NOT NULL in legacy schema
+            ]);
+
+            if (blank($form->no_fail)) {
+                $form->update(['no_fail' => app(NoFailGenerator::class)->generate($form)]);
+            }
+
+            $fresh->id_forms = $form->id;
+            $fresh->save();
+
+            Audit::log('khidmat_nasihat', $fresh->id, Audit::UPDATE,
+                "Buka Kes — forms #{$form->id} (No. Fail: {$form->no_fail}).", $actor->name);
+
+            return $form;
         });
     }
 
