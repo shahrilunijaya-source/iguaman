@@ -10,10 +10,9 @@ use App\Models\MahkamahSivil;
 use App\Models\MahkamahSyariah;
 use App\Models\RefKategoriKn;
 use App\Models\RefNegeri;
-use App\Models\SlotTemuJanji;
-use App\Models\TemuJanji;
 use App\Support\Audit;
 use App\Support\KhidmatBayaran;
+use App\Support\KhidmatNasihatService;
 use App\Support\SlotAvailabilityService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -34,7 +33,10 @@ use Illuminate\View\View;
  */
 class KhidmatNasihatController extends Controller
 {
-    public function __construct(private readonly SlotAvailabilityService $slots) {}
+    public function __construct(
+        private readonly SlotAvailabilityService $slots,
+        private readonly KhidmatNasihatService $service,
+    ) {}
 
     public function index(Request $request): View
     {
@@ -150,17 +152,16 @@ class KhidmatNasihatController extends Controller
     {
         $this->assertSaringanGate($request);
 
-        $khidmat = DB::transaction(function () use ($request) {
-            $data = $this->mapInput($request);
-            $khidmat = KhidmatNasihat::create($data);
-            $khidmat->update(['no_permohonan' => $this->nextNoPermohonan($khidmat)]);
+        $khidmat = $this->service->create($this->mapInput($request));
 
-            if ($request->isHantar()) {
-                $this->bookSlot($khidmat, $request);
-            }
-
-            return $khidmat;
-        });
+        if ($request->isHantar()) {
+            $this->service->bookSlot(
+                $khidmat,
+                $request->validated()['tarikh_temu_janji'],
+                $request->validated()['masa_temu_janji'],
+                $request->user()->name,
+            );
+        }
 
         Audit::log('khidmat_nasihat', $khidmat->id, Audit::INSERT,
             "Permohonan Khidmat Nasihat baharu: {$khidmat->no_permohonan} ({$khidmat->nama_mangsa})");
@@ -184,7 +185,12 @@ class KhidmatNasihatController extends Controller
             $khidmat->update($this->mapInput($request));
 
             if ($request->isHantar() && $khidmat->id_temu_janji === null) {
-                $this->bookSlot($khidmat, $request);
+                $this->service->bookSlot(
+                    $khidmat,
+                    $request->validated()['tarikh_temu_janji'],
+                    $request->validated()['masa_temu_janji'],
+                    $request->user()->name,
+                );
             }
         });
 
@@ -293,53 +299,4 @@ class KhidmatNasihatController extends Controller
         ];
     }
 
-    /**
-     * Book the chosen slot: create a temu_janji (MENUNGGU), link it both ways,
-     * and flip the slot's is_temujanji flag. Validates the slot is still open.
-     */
-    private function bookSlot(KhidmatNasihat $khidmat, KhidmatNasihatRequest $request): void
-    {
-        $tarikh = $request->validated()['tarikh_temu_janji'];
-        $masa = $request->validated()['masa_temu_janji'];
-
-        $slot = SlotTemuJanji::query()
-            ->where('cawangan_id', $khidmat->cawangan_id)
-            ->whereDate('tarikh_slot', $tarikh)
-            ->whereRaw("DATE_FORMAT(masa_mula, '%H:%i') = ?", [$masa])
-            ->where('is_temujanji', false)
-            ->where('status_aktif', true)
-            ->lockForUpdate()
-            ->first();
-
-        abort_if($slot === null, 422, 'Slot temu janji tidak lagi tersedia. Sila pilih masa lain.');
-
-        $temu = TemuJanji::create([
-            'id_khidmat_nasihat' => $khidmat->id,
-            'slot_temu_janji_id' => $slot->id,
-            'cawangan_id' => $khidmat->cawangan_id,
-            'tarikh_temu_janji' => $slot->tarikh_slot,
-            'masa_mula' => $slot->masa_mula,
-            'masa_akhir' => $slot->masa_akhir,
-            'status' => 'MENUNGGU',
-            'cipta_oleh' => $request->user()->name,
-        ]);
-
-        $slot->update(['is_temujanji' => true]);
-        $khidmat->update(['id_temu_janji' => $temu->id]);
-    }
-
-    /** KN/{cawangan-kod}/{year}/{seq} — seq running per (cawangan, year). */
-    private function nextNoPermohonan(KhidmatNasihat $khidmat): string
-    {
-        $cawangan = $khidmat->cawangan_id ? Cawangan::find($khidmat->cawangan_id) : null;
-        $kod = $cawangan?->kod ?: 'JBG';
-        $year = now()->year;
-
-        $seq = KhidmatNasihat::where('cawangan_id', $khidmat->cawangan_id)
-            ->whereYear('created_at', $year)
-            ->where('id', '<=', $khidmat->id)
-            ->count();
-
-        return sprintf('KN/%s/%d/%04d', $kod, $year, max(1, $seq));
-    }
 }
