@@ -156,7 +156,7 @@ class AgihanSpineController extends Controller
     /** Which tier form the current user may act on, given the case status. */
     private function stage(?string $status, User $user): ?string
     {
-        $is = fn (array $roles) => $user->hasRole(...$roles);
+        $is = fn (array $roles) => $user->hasRole($roles);
 
         return match (true) {
             $status === StatusAgihan::BARU_PENGARAH && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'pengarah_baru',

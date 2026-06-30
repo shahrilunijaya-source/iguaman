@@ -84,12 +84,12 @@ class TarikDiriController extends Controller
 
     private function stage(?string $status, User $user): ?string
     {
-        $is = fn (...$roles) => $user->hasRole(...$roles);
+        $is = fn (array $roles) => $user->hasRole($roles);
 
         return match (true) {
-            $status === StatusAgihan::DALAM_PROSES_TARIK_DIRI && $is(User::ROLE_PPUU, User::ROLE_KOORDINATOR, User::ROLE_ADMIN) => 'ppuu',
-            $status === StatusAgihan::SEMAKAN_PENGARAH_TD && $is(User::ROLE_PENGARAH, User::ROLE_ADMIN) => 'pengarah',
-            $status === StatusAgihan::SEMAKAN_KP_TD && $is(User::ROLE_KETUA_PENGARAH, User::ROLE_ADMIN) => 'kp',
+            $status === StatusAgihan::DALAM_PROSES_TARIK_DIRI && $is([User::ROLE_PPUU, User::ROLE_KOORDINATOR, User::ROLE_ADMIN]) => 'ppuu',
+            $status === StatusAgihan::SEMAKAN_PENGARAH_TD && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'pengarah',
+            $status === StatusAgihan::SEMAKAN_KP_TD && $is([User::ROLE_KETUA_PENGARAH, User::ROLE_ADMIN]) => 'kp',
             default => null,
         };
     }

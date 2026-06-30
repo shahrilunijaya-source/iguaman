@@ -28,12 +28,16 @@ class PermohonanTest extends TestCase
         DB::purge('mysql');
         DB::reconnect('mysql');
 
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        (new \Database\Seeders\RolePermissionSeeder())->run();
+
         $this->cleanup();
     }
 
     protected function tearDown(): void
     {
         $this->cleanup();
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
         parent::tearDown();
     }
 
@@ -45,20 +49,26 @@ class PermohonanTest extends TestCase
 
     private function staff(): User
     {
-        return User::create([
+        $user = User::create([
             'name' => 'PHPUnit Staff', 'email' => 'staff@phpunit.local',
             'password' => Hash::make('secret'), 'user_type' => 'staff',
             'role' => 'admin', 'is_active' => true,
         ]);
+        $user->syncRoles(['admin']);
+
+        return $user;
     }
 
     private function lawyer(): User
     {
-        return User::create([
+        $user = User::create([
             'name' => 'PHPUnit Peguam', 'email' => 'peguam@phpunit.local',
             'password' => Hash::make('secret'), 'user_type' => 'lawyer',
             'role' => 'peguam', 'is_active' => true,
         ]);
+        $user->syncRoles(['peguam']);
+
+        return $user;
     }
 
     public function test_staff_sees_create_form(): void

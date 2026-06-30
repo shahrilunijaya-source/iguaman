@@ -16,22 +16,28 @@ class HardeningTest extends TestCase
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => 'iguaman_2in1']);
         DB::purge('mysql');
         DB::reconnect('mysql');
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        (new \Database\Seeders\RolePermissionSeeder())->run();
         User::where('email', 'like', '%@phpunit.local')->delete();
     }
 
     protected function tearDown(): void
     {
         User::where('email', 'like', '%@phpunit.local')->delete();
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
         parent::tearDown();
     }
 
     private function staff(bool $mustChange): User
     {
-        return User::create([
+        $user = User::create([
             'name' => 'PHPUnit Staff', 'email' => 'staff@phpunit.local',
             'password' => Hash::make('secret123'), 'user_type' => 'staff',
             'role' => 'admin', 'is_active' => true, 'must_change_password' => $mustChange,
         ]);
+        $user->syncRoles(['admin']);
+
+        return $user;
     }
 
     public function test_flagged_user_forced_to_change_password(): void
