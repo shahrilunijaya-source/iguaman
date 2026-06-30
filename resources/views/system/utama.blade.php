@@ -63,7 +63,7 @@
             <div class="tap-card__eyebrow" style="color:#C98A00;">⚠ Perlu Tindakan ({{ $perluTindakan->count() }})</div>
             <p class="dash-empty__sub" style="margin:0 0 8px;">Kes belum diagih atau permohonan Peguam Panel ditolak — perlu kemaskini.</p>
             @foreach ($perluTindakan as $k)
-                <a href="{{ route('agihan.form', $k->id) }}" class="tap-card__row" style="text-decoration:none; align-items:center;">
+                <a href="{{ route('agihan.maklumat', $k->id) }}" class="tap-card__row" style="text-decoration:none; align-items:center;">
                     <div class="k">{{ $k->no_fail ?: '#'.$k->id }} · {{ $k->nama ?: 'Tanpa Nama' }} <span style="color:var(--mute); font-size:11px;">· {{ $k->cawangan ?: '—' }}</span></div>
                     <div class="v" style="text-align:right;"><span class="pill pill--overdue">{{ in_array($k->status_agihan, ['9','14']) ? 'PP Ditolak' : 'Belum Diagih' }}</span></div>
                 </a>

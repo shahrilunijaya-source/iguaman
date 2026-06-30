@@ -16,20 +16,35 @@ namespace App\Support;
 final class StatusAgihan
 {
     public const BARU_PENGARAH = '0';        // awaiting Pengarah review of a new case
+
     public const DITAWARKAN = '1';           // offered to panel lawyer
+
     public const DITERIMA = '2';             // accepted by panel lawyer (case active)
+
     public const PPUU_AGIH_SEMULA = '4';     // bounced back to PPUU to re-pick
+
     public const SELESAI = '5';              // case closed
+
     public const TARIK_DIRI_LULUS = '6';     // withdrawal approved → returned to pool
+
     public const LEBIH_MASA = '7';           // auto re-assign (no PP response in 7 days)
+
     public const DIAGIH_PPUU = '8';          // awaiting PPUU lawyer selection
+
     public const DITOLAK_PENGARAH = '9';     // Pengarah rejected the new case
+
     public const SOKONGAN_PENGARAH = '10';   // awaiting Pengarah endorsement of PPUU pick
+
     public const DALAM_PROSES_TARIK_DIRI = '12'; // PP submitted withdrawal
+
     public const KELULUSAN_KP = '13';        // awaiting Ketua Pengarah final approval
+
     public const TOLAK_KE_CAWANGAN = '14';   // KP rejected back to branch
+
     public const KELULUSAN_KP_SEMULA = '15'; // re-submitted to KP after rejection
+
     public const SEMAKAN_PENGARAH_TD = '16'; // withdrawal: awaiting Pengarah review
+
     public const SEMAKAN_KP_TD = '17';       // withdrawal: awaiting Ketua Pengarah review
 
     /** Numeric code → human label (Bahasa Melayu). */
@@ -62,9 +77,15 @@ final class StatusAgihan
 
     /** List-bucket status sets (senarai-pengagihan-*). */
     public const BUCKET_BARU = ['0', '8', '10', '13'];
+
     public const BUCKET_SEMASA = ['1', '2', '5'];
+
     public const BUCKET_SEMULA = ['4', '15'];
+
     public const BUCKET_TARIK_DIRI = ['12', '16', '17'];
+
+    /** Pengarah-rejected new cases (status 9) — recovery queue so they are never stranded. */
+    public const BUCKET_DITOLAK = ['9'];
 
     /** Human label for any stored value (numeric or legacy string). */
     public static function label(?string $code): string

@@ -270,7 +270,7 @@ class Batch11OfficerProcessingTest extends TestCase
 
     public function test_reject_appointment_menunggu_to_batal_with_reason(): void
     {
-        $kn = $this->makeKhidmat();
+        $kn = $this->makeKhidmat(['status_kn' => KhidmatNasihat::STATUS_DALAM_PROSES]);
         $temu = $this->makeTemu($kn, 'MENUNGGU');
 
         $this->actingAs($this->user('pegawai@test.local'))
@@ -279,6 +279,8 @@ class Batch11OfficerProcessingTest extends TestCase
 
         $this->assertSame('BATAL', $temu->fresh()->status);
         $this->assertStringContainsString('tidak layak', (string) $kn->fresh()->ulasan_pegawai);
+        // BL-3: rejecting the appointment cancels the advisory request — no orphan.
+        $this->assertSame(KhidmatNasihat::STATUS_BATAL, $kn->fresh()->status_kn);
     }
 
     public function test_attendance_disahkan_to_hadir(): void
@@ -293,9 +295,9 @@ class Batch11OfficerProcessingTest extends TestCase
         $this->assertSame('HADIR', $temu->fresh()->status);
     }
 
-    public function test_attendance_disahkan_to_tidak_hadir(): void
+    public function test_attendance_disahkan_to_tidak_hadir_closes_kn(): void
     {
-        $kn = $this->makeKhidmat();
+        $kn = $this->makeKhidmat(['status_kn' => KhidmatNasihat::STATUS_DALAM_PROSES]);
         $temu = $this->makeTemu($kn, 'DISAHKAN');
 
         $this->actingAs($this->user('pegawai@test.local'))
@@ -303,6 +305,8 @@ class Batch11OfficerProcessingTest extends TestCase
             ->assertRedirect();
 
         $this->assertSame('TIDAK_HADIR', $temu->fresh()->status);
+        // BL-3: a no-show is terminal (Selesai Tanpa Kehadiran) — never hangs in DALAM_PROSES.
+        $this->assertSame(KhidmatNasihat::STATUS_SELESAI, $kn->fresh()->status_kn);
     }
 
     public function test_complete_hadir_to_selesai_sets_kn_selesai(): void

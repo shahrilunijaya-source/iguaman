@@ -25,6 +25,7 @@ class AgihanSpineController extends Controller
         'baru' => [StatusAgihan::BUCKET_BARU, 'Pengagihan Baru'],
         'semasa' => [StatusAgihan::BUCKET_SEMASA, 'Pengagihan Semasa'],
         'semula' => [StatusAgihan::BUCKET_SEMULA, 'Pengagihan Semula'],
+        'ditolak' => [StatusAgihan::BUCKET_DITOLAK, 'Agihan Ditolak'],
     ];
 
     /** Work-queue list for an assignment bucket (baru / semasa / semula). */
@@ -66,6 +67,38 @@ class AgihanSpineController extends Controller
             'sejarahPpuu' => SejarahPpuu::where('id_kes', $kes->id)->orderByDesc('id')->get(),
             'sejarahPp' => SejarahPeguamPanel::where('id_kes', $kes->id)->orderByDesc('id')->get(),
         ]);
+    }
+
+    /** Entry — send an approved, unassigned case into the spine (NULL→0). agihan.manage. */
+    public function masuk(Form $kes, AgihanService $svc): RedirectResponse
+    {
+        abort_unless(StatusAgihan::normalise($kes->status_agihan) === null, 422, 'Kes ini sudah dalam proses agihan.');
+
+        $svc->masuk($kes, request()->user());
+
+        return redirect()->route('agihan.maklumat', $kes)->with('status', 'Kes dihantar ke proses agihan. Menunggu tindakan Pengarah.');
+    }
+
+    /** Recovery — re-open a Pengarah-rejected case for another assignment attempt (9→0). */
+    public function bukaSemula(Request $request, Form $kes, AgihanService $svc): RedirectResponse
+    {
+        $data = $request->validate(['ulasan' => ['nullable', 'string', 'max:255']]);
+        $this->ensureStatus($kes, [StatusAgihan::DITOLAK_PENGARAH]);
+
+        $svc->pengarahBukaSemula($kes, $request->user(), $data['ulasan'] ?? null);
+
+        return back()->with('status', 'Kes dibuka semula untuk pertimbangan agihan baharu.');
+    }
+
+    /** Recovery — abandon assignment of a rejected case (9→NULL, stays in rekod kes). */
+    public function batalAgihan(Request $request, Form $kes, AgihanService $svc): RedirectResponse
+    {
+        $data = $request->validate(['sebab' => ['required', 'string', 'max:255']]);
+        $this->ensureStatus($kes, [StatusAgihan::DITOLAK_PENGARAH]);
+
+        $svc->pengarahBatalAgihan($kes, $request->user(), $data['sebab']);
+
+        return back()->with('status', 'Agihan kes dibatalkan.');
     }
 
     /** Tier 1 — Pengarah accepts a new case + assigns a PPUU (0→8). */
@@ -159,11 +192,15 @@ class AgihanSpineController extends Controller
         $is = fn (array $roles) => $user->hasRole($roles);
 
         return match (true) {
+            // Approved-but-unassigned case (no status_agihan yet): offer the "enter spine" action.
+            $status === null && $user->can('agihan.manage') => 'belum_masuk',
             $status === StatusAgihan::BARU_PENGARAH && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'pengarah_baru',
             in_array($status, [StatusAgihan::DIAGIH_PPUU, StatusAgihan::PPUU_AGIH_SEMULA, StatusAgihan::KELULUSAN_KP_SEMULA], true)
                 && $is([User::ROLE_PPUU, User::ROLE_KOORDINATOR, User::ROLE_ADMIN]) => 'ppuu_pilih',
             $status === StatusAgihan::SOKONGAN_PENGARAH && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'pengarah_sokong',
             $status === StatusAgihan::KELULUSAN_KP && $is([User::ROLE_KETUA_PENGARAH, User::ROLE_ADMIN]) => 'kp_keputusan',
+            // Pengarah-rejected case (9): recovery — re-open or abandon.
+            $status === StatusAgihan::DITOLAK_PENGARAH && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'ditolak_pengarah',
             default => null,
         };
     }

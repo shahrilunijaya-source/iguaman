@@ -23,6 +23,32 @@ use Illuminate\Support\Facades\Mail;
  */
 class AgihanService
 {
+    /** Entry — send an approved, unassigned case into the spine, awaiting Pengarah (NULL→0). */
+    public function masuk(Form $kes, User $actor): void
+    {
+        $kes->update(['status_agihan' => StatusAgihan::BARU_PENGARAH]);
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Kes dihantar ke proses agihan — menunggu Pengarah (kes #{$kes->id}).");
+    }
+
+    /** Recovery — re-open a Pengarah-rejected new case for another attempt (9→0). */
+    public function pengarahBukaSemula(Form $kes, User $actor, ?string $ulasan): void
+    {
+        $kes->update(['status_agihan' => StatusAgihan::BARU_PENGARAH]);
+        $suffix = $ulasan ? ": {$ulasan}" : '';
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Agihan ditolak dibuka semula untuk pertimbangan baharu{$suffix} (kes #{$kes->id}).");
+    }
+
+    /** Recovery — abandon assignment of a rejected case; it stays in rekod kes, unassigned (9→NULL). */
+    public function pengarahBatalAgihan(Form $kes, User $actor, string $sebab): void
+    {
+        $kes->update([
+            'status_agihan' => null,
+            'nama_pegawai_yang_dapat_kes' => null,
+            'agih_kepada' => null,
+        ]);
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Agihan kes dibatalkan (tidak akan diagih peguam): {$sebab} (kes #{$kes->id}).");
+    }
+
     /** Tier 1 — Pengarah accepts a new case and hands it to a PPUU for lawyer selection (0→8). */
     public function pengarahTerima(Form $kes, User $actor, int $idPPUU): void
     {

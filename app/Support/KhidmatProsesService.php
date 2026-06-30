@@ -142,18 +142,42 @@ class KhidmatProsesService
         $this->transitionTemu($khidmat, 'terima', $actor);
     }
 
-    /** Reject the linked appointment: MENUNGGU -> BATAL, recording the reason. */
+    /**
+     * Reject the linked appointment: MENUNGGU -> BATAL, recording the reason, and
+     * cancel the advisory request (status_kn -> BATAL). Without the KN transition the
+     * record would be orphaned — no live appointment, status_kn stuck, no rebook path.
+     */
     public function tolak(KhidmatNasihat $khidmat, ?string $ulasan, string $actor): void
     {
-        $this->transitionTemu($khidmat, 'tolak', $actor, function (KhidmatNasihat $kn) use ($ulasan) {
-            $kn->update(['ulasan_pegawai' => $ulasan, 'kemaskini_oleh' => $kn->kemaskini_oleh]);
+        $this->transitionTemu($khidmat, 'tolak', $actor, function (KhidmatNasihat $kn) use ($ulasan, $actor) {
+            $kn->update([
+                'status_kn' => KhidmatNasihat::STATUS_BATAL,
+                'ulasan_pegawai' => $ulasan,
+                'kemaskini_oleh' => $actor,
+            ]);
         });
     }
 
-    /** Mark attendance: DISAHKAN -> HADIR | TIDAK_HADIR. */
+    /**
+     * Mark attendance: DISAHKAN -> HADIR | TIDAK_HADIR.
+     *
+     * A no-show is terminal: the appointment goes TIDAK_HADIR and the KN is closed
+     * (status_kn -> SELESAI, "Selesai Tanpa Kehadiran"), so it can never hang in
+     * DALAM_PROSES. The TIDAK_HADIR appointment status preserves the no-show fact for
+     * reporting. Attendance (HADIR) only flips the appointment; completion is the
+     * separate {@see selesai()} step.
+     */
     public function kehadiran(KhidmatNasihat $khidmat, bool $hadir, string $actor): void
     {
-        $this->transitionTemu($khidmat, $hadir ? 'hadir' : 'tidakHadir', $actor);
+        if ($hadir) {
+            $this->transitionTemu($khidmat, 'hadir', $actor);
+
+            return;
+        }
+
+        $this->transitionTemu($khidmat, 'tidakHadir', $actor, function (KhidmatNasihat $kn) use ($actor) {
+            $kn->update(['status_kn' => KhidmatNasihat::STATUS_SELESAI, 'kemaskini_oleh' => $actor]);
+        });
     }
 
     /** Complete: appointment HADIR -> SELESAI and khidmat_nasihat -> SELESAI. */

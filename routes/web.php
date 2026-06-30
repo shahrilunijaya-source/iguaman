@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AgihanController;
 use App\Http\Controllers\AgihanSpineController;
-use App\Http\Controllers\TarikDiriController;
 use App\Http\Controllers\AuditController;
+use App\Http\Controllers\Awam\PermohonanController;
+use App\Http\Controllers\Awam\PortalController;
+use App\Http\Controllers\Awam\PublicAuthController;
 use App\Http\Controllers\CawanganController;
 use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\ChatbotController;
@@ -12,8 +14,8 @@ use App\Http\Controllers\CutiNegeriController;
 use App\Http\Controllers\JadualJanjiTemuController;
 use App\Http\Controllers\JawatanController;
 use App\Http\Controllers\KategoriKnController;
-use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\KemaskiniBidangController;
+use App\Http\Controllers\KeputusanController;
 use App\Http\Controllers\KesController;
 use App\Http\Controllers\KesilapanController;
 use App\Http\Controllers\KhidmatNasihatController;
@@ -23,31 +25,31 @@ use App\Http\Controllers\LampiranController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LaporanKhidmatNasihatController;
 use App\Http\Controllers\LaporanPenuhController;
-use App\Http\Controllers\MaklumBalasController;
-use App\Http\Controllers\OydController;
 use App\Http\Controllers\MahkamahController;
 use App\Http\Controllers\MahkamahRefController;
+use App\Http\Controllers\MaklumBalasController;
+use App\Http\Controllers\OydController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PegawaiController;
-use App\Http\Controllers\PosterController;
-use App\Http\Controllers\PenutupanOperasiController;
-use App\Http\Controllers\RefKesController;
-use App\Http\Controllers\SlotController;
-use App\Http\Controllers\SlotGenerationController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
 use App\Http\Controllers\PeguamDaftarController;
 use App\Http\Controllers\PeguamPanelController;
+use App\Http\Controllers\PengantaraanController;
+use App\Http\Controllers\PenutupanOperasiController;
 use App\Http\Controllers\PermohonanPeguamController;
+use App\Http\Controllers\PosterController;
+use App\Http\Controllers\RefKesController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\SlotController;
+use App\Http\Controllers\SlotGenerationController;
 use App\Http\Controllers\StatistikController;
 use App\Http\Controllers\StatistikPengantaraanController;
 use App\Http\Controllers\StatistikSlaController;
-use App\Http\Controllers\Awam\PermohonanController;
-use App\Http\Controllers\Awam\PortalController;
-use App\Http\Controllers\Awam\PublicAuthController;
 use App\Http\Controllers\SystemAuthController;
 use App\Http\Controllers\SystemController;
+use App\Http\Controllers\TarikDiriController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Public landing.
@@ -323,14 +325,14 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
 
     // Peranan (role) + Akses (permission matrix) — admin-only (permission:urus.peranan)
     Route::middleware('permission:urus.peranan')->group(function () {
-        Route::get('/peranan', [\App\Http\Controllers\RoleController::class, 'index'])->name('peranan.index');
-        Route::get('/peranan/create', [\App\Http\Controllers\RoleController::class, 'create'])->name('peranan.create');
-        Route::post('/peranan', [\App\Http\Controllers\RoleController::class, 'store'])->name('peranan.store');
-        Route::get('/peranan/{role}/edit', [\App\Http\Controllers\RoleController::class, 'edit'])->name('peranan.edit')->whereNumber('role');
-        Route::put('/peranan/{role}', [\App\Http\Controllers\RoleController::class, 'update'])->name('peranan.update')->whereNumber('role');
-        Route::delete('/peranan/{role}', [\App\Http\Controllers\RoleController::class, 'destroy'])->name('peranan.destroy')->whereNumber('role');
-        Route::get('/peranan/{role}/akses', [\App\Http\Controllers\RolePermissionController::class, 'edit'])->name('peranan.akses.edit')->whereNumber('role');
-        Route::put('/peranan/{role}/akses', [\App\Http\Controllers\RolePermissionController::class, 'update'])->name('peranan.akses.update')->whereNumber('role');
+        Route::get('/peranan', [RoleController::class, 'index'])->name('peranan.index');
+        Route::get('/peranan/create', [RoleController::class, 'create'])->name('peranan.create');
+        Route::post('/peranan', [RoleController::class, 'store'])->name('peranan.store');
+        Route::get('/peranan/{role}/edit', [RoleController::class, 'edit'])->name('peranan.edit')->whereNumber('role');
+        Route::put('/peranan/{role}', [RoleController::class, 'update'])->name('peranan.update')->whereNumber('role');
+        Route::delete('/peranan/{role}', [RoleController::class, 'destroy'])->name('peranan.destroy')->whereNumber('role');
+        Route::get('/peranan/{role}/akses', [RolePermissionController::class, 'edit'])->name('peranan.akses.edit')->whereNumber('role');
+        Route::put('/peranan/{role}/akses', [RolePermissionController::class, 'update'])->name('peranan.akses.update')->whereNumber('role');
     });
 
     // Audit log
@@ -338,21 +340,25 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
     });
 
-    // Agihan peguam (assignment) + workload
+    // Agihan peguam — workload + entry into the 3-tier spine (single-step path retired;
+    // the 3-tier spine below is now the sole assignment write path).
     Route::middleware('permission:agihan.manage')->group(function () {
-        Route::get('/kes/{kes}/agih', [AgihanController::class, 'form'])->name('agihan.form')->whereNumber('kes');
-        Route::post('/kes/{kes}/agih', [AgihanController::class, 'store'])->name('agihan.store')->whereNumber('kes');
         Route::get('/peguam-panel/beban', [AgihanController::class, 'beban'])->name('agihan.beban');
+        Route::post('/agihan/{kes}/masuk', [AgihanSpineController::class, 'masuk'])->name('agihan.masuk')->whereNumber('kes');
     });
 
     // 3-tier assignment spine (PPUU -> Pengarah -> Ketua Pengarah). Role-gated per action.
-    Route::get('/agihan/senarai/{bucket}', [AgihanSpineController::class, 'senarai'])->name('agihan.senarai')->whereIn('bucket', ['baru', 'semasa', 'semula']);
+    Route::get('/agihan/senarai/{bucket}', [AgihanSpineController::class, 'senarai'])->name('agihan.senarai')->whereIn('bucket', ['baru', 'semasa', 'semula', 'ditolak']);
     Route::get('/agihan/{kes}/maklumat', [AgihanSpineController::class, 'show'])->name('agihan.maklumat')->whereNumber('kes');
     Route::post('/agihan/{kes}/pengarah-terima', [AgihanSpineController::class, 'pengarahTerima'])->name('agihan.pengarah.terima')->whereNumber('kes')->middleware('permission:agihan.pengarah');
     Route::post('/agihan/{kes}/pengarah-tolak', [AgihanSpineController::class, 'pengarahTolak'])->name('agihan.pengarah.tolak')->whereNumber('kes')->middleware('permission:agihan.pengarah');
     Route::post('/agihan/{kes}/ppuu-pilih', [AgihanSpineController::class, 'ppuuPilih'])->name('agihan.ppuu.pilih')->whereNumber('kes')->middleware('permission:agihan.ppuu');
     Route::post('/agihan/{kes}/pengarah-keputusan', [AgihanSpineController::class, 'pengarahKeputusan'])->name('agihan.pengarah.keputusan')->whereNumber('kes')->middleware('permission:agihan.pengarah');
     Route::post('/agihan/{kes}/kp-keputusan', [AgihanSpineController::class, 'kpKeputusan'])->name('agihan.kp.keputusan')->whereNumber('kes')->middleware('permission:agihan.kp');
+
+    // Recovery for Pengarah-rejected new cases (status 9) — re-open or abandon. No more dead-end.
+    Route::post('/agihan/{kes}/buka-semula', [AgihanSpineController::class, 'bukaSemula'])->name('agihan.buka-semula')->whereNumber('kes')->middleware('permission:agihan.pengarah');
+    Route::post('/agihan/{kes}/batal', [AgihanSpineController::class, 'batalAgihan'])->name('agihan.batal')->whereNumber('kes')->middleware('permission:agihan.pengarah');
 
     // Tarik Diri Mewakili OYD — staff review queue (PPUU -> Pengarah -> Ketua Pengarah).
     Route::get('/tarik-diri/senarai', [TarikDiriController::class, 'senarai'])->name('tarikdiri.senarai');

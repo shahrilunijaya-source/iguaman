@@ -25,7 +25,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -42,8 +42,8 @@ class PeguamController extends Controller
         $nama = $profile?->nama_peguam;
 
         $stats = [
-            'kes_saya' => $nama ? $this->kesQuery($nama)->where('status_agihan', 'Diterima')->count() : 0,
-            'tawaran' => $nama ? $this->kesQuery($nama)->where('status_agihan', 'Ditawarkan')->count() : 0,
+            'kes_saya' => $nama ? $this->kesQuery($nama)->whereIn('status_agihan', StatusAgihan::bucketValues([StatusAgihan::DITERIMA]))->count() : 0,
+            'tawaran' => $nama ? $this->kesQuery($nama)->whereIn('status_agihan', StatusAgihan::bucketValues([StatusAgihan::DITAWARKAN]))->count() : 0,
             'nama' => $nama ?? Auth::user()->name,
         ];
 
@@ -67,7 +67,7 @@ class PeguamController extends Controller
         $profile = $this->profile();
 
         $tawaran = $profile
-            ? $this->kesQuery($profile->nama_peguam)->where('status_agihan', 'Ditawarkan')->orderByDesc('tarikh_penugasan_peguam_panel')->get()
+            ? $this->kesQuery($profile->nama_peguam)->whereIn('status_agihan', StatusAgihan::bucketValues([StatusAgihan::DITAWARKAN]))->orderByDesc('tarikh_penugasan_peguam_panel')->get()
             : collect();
 
         return view('peguam.tawaran', [
@@ -81,7 +81,7 @@ class PeguamController extends Controller
     {
         $this->authorizeCase($kes);
 
-        $kes->update(['status_agihan' => 'Diterima']);
+        $kes->update(['status_agihan' => StatusAgihan::DITERIMA]);
         Audit::log('forms', $kes->id, Audit::UPDATE, "Tawaran kes diterima oleh peguam {$kes->nama_pegawai_yang_dapat_kes}");
 
         return redirect()->route('peguam.tawaran')->with('status', 'Tawaran kes diterima.');
@@ -106,10 +106,12 @@ class PeguamController extends Controller
             'status_agihan' => 'T',
         ]);
 
+        // Offer declined → bounce back to the PPUU re-pick pool (numeric '4'), the same
+        // terminal the Lebih Masa auto-reassignment uses. Surfaces in the SEMULA bucket.
         $kes->update([
             'nama_pegawai_yang_dapat_kes' => null,
             'agih_kepada' => null,
-            'status_agihan' => 'Ditolak',
+            'status_agihan' => StatusAgihan::PPUU_AGIH_SEMULA,
         ]);
 
         Audit::log('forms', $kes->id, Audit::UPDATE, 'Tawaran kes ditolak oleh peguam — dikembalikan untuk agihan semula');
@@ -268,7 +270,7 @@ class PeguamController extends Controller
             'p3' => ButiranPeguamPanel3::firstOrNew(['kpBaru' => $kp]),
             'p4' => ButiranPeguamPanel4::firstOrNew(['kpBaru' => $kp]),
             'p5' => ButiranPeguamPanel5::firstOrNew(['kpBaru' => $kp]),
-            'docs' => \App\Models\UploadedFile::where('kpBaru', $kp)->pluck('doc_type')->all(),
+            'docs' => UploadedFile::where('kpBaru', $kp)->pluck('doc_type')->all(),
             'negeriList' => RefNegeri::orderBy('nama')->pluck('nama'),
             'banks' => self::BANKS,
         ]);
@@ -283,7 +285,7 @@ class PeguamController extends Controller
         $d = $request->validated();
         $user = Auth::user();
 
-        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $d, $kp, $user) {
+        DB::transaction(function () use ($request, $d, $kp, $user) {
             $p2 = ButiranPeguamPanel2::firstOrNew(['kpBaru' => $kp]);
             $p2->fill(Arr::only($d, [
                 'noTelBimbit', 'emelPeguam', 'kelulusanAkademik', 'tarikhDiterimaMasuk',

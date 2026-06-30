@@ -52,7 +52,39 @@
 </div>
 
 {{-- ===== Role-routed action form ===== --}}
-@if ($stage === 'pengarah_baru')
+@if ($stage === 'belum_masuk')
+    <div class="tap-card" style="margin-top:18px;">
+        <div class="ag-sec" style="margin-top:0;">Hantar ke Proses Agihan</div>
+        <p class="dash-empty__sub" style="margin:0 0 12px;">Kes ini belum dalam proses agihan. Hantar ke spine agihan berperingkat (PPUU → Pengarah → Ketua Pengarah).</p>
+        <form method="POST" action="{{ route('agihan.masuk', $kes) }}">
+            @csrf
+            <button type="submit" class="btn btn--primary">Hantar ke Agihan</button>
+        </form>
+    </div>
+
+@elseif ($stage === 'ditolak_pengarah')
+    <div class="tap-card" style="margin-top:18px;">
+        <div class="ag-sec" style="margin-top:0;">Tindakan Pengarah — Agihan Ditolak</div>
+        <p class="dash-empty__sub" style="margin:0 0 12px;">Agihan kes ini telah ditolak. Buka semula untuk pertimbangan baharu, atau batalkan agihan (kes kekal dalam rekod tanpa peguam).</p>
+        <form method="POST" action="{{ route('agihan.buka-semula', $kes) }}">
+            @csrf
+            <div class="field col-2">
+                <label class="field__label">Ulasan (pilihan)</label>
+                <input type="text" name="ulasan" class="field__input" maxlength="255" placeholder="Sebab buka semula">
+            </div>
+            <button type="submit" class="btn btn--primary" style="margin-top:12px;">Buka Semula untuk Agihan</button>
+        </form>
+        <form method="POST" action="{{ route('agihan.batal', $kes) }}" style="margin-top:18px;border-top:1px solid var(--line);padding-top:16px;">
+            @csrf
+            <div class="field col-2">
+                <label class="field__label">Sebab Pembatalan <span class="req">*</span></label>
+                <input type="text" name="sebab" class="field__input" maxlength="255" required placeholder="Sebab kes tidak akan diagih peguam">
+            </div>
+            <button type="submit" class="btn btn--ghost" style="margin-top:12px;">Batalkan Agihan</button>
+        </form>
+    </div>
+
+@elseif ($stage === 'pengarah_baru')
     <div class="tap-card" style="margin-top:18px;">
         <div class="ag-sec" style="margin-top:0;">Tindakan Pengarah — Agihan Baru</div>
         <form method="POST" action="{{ route('agihan.pengarah.terima', $kes) }}">

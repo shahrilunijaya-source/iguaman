@@ -6,8 +6,10 @@ use App\Models\Form;
 use App\Models\PeguamPanel;
 use App\Models\SejarahPeguamPanel;
 use App\Models\User;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 /** Phase 4 — agihan (assignment) + lawyer area, over the real iguaman_2in1 DB. Self-cleaning. */
@@ -21,15 +23,15 @@ class Phase4Test extends TestCase
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
         DB::purge('mysql');
         DB::reconnect('mysql');
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-        (new \Database\Seeders\RolePermissionSeeder())->run();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        (new RolePermissionSeeder)->run();
         $this->cleanup();
     }
 
     protected function tearDown(): void
     {
         $this->cleanup();
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
         parent::tearDown();
     }
 
@@ -71,46 +73,9 @@ class Phase4Test extends TestCase
         ]);
     }
 
-    public function test_assign_lawyer_to_case(): void
-    {
-        $kes = $this->makeCase();
-        $p = $this->makePeguam('PHPUNIT Ali', 'KP001');
-
-        $this->actingAs($this->staff())
-            ->post(route('agihan.store', $kes), ['peguam_id' => $p->id])
-            ->assertRedirect(route('kes.show', $kes));
-
-        $kes->refresh();
-        $this->assertSame('PHPUNIT Ali', $kes->nama_pegawai_yang_dapat_kes);
-        // Agihan now creates an OFFER (status_agihan=Ditawarkan); the lawyer accepts/rejects
-        // in their area (peguam offer workflow). Was 'Diagih' before that workflow shipped.
-        $this->assertSame('Ditawarkan', $kes->status_agihan);
-    }
-
-    public function test_reassign_logs_previous_lawyer(): void
-    {
-        $kes = $this->makeCase();
-        $a = $this->makePeguam('PHPUNIT Ali', 'KP001');
-        $b = $this->makePeguam('PHPUNIT Bakar', 'KP002');
-        $staff = $this->staff();
-
-        $this->actingAs($staff)->post(route('agihan.store', $kes), ['peguam_id' => $a->id]);
-        $this->actingAs($staff)->post(route('agihan.store', $kes), ['peguam_id' => $b->id, 'alasan' => 'Konflik']);
-
-        $this->assertDatabaseHas('sejarah_peguam_panel', [
-            'id_kes' => $kes->id, 'nama_pp_lama' => 'PHPUNIT Ali', 'alasan' => 'Konflik',
-        ]);
-        $this->assertSame('PHPUNIT Bakar', $kes->fresh()->nama_pegawai_yang_dapat_kes);
-    }
-
-    public function test_assign_requires_peguam(): void
-    {
-        $kes = $this->makeCase();
-
-        $this->actingAs($this->staff())
-            ->post(route('agihan.store', $kes), [])
-            ->assertSessionHasErrors('peguam_id');
-    }
+    // NOTE: the legacy single-step assignment path (agihan.store) was retired in favour
+    // of the 3-tier spine. Assignment + the spine->lawyer offer hand-off are now covered
+    // end-to-end in AgihanHandoffTest.
 
     public function test_beban_tugas_loads(): void
     {
