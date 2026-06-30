@@ -1,5 +1,12 @@
 # Laravel-in-public_html guard (Hostinger hPanel Git tool clones repo into doc root).
 # Blocks sensitive files/source dirs, rewrites everything else into public/.
+
+# Disable Apache content negotiation (MultiViews): it intercepts multi-segment URLs
+# like /laporan/permohonan and returns 404 BEFORE the rewrite-into-public runs.
+# Single-segment paths slip through, so report indexes worked but every detail 404'd.
+# Also disable directory listings. (Laravel's public/.htaccess sets the same.)
+Options -MultiViews -Indexes
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
