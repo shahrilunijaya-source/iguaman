@@ -156,8 +156,9 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/statistik-pengantaraan', [StatistikPengantaraanController::class, 'index'])->name('statistik-pengantaraan.index');
         Route::get('/statistik-pengantaraan/kategori', [StatistikPengantaraanController::class, 'kategori'])->name('statistik-pengantaraan.kategori');
         Route::get('/statistik-pengantaraan/bulanan', [StatistikPengantaraanController::class, 'bulanan'])->name('statistik-pengantaraan.bulanan');
+        Route::get('/statistik-pengantaraan/pencapaian', [StatistikPengantaraanController::class, 'pencapaian'])->name('statistik-pengantaraan.pencapaian');
         Route::get('/statistik-pengantaraan/{jenis}/pdf', [StatistikPengantaraanController::class, 'pdf'])
-            ->whereIn('jenis', ['kategori', 'bulanan'])->name('statistik-pengantaraan.pdf');
+            ->whereIn('jenis', ['kategori', 'bulanan', 'pencapaian'])->name('statistik-pengantaraan.pdf');
     });
 
     // Selenggara (maintenance) + Pegawai JBG registry + Audit log — gated per-resource permission

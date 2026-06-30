@@ -45,16 +45,31 @@ class StatistikPengantaraanController extends Controller
         ]);
     }
 
+    public function pencapaian(Request $request): View
+    {
+        $year = $this->year($request);
+        $kategori = $request->input('kategori') ?: null;
+
+        return view('statistik.pengantaraan.pencapaian', [
+            'year' => $year,
+            'kategori' => $kategori,
+            'data' => PengantaraanMatrix::pencapaian($year, $kategori),
+            'branches' => PengantaraanMatrix::BRANCHES,
+        ]);
+    }
+
     public function pdf(Request $request, string $jenis): Response
     {
-        abort_unless(in_array($jenis, ['kategori', 'bulanan'], true), 404, 'Statistik tidak dijumpai.');
+        abort_unless(in_array($jenis, ['kategori', 'bulanan', 'pencapaian'], true), 404, 'Statistik tidak dijumpai.');
 
         $year = $this->year($request);
-        $kategori = $jenis === 'bulanan' ? ($request->input('kategori') ?: null) : null;
+        $kategori = in_array($jenis, ['bulanan', 'pencapaian'], true) ? ($request->input('kategori') ?: null) : null;
 
-        $data = $jenis === 'bulanan'
-            ? PengantaraanMatrix::bulanan($year, $kategori)
-            : PengantaraanMatrix::kategori($year);
+        $data = match ($jenis) {
+            'bulanan' => PengantaraanMatrix::bulanan($year, $kategori),
+            'pencapaian' => PengantaraanMatrix::pencapaian($year, $kategori),
+            default => PengantaraanMatrix::kategori($year),
+        };
 
         $pdf = Pdf::loadView('statistik.pengantaraan.pdf', [
             'jenis' => $jenis,

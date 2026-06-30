@@ -64,4 +64,40 @@ class PengantaraanMatrixTest extends TestCase
         $this->assertSame(0, $out['grand']);
         $this->assertSame(0, $out['matrix']['JBG SIBU']['jumlah']);
     }
+
+    public function test_pivot_pencapaian_funnel_and_percentages(): void
+    {
+        $rows = [
+            (object) ['cawangan' => 'JBG PERLIS', 'perakuan' => 10, 'penugasan' => 5, 'rujuk_minta' => 4, 'selesai' => 2],
+            (object) ['cawangan' => 'JBG NOWHERE', 'perakuan' => 9, 'penugasan' => 9, 'rujuk_minta' => 9, 'selesai' => 9], // ignored
+        ];
+
+        $out = PengantaraanMatrix::pivotPencapaian($rows, ['JBG PERLIS', 'JBG KEDAH']);
+        $c = $out['matrix']['JBG PERLIS'];
+
+        $this->assertSame(10, $c['perakuan']);
+        $this->assertSame(5, $c['penugasan']);
+        $this->assertSame(4, $c['rujuk_minta']);
+        $this->assertSame(2, $c['selesai']);
+        $this->assertSame(50.0, $c['f1']); // 5 / 10
+        $this->assertSame(80.0, $c['f2']); // 4 / 5
+        $this->assertSame(50.0, $c['f3']); // 2 / 4
+
+        // unknown branch excluded from totals
+        $this->assertSame(10, $out['total']['perakuan']);
+        $this->assertSame(50.0, $out['total']['f1']);
+    }
+
+    public function test_pivot_pencapaian_guards_zero_denominator(): void
+    {
+        $out = PengantaraanMatrix::pivotPencapaian(
+            [(object) ['cawangan' => 'JBG PERLIS', 'perakuan' => 0, 'penugasan' => 0, 'rujuk_minta' => 0, 'selesai' => 0]],
+            ['JBG PERLIS'],
+        );
+        $c = $out['matrix']['JBG PERLIS'];
+
+        $this->assertSame(0.0, $c['f1']);
+        $this->assertSame(0.0, $c['f2']);
+        $this->assertSame(0.0, $c['f3']);
+    }
 }

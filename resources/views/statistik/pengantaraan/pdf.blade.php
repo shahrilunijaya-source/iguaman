@@ -31,6 +31,11 @@
             <h1>STATISTIK PENUGASAN BULANAN PENGANTARAAN</h1>
             <div class="meta">{{ $year ?: 'Semua tahun' }}{{ $kategori ? ' · '.$kategori : '' }} · Keseluruhan {{ number_format($data['grand']) }} penugasan</div>
             @include('statistik.pengantaraan._bulanan_table', ['data' => $data, 'branches' => $branches, 'bulan' => $bulan])
+        @elseif ($jenis === 'pencapaian')
+            <h1>LAPORAN PENCAPAIAN PENUGASAN PENGANTARAAN</h1>
+            <div class="meta">{{ $year ?: 'Semua tahun' }}{{ $kategori ? ' · '.$kategori : '' }}
+                · F1 {{ number_format($data['total']['f1'], 2) }}% · F2 {{ number_format($data['total']['f2'], 2) }}% · F3 {{ number_format($data['total']['f3'], 2) }}%</div>
+            @include('statistik.pengantaraan._pencapaian_table', ['data' => $data, 'branches' => $branches])
         @else
             <h1>STATISTIK PENUGASAN PENGANTARAAN</h1>
             <div class="meta">{{ $year ?: 'Semua tahun' }} · Keseluruhan {{ number_format($data['total']['jumlah']) }} penugasan</div>

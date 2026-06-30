@@ -102,6 +102,32 @@ class PengantaraanMatrixTest extends TestCase
         $this->assertGreaterThanOrEqual(1, $sivilOnly[3]);
     }
 
+    public function test_pencapaian_funnel_counts_by_delta(): void
+    {
+        $before = PengantaraanMatrix::pencapaian(2026)['matrix'][self::BRANCH];
+
+        // One row that walks the full funnel: perakuan → penugasan → sidang → selesai.
+        Form::create([
+            'cawangan' => self::BRANCH, 'nama' => 'PG FUNNEL', 'no_fail' => self::TAG.'.FUN',
+            'kategori_kes' => 'Sivil', 'pengantaraan_kategori_kes' => 'sivil', 'status_pengantaraan' => 'Ya',
+            'setuju_pengantara' => 'Ya', 'cara_selesai' => 'Selesai dengan Perjanjian Penyelesaian',
+            'tarikh_perakuan' => '2026-03-10', 'status' => 'Aktif', 'diterima' => '', 'created_at' => now(),
+        ]);
+        // Kesilapan-Menjana → excluded from the gate (perakuan must NOT count it).
+        Form::create([
+            'cawangan' => self::BRANCH, 'nama' => 'PG KESILAPAN', 'no_fail' => self::TAG.'.ERR2',
+            'status' => 'Fail Tutup', 'sebab_tutup_fail' => 'Kesilapan Menjana Nombor Fail',
+            'tarikh_perakuan' => '2026-04-10', 'diterima' => '', 'created_at' => now(),
+        ]);
+
+        $after = PengantaraanMatrix::pencapaian(2026)['matrix'][self::BRANCH];
+
+        $this->assertSame($before['perakuan'] + 1, $after['perakuan']);     // kesilapan excluded
+        $this->assertSame($before['penugasan'] + 1, $after['penugasan']);
+        $this->assertSame($before['rujuk_minta'] + 1, $after['rujuk_minta']);
+        $this->assertSame($before['selesai'] + 1, $after['selesai']);
+    }
+
     public function test_routes_render_for_hq(): void
     {
         $admin = $this->user('admin@test.local');
@@ -112,6 +138,8 @@ class PengantaraanMatrixTest extends TestCase
             ->assertOk()->assertSee('JBG WP PUTRAJAYA')->assertSee('JUMLAH');
         $this->actingAs($admin)->get(route('statistik-pengantaraan.bulanan'))
             ->assertOk()->assertSee('JUMLAH KESELURUHAN');
+        $this->actingAs($admin)->get(route('statistik-pengantaraan.pencapaian'))
+            ->assertOk()->assertSee('PERATUS (%)')->assertSee('JUMLAH KESELURUHAN');
     }
 
     public function test_lawyer_blocked(): void

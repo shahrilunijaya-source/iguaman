@@ -151,4 +151,99 @@ class PengantaraanMatrix
 
         return ['matrix' => $matrix, 'bulanan' => $bulanan, 'grand' => $grand];
     }
+
+    // ---- Pencapaian (KPI compliance funnel) ----------------------------
+
+    /**
+     * Broader gate for the KPI funnel (legacy laporan_pencapaian): hygiene only,
+     * WITHOUT the status_pengantaraan filter — the funnel denominators count the
+     * full universe of certified cases, the numerators are CASE subsets.
+     */
+    private static function gatePencapaian(Builder $q, ?int $year): void
+    {
+        $q->whereNotNull('no_fail')->whereRaw("TRIM(no_fail) != ''")->whereRaw("LOWER(no_fail) NOT LIKE '%null%'")
+            ->whereNotNull('tarikh_perakuan')
+            ->where(fn (Builder $w) => $w->whereNull('sebab_tutup_fail')->orWhere('sebab_tutup_fail', '!=', 'Kesilapan Menjana Nombor Fail'))
+            ->when($year, fn (Builder $w, $v) => $w->whereYear('tarikh_perakuan', $v));
+    }
+
+    /**
+     * Branch × 3-formula compliance matrix (legacy laporan_pencapaian_penugasan).
+     * A four-stage funnel per branch — perakuan → penugasan → rujuk_minta →
+     * selesai — with three consecutive-stage percentages:
+     *   F1 = penugasan / perakuan, F2 = rujuk_minta / penugasan, F3 = selesai / rujuk_minta.
+     *
+     * Percentages are computed in PHP (legacy did it in SQL with NULLIF; we guard
+     * denom>0 and show 0.0 like legacy). The on-screen file is canonical, so F2's
+     * "sidang" numerator = setuju_pengantara='Ya' (the cetakan PDF adds a
+     * status_sidang='Selesai' predicate — not ported). Period filter uses the
+     * year on tarikh_perakuan (legacy offered a start/end date range; year keeps
+     * it consistent with the sibling dashboards). kategori narrows by kategori_kes.
+     */
+    public static function pencapaian(?int $year = null, ?string $kategori = null): array
+    {
+        $q = DB::table('forms')->selectRaw(
+            "cawangan,
+             COUNT(*) AS perakuan,
+             SUM(CASE WHEN status_pengantaraan = 'Ya' AND pengantaraan_kategori_kes IS NOT NULL AND pengantaraan_kategori_kes != '' THEN 1 ELSE 0 END) AS penugasan,
+             SUM(CASE WHEN setuju_pengantara = 'Ya' THEN 1 ELSE 0 END) AS rujuk_minta,
+             SUM(CASE WHEN cara_selesai = 'Selesai dengan Perjanjian Penyelesaian' THEN 1 ELSE 0 END) AS selesai"
+        );
+        self::gatePencapaian($q, $year);
+        if (in_array($kategori, ['Sivil', 'Syariah'], true)) {
+            $q->where('kategori_kes', $kategori);
+        }
+        $rows = $q->groupBy('cawangan')->get();
+
+        return self::pivotPencapaian($rows, self::BRANCHES);
+    }
+
+    /**
+     * Pure pivot for the pencapaian funnel.
+     * Returns ['matrix' => [branch => [perakuan,penugasan,rujuk_minta,selesai,f1,f2,f3]], 'total' => [...]].
+     */
+    public static function pivotPencapaian(iterable $rows, array $branches): array
+    {
+        $blank = ['perakuan' => 0, 'penugasan' => 0, 'rujuk_minta' => 0, 'selesai' => 0];
+
+        $matrix = [];
+        foreach ($branches as $b) {
+            $matrix[$b] = $blank + self::peratusCells($blank);
+        }
+
+        $sum = $blank;
+        foreach ($rows as $r) {
+            if (! isset($matrix[$r->cawangan])) {
+                continue;
+            }
+            $c = [
+                'perakuan' => (int) $r->perakuan,
+                'penugasan' => (int) $r->penugasan,
+                'rujuk_minta' => (int) $r->rujuk_minta,
+                'selesai' => (int) $r->selesai,
+            ];
+            $matrix[$r->cawangan] = $c + self::peratusCells($c);
+            foreach ($blank as $k => $_) {
+                $sum[$k] += $c[$k];
+            }
+        }
+
+        return ['matrix' => $matrix, 'total' => $sum + self::peratusCells($sum)];
+    }
+
+    /** F1/F2/F3 consecutive-stage percentages for a funnel count cell. */
+    private static function peratusCells(array $c): array
+    {
+        return [
+            'f1' => self::pct($c['penugasan'], $c['perakuan']),
+            'f2' => self::pct($c['rujuk_minta'], $c['penugasan']),
+            'f3' => self::pct($c['selesai'], $c['rujuk_minta']),
+        ];
+    }
+
+    /** Percentage with denom>0 guard; 0.0 when no denominator (legacy showed 0). */
+    private static function pct(int $num, int $denom): float
+    {
+        return $denom > 0 ? round($num / $denom * 100, 2) : 0.0;
+    }
 }

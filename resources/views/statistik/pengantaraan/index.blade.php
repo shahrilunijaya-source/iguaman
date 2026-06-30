@@ -32,5 +32,10 @@
             <p class="dash-empty__sub" style="margin:0;">Bilangan penugasan pengantaraan setiap bulan (Jan–Dis) setiap cawangan.</p>
             <div class="dash-empty__sub" style="margin-top:10px; color:var(--brand,#00B8A9); font-weight:600;">Lihat matriks →</div>
         </a>
+        <a href="{{ route('statistik-pengantaraan.pencapaian', $qs) }}" class="tap-card" style="text-decoration:none; color:inherit; display:block;">
+            <div class="tap-card__eyebrow" style="margin-bottom:6px;">Pencapaian (KPI)</div>
+            <p class="dash-empty__sub" style="margin:0;">Peratus pencapaian: penugasan vs perakuan, sidang vs penugasan, perjanjian penyelesaian.</p>
+            <div class="dash-empty__sub" style="margin-top:10px; color:var(--brand,#00B8A9); font-weight:600;">Lihat matriks →</div>
+        </a>
     </div>
 @endsection
