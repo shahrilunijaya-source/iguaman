@@ -21,9 +21,13 @@ class PermohonanPeguamController extends Controller
     public function index(Request $request): View
     {
         $status = $request->input('status');
+        // W10: queue filter by track. Default a criminal-only approver to the JENAYAH
+        // queue; everyone else sees all unless they pick a track.
+        $jalur = $request->input('jalur', $this->defaultJalur($request));
 
         $permohonan = ButiranPeguamPanel2::query()
             ->when($status !== null && $status !== '', fn ($w) => $w->where('permohonan_status', $status))
+            ->when($jalur !== null && $jalur !== '', fn ($w) => $w->where('jalur_permohonan', $jalur))
             ->orderByDesc('tarikhMohon')
             ->paginate(20)
             ->withQueryString();
@@ -31,9 +35,21 @@ class PermohonanPeguamController extends Controller
         return view('permohonan-peguam.index', [
             'permohonan' => $permohonan,
             'status' => $status,
+            'jalur' => $jalur,
+            'jalurList' => [ButiranPeguamPanel2::JALUR_SIVIL_SYARIAH, ButiranPeguamPanel2::JALUR_JENAYAH],
             'statusLabels' => self::STATUS,
             'pending' => ButiranPeguamPanel2::where('permohonan_status', '0')->count(),
         ]);
+    }
+
+    /** Default queue track from the viewer's permissions (criminal-only approver -> JENAYAH). */
+    private function defaultJalur(Request $request): ?string
+    {
+        $user = $request->user();
+        $criminal = $user->can('peguam.sokong.jenayah') || $user->can('peguam.keputusan.jenayah');
+        $civil = $user->can('peguam.sokong') || $user->can('peguam.keputusan');
+
+        return ($criminal && ! $civil) ? ButiranPeguamPanel2::JALUR_JENAYAH : null;
     }
 
     public function show(ButiranPeguamPanel2 $butiran): View
@@ -61,11 +77,13 @@ class PermohonanPeguamController extends Controller
         return redirect()->route('permohonan-peguam.show', $butiran)->with('status', 'Semakan PPUU direkodkan.');
     }
 
-    /** Tier 2 — Pengarah endorsement (requires PPUU semakan first). */
+    /** Tier 2 — Pengarah endorsement (requires PPUU semakan first). W10: criminal
+     * applications are endorsed by the Pengarah Pembelaan Awam; civil/syariah by the
+     * Pengarah Peguam Panel. */
     public function sokong(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
-        if (! $request->user()->can('peguam.sokong')) {
-            return back()->withErrors(['akses' => 'Hanya Pengarah boleh memberi sokongan.']);
+        if (! $request->user()->can($this->sokongPerm($butiran))) {
+            return back()->withErrors(['akses' => 'Anda tiada kebenaran menyokong permohonan jalur ini.']);
         }
 
         if ($butiran->semakan_ppuu !== '1') {
@@ -85,8 +103,8 @@ class PermohonanPeguamController extends Controller
     /** Tier 3 — Ketua Pengarah final decision (requires Pengarah sokong first). Approve promotes into peguam_panel. */
     public function keputusan(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
-        if (! $request->user()->can('peguam.keputusan')) {
-            return back()->withErrors(['akses' => 'Hanya Ketua Pengarah boleh membuat keputusan muktamad.']);
+        if (! $request->user()->can($this->keputusanPerm($butiran))) {
+            return back()->withErrors(['akses' => 'Anda tiada kebenaran membuat keputusan muktamad bagi jalur ini.']);
         }
 
         if ($butiran->sokonganPengarah !== '1') {
@@ -134,6 +152,18 @@ class PermohonanPeguamController extends Controller
         ]);
 
         return redirect()->route('permohonan-peguam.show', $butiran)->with('status', 'Tarik diri direkodkan.');
+    }
+
+    /** Endorsement permission for an application's track (W10). */
+    private function sokongPerm(ButiranPeguamPanel2 $butiran): string
+    {
+        return $butiran->isJenayah() ? 'peguam.sokong.jenayah' : 'peguam.sokong';
+    }
+
+    /** Final-decision permission for an application's track (W10). */
+    private function keputusanPerm(ButiranPeguamPanel2 $butiran): string
+    {
+        return $butiran->isJenayah() ? 'peguam.keputusan.jenayah' : 'peguam.keputusan';
     }
 
     /**

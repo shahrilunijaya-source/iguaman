@@ -15,6 +15,17 @@ class ButiranPeguamPanel2 extends Model
 
     protected $guarded = ['id'];
 
+    /** Application track (W10) — forks the approver tier. */
+    public const JALUR_JENAYAH = 'JENAYAH';
+
+    public const JALUR_SIVIL_SYARIAH = 'SIVIL_SYARIAH';
+
+    /** Criminal applications route to the Pembelaan Awam approver tier. */
+    public function isJenayah(): bool
+    {
+        return $this->jalur_permohonan === self::JALUR_JENAYAH;
+    }
+
     protected $casts = [
         'tarikhDiterimaMasuk' => 'date',
         'tarikhDiterimaMasukSyarie' => 'date',

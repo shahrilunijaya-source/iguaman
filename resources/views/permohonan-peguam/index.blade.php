@@ -21,6 +21,14 @@
         @endforeach
     </div>
 
+    {{-- W10: approval-track (jalur) filter — criminal vs civil/syariah queues. --}}
+    <div class="tap-filters">
+        <a href="{{ route('permohonan-peguam.index', ['status' => $status]) }}" class="tap-chip {{ ($jalur ?? '') === '' || $jalur === null ? 'is-active' : '' }}">Semua Jalur</a>
+        @foreach ($jalurList as $j)
+            <a href="{{ route('permohonan-peguam.index', ['status' => $status, 'jalur' => $j]) }}" class="tap-chip {{ ($jalur ?? '') === $j ? 'is-active' : '' }}">{{ str_replace('_', '/', $j) }}</a>
+        @endforeach
+    </div>
+
     <div class="tap-table">
         <div class="tap-table__head" style="grid-template-columns: 2fr 1.2fr 1fr 1fr 120px;">
             <div class="tap-table__th">Peguam</div>

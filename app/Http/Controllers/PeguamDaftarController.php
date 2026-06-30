@@ -56,6 +56,8 @@ class PeguamDaftarController extends Controller
             $base = ButiranPeguamPanel2::create($this->section2($data) + [
                 'permohonan_status' => '0',
                 'tarikhMohon' => now(),
+                // W10: derive the approval track from the selected practice areas.
+                'jalur_permohonan' => $this->deriveJalur($data['selected_kes']),
             ]);
 
             ButiranPeguamPanel3::create($this->section3($data) + ['kpBaru' => $kp]);
@@ -82,6 +84,25 @@ class PeguamDaftarController extends Controller
             ->route('peguam.daftar')
             ->with('daftar_selesai', true)
             ->with('daftar_ref', $permohonan->id);
+    }
+
+    /**
+     * W10 — derive the approval track from the selected practice areas. Criminal-wins:
+     * any JENAYAH selection routes the whole application through the Pembelaan Awam
+     * approver tier; otherwise it follows the civil/syariah Peguam Panel tier.
+     *
+     * @param  array<int,string>  $selectedKes  entries shaped "CATEGORY::deskripsi"
+     */
+    private function deriveJalur(array $selectedKes): string
+    {
+        foreach ($selectedKes as $entry) {
+            [$category] = array_pad(explode('::', $entry, 2), 2, '');
+            if ($category === 'JENAYAH') {
+                return ButiranPeguamPanel2::JALUR_JENAYAH;
+            }
+        }
+
+        return ButiranPeguamPanel2::JALUR_SIVIL_SYARIAH;
     }
 
     /** Public application-status lookup form (legacy semak.php parity — no login). */

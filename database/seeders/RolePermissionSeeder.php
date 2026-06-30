@@ -22,11 +22,13 @@ class RolePermissionSeeder extends Seeder
         // Citizen self-service role (mirrors migration 130002 so a fresh db:seed
         // reproduces the /awam portal gate without depending on the migration alone).
         'awam',
+        // Pembelaan Awam approver tier (W10) — criminal panel-registration approvals.
+        'pengarah_pembelaan_awam', 'ketua_pembelaan_awam',
     ];
 
     /** permission => roles granted (admin omitted — Gate::before). */
     private const MATRIX = [
-        'system.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'system.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
         'kes.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'kes.create' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
         'kes.update' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
@@ -47,10 +49,13 @@ class RolePermissionSeeder extends Seeder
         'khidmat.view' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
         'khidmat.manage' => ['pembantu_tadbir', 'pegawai', 'koordinator', 'pengarah', 'ketua_pengarah'],
         'peguam_panel.manage' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
-        'peguam.permohonan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah'],
+        'peguam.permohonan.view' => ['pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'pengarah_pembelaan_awam', 'ketua_pembelaan_awam'],
         'peguam.semak' => ['ppuu', 'pembantu_tadbir', 'koordinator'],
         'peguam.sokong' => ['pengarah'],
         'peguam.keputusan' => ['ketua_pengarah'],
+        // W10: criminal-track endorsement/decision route to the Pembelaan Awam tier.
+        'peguam.sokong.jenayah' => ['pengarah_pembelaan_awam'],
+        'peguam.keputusan.jenayah' => ['ketua_pembelaan_awam'],
         'selenggara.pegawai' => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.poster' => ['pengarah', 'koordinator', 'ketua_pengarah'],
         'selenggara.ref_kes' => ['pengarah', 'koordinator', 'ketua_pengarah'],
