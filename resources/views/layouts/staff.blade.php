@@ -76,6 +76,16 @@
             </a>
         @endcan
 
+        @can('slot.manage')
+            <div class="ws-side-section">Kalendar / Slot</div>
+            <a href="{{ route('slot.index') }}" class="ws-side-top {{ request()->routeIs('slot.index') || request()->routeIs('slot.sesi') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">🗓</span><span class="ws-side-label">Penjanaan Slot</span>
+            </a>
+            <a href="{{ route('penutupan.index') }}" class="ws-side-top {{ request()->routeIs('penutupan.*') ? 'is-active' : '' }}">
+                <span class="ws-side-top__icon">🚫</span><span class="ws-side-label">Penutupan Operasi</span>
+            </a>
+        @endcan
+
         <div class="ws-side-section">Panel Peguam</div>
         <a href="{{ route('permohonan-peguam.index') }}" class="ws-side-top {{ request()->routeIs('permohonan-peguam.*') ? 'is-active' : '' }}">
             <span class="ws-side-top__icon">▧</span><span class="ws-side-label">Permohonan Peguam</span>

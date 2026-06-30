@@ -25,8 +25,10 @@ use App\Http\Controllers\MahkamahRefController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\PosterController;
+use App\Http\Controllers\PenutupanOperasiController;
 use App\Http\Controllers\RefKesController;
 use App\Http\Controllers\SlotController;
+use App\Http\Controllers\SlotGenerationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PengantaraanController;
 use App\Http\Controllers\PeguamController;
@@ -231,6 +233,20 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
     Route::middleware('permission:slot.view')->group(function () {
         Route::get('/slot/tarikh', [SlotController::class, 'availability'])->name('slot.tarikh');
         Route::get('/slot/masa', [SlotController::class, 'times'])->name('slot.masa');
+    });
+
+    // Kalendar / Slot admin (batch 10 slice 2): slot auto-generation + per-branch session
+    // config ("penetapan sesi") + operational closures. Gated permission:slot.manage.
+    Route::middleware('permission:slot.manage')->group(function () {
+        Route::get('/slot', [SlotGenerationController::class, 'index'])->name('slot.index');
+        Route::put('/slot/cawangan/{cawangan}/sesi', [SlotGenerationController::class, 'updateSession'])->name('slot.sesi')->whereNumber('cawangan');
+        Route::post('/slot/jana', [SlotGenerationController::class, 'generate'])->name('slot.generate');
+        Route::delete('/slot/jana', [SlotGenerationController::class, 'destroy'])->name('slot.destroy');
+
+        Route::get('/penutupan-operasi', [PenutupanOperasiController::class, 'index'])->name('penutupan.index');
+        Route::get('/penutupan-operasi/create', [PenutupanOperasiController::class, 'create'])->name('penutupan.create');
+        Route::post('/penutupan-operasi', [PenutupanOperasiController::class, 'store'])->name('penutupan.store');
+        Route::delete('/penutupan-operasi/{penutupan}', [PenutupanOperasiController::class, 'destroy'])->name('penutupan.destroy')->whereNumber('penutupan');
     });
 
     // Jenis Khidmat (KN category tree: kategori -> kes -> subkategori)
