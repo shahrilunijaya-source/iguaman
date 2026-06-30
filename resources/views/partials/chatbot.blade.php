@@ -1,6 +1,6 @@
 {{-- AI@JBG chat widget. Self-contained (scoped CSS + vanilla JS), talks only to
      the server-side proxy (route chatbot.ask). Drop @include('partials.chatbot')
-     before </body> on any public page. Brand: teal #00B8A9 / pine #003D3A. --}}
+     before </body> on any public page. Brand: teal #1a6fa8 / pine #0d2e48. --}}
 <div id="jbgcb" data-endpoint="{{ route('chatbot.ask') }}" data-token="{{ csrf_token() }}">
     <button type="button" class="jbgcb-fab" aria-label="Buka chatbot AI@JBG" aria-expanded="false">
         <span class="jbgcb-fab-icon" aria-hidden="true">&#128172;</span>
@@ -28,12 +28,12 @@
 </div>
 
 <style>
-    #jbgcb { --jbgcb-teal:#00B8A9; --jbgcb-pine:#003D3A; position:fixed; right:1.25rem; bottom:1.25rem; z-index:9999; font-family:ui-sans-serif,system-ui,sans-serif; }
+    #jbgcb { --jbgcb-teal:#1a6fa8; --jbgcb-pine:#0d2e48; position:fixed; right:1.25rem; bottom:1.25rem; z-index:9999; font-family:ui-sans-serif,system-ui,sans-serif; }
     #jbgcb *, #jbgcb *::before, #jbgcb *::after { box-sizing:border-box; }
-    .jbgcb-fab { width:3.5rem; height:3.5rem; border-radius:9999px; border:0; cursor:pointer; background:var(--jbgcb-teal); color:#fff; box-shadow:0 6px 20px rgba(0,61,58,.35); font-size:1.5rem; line-height:1; transition:transform .15s ease, box-shadow .15s ease; }
-    .jbgcb-fab:hover { transform:translateY(-2px); box-shadow:0 10px 26px rgba(0,61,58,.45); }
+    .jbgcb-fab { width:3.5rem; height:3.5rem; border-radius:9999px; border:0; cursor:pointer; background:var(--jbgcb-teal); color:#fff; box-shadow:0 6px 20px rgba(13,46,72,.35); font-size:1.5rem; line-height:1; transition:transform .15s ease, box-shadow .15s ease; }
+    .jbgcb-fab:hover { transform:translateY(-2px); box-shadow:0 10px 26px rgba(13,46,72,.45); }
     .jbgcb-fab:focus-visible { outline:3px solid var(--jbgcb-pine); outline-offset:2px; }
-    .jbgcb-panel { position:absolute; right:0; bottom:4.5rem; width:min(22rem,calc(100vw - 2.5rem)); height:min(30rem,70vh); background:#fff; border-radius:1rem; box-shadow:0 20px 50px rgba(0,61,58,.3); display:flex; flex-direction:column; overflow:hidden; border:1px solid rgba(0,61,58,.12); }
+    .jbgcb-panel { position:absolute; right:0; bottom:4.5rem; width:min(22rem,calc(100vw - 2.5rem)); height:min(30rem,70vh); background:#fff; border-radius:1rem; box-shadow:0 20px 50px rgba(13,46,72,.3); display:flex; flex-direction:column; overflow:hidden; border:1px solid rgba(13,46,72,.12); }
     /* The [hidden] attribute toggles visibility; without this rule the
        display:flex above would override the UA [hidden]{display:none} and
        the panel could never be hidden (close button looked dead). */
@@ -46,11 +46,11 @@
     .jbgcb-close:focus-visible { outline:2px solid var(--jbgcb-teal); outline-offset:2px; }
     .jbgcb-log { flex:1; overflow-y:auto; padding:1rem; display:flex; flex-direction:column; gap:.6rem; background:#f6f9f9; }
     .jbgcb-msg { max-width:85%; padding:.55rem .8rem; border-radius:.85rem; font-size:.85rem; line-height:1.4; white-space:pre-wrap; word-wrap:break-word; }
-    .jbgcb-bot { align-self:flex-start; background:#fff; color:#0f2e2c; border:1px solid rgba(0,61,58,.12); border-bottom-left-radius:.2rem; }
+    .jbgcb-bot { align-self:flex-start; background:#fff; color:#0f2e2c; border:1px solid rgba(13,46,72,.12); border-bottom-left-radius:.2rem; }
     .jbgcb-user { align-self:flex-end; background:var(--jbgcb-teal); color:#fff; border-bottom-right-radius:.2rem; }
     .jbgcb-msg.jbgcb-pending { opacity:.6; font-style:italic; }
-    .jbgcb-form { display:flex; gap:.4rem; padding:.6rem; border-top:1px solid rgba(0,61,58,.1); background:#fff; }
-    .jbgcb-input { flex:1; border:1px solid rgba(0,61,58,.2); border-radius:.6rem; padding:.55rem .7rem; font-size:.85rem; }
+    .jbgcb-form { display:flex; gap:.4rem; padding:.6rem; border-top:1px solid rgba(13,46,72,.1); background:#fff; }
+    .jbgcb-input { flex:1; border:1px solid rgba(13,46,72,.2); border-radius:.6rem; padding:.55rem .7rem; font-size:.85rem; }
     .jbgcb-input:focus { outline:2px solid var(--jbgcb-teal); border-color:transparent; }
     .jbgcb-send { border:0; border-radius:.6rem; background:var(--jbgcb-teal); color:#fff; padding:0 .9rem; font-size:1rem; cursor:pointer; }
     .jbgcb-send:disabled { opacity:.5; cursor:not-allowed; }

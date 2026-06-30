@@ -131,7 +131,7 @@
         @canany(['kes.pindah', 'khidmat.manage'])
             @php $pindahMasuk = app(\App\Support\TransferCawanganService::class)->inboxCount(auth()->user()); @endphp
             <a href="{{ route('pemindahan.index') }}" class="ws-side-top {{ request()->routeIs('pemindahan.*') ? 'is-active' : '' }}">
-                <span class="ws-side-top__icon">⇄</span><span class="ws-side-label">Pemindahan Cawangan @if ($pindahMasuk > 0)<strong style="color:var(--brand,#00B8A9);">({{ $pindahMasuk }})</strong>@endif</span>
+                <span class="ws-side-top__icon">⇄</span><span class="ws-side-label">Pemindahan Cawangan @if ($pindahMasuk > 0)<strong style="color:var(--brand,#1a6fa8);">({{ $pindahMasuk }})</strong>@endif</span>
             </a>
         @endcanany
         <a href="{{ route('pengantaraan.senarai') }}" class="ws-side-top {{ request()->routeIs('pengantaraan.senarai') || request()->routeIs('pengantaraan.create') ? 'is-active' : '' }}">
@@ -147,7 +147,7 @@
         @endcan
         @php $bidangPending = \App\Support\PengkhususanService::pendingCount(); @endphp
         <a href="{{ route('kemaskini-bidang.index') }}" class="ws-side-top {{ request()->routeIs('kemaskini-bidang.*') ? 'is-active' : '' }}">
-            <span class="ws-side-top__icon">◳</span><span class="ws-side-label">Kemaskini Bidang @if ($bidangPending > 0)<strong style="color:var(--brand,#00B8A9);">({{ $bidangPending }})</strong>@endif</span>
+            <span class="ws-side-top__icon">◳</span><span class="ws-side-label">Kemaskini Bidang @if ($bidangPending > 0)<strong style="color:var(--brand,#1a6fa8);">({{ $bidangPending }})</strong>@endif</span>
         </a>
 
         @can('menu.selenggara')

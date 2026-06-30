@@ -9,10 +9,10 @@
     .al-table td { padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
     .al-actions { display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
     .al-pill { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:600; }
-    .al-pill--grab { background:rgba(0,184,169,.12); color:var(--brand,#00B8A9); }
+    .al-pill--grab { background:rgba(26,111,168,.12); color:var(--brand,#1a6fa8); }
     .al-pill--diagih { background:rgba(16,185,129,.12); color:#10b981; }
     .al-pill--luput { background:rgba(239,68,68,.10); color:var(--danger,#ef4444); }
-    .al-pill--baru { background:var(--paper-2,#eef4f3); color:var(--pine-deep,#003D3A); }
+    .al-pill--baru { background:var(--paper-2,#eef4f3); color:var(--pine-deep,#0d2e48); }
     .al-filter { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
 </style>
 

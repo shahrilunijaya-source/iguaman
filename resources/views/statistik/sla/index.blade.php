@@ -35,10 +35,10 @@
             <a href="{{ route('statistik-sla.show', ['key' => $slug] + $qs) }}" class="tap-card" style="text-decoration:none; color:inherit; display:block;">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
                     <div class="tap-card__eyebrow" style="margin-bottom:6px;">{{ $def['label'] }}</div>
-                    <span class="dash-kpi__eyebrow" style="flex:none; background:var(--brand,#00B8A9); color:#fff; padding:2px 9px; border-radius:999px; font-weight:700;">{{ $def['target'] }} hari</span>
+                    <span class="dash-kpi__eyebrow" style="flex:none; background:var(--brand,#1a6fa8); color:#fff; padding:2px 9px; border-radius:999px; font-weight:700;">{{ $def['target'] }} hari</span>
                 </div>
                 <p class="dash-empty__sub" style="margin:0;">{{ $def['desc'] }}</p>
-                <div class="dash-empty__sub" style="margin-top:10px; color:var(--brand,#00B8A9); font-weight:600;">Lihat matriks →</div>
+                <div class="dash-empty__sub" style="margin-top:10px; color:var(--brand,#1a6fa8); font-weight:600;">Lihat matriks →</div>
             </a>
         @endforeach
     </div>

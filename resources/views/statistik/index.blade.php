@@ -3,7 +3,7 @@
 @section('title', 'Statistik')
 
 @php
-    $palette = ['#00B8A9', '#003D3A', '#5BC0BE', '#1B7F77', '#86E0D6', '#2A9D8F', '#0E7C7B', '#9AD9CF'];
+    $palette = ['#1a6fa8', '#0d2e48', '#5BC0BE', '#1B7F77', '#86E0D6', '#2A9D8F', '#0E7C7B', '#9AD9CF'];
     $bar = fn ($n, $max) => $max > 0 ? max(2, round($n / $max * 100)) : 0;
 
     // Donut geometry (stacked stroke-dasharray segments).
@@ -72,8 +72,8 @@
             <svg viewBox="0 0 {{ $W }} {{ $H }}" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block;">
                 <defs>
                     <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#00B8A9" stop-opacity="0.28"/>
-                        <stop offset="100%" stop-color="#00B8A9" stop-opacity="0"/>
+                        <stop offset="0%" stop-color="#1a6fa8" stop-opacity="0.28"/>
+                        <stop offset="100%" stop-color="#1a6fa8" stop-opacity="0"/>
                     </linearGradient>
                 </defs>
                 @for ($g = 0; $g <= 4; $g++)
@@ -82,9 +82,9 @@
                     <text x="{{ $pl - 6 }}" y="{{ round($gy + 3, 1) }}" text-anchor="end" font-size="9" fill="#9aa">{{ round($maxv - $g / 4 * $maxv) }}</text>
                 @endfor
                 <polygon points="{{ $pl }},{{ $baseY }} {{ $poly }} {{ $pl + $iw }},{{ $baseY }}" fill="url(#areaFill)"/>
-                <polyline points="{{ $poly }}" fill="none" stroke="#00B8A9" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                <polyline points="{{ $poly }}" fill="none" stroke="#1a6fa8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
                 @foreach ($pts as $i => $p)
-                    <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="3" fill="#fff" stroke="#003D3A" stroke-width="2"/>
+                    <circle cx="{{ $p[0] }}" cy="{{ $p[1] }}" r="3" fill="#fff" stroke="#0d2e48" stroke-width="2"/>
                     <text x="{{ $p[0] }}" y="{{ $H - 8 }}" text-anchor="middle" font-size="8.5" fill="#778">{{ \Illuminate\Support\Str::afterLast($labels[$i], '-') }}</text>
                 @endforeach
             </svg>
@@ -109,7 +109,7 @@
                                 @php $off += $len; @endphp
                             @endforeach
                         </g>
-                        <text x="70" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#003D3A">{{ $donutTotal }}</text>
+                        <text x="70" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#0d2e48">{{ $donutTotal }}</text>
                         <text x="70" y="84" text-anchor="middle" font-size="9" fill="#889" letter-spacing="1">KES</text>
                     </svg>
                     <div style="flex:1; min-width:120px;">

@@ -1,6 +1,6 @@
 {{-- KPI monthly chart. Param: $kpi (compute() output). Per month, per type: stacked met/missed bar (y = %). --}}
 @php
-    $colors = ['Sivil' => '#00B8A9', 'Syariah' => '#1B7F77', 'Jenayah' => '#C98A00', 'Pendamping Guaman' => '#7A5AF8'];
+    $colors = ['Sivil' => '#1a6fa8', 'Syariah' => '#1B7F77', 'Jenayah' => '#C98A00', 'Pendamping Guaman' => '#7A5AF8'];
     $bulan = ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'];
     $types = $kpi['def']['types'];
     $nT = count($types);

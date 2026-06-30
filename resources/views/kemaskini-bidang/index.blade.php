@@ -16,7 +16,7 @@
     .kb-table th { text-align:left; padding:10px 12px; border-bottom:2px solid var(--line); color:var(--mute); font-size:12px; text-transform:uppercase; }
     .kb-table td { padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
     .kb-act { display:flex; gap:6px; flex-wrap:wrap; }
-    .kb-badge { display:inline-block; padding:3px 10px; border-radius:999px; background:rgba(0,184,169,.12); color:var(--brand,#00B8A9); font-size:11px; font-weight:600; }
+    .kb-badge { display:inline-block; padding:3px 10px; border-radius:999px; background:rgba(26,111,168,.12); color:var(--brand,#1a6fa8); font-size:11px; font-weight:600; }
 </style>
 
 <div class="tap-head">

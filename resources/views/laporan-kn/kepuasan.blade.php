@@ -54,7 +54,7 @@
             type: 'pie',
             data: {
                 labels: @json($labels),
-                datasets: [{ data: @json($data), backgroundColor: ['#00B8A9', '#F6A623', '#E1495B'] }],
+                datasets: [{ data: @json($data), backgroundColor: ['#1a6fa8', '#F6A623', '#E1495B'] }],
             },
             options: { responsive: true, plugins: { legend: { position: 'bottom' } } },
         });

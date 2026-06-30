@@ -4,7 +4,7 @@
 
 @section('content')
     <style>
-        .sg-modal-bg { position:fixed; inset:0; background:rgba(0,61,58,0.45); display:none; align-items:center; justify-content:center; z-index:50; padding:20px; }
+        .sg-modal-bg { position:fixed; inset:0; background:rgba(13,46,72,0.45); display:none; align-items:center; justify-content:center; z-index:50; padding:20px; }
         .sg-modal-bg.is-open { display:flex; }
         .sg-modal { background:#fff; border-radius:var(--r-lg); max-width:640px; width:100%; max-height:90vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,0.25); }
         .sg-modal__head { padding:20px 24px; border-bottom:1px solid var(--line); }
@@ -16,7 +16,7 @@
         .sg-radio { display:flex; gap:18px; margin:6px 0 18px; }
         .sg-radio label { display:flex; align-items:center; gap:7px; font-size:14px; cursor:pointer; }
         .sg-list { font-size:13px; color:var(--mute); line-height:1.7; margin:6px 0 16px; padding-left:20px; }
-        .sg-card { border:1px solid var(--line); border-radius:var(--r-lg); padding:18px; background:rgba(0,184,169,0.04); margin-bottom:14px; }
+        .sg-card { border:1px solid var(--line); border-radius:var(--r-lg); padding:18px; background:rgba(26,111,168,0.04); margin-bottom:14px; }
         .sg-fee { font-size:13px; color:var(--mute); }
         .sg-fee strong { color:var(--pine-deep); }
         .sg-err { color:var(--danger); font-size:12px; margin-top:-10px; margin-bottom:12px; display:none; }

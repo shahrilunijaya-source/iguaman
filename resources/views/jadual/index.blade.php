@@ -82,11 +82,11 @@
             .jt-legend { display:flex; flex-wrap:wrap; gap:16px; margin:8px 0 16px; font-size:12px; color:var(--mute,#6b7280); }
             .jt-legend span { display:inline-flex; align-items:center; gap:6px; }
             .jt-dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
-            .jt-dot--open { background:#e9faf6; border:1px solid #00B8A9; }
+            .jt-dot--open { background:#e9faf6; border:1px solid #1a6fa8; }
             .jt-dot--weekend { background:#f1f3f5; border:1px solid #ced4da; }
             .jt-dot--holiday { background:#fff3cd; border:1px solid #f0c000; }
             .jt-dot--closure { background:#fde2e1; border:1px solid #e03131; }
-            .jt-dot--booked { background:#00B8A9; }
+            .jt-dot--booked { background:#1a6fa8; }
 
             .jt-cal { border:1px solid var(--line,#e5e7eb); border-radius:12px; overflow:hidden; background:#fff; }
             .jt-cal__head, .jt-cal__row { display:grid; grid-template-columns:repeat(7, 1fr); }
@@ -103,9 +103,9 @@
             .jt-day__tag { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; padding:2px 5px; border-radius:4px; background:#e9ecef; color:#495057; }
             .jt-day--holiday .jt-day__tag { background:#fff3cd; color:#8a6d00; }
             .jt-day--closure .jt-day__tag { background:#fde2e1; color:#b02a25; }
-            .jt-day__count { font-size:10px; font-weight:700; background:#00B8A9; color:#fff; border-radius:9px; min-width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; padding:0 5px; }
+            .jt-day__count { font-size:10px; font-weight:700; background:#1a6fa8; color:#fff; border-radius:9px; min-width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; padding:0 5px; }
             .jt-day__body { display:flex; flex-direction:column; gap:3px; overflow:hidden; }
-            .jt-appt { font-size:10px; line-height:1.3; padding:3px 5px; border-radius:5px; background:#e9faf6; border-left:3px solid #00B8A9; display:flex; flex-wrap:wrap; gap:4px; align-items:baseline; }
+            .jt-appt { font-size:10px; line-height:1.3; padding:3px 5px; border-radius:5px; background:#e9faf6; border-left:3px solid #1a6fa8; display:flex; flex-wrap:wrap; gap:4px; align-items:baseline; }
             .jt-appt--menunggu { background:#fff8e6; border-left-color:#f0a000; }
             .jt-appt--batal { background:#f1f3f5; border-left-color:#adb5bd; }
             .jt-appt__time { font-weight:700; color:#1f2933; }

@@ -9,10 +9,10 @@
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 11px; color: #1a1a1a; line-height: 1.45; }
 
         header { position: fixed; top: -92px; left: 0; right: 0; height: 84px; }
-        .kepala { width: 100%; border-collapse: collapse; border-bottom: 2px solid #003D3A; }
+        .kepala { width: 100%; border-collapse: collapse; border-bottom: 2px solid #0d2e48; }
         .kepala td { vertical-align: middle; padding-bottom: 8px; }
-        .brand { font-size: 18px; font-weight: bold; color: #003D3A; letter-spacing: .3px; }
-        .brand .teal { color: #00B8A9; }
+        .brand { font-size: 18px; font-weight: bold; color: #0d2e48; letter-spacing: .3px; }
+        .brand .teal { color: #1a6fa8; }
         .kepala .org { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1.2px; }
         .kepala .right { text-align: right; font-size: 8.5px; color: #777; }
 
@@ -22,11 +22,11 @@
         .pg:after { content: "Halaman " counter(page); }
 
         .doc-title { text-align: center; font-size: 13px; font-weight: bold; text-transform: uppercase;
-                     letter-spacing: 1.2px; color: #003D3A; margin: 0 0 4px; }
+                     letter-spacing: 1.2px; color: #0d2e48; margin: 0 0 4px; }
         .doc-sub { text-align: center; font-size: 9.5px; color: #666; margin: 0 0 16px; }
 
-        .sec { margin: 16px 0 6px; font-weight: bold; color: #003D3A; font-size: 10.5px;
-               text-transform: uppercase; letter-spacing: .6px; border-bottom: 1px solid #003D3A; padding-bottom: 3px; }
+        .sec { margin: 16px 0 6px; font-weight: bold; color: #0d2e48; font-size: 10.5px;
+               text-transform: uppercase; letter-spacing: .6px; border-bottom: 1px solid #0d2e48; padding-bottom: 3px; }
 
         table.kv { width: 100%; border-collapse: collapse; }
         table.kv td { padding: 4px 6px; vertical-align: top; border-bottom: 1px solid #eee; }
@@ -35,7 +35,7 @@
 
         table.grid { width: 100%; border-collapse: collapse; margin-top: 4px; }
         table.grid th, table.grid td { border: 1px solid #cfd8d8; padding: 5px 6px; text-align: left; vertical-align: top; }
-        table.grid th { background: #eef4f3; color: #003D3A; font-size: 9.5px; text-transform: uppercase; letter-spacing: .4px; }
+        table.grid th { background: #eef4f3; color: #0d2e48; font-size: 9.5px; text-transform: uppercase; letter-spacing: .4px; }
 
         p.body { margin: 6px 0; text-align: justify; }
         .sign { margin-top: 46px; width: 100%; }

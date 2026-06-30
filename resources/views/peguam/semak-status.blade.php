@@ -14,8 +14,8 @@
         .ss-field { margin-bottom: 14px; }
         .ss-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
         .ss-field input { width: 100%; padding: 10px 12px; border: 1px solid var(--line, #e5e7eb); border-radius: 8px; font-size: 14px; }
-        .ss-btn { display: inline-block; padding: 10px 18px; border: 0; border-radius: 8px; background: var(--brand, #00B8A9); color: #fff; font-weight: 600; cursor: pointer; }
-        .ss-link { color: var(--brand, #00B8A9); font-size: 13px; text-decoration: none; }
+        .ss-btn { display: inline-block; padding: 10px 18px; border: 0; border-radius: 8px; background: var(--brand, #1a6fa8); color: #fff; font-weight: 600; cursor: pointer; }
+        .ss-link { color: var(--brand, #1a6fa8); font-size: 13px; text-decoration: none; }
         .ss-result { margin-top: 18px; padding: 16px; border-radius: 10px; border: 1px solid var(--line, #e5e7eb); }
         .ss-badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 600; font-size: 12px; }
         .ss-badge--baharu { background: rgba(201,138,0,.12); color: #C98A00; }

@@ -4,7 +4,7 @@
     Per-group column order = denominator, numerator, peratus (legacy display order).
 --}}
 @php
-    $th = 'border:1px solid #cdd6d4; padding:4px 4px; font-size:8px; text-align:center; background:#003D3A; color:#fff; font-weight:700;';
+    $th = 'border:1px solid #cdd6d4; padding:4px 4px; font-size:8px; text-align:center; background:#0d2e48; color:#fff; font-weight:700;';
     $td = 'border:1px solid #d7dedc; padding:4px 5px; font-size:9px; text-align:center;';
     $tdL = 'border:1px solid #d7dedc; padding:4px 6px; font-size:9px; text-align:left; white-space:nowrap;';
     $tdP = 'border:1px solid #d7dedc; padding:4px 5px; font-size:9px; text-align:center; font-weight:700; background:#f2faf8;';

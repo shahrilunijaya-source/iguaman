@@ -35,7 +35,7 @@
                    border-radius:999px; background:#fff; cursor:pointer; font-size:12px; color:var(--mute); transition:all .15s; }
         .wz-pill__no { width:20px; height:20px; border-radius:50%; background:var(--line); color:#fff;
                        display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
-        .wz-pill.is-active { border-color:var(--teal); color:var(--pine-deep); box-shadow:0 0 0 3px rgba(0,184,169,0.12); }
+        .wz-pill.is-active { border-color:var(--teal); color:var(--pine-deep); box-shadow:0 0 0 3px rgba(26,111,168,0.12); }
         .wz-pill.is-active .wz-pill__no { background:var(--teal); }
         .wz-pill.is-done { color:var(--pine-deep); }
         .wz-pill.is-done .wz-pill__no { background:var(--pine-deep); }

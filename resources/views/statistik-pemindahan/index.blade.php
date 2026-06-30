@@ -6,7 +6,7 @@
 <style>
     .sp-tabs { display:flex; gap:8px; margin-bottom:16px; }
     .sp-tab { padding:6px 14px; border:1px solid var(--line); border-radius:999px; font-size:13px; color:var(--mute); text-decoration:none; }
-    .sp-tab.is-active { background:var(--pine-deep,#003D3A); color:#fff; border-color:var(--pine-deep,#003D3A); }
+    .sp-tab.is-active { background:var(--pine-deep,#0d2e48); color:#fff; border-color:var(--pine-deep,#0d2e48); }
     .sp-bar { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:16px; }
     .sp-table { width:100%; border-collapse:collapse; font-size:12px; }
     .sp-table th, .sp-table td { padding:7px 8px; border-bottom:1px solid var(--line); text-align:center; }

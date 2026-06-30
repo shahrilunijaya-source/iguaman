@@ -24,13 +24,13 @@
 
 :root {
   /* AI surface — DARK (officer console) */
-  --ai-bg:      var(--pine-900);            /* #001E1C — company dark brand */
+  --ai-bg:      var(--pine-900);            /* #040f1c — company dark brand (blue-950) */
   --ai-bg-deep: #0A0F14;                    /* near-black, neutral */
-  --ai-border:  rgba(var(--brand-rgb), 0.22);    /* teal hairline on dark */
+  --ai-border:  rgba(var(--brand-rgb), 0.22);    /* blue hairline on dark */
   --ai-text:    #FFFFFF;
   --ai-muted:   rgba(255, 255, 255, 0.62);
   --ai-subtle:  rgba(255, 255, 255, 0.42);
-  --ai-accent:  #5DCAA5;                     /* lightened teal for dark bg */
+  --ai-accent:  #55b8e8;                     /* lightened blue (blue-400) for dark bg */
 }
 
 * { box-sizing: border-box; }
@@ -424,7 +424,7 @@ body.system .btn--block,
   background: var(--orange);
   color: #fff;
 }
-.ws-topbar__btn .badge--teal { background: var(--teal); color: var(--pine-deep); }
+.ws-topbar__btn .badge--teal { background: var(--teal); color: #fff; }
 
 .ws-topbar__user {
   display: inline-flex;
@@ -443,7 +443,7 @@ body.system .btn--block,
   width: 30px; height: 30px;
   border-radius: 50%;
   background: var(--teal);
-  color: var(--pine-deep);
+  color: #fff;
   font-size: 11px;
   font-weight: 700;
   display: grid; place-items: center;
@@ -874,7 +874,7 @@ body.system .btn--block,
   text-decoration: none;
 }
 .dash-trow__cta--orange { background: var(--orange); color: #fff; }
-.dash-trow__cta--orange:hover { background: #e85a26; }
+.dash-trow__cta--orange:hover { background: #b84e14; }
 .dash-trow__cta--pine { background: var(--pine); color: #fff; }
 .dash-trow__cta--pine:hover { background: var(--pine-deep); }
 .dash-trow__cta--ghost { background: transparent; color: var(--pine); border: 1px solid var(--line); }
@@ -1066,7 +1066,7 @@ body.system .btn--block,
   width: 16px; height: 16px;
   border-radius: 50%;
   background: var(--teal);
-  color: var(--pine-deep);
+  color: #fff;
   font-size: 10px;
   font-weight: 700;
 }
@@ -1267,7 +1267,7 @@ body.system .btn--block,
   cursor: pointer;
 }
 .tap-row__cta--orange { background: var(--orange); color: #fff; }
-.tap-row__cta--orange:hover { background: #e85a26; }
+.tap-row__cta--orange:hover { background: #b84e14; }
 .tap-row__cta--pine { background: var(--pine); color: #fff; }
 .tap-row__cta--pine:hover { background: var(--pine-deep); }
 .tap-row__cta--ghost { background: transparent; color: var(--pine); border: 1px solid var(--line); }
@@ -1318,7 +1318,7 @@ body.system .btn--block,
 }
 .tap-bulk__count {
   background: var(--teal);
-  color: var(--pine-deep);
+  color: #fff;
   padding: 3px 9px;
   border-radius: 5px;
   font-weight: 700;
@@ -1498,8 +1498,8 @@ body.system .btn--block,
   gap: 8px;
   text-decoration: none;
 }
-.tap-action__btn--approve { background: #16A34A; color: #fff; }
-.tap-action__btn--approve:hover { background: #15803D; }
+.tap-action__btn--approve { background: var(--success); color: #fff; }
+.tap-action__btn--approve:hover { background: #166048; }
 .tap-action__btn--reject { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(239,68,68,0.32); }
 .tap-action__btn--reject:hover { background: rgba(239,68,68,0.10); }
 
@@ -1695,7 +1695,7 @@ body.system .btn--block,
 }
 .wiz-step--done .wiz-step__num {
   background: var(--teal);
-  color: var(--pine-deep);
+  color: #fff;
   border-color: var(--teal);
 }
 .wiz-step--done .wiz-step__label { color: var(--teal-deep); }
@@ -2421,7 +2421,7 @@ body.system .btn--block,
   border-radius: 4px;
   transition: width 220ms cubic-bezier(.2,.7,.2,1);
 }
-.stat-bar__fill.is-orange { background: linear-gradient(90deg, #e85a26 0%, var(--orange) 100%); }
+.stat-bar__fill.is-orange { background: linear-gradient(90deg, #b84e14 0%, var(--orange) 100%); }
 .stat-bar__fill.is-pine { background: linear-gradient(90deg, var(--pine-deep) 0%, var(--pine) 100%); }
 .stat-bar__num {
   font-family: var(--mono);
@@ -2579,7 +2579,7 @@ body.system .btn--block,
 }
 .stat-lead__row:first-child .stat-lead__rank {
   background: var(--teal);
-  color: var(--pine-deep);
+  color: #fff;
 }
 .stat-lead__row:nth-child(2) .stat-lead__rank { background: rgba(var(--brand-rgb),0.20); color: var(--pine); }
 .stat-lead__row:nth-child(3) .stat-lead__rank { background: rgba(var(--brand-rgb),0.10); color: var(--pine); }
@@ -2943,7 +2943,7 @@ body.system .btn--block,
   font-family: var(--mono);
   color: #fff;
 }
-.demo-tier--officer .demo-tier__badge { background: var(--teal); color: var(--pine-deep); }
+.demo-tier--officer .demo-tier__badge { background: var(--teal); color: #fff; }
 .demo-tier--supervisor .demo-tier__badge { background: var(--pine); }
 .demo-tier--admin .demo-tier__badge { background: var(--orange); }
 
@@ -3558,7 +3558,7 @@ body.system .btn--block,
 .jb-chip--backup      { background: rgba(var(--pine-rgb), 0.10); color: var(--pine); }
 .jb-chip--integration { background: rgba(var(--brand-rgb), 0.14); color: var(--teal-deep); }
 .jb-chip--cert        { background: var(--orange-soft); color: var(--orange); }
-.jb-chip--report      { background: rgba(99,102,241,0.12); color: #4f46e5; }
+.jb-chip--report      { background: rgba(90,127,202,0.14); color: #35508a; }
 .jb-chip--cleanup     { background: var(--paper-2); color: var(--mute); }
 
 .jb-card__name {
@@ -3639,7 +3639,7 @@ body.system .btn--block,
     cursor: pointer;
     font-family: inherit;
 }
-.jb-card__retry:hover { background: #e85a26; }
+.jb-card__retry:hover { background: #b84e14; }
 
 .jb-card__sev {
     position: absolute;
@@ -3678,14 +3678,15 @@ body.system .btn--block,
     color: #fff !important;
 }
 
-/* Bright teal (#00B8A9) + white = low contrast → use the deeper teal so
-   white text stays legible on these small accents. */
+/* Brand blue small accents: deeper-blue bg + white text so compact
+   chips / badges / numbers stay legible. */
 .tap-aliran__chip,
 .tap-bulk__count,
 .ws-topbar__avatar,
 .ws-topbar__btn .badge--teal,
 .wiz-step--done .wiz-step__num {
     background: var(--teal-deep) !important;
+    color: #fff !important;
 }
 
 /* ================================================================

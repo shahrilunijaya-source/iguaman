@@ -6,7 +6,7 @@
 <style>
     .td-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; }
     .td-grid .col-2 { grid-column:1/-1; }
-    .td-note { background:rgba(0,184,169,.08); border:1px solid var(--line); border-radius:10px; padding:14px 16px; font-size:13px; margin-bottom:18px; }
+    .td-note { background:rgba(26,111,168,.08); border:1px solid var(--line); border-radius:10px; padding:14px 16px; font-size:13px; margin-bottom:18px; }
     .req { color:var(--danger,#dc2626); }
     @media (max-width:640px){ .td-grid { grid-template-columns:1fr; } }
 </style>

@@ -32,7 +32,7 @@
 
     @if ($tuntutan->status_tuntutan === \App\Models\LejarTuntutanBayaran::STATUS_DRAF)
         {{-- W5: a claim seeded at external-lawyer assignment — fill the amount + submit. --}}
-        <div class="card" style="padding:18px; margin-top:16px; border-left:3px solid var(--brand,#00B8A9);">
+        <div class="card" style="padding:18px; margin-top:16px; border-left:3px solid var(--brand,#1a6fa8);">
             <h3 style="margin:0 0 4px; font-size:15px;">Lengkapkan &amp; Hantar Tuntutan</h3>
             <p class="dash-empty__sub" style="margin:0 0 12px;">Tuntutan ini disediakan semasa kes diagihkan kepada anda. Isi jumlah dan hantar untuk semakan JBG.</p>
             <form method="POST" action="{{ route('peguam.tuntutan.lengkap', $tuntutan) }}" class="va-form" onsubmit="return confirm('Hantar tuntutan ini untuk semakan? Tidak boleh diubah selepas dihantar.')">

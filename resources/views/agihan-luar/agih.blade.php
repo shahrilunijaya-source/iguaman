@@ -8,7 +8,7 @@
     .sl-table th { text-align:left; padding:10px 12px; border-bottom:2px solid var(--line); color:var(--mute); font-size:12px; text-transform:uppercase; letter-spacing:.03em; }
     .sl-table td { padding:10px 12px; border-bottom:1px solid var(--line); }
     .sl-table tr:hover td { background:var(--paper-2,#f6faf9); }
-    .sl-beban { display:inline-block; min-width:26px; text-align:center; padding:2px 8px; border-radius:999px; background:var(--paper-2,#eef4f3); color:var(--pine-deep,#003D3A); font-weight:600; }
+    .sl-beban { display:inline-block; min-width:26px; text-align:center; padding:2px 8px; border-radius:999px; background:var(--paper-2,#eef4f3); color:var(--pine-deep,#0d2e48); font-weight:600; }
 </style>
 
 <div class="tap-nav" style="margin: -24px -20px 18px; border-radius: 0;">

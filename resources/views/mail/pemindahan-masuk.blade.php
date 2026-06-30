@@ -17,6 +17,6 @@
 
     <p>Sila log masuk ke Sistem Integrated Bantuan Guaman untuk menerima atau menolak pemindahan ini.</p>
 
-    <p style="color:#003D3A;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
+    <p style="color:#0d2e48;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
 </body>
 </html>

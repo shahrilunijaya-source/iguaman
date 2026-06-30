@@ -18,6 +18,6 @@
     <p>Kes ini kini berstatus <strong>PPUU Agih Semula</strong> dan memerlukan pemilihan Peguam Panel baharu.
         Sila ambil tindakan sewajarnya melalui ruang <strong>Agihan Kes</strong> dalam Sistem Integrated Bantuan Guaman.</p>
 
-    <p style="color:#003D3A;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
+    <p style="color:#0d2e48;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
 </body>
 </html>

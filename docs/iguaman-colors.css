@@ -1,0 +1,75 @@
+/*
+ * iGuaman Color System — Blue Palette
+ * Generated color tokens for the Sistem Integrated Bantuan Guaman.
+ * Use these CSS custom properties throughout the system.
+ *
+ * Brand: Blue (#0d2e48 / #1a6fa8 / #2a9fd4)
+ * Last updated: 2026-07-01
+ */
+
+:root {
+
+  /* ─── Brand Blue ───────────────────────────────────────────── */
+  --color-blue-950: #040f1c;
+  --color-blue-800: #0d2e48;   /* header nav background          */
+  --color-blue-700: #124070;   /* hover on dark surfaces         */
+  --color-blue-600: #1a6fa8;   /* primary action, active nav     */
+  --color-blue-500: #2a9fd4;   /* icons, links, accent           */
+  --color-blue-400: #55b8e8;   /* hover on light surfaces        */
+  --color-blue-300: #8fd0f4;   /* decorative / illustration      */
+  --color-blue-200: #c0e4f8;   /* light tint                     */
+  --color-blue-100: #e0f2fc;   /* subtle highlight, chip bg      */
+
+  /* Semantic aliases */
+  --color-brand:         var(--color-blue-600);
+  --color-brand-dark:    var(--color-blue-800);
+  --color-brand-light:   var(--color-blue-100);
+  --color-link:          var(--color-blue-500);
+  --color-focus-ring:    var(--color-blue-400);
+
+  /* ─── Status / Semantic ────────────────────────────────────── */
+
+  /* Warning — amber (alert borders, icons) */
+  --color-warning-700:   #a87008;
+  --color-warning-500:   #d4940d;   /* ★ alert border, warning icon   */
+  --color-warning-100:   #fff3cd;   /* alert background tint          */
+
+  /* Danger — orange (unassigned counts, errors) */
+  --color-danger-700:    #b84e14;
+  --color-danger-500:    #e07030;   /* ★ critical numbers, errors     */
+  --color-danger-100:    #fde8d8;   /* error background tint          */
+
+  /* Success — green */
+  --color-success-700:   #166048;
+  --color-success-500:   #1e9060;   /* ★ success states, badges       */
+  --color-success-100:   #d4f0e4;   /* success background tint        */
+
+  /* Info — slate blue (distinct from brand) */
+  --color-info-700:      #35508a;
+  --color-info-500:      #5a7fca;   /* ★ info badges, tooltips        */
+  --color-info-100:      #dde6f8;   /* info background tint           */
+
+  /* ─── Neutral (cool-shifted) ───────────────────────────────── */
+  --color-gray-950:      #0a0e14;
+  --color-gray-900:      #1a2030;   /* headings, primary text         */
+  --color-gray-800:      #38404e;
+  --color-gray-600:      #58606e;   /* body text                      */
+  --color-gray-400:      #9a9fa8;   /* labels, caps, muted text       */
+  --color-gray-300:      #ccd0d8;
+  --color-gray-200:      #dce2ea;   /* card borders, dividers         */
+  --color-gray-100:      #eef0f4;   /* sidebar background             */
+  --color-gray-50:       #f6f7fa;   /* page background                */
+
+  /* ─── Surface / Background aliases ────────────────────────── */
+  --color-bg:            var(--color-gray-50);     /* page background  */
+  --color-bg-subtle:     var(--color-gray-100);    /* sidebar, panels  */
+  --color-surface:       #ffffff;                  /* cards, modals    */
+  --color-border:        var(--color-gray-200);    /* all borders      */
+
+  /* ─── Text aliases ─────────────────────────────────────────── */
+  --color-text-primary:  var(--color-gray-900);    /* headings         */
+  --color-text-body:     var(--color-gray-600);    /* body copy        */
+  --color-text-muted:    var(--color-gray-400);    /* labels, captions */
+  --color-text-on-dark:  #ffffff;                  /* text on nav/dark */
+  --color-text-on-dark-muted: rgba(255,255,255,0.55);
+}

@@ -27,8 +27,8 @@
         @foreach ($reports as $r)
             <a href="{{ route($r['route']) }}" class="tap-card" style="display:block; text-decoration:none; color:inherit; padding:16px; transition:box-shadow .15s;">
                 <div style="display:flex; align-items:baseline; gap:10px;">
-                    <span style="font-size:12px; font-weight:700; color:var(--brand,#00B8A9);">#{{ $r['no'] }}</span>
-                    <h2 style="font-size:15px; margin:0; color:var(--pine-deep,#003D3A);">{{ $r['label'] }}</h2>
+                    <span style="font-size:12px; font-weight:700; color:var(--brand,#1a6fa8);">#{{ $r['no'] }}</span>
+                    <h2 style="font-size:15px; margin:0; color:var(--pine-deep,#0d2e48);">{{ $r['label'] }}</h2>
                 </div>
                 <p style="font-size:12.5px; color:var(--mute,#667); margin:8px 0 10px; line-height:1.45;">{{ $r['desc'] }}</p>
                 <span style="font-size:11px; text-transform:uppercase; letter-spacing:.4px; color:var(--mute,#889);">{{ $r['viz'] }}</span>

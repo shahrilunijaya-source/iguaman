@@ -16,7 +16,7 @@
         ['route' => 'audit.index', 'icon' => '≣', 'label' => 'Log Audit', 'desc' => 'Jejak perubahan', 'show' => $canSelenggara],
     ], fn ($m) => $m['show']);
 
-    $auditTone = ['INSERT' => '#00B8A9', 'APPROVE' => '#00B8A9', 'UPDATE' => '#C98A00', 'REJECT' => '#D14343', 'DELETE' => '#D14343'];
+    $auditTone = ['INSERT' => '#1a6fa8', 'APPROVE' => '#1a6fa8', 'UPDATE' => '#C98A00', 'REJECT' => '#D14343', 'DELETE' => '#D14343'];
 @endphp
 
 @section('content')
@@ -79,7 +79,7 @@
         <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:14px;">
             @foreach ($modules as $m)
                 <a href="{{ route($m['route']) }}" style="text-decoration:none; color:inherit; border:1px solid var(--line); border-radius:var(--r-lg); padding:16px; display:flex; gap:12px; align-items:center; background:#fff; transition:border-color .15s, box-shadow .15s;"
-                   onmouseover="this.style.borderColor='var(--teal)'; this.style.boxShadow='0 0 0 3px rgba(0,184,169,0.1)';"
+                   onmouseover="this.style.borderColor='var(--teal)'; this.style.boxShadow='0 0 0 3px rgba(26,111,168,0.1)';"
                    onmouseout="this.style.borderColor='var(--line)'; this.style.boxShadow='none';">
                     <span style="width:38px; height:38px; flex:none; border-radius:10px; background:var(--paper-2); color:var(--pine-deep); display:flex; align-items:center; justify-content:center; font-size:18px;">{{ $m['icon'] }}</span>
                     <span style="min-width:0;">

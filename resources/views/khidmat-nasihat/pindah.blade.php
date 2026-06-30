@@ -27,7 +27,7 @@
     </dl>
 
     @if ($pending)
-        <div class="formerr" style="color:var(--pine-deep,#003D3A); background:var(--paper-2,#eef4f3); border-color:rgba(0,184,169,.2);">
+        <div class="formerr" style="color:var(--pine-deep,#0d2e48); background:var(--paper-2,#eef4f3); border-color:rgba(26,111,168,.2);">
             Rekod ini sudah dipindahkan ke <strong>{{ $pending->cawangan_tujuan }}</strong> pada
             {{ optional($pending->tarikh_pindah)->format('d/m/Y H:i') }} dan menunggu pengesahan terima.
             Tidak boleh dipindahkan semula sehingga pemindahan itu selesai diproses.

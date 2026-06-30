@@ -8,7 +8,7 @@
     .pc-table th { text-align:left; padding:10px 12px; border-bottom:2px solid var(--line); color:var(--mute); font-size:12px; text-transform:uppercase; letter-spacing:.03em; }
     .pc-table td { padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
     .pc-pill { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:600; }
-    .pc-pill--dipindah { background:rgba(0,184,169,.12); color:var(--brand,#00B8A9); }
+    .pc-pill--dipindah { background:rgba(26,111,168,.12); color:var(--brand,#1a6fa8); }
     .pc-pill--diterima { background:rgba(16,185,129,.12); color:#10b981; }
     .pc-pill--ditolak { background:rgba(239,68,68,.10); color:var(--danger,#ef4444); }
     .pc-flow { white-space:nowrap; }

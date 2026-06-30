@@ -8,7 +8,7 @@
     .ag-grid .col-2 { grid-column:1/-1; }
     .ag-row { display:flex; justify-content:space-between; gap:12px; padding:6px 0; border-bottom:1px solid var(--line); }
     .ag-row .k { color:var(--mute); font-size:13px; } .ag-row .v { font-weight:600; font-size:13px; text-align:right; }
-    .ag-badge { display:inline-block; padding:4px 12px; border-radius:999px; background:rgba(0,184,169,.12); color:var(--brand,#00B8A9); font-weight:600; font-size:12px; }
+    .ag-badge { display:inline-block; padding:4px 12px; border-radius:999px; background:rgba(26,111,168,.12); color:var(--brand,#1a6fa8); font-weight:600; font-size:12px; }
     .ag-sec { margin:22px 0 10px; font-weight:600; padding-bottom:6px; border-bottom:1px solid var(--line); }
     .ag-time { font-size:12px; }
     .ag-time li { padding:6px 0; border-bottom:1px dashed var(--line); }

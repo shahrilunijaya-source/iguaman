@@ -1,7 +1,7 @@
 {{-- Stacked-bar chart for a month pivot. Inputs: $pivot, $canvasId, $ariaLabel. --}}
 @php
     $monthLabels = ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'];
-    $palette = ['#00B8A9', '#0083B0', '#F6A623', '#7B61FF', '#E1495B', '#2DBE6C', '#94A3B8', '#FF8A5B', '#3F8EFC', '#B25FD0', '#6FCF97', '#F2C94C'];
+    $palette = ['#1a6fa8', '#0083B0', '#F6A623', '#7B61FF', '#E1495B', '#2DBE6C', '#94A3B8', '#FF8A5B', '#3F8EFC', '#B25FD0', '#6FCF97', '#F2C94C'];
     $datasets = [];
     foreach (array_values($pivot) as $i => $r) {
         $datasets[] = [

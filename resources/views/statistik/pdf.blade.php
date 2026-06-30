@@ -5,20 +5,20 @@
     <style>
         * { font-family: DejaVu Sans, sans-serif; }
         body { color: #1a1a1a; font-size: 11px; margin: 0; }
-        h1 { font-size: 18px; margin: 0 0 2px; color: #003D3A; }
+        h1 { font-size: 18px; margin: 0 0 2px; color: #0d2e48; }
         .meta { color: #666; font-size: 10px; margin-bottom: 16px; }
         .kpis { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
         .kpis td { width: 25%; border: 1px solid #ddd; padding: 8px 10px; }
         .kpis .lbl { font-size: 9px; text-transform: uppercase; color: #888; letter-spacing: .06em; }
-        .kpis .val { font-size: 18px; font-weight: bold; color: #003D3A; }
-        h2 { font-size: 12px; color: #003D3A; border-bottom: 2px solid #00B8A9; padding-bottom: 4px; margin: 16px 0 8px; }
+        .kpis .val { font-size: 18px; font-weight: bold; color: #0d2e48; }
+        h2 { font-size: 12px; color: #0d2e48; border-bottom: 2px solid #1a6fa8; padding-bottom: 4px; margin: 16px 0 8px; }
         table.brk { width: 100%; border-collapse: collapse; }
         table.brk td { padding: 4px 8px; border-bottom: 1px solid #eee; font-size: 11px; vertical-align: middle; }
         table.brk td.lab { width: 30%; }
         table.brk td.barcell { width: 55%; }
         table.brk td.n { text-align: right; font-weight: bold; width: 15%; }
         .barbg { background: #eef4f3; height: 8px; border-radius: 4px; }
-        .barfg { background: #00B8A9; height: 8px; border-radius: 4px; }
+        .barfg { background: #1a6fa8; height: 8px; border-radius: 4px; }
     </style>
 </head>
 <body>

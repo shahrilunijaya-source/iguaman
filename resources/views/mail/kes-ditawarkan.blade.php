@@ -15,6 +15,6 @@
 
     <p>Sila log masuk ke Sistem Integrated Bantuan Guaman dan ke ruang <strong>Tawaran</strong> untuk <strong>menerima</strong> atau <strong>menolak</strong> tawaran ini dalam tempoh <strong>7 hari</strong>.</p>
 
-    <p style="color:#003D3A;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
+    <p style="color:#0d2e48;"><strong>"BERKHIDMAT UNTUK NEGARA"</strong><br>Jabatan Bantuan Guaman</p>
 </body>
 </html>

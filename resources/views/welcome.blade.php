@@ -11,12 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     {{-- Self-contained: inline brand styles so the landing renders regardless of Vite build state.
-         Brand tokens mirror resources/css/theme.css — teal #00B8A9 / pine #003D3A / orange #FF6B35. --}}
+         Brand tokens mirror resources/css/theme.css — teal #1a6fa8 / pine #0d2e48 / orange #e07030. --}}
     <style>
         :root {
-            --teal: #00B8A9; --teal-600: #009B8E; --teal-700: #007D72; --teal-50: #E6F8F6;
-            --pine: #003D3A; --pine-700: #002F2C; --pine-900: #001E1C;
-            --orange: #FF6B35; --orange-50: #FFF1EB;
+            --teal: #1a6fa8; --teal-600: #155d8f; --teal-700: #124070; --teal-50: #e0f2fc;
+            --pine: #0d2e48; --pine-700: #0a2438; --pine-900: #040f1c;
+            --orange: #e07030; --orange-50: #fde8d8;
             --paper: #FAFAF7; --ink: #0A0E13; --mute: #5B6660; --line: #E5E3DC;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -50,14 +50,14 @@
             padding: 10px 18px; border-radius: 10px; cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s;
             border: 1px solid transparent; white-space: nowrap;
         }
-        .btn-primary { background: var(--teal); color: #fff; box-shadow: 0 6px 18px -6px rgba(0,184,169,.6); }
-        .btn-primary:hover { background: var(--teal-600); transform: translateY(-1px); box-shadow: 0 10px 26px -6px rgba(0,184,169,.7); }
+        .btn-primary { background: var(--teal); color: #fff; box-shadow: 0 6px 18px -6px rgba(26,111,168,.6); }
+        .btn-primary:hover { background: var(--teal-600); transform: translateY(-1px); box-shadow: 0 10px 26px -6px rgba(26,111,168,.7); }
         .btn-pine { background: var(--pine); color: #fff; }
         .btn-pine:hover { background: var(--pine-700); transform: translateY(-1px); }
         .btn-ghost { background: #fff; color: var(--pine); border-color: var(--line); }
         .btn-ghost:hover { border-color: var(--teal); color: var(--teal-700); }
         .btn-orange { background: var(--orange); color: #fff; }
-        .btn-orange:hover { background: #E85A28; transform: translateY(-1px); }
+        .btn-orange:hover { background: #b84e14; transform: translateY(-1px); }
         .btn-lg { padding: 14px 26px; font-size: 15px; border-radius: 12px; }
         .logout-form { display: inline-flex; align-items: center; margin: 0; }
         .logout-btn { border: none; cursor: pointer; font-family: inherit; }
@@ -69,8 +69,8 @@
         .hero::before {
             content: ""; position: absolute; inset: 0; z-index: -1;
             background:
-                radial-gradient(60% 50% at 85% 0%, rgba(0,184,169,.10), transparent 60%),
-                radial-gradient(50% 40% at 0% 100%, rgba(255,107,53,.07), transparent 55%);
+                radial-gradient(60% 50% at 85% 0%, rgba(26,111,168,.10), transparent 60%),
+                radial-gradient(50% 40% at 0% 100%, rgba(224,112,48,.07), transparent 55%);
         }
         .eyebrow {
             display: inline-flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 600;
@@ -107,7 +107,7 @@
             background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 30px 26px;
             transition: transform .18s, box-shadow .18s, border-color .18s;
         }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -22px rgba(0,61,58,.4); border-color: rgba(0,184,169,.4); }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -22px rgba(13,46,72,.4); border-color: rgba(26,111,168,.4); }
         .card .ico { width: 48px; height: 48px; border-radius: 13px; display: grid; place-items: center;
             background: var(--teal-50); color: var(--teal-700); margin-bottom: 18px; }
         .card .ico svg { width: 24px; height: 24px; }

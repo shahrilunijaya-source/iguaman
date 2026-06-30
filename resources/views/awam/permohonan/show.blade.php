@@ -24,7 +24,7 @@
                 <tr style="border-bottom:1px solid var(--line);">
                     <td style="padding:10px 0; color:var(--mute);">Status</td>
                     <td style="padding:10px 0;">
-                        <span style="font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; background:rgba(0,184,169,0.1); color:var(--teal);">
+                        <span style="font-size:11px; font-weight:700; padding:3px 8px; border-radius:999px; background:rgba(26,111,168,0.1); color:var(--teal);">
                             {{ $khidmat->status_kn }}
                         </span>
                     </td>

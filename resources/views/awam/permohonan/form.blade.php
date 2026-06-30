@@ -25,7 +25,7 @@
                    border-radius:999px; background:#fff; cursor:pointer; font-size:12px; color:var(--mute); transition:all .15s; }
         .wz-pill__no { width:20px; height:20px; border-radius:50%; background:var(--line); color:#fff;
                        display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
-        .wz-pill.is-active { border-color:var(--teal); color:var(--pine-deep); box-shadow:0 0 0 3px rgba(0,184,169,0.12); }
+        .wz-pill.is-active { border-color:var(--teal); color:var(--pine-deep); box-shadow:0 0 0 3px rgba(26,111,168,0.12); }
         .wz-pill.is-active .wz-pill__no { background:var(--teal); }
         .wz-pill.is-done { color:var(--pine-deep); }
         .wz-pill.is-done .wz-pill__no { background:var(--pine-deep); }
@@ -35,7 +35,7 @@
         .wz-progress { font-size:12px; color:var(--mute); }
         .kn-slot-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
         .kn-chip { padding:8px 14px; border:1px solid var(--line); border-radius:10px; background:#fff; cursor:pointer; font-size:13px; transition:all .12s; }
-        .kn-chip.is-on { border-color:var(--teal); background:rgba(0,184,169,0.08); color:var(--pine-deep); font-weight:700; }
+        .kn-chip.is-on { border-color:var(--teal); background:rgba(26,111,168,0.08); color:var(--pine-deep); font-weight:700; }
         .kn-hint { font-size:12px; color:var(--mute); margin-top:8px; }
         .wiz-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
         .wiz-field { display:flex; flex-direction:column; gap:4px; }
