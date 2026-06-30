@@ -8,6 +8,8 @@ use App\Http\Controllers\CawanganController;
 use App\Http\Controllers\CetakanController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\CutiController;
+use App\Http\Controllers\CutiNegeriController;
+use App\Http\Controllers\JadualJanjiTemuController;
 use App\Http\Controllers\JawatanController;
 use App\Http\Controllers\KategoriKnController;
 use App\Http\Controllers\KeputusanController;
@@ -356,6 +358,25 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::get('/khidmat-nasihat/{khidmat}/kemaskini', [KhidmatNasihatController::class, 'edit'])->name('khidmat.edit')->whereNumber('khidmat');
         Route::put('/khidmat-nasihat/{khidmat}', [KhidmatNasihatController::class, 'update'])->name('khidmat.update')->whereNumber('khidmat');
     });
+
+    // ==== BATCH 10 SLICE 3 (kalendar): Cuti Negeri CRUD + Jadual Janji Temu ====
+    // Cuti Negeri (ref_cuti) — state-specific public holidays (subset of 16 states),
+    // sharing the CutiNegeri bitmask + permission:selenggara.cuti with Cuti Umum.
+    Route::middleware('permission:selenggara.cuti')->group(function () {
+        Route::get('/cuti-negeri', [CutiNegeriController::class, 'index'])->name('cuti-negeri.index');
+        Route::get('/cuti-negeri/create', [CutiNegeriController::class, 'create'])->name('cuti-negeri.create');
+        Route::post('/cuti-negeri', [CutiNegeriController::class, 'store'])->name('cuti-negeri.store');
+        Route::get('/cuti-negeri/{cuti}/edit', [CutiNegeriController::class, 'edit'])->name('cuti-negeri.edit')->whereNumber('cuti');
+        Route::put('/cuti-negeri/{cuti}', [CutiNegeriController::class, 'update'])->name('cuti-negeri.update')->whereNumber('cuti');
+        Route::delete('/cuti-negeri/{cuti}', [CutiNegeriController::class, 'destroy'])->name('cuti-negeri.destroy')->whereNumber('cuti');
+    });
+
+    // Jadual Janji Temu — read-only month calendar of booked temu_janji per cawangan,
+    // honoring weekends/holidays/closures via SlotAvailabilityService. Gated slot.view.
+    Route::middleware('permission:slot.view')->group(function () {
+        Route::get('/jadual-janji-temu', [JadualJanjiTemuController::class, 'index'])->name('jadual.index');
+    });
+    // ==== END BATCH 10 SLICE 3 ====
 });
 
 // ---- Lawyer area: panel lawyers (peguam) ----
