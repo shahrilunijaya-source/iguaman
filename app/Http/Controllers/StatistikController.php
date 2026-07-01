@@ -109,9 +109,7 @@ class StatistikController extends Controller
             ->when($request->input('cawangan'), fn ($w, $v) => $w->where('cawangan', $v))
             ->when($request->input('status'), fn ($w, $v) => $w->where('status', $v))
             ->when($request->input('kategori'), fn ($w, $v) => $w->where('kategori_kes', $v))
-            ->when($request->input('q'), function ($w, $v) {
-                $w->where(fn ($s) => $s->where('nama', 'like', "%{$v}%")->orWhere('nokp', 'like', "%{$v}%")->orWhere('no_fail', 'like', "%{$v}%"));
-            });
+            ->when($request->input('q'), fn ($w, $v) => $w->carian($v));
     }
 
     /** [label => count] for a column, top 12, blanks excluded. */

@@ -34,13 +34,7 @@ class KesController extends Controller
             ->when($filters['cawangan'] ?? null, fn ($w, $v) => $w->where('cawangan', $v))
             ->when($filters['status'] ?? null, fn ($w, $v) => $w->where('status', $v))
             ->when($filters['kategori'] ?? null, fn ($w, $v) => $w->where('kategori_kes', $v))
-            ->when($filters['q'] ?? null, function ($w, $v) {
-                $w->where(function ($s) use ($v) {
-                    $s->where('nama', 'like', "%{$v}%")
-                        ->orWhere('nokp', 'like', "%{$v}%")
-                        ->orWhere('no_fail', 'like', "%{$v}%");
-                });
-            })
+            ->when($filters['q'] ?? null, fn ($w, $v) => $w->carian($v))
             ->orderByDesc('id')
             ->paginate(20)
             ->withQueryString();
@@ -106,9 +100,7 @@ class KesController extends Controller
             ->litigasi() // W9: closed Pembelaan Awam files surface in their own register.
             ->whereNotNull('tarikh_tutup_fail')
             ->when($filters['cawangan'] ?? null, fn ($w, $v) => $w->where('cawangan', $v))
-            ->when($filters['q'] ?? null, function ($w, $v) {
-                $w->where(fn ($s) => $s->where('nama', 'like', "%{$v}%")->orWhere('nokp', 'like', "%{$v}%")->orWhere('no_fail', 'like', "%{$v}%"));
-            })
+            ->when($filters['q'] ?? null, fn ($w, $v) => $w->carian($v))
             ->orderByDesc('tarikh_tutup_fail')
             ->paginate(20)
             ->withQueryString();

@@ -19,9 +19,7 @@ class KesExport implements FromQuery, WithHeadings, WithMapping
             ->when($this->filters['cawangan'] ?? null, fn ($w, $v) => $w->where('cawangan', $v))
             ->when($this->filters['status'] ?? null, fn ($w, $v) => $w->where('status', $v))
             ->when($this->filters['kategori'] ?? null, fn ($w, $v) => $w->where('kategori_kes', $v))
-            ->when($this->filters['q'] ?? null, function ($w, $v) {
-                $w->where(fn ($s) => $s->where('nama', 'like', "%{$v}%")->orWhere('nokp', 'like', "%{$v}%")->orWhere('no_fail', 'like', "%{$v}%"));
-            })
+            ->when($this->filters['q'] ?? null, fn ($w, $v) => $w->carian($v))
             ->orderByDesc('id');
     }
 

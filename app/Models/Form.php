@@ -21,7 +21,7 @@ class Form extends Model
     protected static function booted(): void
     {
         // Branch isolation for front-line staff (legacy WHERE cawangan = session).
-        static::addGlobalScope(new CawanganScope());
+        static::addGlobalScope(new CawanganScope);
     }
 
     protected $guarded = ['id'];
@@ -61,6 +61,20 @@ class Form extends Model
     public function scopePembelaan(Builder $query): Builder
     {
         return $query->where('is_pembelaan_awam', true);
+    }
+
+    /**
+     * ARCH-03 — shared free-text case search (nama / nokp / no_fail). This exact
+     * predicate was copy-pasted into KesController (list + closed) and
+     * StatistikController; one definition here stops the three drifting apart.
+     */
+    public function scopeCarian(Builder $query, string $term): Builder
+    {
+        return $query->where(function (Builder $w) use ($term) {
+            $w->where('nama', 'like', "%{$term}%")
+                ->orWhere('nokp', 'like', "%{$term}%")
+                ->orWhere('no_fail', 'like', "%{$term}%");
+        });
     }
 
     public function laporanKes(): HasMany
