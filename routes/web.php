@@ -475,6 +475,7 @@ Route::middleware(['auth', 'permission:system.view'])->group(function () {
         Route::post('/lejar-tuntutan/{tuntutan}/lulus', [LejarTuntutanController::class, 'lulus'])->name('tuntutan.lulus')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
         Route::post('/lejar-tuntutan/{tuntutan}/tolak', [LejarTuntutanController::class, 'tolak'])->name('tuntutan.tolak')->whereNumber('tuntutan')->middleware('permission:tuntutan.lulus');
         Route::post('/lejar-tuntutan/{tuntutan}/bayar', [LejarTuntutanController::class, 'bayar'])->name('tuntutan.bayar')->whereNumber('tuntutan')->middleware('permission:tuntutan.bayar');
+        Route::post('/lejar-tuntutan/{tuntutan}/semula', [LejarTuntutanController::class, 'semula'])->name('tuntutan.semula')->whereNumber('tuntutan')->middleware('permission:tuntutan.manage');
     });
 
     // ---- Pembelaan Awam (public criminal defence) register — W9 ----

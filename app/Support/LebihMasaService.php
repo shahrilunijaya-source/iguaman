@@ -51,10 +51,17 @@ class LebihMasaService
     {
         $count = 0;
         foreach ($this->overdue() as $kes) {
-            $this->reassign($kes);
-            $count++;
-            if ($onEach) {
-                $onEach($kes);
+            // PROC-18: isolate each row so one failure doesn't abort the whole nightly run
+            // (the rest still get reassigned; the failure is reported for follow-up).
+            try {
+                $this->reassign($kes);
+                $count++;
+                if ($onEach) {
+                    $onEach($kes);
+                }
+            } catch (\Throwable $e) {
+                report($e);
+                logger()->error('lebih-masa reassign failed', ['kes_id' => $kes->id, 'error' => $e->getMessage()]);
             }
         }
 

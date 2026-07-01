@@ -86,6 +86,10 @@ class PeguamController extends Controller
     {
         $this->authorizeCase($kes);
 
+        // PROC-21: only an active offer (DITAWARKAN) may be accepted — not a case already
+        // withdrawn, closed, or bounced back to the pool while the offer screen was open.
+        abort_unless(StatusAgihan::normalise($kes->status_agihan) === StatusAgihan::DITAWARKAN, 409, 'Tawaran ini tidak lagi aktif.');
+
         $kes->update(['status_agihan' => StatusAgihan::DITERIMA]);
         Audit::log('forms', $kes->id, Audit::UPDATE, "Tawaran kes diterima oleh peguam {$kes->nama_pegawai_yang_dapat_kes}");
 
@@ -95,6 +99,9 @@ class PeguamController extends Controller
     public function tolak(Request $request, Form $kes): RedirectResponse
     {
         $this->authorizeCase($kes);
+
+        // PROC-21: can only decline an offer that is still active.
+        abort_unless(StatusAgihan::normalise($kes->status_agihan) === StatusAgihan::DITAWARKAN, 409, 'Tawaran ini tidak lagi aktif.');
 
         $data = $request->validate(['alasan' => ['nullable', 'string', 'max:255']]);
 

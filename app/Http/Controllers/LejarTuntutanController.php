@@ -164,6 +164,14 @@ class LejarTuntutanController extends Controller
         ]), 'Bayaran direkodkan.');
     }
 
+    /** PROC-04: DITOLAK -> DRAF (rework a rejected claim). Gate: tuntutan.manage. */
+    public function semula(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
+    {
+        $this->authorizeBranch($request, $tuntutan);
+
+        return $this->guarded(fn () => $this->svc->transition($tuntutan, 'semula', $request->user()->name), 'Tuntutan dikembalikan ke draf untuk pembetulan.');
+    }
+
     /** Gate: tuntutan.view. */
     public function eksport(Request $request): BinaryFileResponse
     {

@@ -60,7 +60,7 @@ class PengantaraanService
             return;
         }
 
-        DB::transaction(function () use ($kes, $actor) {
+        DB::transaction(function () use ($kes) {
             $fresh = Form::withoutGlobalScope(CawanganScope::class)->whereKey($kes->id)->lockForUpdate()->firstOrFail();
             if (filled($fresh->no_pengantaraan)) {
                 return;
@@ -83,6 +83,15 @@ class PengantaraanService
 
         DB::transaction(function () use ($kes, $officer, $actor) {
             $fresh = Form::withoutGlobalScope(CawanganScope::class)->whereKey($kes->id)->lockForUpdate()->firstOrFail();
+
+            // PROC-03: don't silently displace an already-assigned mediator (double-click, or a
+            // second officer). Re-assigning the SAME officer is a no-op; switching to a different
+            // one must go through an explicit cancel first.
+            abort_if(
+                filled($fresh->id_pegawai_pengantara) && (int) $fresh->id_pegawai_pengantara !== $officer->id,
+                422,
+                'Kes ini telah mempunyai pegawai pengantara. Batalkan agihan sedia ada dahulu.'
+            );
 
             // A mediation must own a number before a mediator is assigned (covers a
             // case that reached assignment without one).

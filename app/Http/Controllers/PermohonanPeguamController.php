@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -90,6 +91,11 @@ class PermohonanPeguamController extends Controller
             return back()->withErrors(['urutan' => 'Permohonan perlu disemak & disokong oleh PPUU terlebih dahulu.']);
         }
 
+        // PROC-20: cannot re-endorse an application that has already been decided.
+        if ($butiran->permohonan_status !== '0') {
+            return back()->withErrors(['urutan' => 'Permohonan ini telah diputuskan — tidak boleh disokong semula.']);
+        }
+
         $data = $request->validate([
             'sokonganPengarah' => ['required', 'in:0,1'],
             'ulasan_sokonganPengarah' => ['nullable', 'string', 'max:600'],
@@ -111,19 +117,30 @@ class PermohonanPeguamController extends Controller
             return back()->withErrors(['urutan' => 'Permohonan perlu disokong oleh Pengarah terlebih dahulu.']);
         }
 
+        // PROC-20: cannot re-decide an application that already has a final outcome.
+        if ($butiran->permohonan_status !== '0') {
+            return back()->withErrors(['urutan' => 'Permohonan ini telah diputuskan.']);
+        }
+
         $data = $request->validate([
             'keputusan' => ['required', 'in:lulus,tolak'],
             'ulasan' => ['nullable', 'string', 'max:200'],
         ]);
 
         if ($data['keputusan'] === 'lulus') {
-            $butiran->update([
-                'permohonan_status' => '1',
-                'ulasan_keputusanKP' => $data['ulasan'] ?? null,
-                'tarikh_keputusanKP' => now(),
-            ]);
-            $tempPassword = $this->promote($butiran);
-            Audit::log('butiran_peguam_panel_2', $butiran->id, Audit::APPROVE, "Permohonan peguam diluluskan: {$butiran->namaPeguam}.");
+            // PROC-01: status + panel-create + login-provision + audit are one atomic unit — a
+            // mid-failure must not leave a "Lulus" application with a panel row but no login.
+            $tempPassword = DB::transaction(function () use ($butiran, $data) {
+                $butiran->update([
+                    'permohonan_status' => '1',
+                    'ulasan_keputusanKP' => $data['ulasan'] ?? null,
+                    'tarikh_keputusanKP' => now(),
+                ]);
+                $temp = $this->promote($butiran);
+                Audit::log('butiran_peguam_panel_2', $butiran->id, Audit::APPROVE, "Permohonan peguam diluluskan: {$butiran->namaPeguam}.");
+
+                return $temp;
+            });
             $msg = 'Permohonan diluluskan dan peguam ditambah ke panel.';
             if ($tempPassword !== null) {
                 $msg .= " Akaun log masuk dijana untuk {$butiran->emelPeguam} — kata laluan sementara: {$tempPassword} (peguam wajib menukar pada log masuk pertama).";

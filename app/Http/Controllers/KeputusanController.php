@@ -35,6 +35,9 @@ class KeputusanController extends Controller
     {
         $this->gate($request);
 
+        // PROC-12: don't re-decide a case that already has an outcome (re-POST / stale button).
+        abort_if(in_array($kes->status, ['Diterima', 'Ditolak', 'Fail Tutup'], true), 409, 'Permohonan ini telah diputuskan.');
+
         $data = $request->validate([
             'kelulusan' => ['nullable', 'string', 'max:20'],
             'sumbangan' => ['nullable', 'string', 'max:20'],
@@ -61,6 +64,9 @@ class KeputusanController extends Controller
     {
         $this->gate($request);
 
+        // PROC-12: don't re-decide a case that already has an outcome.
+        abort_if(in_array($kes->status, ['Diterima', 'Ditolak', 'Fail Tutup'], true), 409, 'Permohonan ini telah diputuskan.');
+
         $data = $request->validate(['reason' => ['nullable', 'string', 'max:100']]);
 
         $kes->update([
@@ -81,6 +87,9 @@ class KeputusanController extends Controller
     public function tutupFail(Request $request, Form $kes): RedirectResponse
     {
         $this->gate($request);
+
+        // PROC-12: block double-close — re-closing would re-seed the claim ledger and re-push the KN.
+        abort_if($kes->status === 'Fail Tutup', 409, 'Fail ini telah ditutup.');
 
         $data = $request->validate([
             'sebab_tutup_fail' => ['nullable', 'string'],

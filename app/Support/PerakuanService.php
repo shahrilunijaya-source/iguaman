@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 class PerakuanService
 {
     public const STATUS_INTERIM = 'INTERIM';
+
     public const STATUS_MUKTAMAD = 'MUKTAMAD';
 
     /**
@@ -46,12 +47,15 @@ class PerakuanService
         abort_unless($kes->status_perakuan === self::STATUS_INTERIM, 422,
             'Hanya perakuan interim boleh dimuktamadkan.');
 
+        // PROC-16: an INTERIM certificate with no number is an impossible state. Fail loudly so the
+        // upstream break is investigated, instead of silently minting a number that masks it.
+        abort_if(blank($kes->no_perakuan), 422,
+            'Perakuan interim ini tiada nombor — data tidak konsisten. Semak semula pengeluaran interim.');
+
         DB::transaction(function () use ($kes) {
             $kes->update([
                 'status_perakuan' => self::STATUS_MUKTAMAD,
                 'tarikh_perakuan_muktamad' => now()->toDateString(),
-                // Assign a certificate number if interim was somehow skipped.
-                'no_perakuan' => $kes->no_perakuan ?: $this->generateNoPerakuan(),
             ]);
         });
 

@@ -9,6 +9,7 @@ use App\Support\PerakuanService;
 use App\Support\StatusAgihan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
@@ -82,12 +83,18 @@ class PembelaanAwamController extends Controller
         $data['didaftarkan_oleh'] = $request->user()->name;
         $data['diterima'] = ''; // NOT NULL in legacy schema
 
-        $kes = Form::create($data);
+        // PROC-02: create + file-number assignment + audit are atomic — a failure after create
+        // must not leave a registered case with a blank no_fail (an orphan with no file number).
+        $kes = DB::transaction(function () use ($data) {
+            $kes = Form::create($data);
 
-        // Distinct PBA file-number series for criminal-defence files.
-        $kes->update(['no_fail' => app(NoFailGenerator::class)->generatePembelaan($kes)]);
+            // Distinct PBA file-number series for criminal-defence files.
+            $kes->update(['no_fail' => app(NoFailGenerator::class)->generatePembelaan($kes)]);
 
-        Audit::log('forms', $kes->id, Audit::INSERT, "Pembelaan Awam didaftarkan: {$kes->nama} ({$kes->no_fail})");
+            Audit::log('forms', $kes->id, Audit::INSERT, "Pembelaan Awam didaftarkan: {$kes->nama} ({$kes->no_fail})");
+
+            return $kes;
+        });
 
         return redirect()->route('pembelaan.show', $kes)
             ->with('status', 'Permohonan Pembelaan Awam direkodkan. No. Fail: '.$kes->no_fail);

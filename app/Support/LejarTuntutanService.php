@@ -37,6 +37,9 @@ class LejarTuntutanService
         'tolak' => ['from' => ['DIHANTAR', 'SEMAKAN'], 'to' => 'DITOLAK'],
         'bayar' => ['from' => ['DILULUS'], 'to' => 'DIBAYAR'],
         'batal' => ['from' => ['DRAF', 'DIHANTAR', 'SEMAKAN'], 'to' => 'BATAL'],
+        // PROC-04: a rejected claim can be reworked back to DRAF (keeps the row's history + audit
+        // continuity, instead of forcing a brand-new claim).
+        'semula' => ['from' => ['DITOLAK'], 'to' => 'DRAF'],
     ];
 
     /**
