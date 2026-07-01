@@ -127,3 +127,17 @@ BOT_API_USER=...  BOT_API_PASS=...
 
 DB creds come from hPanel (auto-prefixed `u<account>_`). `QUEUE_CONNECTION`/`CACHE_STORE`
 stay `database` (correct for shared hosting; bulk exports run synchronously).
+
+## Repository security (CFG-12)
+
+Enable in **GitHub → repo Settings** (needs admin; cannot be scripted from here — no `gh`/token):
+
+- **Secret scanning + push protection** (Settings → Code security): turn both ON. Push
+  protection blocks commits that contain secrets before they land. Pure benefit, no
+  workflow change.
+- **Branch protection for `main`** (Settings → Branches → add rule, pattern `main`):
+  enable **Do not allow force pushes** + **Do not allow deletions**. These are safe with
+  the push-to-deploy flow.
+  - Do **NOT** enable "Require a pull request before merging" or "Require status checks" on
+    `main` — deployment is a direct push to `main` (Hostinger webhook), so those rules would
+    block every deploy. If you want CI-gated merges, move deploys to a PR flow first.
