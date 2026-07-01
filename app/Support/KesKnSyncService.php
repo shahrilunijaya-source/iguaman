@@ -6,6 +6,7 @@ namespace App\Support;
 
 use App\Models\Form;
 use App\Models\KhidmatNasihat;
+use Illuminate\Support\Facades\DB;
 
 /**
  * W12 — reverse sync from the litigation case (forms) back to the originating
@@ -16,7 +17,9 @@ use App\Models\KhidmatNasihat;
 class KesKnSyncService
 {
     public const STATE_TERBUKA = 'TERBUKA';
+
     public const STATE_SELESAI = 'SELESAI';
+
     public const STATE_DITUTUP = 'DITUTUP';
 
     /** Push a downstream case state onto the linked KN, if any. */
@@ -28,12 +31,15 @@ class KesKnSyncService
             return;
         }
 
-        $kn->update([
-            'status_kes_terbuka' => $state,
-            'tarikh_kes_dikemaskini' => now(),
-        ]);
+        // CODE-01: KN state change + its audit trail commit together (savepoint when nested).
+        DB::transaction(function () use ($kn, $kes, $state, $actor) {
+            $kn->update([
+                'status_kes_terbuka' => $state,
+                'tarikh_kes_dikemaskini' => now(),
+            ]);
 
-        Audit::log('khidmat_nasihat', $kn->id, Audit::UPDATE,
-            "Sync dari kes #{$kes->id}: status kes -> {$state}.", $actor);
+            Audit::log('khidmat_nasihat', $kn->id, Audit::UPDATE,
+                "Sync dari kes #{$kes->id}: status kes -> {$state}.", $actor);
+        });
     }
 }

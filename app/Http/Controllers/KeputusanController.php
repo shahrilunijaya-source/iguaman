@@ -11,6 +11,7 @@ use App\Support\LejarTuntutanService;
 use App\Support\StatusAgihan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
@@ -96,20 +97,23 @@ class KeputusanController extends Controller
             'kos' => ['nullable', 'string', 'max:10'],
         ]);
 
-        $kes->update([
-            'tarikh_tutup_fail' => now()->toDateString(),
-            'status' => 'Fail Tutup',
-            'sebab_tutup_fail' => $data['sebab_tutup_fail'] ?? null,
-            'kos' => $data['kos'] ?? null,
-        ]);
+        // CODE-01: closure + ledger seed + KN sync are one unit of work — commit together or roll back.
+        DB::transaction(function () use ($kes, $request, $data) {
+            $kes->update([
+                'tarikh_tutup_fail' => now()->toDateString(),
+                'status' => 'Fail Tutup',
+                'sebab_tutup_fail' => $data['sebab_tutup_fail'] ?? null,
+                'kos' => $data['kos'] ?? null,
+            ]);
 
-        Audit::log('forms', $kes->id, Audit::UPDATE, "Fail ditutup: {$kes->nama}");
+            Audit::log('forms', $kes->id, Audit::UPDATE, "Fail ditutup: {$kes->nama}");
 
-        // W9: seed a Pembelaan Awam claim-ledger row on close (idempotent).
-        $this->seedPembelaanLedger($kes, $request->user()->name);
+            // W9: seed a Pembelaan Awam claim-ledger row on close (idempotent).
+            $this->seedPembelaanLedger($kes, $request->user()->name);
 
-        // W12: propagate closure back to the originating Khidmat Nasihat, if any.
-        app(KesKnSyncService::class)->pushToKn($kes, KesKnSyncService::STATE_DITUTUP, $request->user()->name);
+            // W12: propagate closure back to the originating Khidmat Nasihat, if any.
+            app(KesKnSyncService::class)->pushToKn($kes, KesKnSyncService::STATE_DITUTUP, $request->user()->name);
+        });
 
         return back()->with('status', 'Fail ditutup secara rasmi.');
     }
@@ -137,20 +141,23 @@ class KeputusanController extends Controller
         $this->gate($request);
         $this->ensureSelesaiPending($kes);
 
-        $kes->update([
-            'status_agihan' => StatusAgihan::KES_DITUTUP,
-            'status' => 'Fail Tutup',
-            // Preserve an existing official closure date — never re-stamp a legally meaningful field.
-            'tarikh_tutup_fail' => filled($kes->tarikh_tutup_fail) ? $kes->tarikh_tutup_fail : now()->toDateString(),
-        ]);
+        // CODE-01: confirm-close + ledger seed + KN sync are one unit of work — commit together or roll back.
+        DB::transaction(function () use ($kes, $request) {
+            $kes->update([
+                'status_agihan' => StatusAgihan::KES_DITUTUP,
+                'status' => 'Fail Tutup',
+                // Preserve an existing official closure date — never re-stamp a legally meaningful field.
+                'tarikh_tutup_fail' => filled($kes->tarikh_tutup_fail) ? $kes->tarikh_tutup_fail : now()->toDateString(),
+            ]);
 
-        Audit::log('forms', $kes->id, Audit::APPROVE, "Penyelesaian kes disahkan & fail ditutup: {$kes->nama}");
+            Audit::log('forms', $kes->id, Audit::APPROVE, "Penyelesaian kes disahkan & fail ditutup: {$kes->nama}");
 
-        // W9: seed a Pembelaan Awam claim-ledger row on JBG-confirmed close (idempotent).
-        $this->seedPembelaanLedger($kes, $request->user()->name);
+            // W9: seed a Pembelaan Awam claim-ledger row on JBG-confirmed close (idempotent).
+            $this->seedPembelaanLedger($kes, $request->user()->name);
 
-        // W12: propagate closure back to the originating Khidmat Nasihat, if any.
-        app(KesKnSyncService::class)->pushToKn($kes, KesKnSyncService::STATE_DITUTUP, $request->user()->name);
+            // W12: propagate closure back to the originating Khidmat Nasihat, if any.
+            app(KesKnSyncService::class)->pushToKn($kes, KesKnSyncService::STATE_DITUTUP, $request->user()->name);
+        });
 
         return redirect()->route('keputusan.selesai')->with('status', 'Penyelesaian kes disahkan. Fail ditutup.');
     }
