@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PeguamDaftarRequest;
 use App\Http\Requests\PeguamProfilUpdateRequest;
 use App\Models\ButiranPeguamPanel2;
 use App\Models\ButiranPeguamPanel3;
@@ -19,15 +18,13 @@ use App\Models\SejarahPeguamPanel;
 use App\Models\UploadedFile;
 use App\Support\AgihanLuarService;
 use App\Support\Audit;
-use App\Support\LawyerDocuments;
+use App\Support\PeguamProfilUpdateService;
 use App\Support\PengkhususanService;
 use App\Support\StatusAgihan;
 use App\Support\TarikDiriService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use RuntimeException;
@@ -355,55 +352,13 @@ class PeguamController extends Controller
     }
 
     /** Persist self-service profile changes across _2/_3/_4/_5 + document re-uploads. */
-    public function updateProfil(PeguamProfilUpdateRequest $request): RedirectResponse
+    public function updateProfil(PeguamProfilUpdateRequest $request, PeguamProfilUpdateService $svc): RedirectResponse
     {
         $kp = $this->lawyerKp();
         abort_if($kp === null, 403, 'Akaun anda belum dipautkan ke rekod peguam panel.');
 
-        $d = $request->validated();
         $user = Auth::user();
-
-        DB::transaction(function () use ($request, $d, $kp, $user) {
-            $p2 = ButiranPeguamPanel2::firstOrNew(['kpBaru' => $kp]);
-            $p2->fill(Arr::only($d, [
-                'noTelBimbit', 'emelPeguam', 'kelulusanAkademik', 'tarikhDiterimaMasuk',
-                'tarikhDiterimaMasukSyarie', 'tahunPengalaman', 'tahunPengalamanSyarie',
-                'bilanganKes', 'keteranganKes',
-            ]));
-            if (! $p2->exists) {
-                $p2->namaPeguam = $user->name;
-                $p2->permohonan_status = '0';
-                $p2->tarikhMohon = now();
-            }
-            $p2->save();
-
-            $cso = [];
-            foreach (range(1, 5) as $i) {
-                array_push($cso, "csoNumber{$i}", "cso{$i}Tauliah", "cso{$i}Mula", "cso{$i}Akhir", "lokasiBerguam{$i}");
-            }
-            ButiranPeguamPanel3::firstOrNew(['kpBaru' => $kp])->fill(Arr::only($d, array_merge([
-                'clpNumber', 'clpMula', 'clpAkhir',
-                'ybgk_kelulusan', 'ybgk_tarikhLulus_A', 'ybgk_tarikhLulus_B', 'ybgk_daftar',
-                'adr_penimbangtara', 'adr_pengantara',
-                'sijilAhli_nombor', 'sijilAhli_namaBadan', 'sijilAhli_mula', 'sijilAhli_akhir',
-                'sijilAkreditasi_nombor', 'sijilAkreditasi_namaBadan', 'sijilAkreditasi_mula', 'sijilAkreditasi_akhir',
-                'eVendor_daftar', 'eVendor_ID',
-            ], $cso)))->save();
-
-            ButiranPeguamPanel4::firstOrNew(['kpBaru' => $kp])->fill(Arr::only($d, [
-                'namaFirma', 'alamatFirma1', 'alamatFirma2', 'alamatFirma3', 'poskodFirma',
-                'bandarFirma', 'negeriFirma', 'noTelFirma', 'noFaksFirma',
-                'namaInsurans', 'noPolisi', 'amaunPerlindungan', 'polisiMula', 'polisiAkhir',
-            ]))->save();
-
-            ButiranPeguamPanel5::firstOrNew(['kpBaru' => $kp])->fill(Arr::only($d, [
-                'namaBank', 'noAkaunBank', 'alamatBank1', 'alamatBank2', 'alamatBank3',
-                'poskodBank', 'bandarBank', 'negeriBank',
-            ]))->save();
-
-            // All 18 docs editable (cso4/cso5 included — fixes the legacy profilUpdate bug).
-            LawyerDocuments::store($request, $kp, $p2->namaPeguam ?? $user->name, array_keys(PeguamDaftarRequest::DOC_TYPES));
-        });
+        $svc->update($request, $request->validated(), $kp, $user);
 
         Audit::log('butiran_peguam_panel_2', 0, Audit::UPDATE, "Profil peguam dikemaskini oleh {$user->name} (KP {$kp})");
 
