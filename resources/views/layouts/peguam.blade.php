@@ -17,11 +17,11 @@
         <span class="ws-topbar__spacer"></span>
 
         <div class="ws-topbar__cluster">
-            <a href="{{ route('peguam.dashboard') }}" class="ws-topbar__btn {{ request()->routeIs('peguam.dashboard') ? '' : '' }}">Dashboard</a>
-            <a href="{{ route('peguam.kes') }}" class="ws-topbar__btn">Kes Saya</a>
-            <a href="{{ route('peguam.tawaran') }}" class="ws-topbar__btn">Tawaran</a>
-            <a href="{{ route('peguam.grab.index') }}" class="ws-topbar__btn">Kes Grab</a>
-            <a href="{{ route('peguam.profil') }}" class="ws-topbar__btn">Profil</a>
+            <a href="{{ route('peguam.dashboard') }}" class="ws-topbar__btn {{ request()->routeIs('peguam.dashboard') ? 'is-active' : '' }}">Dashboard</a>
+            <a href="{{ route('peguam.kes') }}" class="ws-topbar__btn {{ request()->routeIs('peguam.kes*') ? 'is-active' : '' }}">Kes Saya</a>
+            <a href="{{ route('peguam.tawaran') }}" class="ws-topbar__btn {{ request()->routeIs('peguam.tawaran*') ? 'is-active' : '' }}">Tawaran</a>
+            <a href="{{ route('peguam.grab.index') }}" class="ws-topbar__btn {{ request()->routeIs('peguam.grab.*') ? 'is-active' : '' }}">Kes Grab</a>
+            <a href="{{ route('peguam.profil') }}" class="ws-topbar__btn {{ request()->routeIs('peguam.profil*') ? 'is-active' : '' }}">Profil</a>
             <span class="ws-topbar__sep"></span>
             <div class="ws-topbar__user">
                 <div class="ws-topbar__avatar">{{ strtoupper(substr(auth()->user()->name, 0, 2)) }}</div>

@@ -1,12 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
-
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
 
 // PROC-18: a silently-failing scheduled command is invisible — log every failure.
 $logFailure = fn (string $name) => fn () => logger()->error("scheduled command failed: {$name}");

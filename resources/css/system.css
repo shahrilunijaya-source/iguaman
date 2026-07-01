@@ -414,6 +414,8 @@ body.system .btn--block,
   transition: background 120ms;
 }
 .ws-topbar__btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+/* UX-10: active nav tab (peguam topbar) — the old ternary set no class either way. */
+.ws-topbar__btn.is-active { background: rgba(255,255,255,0.10); color: #fff; }
 .ws-topbar__btn .badge {
   display: inline-grid; place-items: center;
   min-width: 18px; height: 18px;
