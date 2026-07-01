@@ -8,6 +8,7 @@ use App\Models\RefSubkategoriKn;
 use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
@@ -46,10 +47,23 @@ class KategoriKnController extends Controller
 
     public function destroy(RefKategoriKn $kategori): RedirectResponse
     {
-        $id = $kategori->id;
-        $nama = $kategori->jenis_kategori;
-        $kategori->delete();
-        Audit::log('ref_kategori_kn', $id, Audit::DELETE, "Kategori KN dipadam: {$nama}");
+        // DB-06: soft-delete cascades manually (the DB cascadeOnDelete only fires on a hard
+        // delete, which no longer happens), with a per-child audit row so every removed kes /
+        // subkategori is individually traceable.
+        $kategori->load('kategoriKes.subkategori');
+
+        DB::transaction(function () use ($kategori) {
+            foreach ($kategori->kategoriKes as $kes) {
+                foreach ($kes->subkategori as $sub) {
+                    Audit::log('ref_subkategori_kn', $sub->id, Audit::DELETE, "Subkategori dipadam (lata dari kategori KN #{$kategori->id}): {$sub->nama}");
+                    $sub->delete();
+                }
+                Audit::log('ref_kategori_kes_kn', $kes->id, Audit::DELETE, "Kategori kes dipadam (lata dari kategori KN #{$kategori->id}): {$kes->nama}");
+                $kes->delete();
+            }
+            Audit::log('ref_kategori_kn', $kategori->id, Audit::DELETE, "Kategori KN dipadam: {$kategori->jenis_kategori}");
+            $kategori->delete();
+        });
 
         return redirect()->route('kategori-kn.index')->with('status', 'Kategori dipadam.');
     }
@@ -84,11 +98,17 @@ class KategoriKnController extends Controller
 
     public function destroyKes(RefKategoriKesKn $kes): RedirectResponse
     {
-        $id = $kes->id;
-        $nama = $kes->nama;
         $kategoriId = $kes->kategori_id;
-        $kes->delete();
-        Audit::log('ref_kategori_kes_kn', $id, Audit::DELETE, "Kategori kes dipadam: {$nama}");
+
+        // DB-06: soft-delete with a per-child audit row for each subkategori.
+        DB::transaction(function () use ($kes) {
+            foreach ($kes->subkategori as $sub) {
+                Audit::log('ref_subkategori_kn', $sub->id, Audit::DELETE, "Subkategori dipadam (lata dari kategori kes #{$kes->id}): {$sub->nama}");
+                $sub->delete();
+            }
+            Audit::log('ref_kategori_kes_kn', $kes->id, Audit::DELETE, "Kategori kes dipadam: {$kes->nama}");
+            $kes->delete();
+        });
 
         return redirect()->route('kategori-kn.kes', $kategoriId)->with('status', 'Kategori kes dipadam.');
     }

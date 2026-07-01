@@ -2,13 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-/** Khidmat Nasihat category — level 2 (.NET "JenisKes"). */
+/**
+ * Khidmat Nasihat category — level 2 (.NET "JenisKes").
+ *
+ * @property int $id
+ * @property int $kategori_id
+ * @property string $nama
+ * @property bool $aktif
+ * @property-read RefKategoriKn $kategori
+ * @property-read Collection<int, RefSubkategoriKn> $subkategori
+ */
 class RefKategoriKesKn extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'ref_kategori_kes_kn';
 
     protected $guarded = ['id'];

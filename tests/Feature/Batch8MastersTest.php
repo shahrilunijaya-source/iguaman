@@ -48,7 +48,9 @@ class Batch8MastersTest extends TestCase
 
     private function cleanup(): void
     {
-        RefKategoriKn::where('jenis_kategori', 'like', self::TAG.'%')->delete(); // cascades kes + sub
+        // DB-06: KN tree is soft-deleting now — hard-purge (incl. trashed) so the shared dev DB
+        // stays clean; the hard delete cascades kes + sub via the DB FK.
+        RefKategoriKn::withTrashed()->where('jenis_kategori', 'like', self::TAG.'%')->forceDelete();
         Cawangan::where('nama', 'like', self::TAG.'%')->delete();               // cascades bilik
         RefJawatan::where('nama', 'like', self::TAG.'%')->delete();
     }

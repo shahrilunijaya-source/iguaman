@@ -99,17 +99,17 @@ class UserController extends Controller
     public function destroy(Request $request, User $user): RedirectResponse
     {
         if ($user->id === $request->user()->id) {
-            return back()->withErrors(['user' => 'Anda tidak boleh memadam akaun sendiri.']);
+            return back()->withErrors(['user' => 'Anda tidak boleh menyahaktifkan akaun sendiri.']);
         }
 
-        $nama = $user->name;
-        $emel = $user->email;
-        $id = $user->id;
-        $user->delete();
+        // DB-06: deactivate, never hard-delete — a hard delete detaches this user from every
+        // officer/audit record (nullOnDelete) and loses accountability. Login already blocks
+        // inactive accounts, so deactivation removes access while preserving the trail.
+        $user->update(['is_active' => false]);
 
-        Audit::log('users', $id, Audit::DELETE, "Pengguna dipadam: {$nama} ({$emel})");
+        Audit::log('users', $user->id, Audit::UPDATE, "Pengguna dinyahaktifkan: {$user->name} ({$user->email})");
 
-        return redirect()->route('pengguna.index')->with('status', 'Pengguna dipadam.');
+        return redirect()->route('pengguna.index')->with('status', 'Pengguna dinyahaktifkan.');
     }
 
     /** Selectable roles for filter + form (label keyed by role constant). */

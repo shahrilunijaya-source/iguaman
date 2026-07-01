@@ -55,12 +55,6 @@ parameters:
 			path: app/Http/Controllers/CawanganController.php
 
 		-
-			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: app/Http/Controllers/ChatbotController.php
-
-		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$bilik\.$#'
 			identifier: property.notFound
 			count: 1
@@ -79,32 +73,14 @@ parameters:
 			path: app/Http/Controllers/KategoriKnController.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/KhidmatNasihatController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$nama\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/KhidmatNasihatController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$subkategori\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/KhidmatNasihatController.php
-
-		-
 			message: '#^Anonymous function should return array\{id\: int, kes\: Illuminate\\Support\\Collection\<int, array\{id\: mixed, nama\: mixed, sub\: mixed\}\>\} but returns array\{id\: int, kes\: Illuminate\\Support\\Collection\<int, array\{id\: int, nama\: mixed, sub\: mixed\}\>\}\.$#'
 			identifier: return.type
 			count: 1
 			path: app/Http/Controllers/KhidmatNasihatController.php
 
 		-
-			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
-			identifier: argument.unresolvableType
+			message: '#^Anonymous function should return array\{id\: int, nama\: string, sub\: Illuminate\\Support\\Collection\<int, array\{id\: mixed, nama\: mixed\}\>\} but returns array\{id\: int, nama\: string, sub\: Illuminate\\Support\\Collection\<int, array\{id\: int, nama\: string\}\>\}\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Http/Controllers/KhidmatNasihatController.php
 
