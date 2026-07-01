@@ -1,0 +1,235 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$kp_peguam\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Exports/LejarTuntutanExport.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$no_fail\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Exports/LejarTuntutanExport.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$jenis_kategori\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Exports/PandanganUuExport.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$nama\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Exports/PandanganUuExport.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tarikh_temu_janji\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Exports/PendaftaranKnExport.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Awam/PermohonanController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tarikh_temu_janji\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Awam/PermohonanController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/CawanganController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$nama_bilik\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/CawanganController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/ChatbotController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$bilik\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JadualJanjiTemuController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/KategoriKnController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$nama\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/KategoriKnController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/KhidmatNasihatController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$nama\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/KhidmatNasihatController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$subkategori\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/KhidmatNasihatController.php
+
+		-
+			message: '#^Anonymous function should return array\{id\: int, kes\: Illuminate\\Support\\Collection\<int, array\{id\: mixed, nama\: mixed, sub\: mixed\}\>\} but returns array\{id\: int, kes\: Illuminate\\Support\\Collection\<int, array\{id\: int, nama\: mixed, sub\: mixed\}\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/KhidmatNasihatController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/KhidmatNasihatController.php
+
+		-
+			message: '#^Property App\\Http\\Controllers\\KhidmatNasihatController\:\:\$slots is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: app/Http/Controllers/KhidmatNasihatController.php
+
+		-
+			message: '#^Parameter \#1 \$row of method App\\Http\\Controllers\\LaporanController\:\:cell\(\) expects App\\Models\\Form, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/LaporanController.php
+
+		-
+			message: '#^Offset ''status'' on non\-empty\-array on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Http/Controllers/PegawaiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Peguam/TuntutanController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$kp_peguam\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Peguam/TuntutanController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$nama_peguam\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Peguam/TuntutanController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PeguamController\:\:profile\(\) should return App\\Models\\PeguamPanel\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/PeguamController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:each\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: mixed, Closure\(App\\Models\\PemindahanCawangan\)\: mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PemindahanController.php
+
+		-
+			message: '#^Offset ''aktif'' on non\-empty\-array on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Http/Controllers/RefKesController.php
+
+		-
+			message: '#^Parameter \#1 \$array \(array\{''nullable''\|''required'', ''file'', ''mimes\:pdf'', ''max\:5120''\}\) to function array_filter does not contain falsy values, the array will always stay the same\.$#'
+			identifier: arrayFilter.same
+			count: 1
+			path: app/Http/Requests/PeguamDaftarRequest.php
+
+		-
+			message: '#^Offset ''BATAL''\|''DIBAYAR''\|''DIHANTAR''\|''DILULUS''\|''DITOLAK''\|''DRAF''\|''SEMAKAN'' on array\{DRAF\: ''Draf'', DIHANTAR\: ''Dihantar'', SEMAKAN\: ''Dalam Semakan'', DILULUS\: ''Diluluskan'', DITOLAK\: ''Ditolak'', DIBAYAR\: ''Telah Dibayar'', BATAL\: ''Batal''\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Models/LejarTuntutanBayaran.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''lawyer''\|''staff'' and ''awam'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$slot_temu_janji_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/KhidmatNasihatService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tarikh_temu_janji\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/KhidmatProsesService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>nama" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Support/KhidmatProsesService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\KhidmatNasihat\:\:\$label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/LaporanKnService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\KhidmatNasihat\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/LaporanKnService.php
+
+		-
+			message: '#^Parameter \#1 \$rows of method App\\Support\\LaporanKnService\:\:shapeMonthPivot\(\) expects Illuminate\\Support\\Collection\<int, object\>, Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\> given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Support/LaporanKnService.php
+
+		-
+			message: '#^Ternary operator condition is always true\.$#'
+			identifier: ternary.alwaysTrue
+			count: 1
+			path: app/Support/NoFailGenerator.php
+
+		-
+			message: '#^Method App\\Support\\PeguamShortlistService\:\:shortlist\(\) should return Illuminate\\Support\\Collection\<int, array\{id\: int, nama\: string, kp\: string\|null, firma\: string\|null, beban\: int\}\> but returns Illuminate\\Support\\Collection\<int, array\{id\: int, nama\: string, kp\: string, firma\: string, beban\: int\}\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Support/PeguamShortlistService.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: string$#'
+			identifier: match.unhandled
+			count: 1
+			path: app/Support/WideExport.php

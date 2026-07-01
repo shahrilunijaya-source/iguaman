@@ -68,6 +68,9 @@ jobs:
       - name: Check formatting (Pint)
         run: vendor/bin/pint --test
 
+      - name: Static analysis (PHPStan)
+        run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
       - name: Run test suite
         run: php artisan test
 

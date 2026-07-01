@@ -1,0 +1,10 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - app
+    # Legacy port: existing findings are captured in phpstan-baseline.neon so the gate
+    # starts green and catches NEW issues. Burn the baseline down over time.
