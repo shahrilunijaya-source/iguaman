@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use App\Models\KhidmatNasihat;
 use App\Models\UploadedFile;
 use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
@@ -18,6 +19,7 @@ class LampiranController extends Controller
 {
     /** Legacy disk attachments were stored on before the W6 repository switch. */
     private const LEGACY_DISK = 'local';
+
     private const DIR = 'lampiran';
 
     public function store(Request $request, Form $kes): RedirectResponse
@@ -46,10 +48,34 @@ class LampiranController extends Controller
 
     public function download(UploadedFile $lampiran): StreamedResponse
     {
+        // Branch/ownership guard: an attachment may only be pulled by a user who can see its
+        // owning case (id_kes) or KN (id_khidmat). Both models carry the CawanganScope, so a
+        // whereKey()->exists() returns false when the record is out of the user's branch —
+        // closing the cross-branch attachment IDOR (the read path had no check, unlike destroy()).
+        $this->authorizeAttachment($lampiran);
+
         $disk = $this->diskFor($lampiran->file_path);
         abort_if($disk === null, 404, 'Fail tidak dijumpai.');
 
         return Storage::disk($disk)->download($lampiran->file_path, $lampiran->nama);
+    }
+
+    /**
+     * Deny download of a case/KN attachment the current user cannot reach under branch isolation.
+     * Lawyer-registration documents (keyed by kpBaru, no id_kes/id_khidmat) are national-scope
+     * panel-review artefacts and keep the existing system.view gate.
+     */
+    private function authorizeAttachment(UploadedFile $lampiran): void
+    {
+        if ($lampiran->id_kes) {
+            abort_unless(Form::whereKey($lampiran->id_kes)->exists(), 404, 'Fail tidak dijumpai.');
+
+            return;
+        }
+
+        if ($lampiran->id_khidmat) {
+            abort_unless(KhidmatNasihat::whereKey($lampiran->id_khidmat)->exists(), 404, 'Fail tidak dijumpai.');
+        }
     }
 
     public function destroy(Form $kes, UploadedFile $lampiran): RedirectResponse

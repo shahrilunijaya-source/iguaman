@@ -126,10 +126,14 @@
                 </p>
 
                 <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+                    @unless(app()->isProduction())
                     <button type="button" class="demo-trigger" id="demoTrigger">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                         Lihat akaun demo
                     </button>
+                    @else
+                    <span></span>
+                    @endunless
                     <a href="{{ route('home') }}" style="color: var(--mute); text-decoration: none; font-size: 11px;">← Laman awam</a>
                 </div>
             </div>
@@ -138,7 +142,8 @@
 
 </div>
 
-{{-- ============ DEMO USERS MODAL ============ --}}
+{{-- ============ DEMO USERS MODAL (local/staging only — never in production) ============ --}}
+@unless(app()->isProduction())
 <div class="demo-modal" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle">
     <div class="demo-modal__card">
         <button type="button" class="demo-modal__close" id="demoModalClose" aria-label="Tutup">
@@ -371,6 +376,7 @@
         });
     });
 </script>
+@endunless
 
 </body>
 </html>

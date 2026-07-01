@@ -112,19 +112,34 @@ class LaporanController extends Controller
         }
 
         $file = $type.'-'.now()->format('Ymd-His').'.xlsx';
-        ExportLaporanJob::dispatch($type, $filters, 'exports/'.$file);
 
-        return back()->with('status', 'Eksport pukal dalam baris gilir. Fail akan tersedia untuk dimuat turun sebentar lagi: '.$file)
+        // Per-user export directory binds a finished file to its generator, closing the
+        // predictable-filename, non-owner-bound export IDOR (see muatTurunEksport). dispatchSync
+        // because Hostinger shared hosting runs no queue worker — a queued job would never execute.
+        try {
+            ExportLaporanJob::dispatchSync($type, $filters, 'exports/'.$user->id.'/'.$file);
+        } catch (\Throwable $e) {
+            report($e);
+
+            return back()->with('error', 'Eksport pukal gagal dijana. Sila cuba lagi.');
+        }
+
+        return back()->with('status', 'Eksport pukal siap. Muat turun: '.$file)
             ->with('eksport_fail', $file);
     }
 
-    /** W20 — stream a finished bulk-export file (filename validated by the route pattern). */
-    public function muatTurunEksport(string $fail): StreamedResponse
+    /**
+     * W20 — stream a finished bulk-export file. Scoped to the requesting user's own export
+     * directory (exports/{userId}/) so a user can only download files they generated — closing the
+     * predictable-filename, non-owner-bound export IDOR. basename() blocks path traversal.
+     */
+    public function muatTurunEksport(Request $request, string $fail): StreamedResponse
     {
-        $path = 'exports/'.$fail;
+        $name = basename($fail);
+        $path = 'exports/'.$request->user()->id.'/'.$name;
         abort_unless(Storage::disk('local')->exists($path), 404, 'Fail belum siap atau tidak dijumpai.');
 
-        return Storage::disk('local')->download($path, $fail);
+        return Storage::disk('local')->download($path, $name);
     }
 
     /** Render one cell, formatting Carbon dates. */

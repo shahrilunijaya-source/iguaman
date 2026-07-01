@@ -15,6 +15,11 @@ class TestUsersSeeder extends Seeder
 {
     public function run(): void
     {
+        // Never plant known-password test accounts outside local/testing (prod backdoor guard).
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
+
         // Wire the lawyer test account to a real panel record so its profile loads.
         // On a from-scratch DB (CI / migrate:fresh) the peguam_panel table is empty, so
         // create a minimal fallback row — otherwise the lawyer test account has a NULL

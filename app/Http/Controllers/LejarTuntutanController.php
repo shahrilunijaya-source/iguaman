@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Exports\LejarTuntutanExport;
-use App\Models\Form;
 use App\Models\LejarTuntutanBayaran;
 use App\Support\LejarTuntutanService;
 use Illuminate\Http\RedirectResponse;
@@ -43,11 +42,28 @@ class LejarTuntutanController extends Controller
         ]);
     }
 
-    public function show(LejarTuntutanBayaran $tuntutan): View
+    public function show(Request $request, LejarTuntutanBayaran $tuntutan): View
     {
+        $this->authorizeBranch($request, $tuntutan);
         $tuntutan->load(['form', 'peguam', 'khidmatNasihat', 'pengguna']);
 
         return view('lejar-tuntutan.show', compact('tuntutan'));
+    }
+
+    /**
+     * Per-record branch guard (closes the cross-branch claim IDOR). LejarTuntutanBayaran carries
+     * cawangan_id but has no global scope, so route-model-binding otherwise exposes every branch's
+     * financial claims. Mirrors LejarTuntutanService::branchFilter (null = view-all / no-branch).
+     */
+    private function authorizeBranch(Request $request, LejarTuntutanBayaran $tuntutan): void
+    {
+        $branchId = $this->svc->branchFilter($request->user());
+
+        abort_unless(
+            $branchId === null || (int) $tuntutan->cawangan_id === $branchId,
+            403,
+            'Tuntutan ini di luar cawangan anda.'
+        );
     }
 
     public function create(Request $request): View
@@ -77,6 +93,7 @@ class LejarTuntutanController extends Controller
     /** Gate: tuntutan.manage. */
     public function update(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
     {
+        $this->authorizeBranch($request, $tuntutan);
         $data = $this->validatePayload($request);
         $data['kemaskini_oleh'] = $request->user()->name;
         $tuntutan->update($data);
@@ -87,18 +104,23 @@ class LejarTuntutanController extends Controller
     /** DRAF -> DIHANTAR. Gate: tuntutan.manage. */
     public function hantar(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
     {
+        $this->authorizeBranch($request, $tuntutan);
+
         return $this->guarded(fn () => $this->svc->transition($tuntutan, 'hantar', $request->user()->name), 'Tuntutan dihantar.');
     }
 
     /** DIHANTAR -> SEMAKAN. Gate: tuntutan.semak. */
     public function semak(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
     {
+        $this->authorizeBranch($request, $tuntutan);
+
         return $this->guarded(fn () => $this->svc->transition($tuntutan, 'semak', $request->user()->name), 'Tuntutan dalam semakan.');
     }
 
     /** SEMAKAN -> DILULUS. Gate: tuntutan.lulus. */
     public function lulus(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
     {
+        $this->authorizeBranch($request, $tuntutan);
         $data = $request->validate([
             'jumlah_diluluskan' => ['nullable', 'numeric', 'min:0'],
             'ulasan_pelulus' => ['nullable', 'string', 'max:1000'],
@@ -115,6 +137,7 @@ class LejarTuntutanController extends Controller
     /** -> DITOLAK. Gate: tuntutan.lulus. */
     public function tolak(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
     {
+        $this->authorizeBranch($request, $tuntutan);
         $data = $request->validate(['ulasan_pelulus' => ['required', 'string', 'max:1000']]);
 
         return $this->guarded(fn () => $this->svc->transition($tuntutan, 'tolak', $request->user()->name, [
@@ -126,6 +149,7 @@ class LejarTuntutanController extends Controller
     /** DILULUS -> DIBAYAR + receipt (G-M3 fix). Gate: tuntutan.bayar. */
     public function bayar(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
     {
+        $this->authorizeBranch($request, $tuntutan);
         $data = $request->validate([
             'nombor_resit' => ['required', 'string', 'max:50'],
             'tarikh_resit' => ['required', 'date'],

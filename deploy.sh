@@ -54,4 +54,11 @@ else
   echo "==> npm not found — build public/build locally and 'git add -f public/build', then push"
 fi
 
+# 9. REMINDER: Hostinger cron must run the Laravel scheduler, or background jobs never fire.
+#    Add this cron entry ONCE in hPanel (runs every minute):
+#      * * * * * cd "$(pwd)" && php artisan schedule:run >> /dev/null 2>&1
+#    Without it: agihan:lebih-masa (overtime re-assign), grab:tamat-luput (grab expiry),
+#    and lampiran:bersih-retensi (retention report) silently never run. See DEPLOY.md.
+echo "==> REMINDER: ensure hPanel cron runs 'php artisan schedule:run' every minute (see DEPLOY.md)"
+
 echo "==> deploy done"

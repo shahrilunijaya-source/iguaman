@@ -75,3 +75,28 @@ local-only. The dump above already contains the migrated result.)
 
 Push to `main` → webhook pulls + composer installs → SSH `bash deploy.sh` (re-caches,
 runs new migrations). If assets changed, rebuild locally + `git add -f public/build` + push.
+
+## Scheduled tasks & queue (REQUIRED — one-time hPanel setup)
+
+Background business logic depends on the Laravel scheduler. Hostinger will **not** run it
+automatically. Add this cron entry once in hPanel (every minute):
+
+```
+* * * * * cd ~/domains/<domain>/public_html && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Without it these silently never run:
+- `agihan:lebih-masa` — re-assign panel-lawyer offers unanswered > 7 days (daily 07:00)
+- `grab:tamat-luput` — expire unclaimed Khidmat Nasihat grabs > 7 days (daily 07:15)
+- `lampiran:bersih-retensi` — 7-year attachment retention report (monthly, day 1, 02:00)
+
+**Queue / bulk exports.** Shared hosting has no persistent queue worker. Bulk report exports
+run **synchronously** (`ExportLaporanJob::dispatchSync`), so `QUEUE_CONNECTION` is irrelevant for
+them and no `queue:work` process is needed. If a worker is ever added, the job already declares
+`$tries` + a `failed()` handler. Verify an export completes end-to-end after deploy.
+
+**Verify after deploy:**
+```
+php artisan schedule:list      # 3 commands listed
+# generate a bulk export from the UI, then download it — file must appear
+```

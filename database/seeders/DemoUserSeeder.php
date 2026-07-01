@@ -12,6 +12,11 @@ class DemoUserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Never plant known-password demo accounts outside local/testing (prod backdoor guard).
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
+
         $users = [
             ['name' => 'Demo Admin', 'email' => 'demo@example.com'],
         ];

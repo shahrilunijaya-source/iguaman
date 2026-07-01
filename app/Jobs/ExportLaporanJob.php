@@ -26,6 +26,9 @@ class ExportLaporanJob implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    /** Retry if a queue worker is configured; irrelevant (but harmless) under dispatchSync. */
+    public int $tries = 3;
+
     public function __construct(
         public string $type,
         public array $filters,
@@ -44,5 +47,11 @@ class ExportLaporanJob implements ShouldQueue
         $rows = LaporanRegistry::buildQuery($report, $this->filters, bypassScope: true)->get();
 
         Excel::store(new LaporanExport($report['columns'], $rows), $this->path, $this->disk);
+    }
+
+    /** Surface a failed generation instead of leaving the download route waiting on a phantom file. */
+    public function failed(\Throwable $e): void
+    {
+        report($e);
     }
 }

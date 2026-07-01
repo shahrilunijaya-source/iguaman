@@ -366,8 +366,21 @@
                         const res = await fetch('{{ route('kes.semak-nokp') }}?nokp=' + encodeURIComponent(ic), { headers: { 'Accept': 'application/json' } });
                         const data = await res.json();
                         if (data.exists) {
-                            const rows = data.records.map(r => '• #' + r.id + ' — ' + r.nama + ' (' + r.no_fail + ', ' + r.status + ')').join('<br>');
-                            nokpDup.innerHTML = '<strong>Amaran:</strong> No. KP ini mempunyai ' + data.records.length + ' permohonan terdahulu:<br>' + rows;
+                            // Build with textContent, never innerHTML — r.nama/no_fail/status are
+                            // free-text case fields and must not be interpreted as HTML (stored XSS).
+                            nokpDup.textContent = '';
+                            const warn = document.createElement('strong');
+                            warn.textContent = 'Amaran:';
+                            nokpDup.appendChild(warn);
+                            nokpDup.appendChild(document.createTextNode(
+                                ' No. KP ini mempunyai ' + data.records.length + ' permohonan terdahulu:'
+                            ));
+                            data.records.forEach(r => {
+                                nokpDup.appendChild(document.createElement('br'));
+                                nokpDup.appendChild(document.createTextNode(
+                                    '• #' + r.id + ' — ' + r.nama + ' (' + r.no_fail + ', ' + r.status + ')'
+                                ));
+                            });
                             nokpDup.style.display = 'block';
                         } else {
                             nokpDup.style.display = 'none';
