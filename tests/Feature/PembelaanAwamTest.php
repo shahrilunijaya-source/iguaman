@@ -147,8 +147,9 @@ class PembelaanAwamTest extends TestCase
             ->where('sumber', LejarTuntutanBayaran::SUMBER_PEMBELAAN_AWAM);
         $this->assertSame(1, (clone $rows)->count());
 
-        // Re-closing does not duplicate the ledger row.
-        $this->actingAs($kp)->post(route('kes.tutupfail', $kes), ['sebab_tutup_fail' => 'Selesai'])->assertRedirect();
+        // PROC-12: re-closing a closed file is blocked (409), which guarantees the ledger row
+        // is never re-seeded. (seedPembelaanLedger is also independently idempotent.)
+        $this->actingAs($kp)->post(route('kes.tutupfail', $kes), ['sebab_tutup_fail' => 'Selesai'])->assertStatus(409);
         $this->assertSame(1, (clone $rows)->count());
     }
 }
