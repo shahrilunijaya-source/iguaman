@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ResolvesPeriodFilters;
 use App\Support\PengantaraanMatrix;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -15,14 +16,16 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class StatistikPengantaraanController extends Controller
 {
+    use ResolvesPeriodFilters;
+
     public function index(Request $request): View
     {
-        return view('statistik.pengantaraan.index', ['year' => $this->year($request)]);
+        return view('statistik.pengantaraan.index', ['year' => $this->periodYear($request)]);
     }
 
     public function kategori(Request $request): View
     {
-        $year = $this->year($request);
+        $year = $this->periodYear($request);
 
         return view('statistik.pengantaraan.kategori', [
             'year' => $year,
@@ -33,7 +36,7 @@ class StatistikPengantaraanController extends Controller
 
     public function bulanan(Request $request): View
     {
-        $year = $this->year($request);
+        $year = $this->periodYear($request);
         $kategori = $request->input('kategori') ?: null;
 
         return view('statistik.pengantaraan.bulanan', [
@@ -47,7 +50,7 @@ class StatistikPengantaraanController extends Controller
 
     public function pencapaian(Request $request): View
     {
-        $year = $this->year($request);
+        $year = $this->periodYear($request);
         $kategori = $request->input('kategori') ?: null;
 
         return view('statistik.pengantaraan.pencapaian', [
@@ -62,7 +65,7 @@ class StatistikPengantaraanController extends Controller
     {
         abort_unless(in_array($jenis, ['kategori', 'bulanan', 'pencapaian'], true), 404, 'Statistik tidak dijumpai.');
 
-        $year = $this->year($request);
+        $year = $this->periodYear($request);
         $kategori = in_array($jenis, ['bulanan', 'pencapaian'], true) ? ($request->input('kategori') ?: null) : null;
 
         $data = match ($jenis) {
@@ -83,13 +86,5 @@ class StatistikPengantaraanController extends Controller
         ])->setPaper('a4', 'landscape');
 
         return $pdf->stream('statistik-penugasan-pengantaraan-'.$jenis.'.pdf');
-    }
-
-    /** Optional year filter (blank = all years, matching legacy). */
-    private function year(Request $request): ?int
-    {
-        $year = $request->input('tahun');
-
-        return ($year !== null && $year !== '') ? (int) $year : null;
     }
 }

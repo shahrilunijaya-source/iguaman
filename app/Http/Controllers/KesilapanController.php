@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
+use App\Support\Bulan;
 use App\Support\KesilapanMatrix;
 use App\Support\SlaMatrix;
 use App\Support\WideExport;
@@ -20,11 +21,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class KesilapanController extends Controller
 {
-    private const BULAN = [
-        1 => 'Januari', 2 => 'Februari', 3 => 'Mac', 4 => 'April', 5 => 'Mei', 6 => 'Jun',
-        7 => 'Julai', 8 => 'Ogos', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Disember',
-    ];
-
     public function index(Request $request): View
     {
         $year = (int) ($request->input('tahun') ?: now()->year);
@@ -35,7 +31,7 @@ class KesilapanController extends Controller
             'kategori' => $kategori,
             'data' => KesilapanMatrix::compute($year, $kategori),
             'branches' => SlaMatrix::BRANCHES,
-            'bulan' => self::BULAN,
+            'bulan' => Bulan::NAMES,
             'kategoriList' => SlaMatrix::KATEGORI,
         ]);
     }
@@ -83,7 +79,7 @@ class KesilapanController extends Controller
     /** Title + filter-summary rows before the header. */
     private function envelope(array $filters): array
     {
-        $bulan = ($filters['bulan'] ?? '') !== '' ? (self::BULAN[(int) $filters['bulan']] ?? $filters['bulan']) : 'Semua Bulan';
+        $bulan = ($filters['bulan'] ?? '') !== '' ? Bulan::label($filters['bulan']) : 'Semua Bulan';
 
         return [
             ['LAPORAN KESILAPAN PENJANAAN NOMBOR FAIL'],

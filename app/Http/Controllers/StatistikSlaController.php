@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ResolvesPeriodFilters;
+use App\Support\Bulan;
 use App\Support\SlaListExport;
 use App\Support\SlaMatrix;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -18,17 +20,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class StatistikSlaController extends Controller
 {
-    private const BULAN = [
-        1 => 'Januari', 2 => 'Februari', 3 => 'Mac', 4 => 'April', 5 => 'Mei', 6 => 'Jun',
-        7 => 'Julai', 8 => 'Ogos', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Disember',
-    ];
+    use ResolvesPeriodFilters;
 
     public function index(Request $request): View
     {
         return view('statistik.sla.index', [
             'defs' => SlaMatrix::definitions(),
-            'year' => $this->year($request),
-            'month' => $this->month($request),
+            'year' => $this->periodYear($request),
+            'month' => $this->periodMonth($request),
         ]);
     }
 
@@ -36,8 +35,8 @@ class StatistikSlaController extends Controller
     {
         abort_unless(SlaMatrix::has($key), 404, 'Statistik tidak dijumpai.');
 
-        $year = $this->year($request);
-        $month = $this->month($request);
+        $year = $this->periodYear($request);
+        $month = $this->periodMonth($request);
 
         return view('statistik.sla.show', [
             'key' => $key,
@@ -53,8 +52,8 @@ class StatistikSlaController extends Controller
     {
         abort_unless(SlaMatrix::has($key), 404, 'Statistik tidak dijumpai.');
 
-        $year = $this->year($request);
-        $month = $this->month($request);
+        $year = $this->periodYear($request);
+        $month = $this->periodMonth($request);
 
         $pdf = Pdf::loadView('statistik.sla.pdf', [
             'key' => $key,
@@ -80,8 +79,8 @@ class StatistikSlaController extends Controller
     {
         abort_unless(SlaListExport::has($key), 404, 'Senarai tidak dijumpai.');
 
-        $year = $this->year($request);
-        $month = $this->month($request);
+        $year = $this->periodYear($request);
+        $month = $this->periodMonth($request);
         $cawangan = $request->input('cawangan') ?: null;
         $kategori = $request->input('kategori') ?: null;
 
@@ -113,27 +112,11 @@ class StatistikSlaController extends Controller
         return [
             [$title],
             [''],
-            ['BULAN: '.($month ? (self::BULAN[$month] ?? $month) : 'Semua Bulan')],
+            ['BULAN: '.($month ? Bulan::label($month) : 'Semua Bulan')],
             ['TAHUN: '.($year ?: 'Semua Tahun')],
             ['KATEGORI KES: '.($kategori ?: 'Semua Kategori Kes')],
             ['CAWANGAN: '.($cawangan ?: 'Semua Cawangan')],
             [''],
         ];
-    }
-
-    /** Optional year filter (blank = all years, matching legacy). */
-    private function year(Request $request): ?int
-    {
-        $year = $request->input('tahun');
-
-        return ($year !== null && $year !== '') ? (int) $year : null;
-    }
-
-    /** Optional month filter 1-12 (blank = all months). */
-    private function month(Request $request): ?int
-    {
-        $month = (int) $request->input('bulan');
-
-        return ($month >= 1 && $month <= 12) ? $month : null;
     }
 }
