@@ -40,6 +40,18 @@ fi
 # 6. Permissions.
 chmod -R 775 storage bootstrap/cache || true
 
+# 6b. Preflight — never cache a debug-on config into production (leaks stack traces + queries).
+if grep -qE '^APP_DEBUG=true' .env; then
+  echo "==> ABORT: APP_DEBUG=true in .env — set APP_DEBUG=false and APP_ENV=production before deploy." >&2
+  exit 1
+fi
+if ! grep -qE '^APP_ENV=production' .env; then
+  echo "==> WARNING: APP_ENV is not 'production' in .env (see DEPLOY.md 'Production .env values')."
+fi
+if ! grep -qE '^SESSION_SECURE_COOKIE=true' .env; then
+  echo "==> WARNING: SESSION_SECURE_COOKIE is not 'true' — session cookie will lack the Secure flag."
+fi
+
 # 7. Caches.
 php artisan config:cache
 php artisan route:cache

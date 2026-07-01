@@ -143,6 +143,17 @@ class PermohonanPeguamController extends Controller
 
     public function tarikDiri(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
+        // AUTH-07: withdrawal is a decision-level action (was ungated → any staff could withdraw
+        // any application), and only a still-pending application may be withdrawn — not one already
+        // approved/rejected, which would orphan a live login against a "withdrawn" record.
+        if (! $request->user()->can($this->keputusanPerm($butiran))) {
+            return back()->withErrors(['akses' => 'Anda tiada kebenaran menarik diri permohonan jalur ini.']);
+        }
+
+        if ($butiran->permohonan_status !== '0') {
+            return back()->withErrors(['urutan' => 'Hanya permohonan yang belum diputuskan boleh ditarik diri.']);
+        }
+
         $data = $request->validate(['sebabBatal' => ['nullable', 'string', 'max:200']]);
 
         $butiran->update([
@@ -150,6 +161,8 @@ class PermohonanPeguamController extends Controller
             'tarikhBatal' => now()->toDateString(),
             'sebabBatal' => $data['sebabBatal'] ?? null,
         ]);
+
+        Audit::log('butiran_peguam_panel_2', $butiran->id, Audit::UPDATE, "Permohonan peguam ditarik diri: {$butiran->namaPeguam}.");
 
         return redirect()->route('permohonan-peguam.show', $butiran)->with('status', 'Tarik diri direkodkan.');
     }

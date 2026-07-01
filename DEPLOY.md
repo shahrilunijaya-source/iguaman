@@ -100,3 +100,30 @@ them and no `queue:work` process is needed. If a worker is ever added, the job a
 php artisan schedule:list      # 3 commands listed
 # generate a bulk export from the UI, then download it — file must appear
 ```
+
+## Production `.env` values (safe defaults — set on the server)
+
+The webhook copies `.env.example` (dev defaults) on first run. Before `deploy.sh` runs
+`config:cache`, edit the server `.env` to these production values (deploy.sh now aborts if
+`APP_DEBUG=true`):
+
+```
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://iguaman.myappsonline.net
+
+SESSION_SECURE_COOKIE=true      # cookie only over HTTPS (add this line; absent in example)
+
+LOG_STACK=daily                 # rotate logs (single = unbounded file on shared host)
+LOG_LEVEL=warning               # not debug — avoids leaking internals + disk bloat
+
+MAIL_MAILER=smtp                # log = mail never sent; set real SMTP creds
+MAIL_HOST=...  MAIL_PORT=...  MAIL_USERNAME=...  MAIL_PASSWORD=...  MAIL_ENCRYPTION=tls
+
+# Rotate the JBG bot creds (do not reuse the dev values):
+BOT_API_URL=https://<space>.hf.space
+BOT_API_USER=...  BOT_API_PASS=...
+```
+
+DB creds come from hPanel (auto-prefixed `u<account>_`). `QUEUE_CONNECTION`/`CACHE_STORE`
+stay `database` (correct for shared hosting; bulk exports run synchronously).

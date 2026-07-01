@@ -28,8 +28,8 @@ class CawanganScope implements Scope
 
     /**
      * @param  string  $cawanganCol  current-branch column ('cawangan' name, or 'cawangan_id')
-     * @param  string  $asalCol      origin-of-transfer column (D2 dual-branch)
-     * @param  bool    $byBranchId   match by numeric cawangan_id (resolve from the user's branch name)
+     * @param  string  $asalCol  origin-of-transfer column (D2 dual-branch)
+     * @param  bool  $byBranchId  match by numeric cawangan_id (resolve from the user's branch name)
      */
     public function __construct(
         private readonly string $cawanganCol = 'cawangan',
@@ -49,8 +49,17 @@ class CawanganScope implements Scope
             ? Cawangan::where('nama', $user->cawangan)->value('id')
             : $user->cawangan;
 
-        // Branch can't be resolved → don't over-filter (fail open, like a no-branch user).
+        // Branch can't be resolved (staff cawangan string has no matching Cawangan row) →
+        // fail CLOSED (deny) rather than leak every branch's data. A mismatch is a data-consistency
+        // bug (rename/typo/unseeded branch), so surface it in the log for repair.
         if ($needle === null) {
+            logger()->warning('CawanganScope: branch unresolved, denying all rows', [
+                'user_id' => $user->id,
+                'cawangan' => $user->cawangan,
+                'table' => $model->getTable(),
+            ]);
+            $builder->whereRaw('1 = 0');
+
             return;
         }
 

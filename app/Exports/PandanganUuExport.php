@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Exports;
 
 use App\Models\KhidmatNasihat;
+use App\Support\CsvSafe;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -32,13 +33,13 @@ class PandanganUuExport implements FromQuery, WithHeadings, WithMapping
     public function map($row): array
     {
         /** @var KhidmatNasihat $row */
-        return [
+        return CsvSafe::row([
             $row->no_permohonan,
             $row->nama_mangsa,
             $row->kategori?->jenis_kategori,
             $row->subkategori?->nama,
             $row->cawangan?->nama,
             $row->ulasan_pegawai,
-        ];
+        ]);
     }
 }

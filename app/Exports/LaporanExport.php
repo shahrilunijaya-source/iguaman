@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exports;
 
+use App\Support\CsvSafe;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -33,7 +34,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
         return array_map(function (string $field) use ($row) {
             $value = $row->{$field};
 
-            return $value instanceof Carbon ? $value->format('d/m/Y') : (string) ($value ?? '');
+            return $value instanceof Carbon ? $value->format('d/m/Y') : CsvSafe::cell($value);
         }, array_keys($this->columns));
     }
 }

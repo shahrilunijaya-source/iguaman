@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ExportLaporanJob;
 use App\Models\Form;
+use App\Support\CsvSafe;
 use App\Support\LaporanRegistry;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,6 +57,8 @@ class LaporanController extends Controller
         $cols = $report['columns'];
         $rows = $this->query($report, $request)->get();
         $filename = $type.'-'.now()->format('Ymd-His').'.csv';
+
+        Log::info('export.download', ['type' => $type, 'format' => 'csv', 'user_id' => $request->user()->id, 'rows' => $rows->count()]);
 
         return response()->streamDownload(function () use ($cols, $rows) {
             $out = fopen('php://output', 'w');
@@ -124,6 +128,8 @@ class LaporanController extends Controller
             return back()->with('error', 'Eksport pukal gagal dijana. Sila cuba lagi.');
         }
 
+        Log::info('export.generate', ['type' => $type, 'user_id' => $user->id, 'file' => $file, 'filters' => $filters]);
+
         return back()->with('status', 'Eksport pukal siap. Muat turun: '.$file)
             ->with('eksport_fail', $file);
     }
@@ -139,6 +145,8 @@ class LaporanController extends Controller
         $path = 'exports/'.$request->user()->id.'/'.$name;
         abort_unless(Storage::disk('local')->exists($path), 404, 'Fail belum siap atau tidak dijumpai.');
 
+        Log::info('export.download', ['file' => $name, 'user_id' => $request->user()->id]);
+
         return Storage::disk('local')->download($path, $name);
     }
 
@@ -151,6 +159,6 @@ class LaporanController extends Controller
             return $v->format('d/m/Y');
         }
 
-        return (string) ($v ?? '');
+        return CsvSafe::cell($v);
     }
 }

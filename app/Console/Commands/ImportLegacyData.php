@@ -41,7 +41,15 @@ class ImportLegacyData extends Command
 
     public function handle(): int
     {
-        $src = $this->option('source');
+        $src = (string) $this->option('source');
+
+        // --source is interpolated into cross-DB SQL identifiers, so it must be a bare schema
+        // name — never attacker/typo-controlled SQL. Whitelist before any query touches it.
+        if (preg_match('/^[A-Za-z0-9_]+$/', $src) !== 1) {
+            $this->error("Invalid --source database name: `{$src}` (allowed: letters, digits, underscore).");
+
+            return self::FAILURE;
+        }
 
         $exists = DB::selectOne(
             'SELECT COUNT(*) AS n FROM information_schema.schemata WHERE schema_name = ?',

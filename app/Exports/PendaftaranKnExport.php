@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Exports;
 
 use App\Models\KhidmatNasihat;
+use App\Support\CsvSafe;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -32,7 +33,7 @@ class PendaftaranKnExport implements FromQuery, WithHeadings, WithMapping
     public function map($row): array
     {
         /** @var KhidmatNasihat $row */
-        return [
+        return CsvSafe::row([
             $row->no_permohonan,
             $row->nama_mangsa,
             $row->id_pengenalan_mangsa,
@@ -40,6 +41,6 @@ class PendaftaranKnExport implements FromQuery, WithHeadings, WithMapping
             $row->status_kn,
             optional($row->temuJanji?->tarikh_temu_janji)->format('Y-m-d'),
             $row->ulasan_permohonan,
-        ];
+        ]);
     }
 }

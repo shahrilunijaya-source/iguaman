@@ -122,12 +122,12 @@ Route::middleware(['auth', 'permission:slot.view|awam.portal'])->group(function 
 // ---- Guest: login + password reset (plain Laravel, no Filament) ----
 Route::middleware('guest')->group(function () {
     Route::get('/system/login', [SystemAuthController::class, 'showLogin'])->name('system.login');
-    Route::post('/system/login', [SystemAuthController::class, 'attempt'])->middleware('throttle:10,1')->name('system.login.attempt');
+    Route::post('/system/login', [SystemAuthController::class, 'attempt'])->middleware('throttle:login')->name('system.login.attempt');
 
     Route::get('/password/forgot', [PasswordResetController::class, 'request'])->name('password.request');
-    Route::post('/password/forgot', [PasswordResetController::class, 'email'])->name('password.email');
+    Route::post('/password/forgot', [PasswordResetController::class, 'email'])->middleware('throttle:6,1')->name('password.email');
     Route::get('/password/reset/{token}', [PasswordResetController::class, 'reset'])->name('password.reset');
-    Route::post('/password/reset', [PasswordResetController::class, 'update'])->name('password.update');
+    Route::post('/password/reset', [PasswordResetController::class, 'update'])->middleware('throttle:6,1')->name('password.update');
 });
 
 // ---- Authenticated (any role) ----

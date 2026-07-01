@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 // Plain Laravel auth — NO Filament/Breeze/Jetstream. Login view = resources/views/system/login.blade.php.
@@ -44,6 +47,9 @@ class SystemAuthController extends Controller
 
         // Only active accounts may sign in.
         if (! Auth::attempt(['email' => $data['email'], 'password' => $data['password'], 'is_active' => true], $remember)) {
+            // LOG-01: failed sign-in leaves a forensic trail (never log the password).
+            Log::warning('auth.login_failed', ['email' => $data['email'], 'ip' => $request->ip(), 'ua' => $request->userAgent()]);
+
             return back()
                 ->withInput($request->only('email', 'remember'))
                 ->withErrors(['email' => 'Emel atau kata laluan tidak sah, atau akaun tidak aktif.']);
@@ -53,6 +59,8 @@ class SystemAuthController extends Controller
 
         $user = Auth::user();
         $user->forceFill(['last_login_at' => now()])->saveQuietly();
+
+        Log::info('auth.login_success', ['user_id' => $user->id, 'email' => $user->email, 'ip' => $request->ip()]);
 
         return redirect()->intended(route($user->homeRoute()));
     }
@@ -66,12 +74,12 @@ class SystemAuthController extends Controller
     {
         $request->validate([
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', 'min:8', 'different:current_password'],
+            'password' => ['required', 'confirmed', Password::defaults(), 'different:current_password'],
         ]);
 
         $user = $request->user();
         $user->forceFill([
-            'password' => \Illuminate\Support\Facades\Hash::make($request->input('password')),
+            'password' => Hash::make($request->input('password')),
             'must_change_password' => false,
         ])->save();
 
