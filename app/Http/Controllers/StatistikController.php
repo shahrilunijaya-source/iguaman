@@ -9,6 +9,7 @@ use App\Models\PeguamPanel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -93,13 +94,34 @@ class StatistikController extends Controller
             ->pluck('n', $column)->all();
     }
 
-    /** Cases per month by tarikh_permohonan, last 12 buckets. */
+    /**
+     * Cases per month by tarikh_permohonan — a continuous 12-month window ending
+     * at the most recent month that has data, with zero-count months filled in so
+     * an empty month renders as a dip instead of a silently skipped x-axis label.
+     * Returned newest → oldest (the view reverses it to plot left → right).
+     */
     private function byBulan(Request $request): array
     {
-        return $this->filtered($request)
+        $counts = $this->filtered($request)
             ->whereNotNull('tarikh_permohonan')
             ->select(DB::raw("DATE_FORMAT(tarikh_permohonan, '%Y-%m') as bulan"), DB::raw('COUNT(*) as n'))
-            ->groupBy('bulan')->orderByDesc('bulan')->limit(12)
-            ->pluck('n', 'bulan')->all();
+            ->groupBy('bulan')
+            ->pluck('n', 'bulan');
+
+        if ($counts->isEmpty()) {
+            return [];
+        }
+
+        // Anchor to the latest month with data (not "now") so the trend still shows
+        // even when all records predate the last 12 calendar months.
+        $cursor = Carbon::createFromFormat('Y-m', $counts->keys()->max())->startOfMonth();
+        $series = [];
+        for ($i = 0; $i < 12; $i++) {
+            $key = $cursor->format('Y-m');
+            $series[$key] = (int) ($counts[$key] ?? 0);
+            $cursor->subMonth();
+        }
+
+        return $series; // newest → oldest
     }
 }
