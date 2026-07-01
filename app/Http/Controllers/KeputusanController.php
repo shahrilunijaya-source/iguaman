@@ -45,6 +45,9 @@ class KeputusanController extends Controller
             'sumbangan' => ['nullable', 'string', 'max:20'],
         ]);
 
+        $fields = ['keputusan', 'diterima', 'status', 'kelulusan', 'sumbangan'];
+        $before = $kes->only($fields);
+
         $kes->update([
             'keputusan' => 'Diluluskan',
             'diterima' => 'Ya',
@@ -56,7 +59,8 @@ class KeputusanController extends Controller
             'tarikh_pengarahKemaskini' => now(),
         ]);
 
-        Audit::log('forms', $kes->id, Audit::APPROVE, "Permohonan diluluskan: {$kes->nama}");
+        // LOG-05: field-level before/after trail for the case decision.
+        Audit::changes('forms', $kes->id, Audit::APPROVE, $before, $kes->only($fields), "Permohonan diluluskan: {$kes->nama}");
 
         return back()->with('status', 'Permohonan diluluskan.');
     }
@@ -71,6 +75,9 @@ class KeputusanController extends Controller
 
         $data = $request->validate(['reason' => ['nullable', 'string', 'max:100']]);
 
+        $fields = ['keputusan', 'diterima', 'status', 'reason'];
+        $before = $kes->only($fields);
+
         $kes->update([
             'keputusan' => 'Ditolak',
             'diterima' => 'Tidak',
@@ -80,7 +87,8 @@ class KeputusanController extends Controller
             'tarikh_pengarahKemaskini' => now(),
         ]);
 
-        Audit::log('forms', $kes->id, Audit::REJECT, "Permohonan ditolak: {$kes->nama}");
+        // LOG-05: field-level before/after trail for the case decision.
+        Audit::changes('forms', $kes->id, Audit::REJECT, $before, $kes->only($fields), "Permohonan ditolak: {$kes->nama}");
 
         return back()->with('status', 'Permohonan ditolak.');
     }
