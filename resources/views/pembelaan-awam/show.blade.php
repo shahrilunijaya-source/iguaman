@@ -1,6 +1,6 @@
 @extends('layouts.staff')
 
-@section('title', 'Pembelaan — '.($kes->no_fail ?? ('#'.$kes->id)))
+@section('title', 'Pembelaan - '.($kes->no_fail ?? ('#'.$kes->id)))
 
 @section('content')
     <div class="tap-head">
@@ -25,7 +25,7 @@
     @endif
 
     @php
-        $f = fn ($v) => $v instanceof \Illuminate\Support\Carbon ? $v->format('d/m/Y') : (($v === null || $v === '') ? '—' : $v);
+        $f = fn ($v) => $v instanceof \Illuminate\Support\Carbon ? $v->format('d/m/Y') : (($v === null || $v === '') ? '-' : $v);
     @endphp
 
     <div class="card" style="padding:18px; margin-bottom:16px;">

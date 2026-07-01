@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
-// e-Poster management — announcements / notices (posters). Image stored on the
+// e-Poster management - announcements / notices (posters). Image stored on the
 // private `local` disk; Poster model uses non-standard date columns ($timestamps=false).
 class PosterController extends Controller
 {

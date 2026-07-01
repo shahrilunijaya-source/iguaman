@@ -20,18 +20,18 @@
 
     <div class="card" style="padding:18px;">
         <dl style="display:grid; grid-template-columns: 180px 1fr; gap:8px 16px; margin:0;">
-            <dt>No. Fail Kes</dt><dd>{{ $tuntutan->form->no_fail ?? '—' }}</dd>
-            <dt>Jenis Tuntutan</dt><dd>{{ $tuntutan->jenis_tuntutan ?? '—' }}</dd>
-            <dt>Keterangan</dt><dd>{{ $tuntutan->keterangan ?? '—' }}</dd>
+            <dt>No. Fail Kes</dt><dd>{{ $tuntutan->form->no_fail ?? '-' }}</dd>
+            <dt>Jenis Tuntutan</dt><dd>{{ $tuntutan->jenis_tuntutan ?? '-' }}</dd>
+            <dt>Keterangan</dt><dd>{{ $tuntutan->keterangan ?? '-' }}</dd>
             <dt>Jumlah Tuntutan</dt><dd>RM {{ number_format((float) $tuntutan->jumlah_tuntutan, 2) }}</dd>
-            <dt>Jumlah Diluluskan</dt><dd>{{ $tuntutan->jumlah_diluluskan !== null ? 'RM '.number_format((float) $tuntutan->jumlah_diluluskan, 2) : '—' }}</dd>
+            <dt>Jumlah Diluluskan</dt><dd>{{ $tuntutan->jumlah_diluluskan !== null ? 'RM '.number_format((float) $tuntutan->jumlah_diluluskan, 2) : '-' }}</dd>
             <dt>Status Bayaran</dt><dd>{{ $tuntutan->status_bayaran ? 'Sudah dibayar' : 'Belum' }}</dd>
-            <dt>No. Resit</dt><dd>{{ $tuntutan->nombor_resit ?? '—' }}</dd>
+            <dt>No. Resit</dt><dd>{{ $tuntutan->nombor_resit ?? '-' }}</dd>
         </dl>
     </div>
 
     @if ($tuntutan->status_tuntutan === \App\Models\LejarTuntutanBayaran::STATUS_DRAF)
-        {{-- W5: a claim seeded at external-lawyer assignment — fill the amount + submit. --}}
+        {{-- W5: a claim seeded at external-lawyer assignment - fill the amount + submit. --}}
         <div class="card" style="padding:18px; margin-top:16px; border-left:3px solid var(--brand,#1a6fa8);">
             <h3 style="margin:0 0 4px; font-size:15px;">Lengkapkan &amp; Hantar Tuntutan</h3>
             <p class="dash-empty__sub" style="margin:0 0 12px;">Tuntutan ini disediakan semasa kes diagihkan kepada anda. Isi jumlah dan hantar untuk semakan JBG.</p>

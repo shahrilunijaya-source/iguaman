@@ -10,7 +10,7 @@
 
 <div class="vb-page">
 
-    {{-- ============ LEFT — editorial ============ --}}
+    {{-- ============ LEFT - editorial ============ --}}
     <div class="vb-left">
         <div>
             <div class="vb-left__top">
@@ -27,7 +27,7 @@
                 <span class="line">anda.<span class="dot dot--lg"></span></span>
             </h2>
             <p class="vb-left__lede">
-                Portal Khidmat Nasihat Jabatan Bantuan Guaman Malaysia — mohon nasihat
+                Portal Khidmat Nasihat Jabatan Bantuan Guaman Malaysia - mohon nasihat
                 undang-undang, semak kelayakan dan tempah janji temu, semuanya dalam talian.
             </p>
 
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    {{-- ============ RIGHT — White form ============ --}}
+    {{-- ============ RIGHT - White form ============ --}}
     <div class="vb-right">
         <div class="vb-right__inner">
             <div class="swap__screen">

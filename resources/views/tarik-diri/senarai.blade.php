@@ -13,7 +13,7 @@
 <div class="tap-head">
     <div>
         <h1 class="tap-head__title">Permohonan Tarik Diri<span class="dot"></span></h1>
-        <p class="tap-head__sub">Tarik Diri Mewakili OYD — semakan PPUU → Pengarah → Ketua Pengarah</p>
+        <p class="tap-head__sub">Tarik Diri Mewakili OYD - semakan PPUU → Pengarah → Ketua Pengarah</p>
     </div>
 </div>
 
@@ -27,9 +27,9 @@
                 @foreach ($kes as $k)
                     <tr>
                         <td>{{ $k->id }}</td>
-                        <td>{{ $k->no_fail ?: '—' }}</td>
-                        <td>{{ $k->nama ?: '—' }}</td>
-                        <td>{{ $k->nama_pegawai_yang_dapat_kes ?: '—' }}</td>
+                        <td>{{ $k->no_fail ?: '-' }}</td>
+                        <td>{{ $k->nama ?: '-' }}</td>
+                        <td>{{ $k->nama_pegawai_yang_dapat_kes ?: '-' }}</td>
                         <td><span class="td-status">{{ \App\Support\StatusAgihan::label($k->status_agihan) }}</span></td>
                         <td><a href="{{ route('tarikdiri.maklumat', $k) }}" class="btn btn--ghost" style="padding:4px 12px;font-size:12px;">Semak →</a></td>
                     </tr>

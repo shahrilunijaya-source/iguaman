@@ -63,7 +63,7 @@
     </form>
 
     @unless ($isCreate)
-        {{-- Separate form — never nest a delete form inside the edit form. --}}
+        {{-- Separate form - never nest a delete form inside the edit form. --}}
         <form method="POST" action="{{ route('mahkamah-ref.destroy', ['jenis' => $jenis, 'id' => $mahkamah->id]) }}" onsubmit="return confirm('Padam mahkamah ini?')" style="margin-top:14px;">
             @csrf @method('DELETE')
             <button type="submit" class="btn btn--ghost" style="color:var(--danger);">Padam Mahkamah</button>

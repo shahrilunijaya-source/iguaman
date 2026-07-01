@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Statistik SLA — per-branch achievement matrices (EPIC F).
+ * Statistik SLA - per-branch achievement matrices (EPIC F).
  * Five all-branch dashboards (40/60/120/7/60 day) over the fixed 23-branch list.
  * HQ-gated in routes; the SlaMatrix aggregate bypasses CawanganScope on purpose.
  * Each matrix has a paired breach "senarai" CSV (the TIDAK CAPAI drill-down).
@@ -70,7 +70,7 @@ class StatistikSlaController extends Controller
     }
 
     /**
-     * Breach "senarai" CSV — the rows behind a dashboard's TIDAK CAPAI counts
+     * Breach "senarai" CSV - the rows behind a dashboard's TIDAK CAPAI counts
      * (legacy export_senarai_*.php). Optional cawangan/kategori drill-down from
      * a matrix cell; period filters reconcile with the matrix. Branch-gated by
      * CawanganScope inside SlaListExport::query.
@@ -97,7 +97,7 @@ class StatistikSlaController extends Controller
             }
             fputcsv($out, array_merge(['BIL.'], SlaListExport::headers($key)));
 
-            // PERF-01: cursor() streams rows from the DB — no full result set in memory.
+            // PERF-01: cursor() streams rows from the DB - no full result set in memory.
             $bil = 1;
             foreach ($query->cursor() as $r) {
                 fputcsv($out, SlaListExport::row($r, $key, $bil++));

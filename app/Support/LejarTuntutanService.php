@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
- * W15 — central claim-ledger service. Holds no_tuntutan generation, guarded
+ * W15 - central claim-ledger service. Holds no_tuntutan generation, guarded
  * lifecycle transitions, the KN auto-create bridge (D4), and branch-scoped
  * list/dashboard queries. Mirrors the guard + transaction style of
  * {@see KhidmatProsesService} / {@see AgihanService}.
@@ -101,7 +101,7 @@ class LejarTuntutanService
 
     /**
      * Seed a PEGUAM_LUAR claim row when a KN is assigned to an external panel lawyer (W5).
-     * Idempotent via the (sumber, id_khidmat_nasihat) unique key — re-assigning the same KN
+     * Idempotent via the (sumber, id_khidmat_nasihat) unique key - re-assigning the same KN
      * returns the existing row instead of throwing a duplicate-key error. The row starts as a
      * DRAF with no amount; the lawyer fills jumlah_tuntutan + submits via self-service tuntutan.
      */
@@ -132,7 +132,7 @@ class LejarTuntutanService
     }
 
     /**
-     * W2 — record a manual counter payment of a KN intake fee. Ensures the central
+     * W2 - record a manual counter payment of a KN intake fee. Ensures the central
      * SUMBER_KN ledger row exists, stamps the receipt, marks it DIBAYAR, and flips the
      * KN payment flag. A counter payment IS the payment, so it skips the panel-claim
      * approval chain (DIHANTAR->SEMAKAN->DILULUS). Idempotent: re-recording overwrites

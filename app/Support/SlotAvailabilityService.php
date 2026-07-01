@@ -10,17 +10,17 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 /**
- * Slot-availability engine (parity map §4 — the hard core of Batch 10).
+ * Slot-availability engine (parity map §4 - the hard core of Batch 10).
  *
  * A date is bookable for a branch only when ALL hold:
  *   1. it is on/after the earliest bookable date = today + MIN_WORKING_DAYS working days
  *      (weekends skipped while counting);
- *   2. it is not a weekend (default Sat/Sun — see WEEKEND; branch-specific weekend
+ *   2. it is not a weekend (default Sat/Sun - see WEEKEND; branch-specific weekend
  *      config is a later slice);
  *   3. it is not a public holiday covering the branch's state (ref_cuti + CutiNegeri,
  *      matched against cawangan.negeri_id);
  *   4. it is not inside an operational closure (penutupan_operasi) for the branch;
- *   5. at least one open slot exists — a slot_temu_janji row for (branch, date) with
+ *   5. at least one open slot exists - a slot_temu_janji row for (branch, date) with
  *      is_temujanji = false and status_aktif = true.
  *
  * Pure/testable: "today" is injectable so tests can fix the reference date.
@@ -33,7 +33,7 @@ class SlotAvailabilityService
 
     /**
      * Default weekend day-of-week set in ISO numbering (1=Mon … 7=Sun): Sat(6)+Sun(7).
-     * NOTE: ISO literals, NOT Carbon's SATURDAY/SUNDAY constants — Carbon::SUNDAY is 0,
+     * NOTE: ISO literals, NOT Carbon's SATURDAY/SUNDAY constants - Carbon::SUNDAY is 0,
      * which never matches dayOfWeekIso (Sunday = 7) and would leave Sundays bookable.
      * Per-branch override comes from cawangan.hari_minggu (Cawangan::weekendDays());
      * an explicit $weekend argument still wins over both.
@@ -137,7 +137,7 @@ class SlotAvailabilityService
      * Per-day open/closed status for a branch over an inclusive date range, for the
      * read-only month calendar (Jadual Janji Temu). Reuses the same exclusion sources
      * as availableDates(); does NOT apply the lead-time window (the calendar shows
-     * past + near dates too — booking enforcement stays in availableDates/Times).
+     * past + near dates too - booking enforcement stays in availableDates/Times).
      *
      * @return array<string, array{status: string, label: string}>
      *                                                             'Y-m-d' => one of: weekend | holiday | closure | open
@@ -194,7 +194,7 @@ class SlotAvailabilityService
         return in_array($date->dayOfWeekIso, $weekend, true);
     }
 
-    /** PERF-08: memo of ref_cuti for this instance — holidayDates runs up to 3× per request. */
+    /** PERF-08: memo of ref_cuti for this instance - holidayDates runs up to 3× per request. */
     private ?Collection $cutiMemo = null;
 
     /**

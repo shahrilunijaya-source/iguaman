@@ -25,7 +25,7 @@
         @forelse ($lawyers as $l)
             <a href="{{ route('peguam-panel.show', $l['id']) }}" class="tap-row" style="grid-template-columns: 2fr 2fr 120px;">
                 <div class="tap-row__title">{{ $l['nama'] }}</div>
-                <div class="tap-row__tujuan">{{ $l['firma'] ?: '—' }}</div>
+                <div class="tap-row__tujuan">{{ $l['firma'] ?: '-' }}</div>
                 <div><span class="score">{{ number_format($l['kes']) }}</span></div>
             </a>
         @empty

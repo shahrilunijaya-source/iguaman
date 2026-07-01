@@ -8,10 +8,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
- * SLA breach "senarai" list exports (P1 — legacy export_senarai_*.php).
+ * SLA breach "senarai" list exports (P1 - legacy export_senarai_*.php).
  *
  * Each of the five SLA dashboards (SlaMatrix) has a paired breach LIST: the
- * underlying case rows whose DATEDIFF exceeds the target — i.e. the TIDAK CAPAI
+ * underlying case rows whose DATEDIFF exceeds the target - i.e. the TIDAK CAPAI
  * side of the matrix, the cell drill-down. All five legacy files are
  * breach-only (the threshold is a hard WHERE), emit a wide case row plus a
  * "TEMPOH MELEBIHI N HARI" day-count column, exclude Kesilapan-Menjana files,
@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\DB;
  *     misalignment plus a one-off extra column, which we do not reproduce.
  *
  * Branch gating is delegated to Eloquent's CawanganScope (HQ roles see all,
- * scoped roles are pinned to their own cawangan) — the same mechanism the other
+ * scoped roles are pinned to their own cawangan) - the same mechanism the other
  * wide exports use, mirroring the legacy $isHQ ? all : own-cawangan logic.
  */
 class SlaListExport
@@ -107,7 +107,7 @@ class SlaListExport
         self::keyFilters($q, $key);
 
         // Period filter keys off the SLA end date so the list reconciles with the
-        // matrix TIDAK cell (legacy keyed off tarikh_perakuan — see class docblock).
+        // matrix TIDAK cell (legacy keyed off tarikh_perakuan - see class docblock).
         $q->when($year, fn (Builder $w, $v) => $w->whereYear('forms.'.$end, $v))
             ->when($month, fn (Builder $w, $v) => $w->whereMonth('forms.'.$end, $v))
             ->when($cawangan, fn (Builder $w, $v) => $w->where('forms.cawangan', $v));
@@ -238,7 +238,7 @@ class SlaListExport
     /**
      * Court/case layout shared by perakuan / pemfailan / serahan lists. The
      * day-count column is spliced after the court block (legacy file-2/3 slot),
-     * one consistent position for all four — see class docblock.
+     * one consistent position for all four - see class docblock.
      *
      * @param  array{0:string,1:callable}  $tempoh
      */
@@ -270,7 +270,7 @@ class SlaListExport
     }
 
     /**
-     * Mediation layout (legacy file 5 — khidmat pengantaraan). Replaces the
+     * Mediation layout (legacy file 5 - khidmat pengantaraan). Replaces the
      * court block with the pengantaraan fields; day-count sits just before STATUS.
      *
      * @param  array{0:string,1:callable}  $tempoh

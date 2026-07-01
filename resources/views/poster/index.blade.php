@@ -36,7 +36,7 @@
             <div class="tap-row" style="grid-template-columns: 3fr 1.2fr 110px 90px;">
                 <div class="tap-row__title">{{ $row->tajuk_poster }}</div>
                 <div><span class="pill {{ ($row->status_poster ?? 'Aktif') === 'Aktif' ? 'pill--received' : 'pill--overdue' }}">{{ $row->status_poster ?: 'Aktif' }}</span></div>
-                <div class="tap-row__tujuan">{{ $row->image_path ? 'Ada' : '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->image_path ? 'Ada' : '-' }}</div>
                 <div style="text-align:right;"><a href="{{ route('poster.edit', $row) }}" class="tap-head__btn">✎</a></div>
             </div>
         @empty

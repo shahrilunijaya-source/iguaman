@@ -8,7 +8,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// Cetakan (printouts) — per-case PDFs via dompdf, replacing legacy FPDF cetakan files.
+// Cetakan (printouts) - per-case PDFs via dompdf, replacing legacy FPDF cetakan files.
 // Streamed inline so staff can preview + print directly from the browser.
 class CetakanController extends Controller
 {
@@ -44,7 +44,7 @@ class CetakanController extends Controller
         return $this->pdf($request, 'cetakan.laporan', "laporan-kes-{$kes->id}", ['kes' => $kes]);
     }
 
-    /** W16 — case-closure letter (Surat Penutupan Fail), available once the file is closed. */
+    /** W16 - case-closure letter (Surat Penutupan Fail), available once the file is closed. */
     public function penutupan(Request $request, Form $kes): Response
     {
         if (blank($kes->tarikh_tutup_fail)) {
@@ -57,7 +57,7 @@ class CetakanController extends Controller
         ]);
     }
 
-    /** W20 — application cancellation/rejection letter (Surat Pembatalan), restored legacy letter. */
+    /** W20 - application cancellation/rejection letter (Surat Pembatalan), restored legacy letter. */
     public function pembatalan(Request $request, Form $kes): Response
     {
         if ($kes->keputusan !== 'Ditolak' && $kes->status !== 'Ditolak') {
@@ -70,7 +70,7 @@ class CetakanController extends Controller
         ]);
     }
 
-    /** W14 — legal-aid certificate (Perakuan Bantuan Guaman), interim or muktamad. */
+    /** W14 - legal-aid certificate (Perakuan Bantuan Guaman), interim or muktamad. */
     public function perakuan(Request $request, Form $kes): Response
     {
         if (blank($kes->status_perakuan)) {

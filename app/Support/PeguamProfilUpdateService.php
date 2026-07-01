@@ -15,7 +15,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 /**
- * CODE-05 — self-service panel-lawyer profile update, extracted from
+ * CODE-05 - self-service panel-lawyer profile update, extracted from
  * PeguamController::updateProfil. The per-table field whitelists + fill/save across
  * butiran_peguam_panel_2/_3/_4/_5 and the document re-upload live here so the
  * controller stays transport-only and the mapping is unit-testable.
@@ -66,7 +66,7 @@ class PeguamProfilUpdateService
                 'poskodBank', 'bandarBank', 'negeriBank',
             ]))->save();
 
-            // All 18 docs editable (cso4/cso5 included — fixes the legacy profilUpdate bug).
+            // All 18 docs editable (cso4/cso5 included - fixes the legacy profilUpdate bug).
             LawyerDocuments::store($request, $kp, $p2->namaPeguam ?? $user->name, array_keys(PeguamDaftarRequest::DOC_TYPES));
         });
     }

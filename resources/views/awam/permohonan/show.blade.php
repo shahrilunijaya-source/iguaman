@@ -19,7 +19,7 @@
             <tbody>
                 <tr style="border-bottom:1px solid var(--line);">
                     <td style="padding:10px 0; color:var(--mute); width:40%;">No. Permohonan</td>
-                    <td style="padding:10px 0; font-weight:600;">{{ $khidmat->no_permohonan ?: '—' }}</td>
+                    <td style="padding:10px 0; font-weight:600;">{{ $khidmat->no_permohonan ?: '-' }}</td>
                 </tr>
                 <tr style="border-bottom:1px solid var(--line);">
                     <td style="padding:10px 0; color:var(--mute);">Status</td>
@@ -31,11 +31,11 @@
                 </tr>
                 <tr style="border-bottom:1px solid var(--line);">
                     <td style="padding:10px 0; color:var(--mute);">Cawangan</td>
-                    <td style="padding:10px 0;">{{ $khidmat->cawangan?->nama ?? '—' }}</td>
+                    <td style="padding:10px 0;">{{ $khidmat->cawangan?->nama ?? '-' }}</td>
                 </tr>
                 <tr style="border-bottom:1px solid var(--line);">
                     <td style="padding:10px 0; color:var(--mute);">Kategori Kes</td>
-                    <td style="padding:10px 0;">{{ $khidmat->kategori?->jenis_kategori ?? '—' }}</td>
+                    <td style="padding:10px 0;">{{ $khidmat->kategori?->jenis_kategori ?? '-' }}</td>
                 </tr>
                 <tr style="border-bottom:1px solid var(--line);">
                     <td style="padding:10px 0; color:var(--mute);">Jumlah Bayaran</td>

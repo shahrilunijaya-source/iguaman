@@ -7,7 +7,7 @@ use App\Models\Scopes\CawanganScope;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * W20 — shared report registry over the forms spine, used by both the interactive
+ * W20 - shared report registry over the forms spine, used by both the interactive
  * LaporanController (sync CSV/PDF) and the queued ExportLaporanJob (bulk .xlsx). Keeping the
  * definitions + query builder in one place stops the controller and the job drifting apart.
  *

@@ -14,14 +14,14 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use RuntimeException;
 
-// Pengantaraan (mediation) — standalone intake (W18), per-case lifecycle (assignment,
+// Pengantaraan (mediation) - standalone intake (W18), per-case lifecycle (assignment,
 // hearing, outcome), hearing reschedule history (sejarah_sidang), and mediator
 // assignment + ledger (W19). A mediation is a tagged `forms` row (D11).
 class PengantaraanController extends Controller
 {
     public function __construct(private readonly PengantaraanService $svc) {}
 
-    /** W18 — mediation worklist (standalone + litigation-derived), branch-scoped. */
+    /** W18 - mediation worklist (standalone + litigation-derived), branch-scoped. */
     public function senarai(Request $request): View
     {
         $filters = $request->only(['sumber', 'q']);
@@ -40,7 +40,7 @@ class PengantaraanController extends Controller
         return view('pengantaraan.index', ['senarai' => $senarai, 'filters' => $filters]);
     }
 
-    /** W18 — standalone (TERUS) intake form. */
+    /** W18 - standalone (TERUS) intake form. */
     public function create(): View
     {
         return view('pengantaraan.create', [
@@ -90,7 +90,7 @@ class PengantaraanController extends Controller
         return redirect()->route('kes.show', $kes)->with('status', 'Maklumat pengantaraan dikemaskini.');
     }
 
-    /** W19 — assign a mediator (staff officer) + open a MEDIASI claim-ledger row. */
+    /** W19 - assign a mediator (staff officer) + open a MEDIASI claim-ledger row. */
     public function agihPengantara(Request $request, Form $kes): RedirectResponse
     {
         $data = $request->validate([

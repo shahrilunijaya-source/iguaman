@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
- * Khidmat Nasihat officer processing — batch 11 slices A+B.
+ * Khidmat Nasihat officer processing - batch 11 slices A+B.
  *
  * Slice A: the branch-scoped officer worklist query + dashboard count tiles.
  * Slice B: assign PKN officer (status_kn BAHARU->DALAM_PROSES) and the linked
@@ -138,7 +138,7 @@ class KhidmatProsesService
         });
 
         Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE,
-            "Agihan Pegawai Khidmat Nasihat (#{$pegawaiId}) — status DALAM_PROSES.", $actor);
+            "Agihan Pegawai Khidmat Nasihat (#{$pegawaiId}) - status DALAM_PROSES.", $actor);
     }
 
     /** Accept the linked appointment: MENUNGGU -> DISAHKAN. */
@@ -150,7 +150,7 @@ class KhidmatProsesService
     /**
      * Reject the linked appointment: MENUNGGU -> BATAL, recording the reason, and
      * cancel the advisory request (status_kn -> BATAL). Without the KN transition the
-     * record would be orphaned — no live appointment, status_kn stuck, no rebook path.
+     * record would be orphaned - no live appointment, status_kn stuck, no rebook path.
      */
     public function tolak(KhidmatNasihat $khidmat, ?string $ulasan, string $actor): void
     {
@@ -199,12 +199,12 @@ class KhidmatProsesService
     }
 
     /**
-     * Buka Kes — slice C: open a litigation case (a forms row) from a completed
+     * Buka Kes - slice C: open a litigation case (a forms row) from a completed
      * Khidmat Nasihat. Manual officer action (not auto-on-attendance).
      *
      * Guards:
      *   - the KN must be SELESAI (appointment attended + completed);
-     *   - it must not already be linked to a case (id_forms === null) — no second row.
+     *   - it must not already be linked to a case (id_forms === null) - no second row.
      *
      * Prefill mirrors KesController::store: created_at/tarikh_daftar/didaftarkan_oleh
      * and diterima='' (NOT NULL legacy col), then no_fail via NoFailGenerator when blank.
@@ -218,7 +218,7 @@ class KhidmatProsesService
             $fresh = KhidmatNasihat::whereKey($kn->id)->lockForUpdate()->firstOrFail();
 
             if ($fresh->status_kn !== KhidmatNasihat::STATUS_SELESAI) {
-                throw new RuntimeException('KN belum selesai — kes hanya boleh dibuka selepas khidmat nasihat selesai.');
+                throw new RuntimeException('KN belum selesai - kes hanya boleh dibuka selepas khidmat nasihat selesai.');
             }
 
             if ($fresh->id_forms !== null) {
@@ -250,7 +250,7 @@ class KhidmatProsesService
             $fresh->save();
 
             Audit::log('khidmat_nasihat', $fresh->id, Audit::UPDATE,
-                "Buka Kes — forms #{$form->id} (No. Fail: {$form->no_fail}).", $actor->name);
+                "Buka Kes - forms #{$form->id} (No. Fail: {$form->no_fail}).", $actor->name);
 
             // W12: stamp the downstream case state back onto the KN.
             app(KesKnSyncService::class)->pushToKn($form, KesKnSyncService::STATE_TERBUKA, $actor->name);

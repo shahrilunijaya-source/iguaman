@@ -12,7 +12,7 @@ use Spatie\Permission\PermissionRegistrar;
 // Peranan (role) management. Gated permission:urus.peranan (admin-only via seeder + Gate::before).
 class RoleController extends Controller
 {
-    /** Seeded system roles — cannot be renamed/deleted via UI. */
+    /** Seeded system roles - cannot be renamed/deleted via UI. */
     public const SYSTEM_ROLES = [
         'admin', 'pengarah', 'koordinator', 'pegawai',
         'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'peguam',

@@ -43,7 +43,7 @@
             <div class="tap-row" style="grid-template-columns: 1.6fr 1.4fr 2.4fr 70px;">
                 <div class="tap-row__title">{{ $row->nama_cuti }}</div>
                 <div class="tap-row__tujuan">
-                    {{ optional($row->tarikh_mula)->format('d/m/Y') ?: '—' }}
+                    {{ optional($row->tarikh_mula)->format('d/m/Y') ?: '-' }}
                     @if ($row->tarikh_tamat && optional($row->tarikh_mula)?->format('Y-m-d') !== $row->tarikh_tamat->format('Y-m-d'))
                         – {{ $row->tarikh_tamat->format('d/m/Y') }}
                     @endif
@@ -52,7 +52,7 @@
                     @if (count($names))
                         {{ implode(', ', $names) }}
                     @else
-                        —
+                        -
                     @endif
                 </div>
                 <div style="text-align:right;"><a href="{{ route('cuti-negeri.edit', $row) }}" class="tap-head__btn">✎</a></div>

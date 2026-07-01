@@ -1,5 +1,5 @@
 {{--
-    Penugasan Pengantaraan — branch × [Sivil, Syariah, Jumlah]. Inline-styled so
+    Penugasan Pengantaraan - branch × [Sivil, Syariah, Jumlah]. Inline-styled so
     it renders identically in the browser and in dompdf. Expects $data, $branches.
 --}}
 @php

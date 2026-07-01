@@ -42,9 +42,9 @@
         @forelse ($refKes as $row)
             <div class="tap-row" style="grid-template-columns: 0.9fr 1.4fr 2fr 1.1fr 90px 90px;">
                 <div class="tap-row__title">{{ $row->jenis_kes }}</div>
-                <div class="tap-row__tujuan">{{ $row->kategori_kes ?: '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->deskripsi ?: '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->tarikh_kuatkuasa ? $row->tarikh_kuatkuasa->format('d/m/Y') : '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->kategori_kes ?: '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->deskripsi ?: '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->tarikh_kuatkuasa ? $row->tarikh_kuatkuasa->format('d/m/Y') : '-' }}</div>
                 <div><span class="pill {{ (string) $row->aktif_kes === '1' ? 'pill--received' : 'pill--overdue' }}">{{ (string) $row->aktif_kes === '1' ? 'Aktif' : 'Tidak' }}</span></div>
                 <div style="text-align:right;"><a href="{{ route('ref-kes.edit', $row) }}" class="tap-head__btn" aria-label="Sunting rujukan kes" title="Sunting">✎</a></div>
             </div>

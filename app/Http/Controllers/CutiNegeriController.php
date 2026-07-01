@@ -11,13 +11,13 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Cuti Negeri — state-specific public-holiday master (Batch 10 slice 3, FE
+ * Cuti Negeri - state-specific public-holiday master (Batch 10 slice 3, FE
  * kalendar/kalendar-cuti-negeri).
  *
  * Shares the legacy ref_cuti table + the 16-slot CutiNegeri bitmask with Cuti
  * Umum; the only difference is scope. A "negeri" holiday applies to a SUBSET of
  * the 16 states (multi-state selector), so this surface lists/edits the
- * non-nationwide rows — rows whose idnegeri is not the all-16 string. Nationwide
+ * non-nationwide rows - rows whose idnegeri is not the all-16 string. Nationwide
  * holidays stay on the Cuti Umum surface. Reuses permission:selenggara.cuti.
  */
 class CutiNegeriController extends Controller

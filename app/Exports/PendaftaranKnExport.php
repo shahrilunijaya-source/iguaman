@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 /**
- * Report 6 — Pendaftaran Khidmat Nasihat detail list to .xlsx.
+ * Report 6 - Pendaftaran Khidmat Nasihat detail list to .xlsx.
  * Takes the branch-scoped + filtered query from LaporanKnService. Eager-loaded
  * temuJanji avoids N+1 on the appointment-date column.
  */

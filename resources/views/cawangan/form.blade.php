@@ -53,7 +53,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">Negeri</label>
                     <select class="wiz-field__input" name="negeri_id">
-                        <option value="">—</option>
+                        <option value="">-</option>
                         @foreach ($negeriList as $id => $nama)
                             <option value="{{ $id }}" @selected((int) $val('negeri_id') === (int) $id)>{{ $nama }}</option>
                         @endforeach

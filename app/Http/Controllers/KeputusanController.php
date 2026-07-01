@@ -32,7 +32,7 @@ class KeputusanController extends Controller
         );
     }
 
-    /** Peringkat 2 — approve (Diterima). */
+    /** Peringkat 2 - approve (Diterima). */
     public function lulus(Request $request, Form $kes): RedirectResponse
     {
         $this->gate($request);
@@ -65,7 +65,7 @@ class KeputusanController extends Controller
         return back()->with('status', 'Permohonan diluluskan.');
     }
 
-    /** Peringkat 2 — reject (Ditolak). */
+    /** Peringkat 2 - reject (Ditolak). */
     public function tolak(Request $request, Form $kes): RedirectResponse
     {
         $this->gate($request);
@@ -93,12 +93,12 @@ class KeputusanController extends Controller
         return back()->with('status', 'Permohonan ditolak.');
     }
 
-    /** Peringkat 7 — official file closure. */
+    /** Peringkat 7 - official file closure. */
     public function tutupFail(Request $request, Form $kes): RedirectResponse
     {
         $this->gate($request);
 
-        // PROC-12: block double-close — re-closing would re-seed the claim ledger and re-push the KN.
+        // PROC-12: block double-close - re-closing would re-seed the claim ledger and re-push the KN.
         abort_if($kes->status === FormStatus::FAIL_TUTUP, 409, 'Fail ini telah ditutup.');
 
         $data = $request->validate([
@@ -106,7 +106,7 @@ class KeputusanController extends Controller
             'kos' => ['nullable', 'string', 'max:10'],
         ]);
 
-        // CODE-01: closure + ledger seed + KN sync are one unit of work — commit together or roll back.
+        // CODE-01: closure + ledger seed + KN sync are one unit of work - commit together or roll back.
         DB::transaction(function () use ($kes, $request, $data) {
             $kes->update([
                 'tarikh_tutup_fail' => now()->toDateString(),
@@ -128,7 +128,7 @@ class KeputusanController extends Controller
     }
 
     /**
-     * W16 — JBG confirmation queue: cases a panel lawyer marked selesai (status 18),
+     * W16 - JBG confirmation queue: cases a panel lawyer marked selesai (status 18),
      * awaiting an officer's final confirmation + file closure.
      */
     public function senaraiSelesai(Request $request): View
@@ -144,18 +144,18 @@ class KeputusanController extends Controller
         return view('keputusan.selesai', ['kes' => $kes]);
     }
 
-    /** W16 — JBG confirms a lawyer's selesai (18 → 19): close the file + sync KN + enable closure PDF. */
+    /** W16 - JBG confirms a lawyer's selesai (18 → 19): close the file + sync KN + enable closure PDF. */
     public function sahkanSelesai(Request $request, Form $kes): RedirectResponse
     {
         $this->gate($request);
         $this->ensureSelesaiPending($kes);
 
-        // CODE-01: confirm-close + ledger seed + KN sync are one unit of work — commit together or roll back.
+        // CODE-01: confirm-close + ledger seed + KN sync are one unit of work - commit together or roll back.
         DB::transaction(function () use ($kes, $request) {
             $kes->update([
                 'status_agihan' => StatusAgihan::KES_DITUTUP,
                 'status' => FormStatus::FAIL_TUTUP,
-                // Preserve an existing official closure date — never re-stamp a legally meaningful field.
+                // Preserve an existing official closure date - never re-stamp a legally meaningful field.
                 'tarikh_tutup_fail' => filled($kes->tarikh_tutup_fail) ? $kes->tarikh_tutup_fail : now()->toDateString(),
             ]);
 
@@ -171,7 +171,7 @@ class KeputusanController extends Controller
         return redirect()->route('keputusan.selesai')->with('status', 'Penyelesaian kes disahkan. Fail ditutup.');
     }
 
-    /** W16 — JBG rejects a lawyer's selesai (18 → 2): case returns to active handling. */
+    /** W16 - JBG rejects a lawyer's selesai (18 → 2): case returns to active handling. */
     public function tolakSelesai(Request $request, Form $kes): RedirectResponse
     {
         $this->gate($request);
@@ -186,7 +186,7 @@ class KeputusanController extends Controller
         ]);
 
         Audit::log('forms', $kes->id, Audit::REJECT,
-            'Pengesahan selesai ditolak — kes dikembalikan kepada peguam'.($data['reason'] ?? null ? ": {$data['reason']}" : '').": {$kes->nama}");
+            'Pengesahan selesai ditolak - kes dikembalikan kepada peguam'.($data['reason'] ?? null ? ": {$data['reason']}" : '').": {$kes->nama}");
 
         return redirect()->route('keputusan.selesai')->with('status', 'Pengesahan ditolak. Kes dikembalikan kepada peguam.');
     }
@@ -202,7 +202,7 @@ class KeputusanController extends Controller
     }
 
     /**
-     * W9 — on closure of a Pembelaan Awam case, seed a DRAF claim-ledger row
+     * W9 - on closure of a Pembelaan Awam case, seed a DRAF claim-ledger row
      * (sumber = PEMBELAAN_AWAM) so the assigned panel lawyer can file a claim against the
      * file. No-op for civil cases. Idempotent: PEMBELAAN_AWAM rows have no DB-unique guard,
      * so an existence check prevents duplicates across the two close paths.

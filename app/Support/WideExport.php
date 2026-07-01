@@ -5,13 +5,13 @@ namespace App\Support;
 use Illuminate\Support\Carbon;
 
 /**
- * Wide-column report exports (EPIC F — legacy `export_*.php`).
+ * Wide-column report exports (EPIC F - legacy `export_*.php`).
  *
  * Holds the verbatim ordered column lists for the three wide CSVs
  * (Permohonan / Pendaftaran Fail / Status Fail), plus the legacy cell
  * formatters: "-Tiada Maklumat-" blanks, d/m/Y dates with derived BULAN/TAHUN
  * columns, the reason-code decode map, the computed STATUS PEMFAILAN column,
- * and — critically — NoKP emitted as an Excel text formula (`="012345"`) so
+ * and - critically - NoKP emitted as an Excel text formula (`="012345"`) so
  * 12-digit ICs are not mangled into scientific notation.
  *
  * Everything here is pure (no DB, no request): column resolution takes a single
@@ -104,7 +104,7 @@ class WideExport
 
     /**
      * Kesilapan Penjanaan Nombor Fail export columns (legacy
-     * export_kesilapan_nombor_fail.php — 36 cols + BIL). Reuses the shared
+     * export_kesilapan_nombor_fail.php - 36 cols + BIL). Reuses the shared
      * cell formatters; adds the alasan_kesilapan_no_fail column.
      */
     public static function kesilapanColumns(): array
@@ -439,7 +439,7 @@ class WideExport
 
     /**
      * Penugasan Pengantaraan export columns (legacy
-     * export_laporan_penugasan_pengantaraan.php — 34 cols + BIL). Case-info
+     * export_laporan_penugasan_pengantaraan.php - 34 cols + BIL). Case-info
      * prefix + full sidang/pengantaraan block. status_pengantaraan='Ya' rows.
      *
      * Five legacy columns are not present in the current forms spine and degrade
@@ -478,7 +478,7 @@ class WideExport
             ['LOKASI PEGAWAI PENGANTARA', fn ($r) => self::na($r->lokasi_pegawai_pengantara)],
             ['STATUS SIDANG PENGANTARAAN', fn ($r) => self::na($r->status_sidang)],
             ['CARA PENYELESAIAN PENGANTARAAN', fn ($r) => self::na($r->cara_selesai)],
-            // Legacy reuses tarikh_persetujuan here (same as col 7) — suspected mismap, ported verbatim.
+            // Legacy reuses tarikh_persetujuan here (same as col 7) - suspected mismap, ported verbatim.
             ['TARIKH PERJANJIAN PENYELESAIAN', fn ($r) => self::na($r->tarikh_persetujuan)],
             ['ALASAN SIDANG PENGANTARAAN GAGAL', fn ($r) => self::na($r->alasan_gagal_pengantara ?? null)],
             ['TARIKH SIDANG BAHARU', fn ($r) => self::na($r->tarikh_sidang)],
@@ -490,7 +490,7 @@ class WideExport
 
     /**
      * Pengantaraan Tidak Dirujuk export columns (legacy
-     * export_laporan_pengantaraan_tidak_dirujuk.php — 14 cols + BIL).
+     * export_laporan_pengantaraan_tidak_dirujuk.php - 14 cols + BIL).
      * Case-info prefix + 3 "tidak dirujuk" tail cols. status_pengantaraan='Tidak'.
      */
     private static function tidakDirujukColumns(): array
@@ -498,7 +498,7 @@ class WideExport
         return [
             ['CAWANGAN', fn ($r) => self::na($r->cawangan)],
             ['NO. FAIL JBG', fn ($r) => self::na($r->no_fail)],
-            // Legacy emits this raw (unformatted) — na() renders Carbon d/m/Y, strings as-is.
+            // Legacy emits this raw (unformatted) - na() renders Carbon d/m/Y, strings as-is.
             ['TARIKH PERAKUAN BANTUAN GUAMAN', fn ($r) => self::na($r->tarikh_perakuan)],
             ['NAMA ORANG YANG DIBANTU', fn ($r) => self::na($r->nama)],
             ['NO. KAD PENGENALAN', fn ($r) => self::nokp($r->nokp)],

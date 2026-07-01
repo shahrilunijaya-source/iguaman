@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-/** peguam_panel — panel lawyer master record (surrogate id PK added in migration). */
+/** peguam_panel - panel lawyer master record (surrogate id PK added in migration). */
 class PeguamPanel extends Model
 {
     protected $table = 'peguam_panel';

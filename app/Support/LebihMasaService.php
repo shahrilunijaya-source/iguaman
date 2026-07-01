@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 /**
- * Lebih Masa — auto re-assignment of offers a panel lawyer never answered
+ * Lebih Masa - auto re-assignment of offers a panel lawyer never answered
  * (EPIC G, legacy cron_lebih_masa.php + formAgihanSemasa.php).
  *
  * A case offered to a lawyer (status_agihan = '1', tarikh_penugasan_peguam_panel set)
@@ -101,7 +101,7 @@ class LebihMasaService
             ]);
         });
 
-        Audit::log('forms', $kes->id, Audit::UPDATE, "Agihan semula automatik (Lebih Masa) — {$namaLama} tidak memberi maklum balas (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Agihan semula automatik (Lebih Masa) - {$namaLama} tidak memberi maklum balas (kes #{$kes->id}).");
 
         $this->notifyPengarah($kes);
     }

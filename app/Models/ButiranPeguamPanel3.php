@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** butiran_peguam_panel_3 — lawyer professional qualifications (CLP / CSO / YBGK / ADR / sijil / eVendor). */
+/** butiran_peguam_panel_3 - lawyer professional qualifications (CLP / CSO / YBGK / ADR / sijil / eVendor). */
 class ButiranPeguamPanel3 extends Model
 {
     protected $table = 'butiran_peguam_panel_3';

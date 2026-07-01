@@ -12,7 +12,7 @@ use Illuminate\View\View;
 use RuntimeException;
 
 /**
- * W7 + W3 — branch-transfer inbox. The destination branch accepts (acknowledge)
+ * W7 + W3 - branch-transfer inbox. The destination branch accepts (acknowledge)
  * or rejects (reverse the label) a pending transfer of a case or advisory.
  * Initiation lives on KesController / KhidmatNasihatController; this is the
  * shared accept/reject surface over the polymorphic pemindahan_cawangan ledger.
@@ -61,6 +61,6 @@ class PemindahanController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-        return back()->with('status', 'Pemindahan ditolak — rekod dikembalikan ke cawangan asal.');
+        return back()->with('status', 'Pemindahan ditolak - rekod dikembalikan ke cawangan asal.');
     }
 }

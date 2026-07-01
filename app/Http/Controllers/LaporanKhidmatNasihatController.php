@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * Laporan Khidmat Nasihat — 8 statistical reports over the legal-advisory
+ * Laporan Khidmat Nasihat - 8 statistical reports over the legal-advisory
  * subsystem (batch 12 slice 2). Separate from the rekod-kes LaporanController.
  *
  * Thin controller: it resolves the request filters + branch scope (via

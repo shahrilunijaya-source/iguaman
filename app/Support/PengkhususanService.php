@@ -18,7 +18,7 @@ use App\Models\User;
  */
 class PengkhususanService
 {
-    /** Lawyer requests to add a practice area (idempotent — ignores an already-present area). */
+    /** Lawyer requests to add a practice area (idempotent - ignores an already-present area). */
     public function requestAdd(string $kpBaru, string $category, string $value, User $actor): ?ButiranPeguamPanel6
     {
         $existing = ButiranPeguamPanel6::where('kpBaru', $kpBaru)->where('checkbox_value', $value)->first();
@@ -37,11 +37,11 @@ class PengkhususanService
         ]);
     }
 
-    /** Lawyer requests to drop an active practice area — blocked if an active case uses it. */
+    /** Lawyer requests to drop an active practice area - blocked if an active case uses it. */
     public function requestDrop(ButiranPeguamPanel6 $row, User $actor): void
     {
         abort_unless(in_array($row->checkbox_value_status, ButiranPeguamPanel6::AKTIF_STATES, true), 422, 'Hanya bidang aktif boleh digugurkan.');
-        abort_if($this->hasActiveCaseInCategory($row->kpBaru, $row->category), 422, 'Tidak boleh gugur — masih ada kes aktif dalam kategori ini.');
+        abort_if($this->hasActiveCaseInCategory($row->kpBaru, $row->category), 422, 'Tidak boleh gugur - masih ada kes aktif dalam kategori ini.');
 
         $row->update([
             'checkbox_value_status' => ButiranPeguamPanel6::DROP_MOHON,

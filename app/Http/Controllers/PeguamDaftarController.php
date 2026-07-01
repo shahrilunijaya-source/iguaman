@@ -17,7 +17,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
-// Public lawyer panel application — full 7-section parity with legacy daftar.php.
+// Public lawyer panel application - full 7-section parity with legacy daftar.php.
 // Writes butiran_peguam_panel_2..6 + 18 PDF docs (permohonan_status='0' Baharu) that
 // staff endorse + decide in PermohonanPeguamController. No login required to apply.
 class PeguamDaftarController extends Controller
@@ -64,7 +64,7 @@ class PeguamDaftarController extends Controller
             ButiranPeguamPanel4::create($this->section4($data) + ['kpBaru' => $kp]);
             ButiranPeguamPanel5::create($this->section5($data) + ['kpBaru' => $kp]);
 
-            // Section 2 — one pengkhususan row per selected practice area ("CATEGORY::deskripsi").
+            // Section 2 - one pengkhususan row per selected practice area ("CATEGORY::deskripsi").
             foreach ($data['selected_kes'] as $entry) {
                 [$category, $value] = array_pad(explode('::', $entry, 2), 2, '');
                 ButiranPeguamPanel6::create([
@@ -87,7 +87,7 @@ class PeguamDaftarController extends Controller
     }
 
     /**
-     * W10 — derive the approval track from the selected practice areas. Criminal-wins:
+     * W10 - derive the approval track from the selected practice areas. Criminal-wins:
      * any JENAYAH selection routes the whole application through the Pembelaan Awam
      * approver tier; otherwise it follows the civil/syariah Peguam Panel tier.
      *
@@ -105,7 +105,7 @@ class PeguamDaftarController extends Controller
         return ButiranPeguamPanel2::JALUR_SIVIL_SYARIAH;
     }
 
-    /** Public application-status lookup form (legacy semak.php parity — no login). */
+    /** Public application-status lookup form (legacy semak.php parity - no login). */
     public function semakStatus(): View
     {
         return view('peguam.semak-status', ['result' => null, 'nokp' => null]);
@@ -141,7 +141,7 @@ class PeguamDaftarController extends Controller
         return view('peguam.semak-status', ['result' => $result, 'nokp' => $kp]);
     }
 
-    /** _2 — biographical. */
+    /** _2 - biographical. */
     private function section2(array $d): array
     {
         $cols = [
@@ -153,7 +153,7 @@ class PeguamDaftarController extends Controller
         return Arr::only($d, $cols) + ['tahunPengalamanSyarie' => $d['tahunPengalamanSyarie'] ?? '0'];
     }
 
-    /** _3 — qualifications (CLP / CSO 1-5 / YBGK / ADR / sijil / eVendor). */
+    /** _3 - qualifications (CLP / CSO 1-5 / YBGK / ADR / sijil / eVendor). */
     private function section3(array $d): array
     {
         $cols = [
@@ -171,7 +171,7 @@ class PeguamDaftarController extends Controller
         return Arr::only($d, $cols);
     }
 
-    /** _4 — firma + insurance. */
+    /** _4 - firma + insurance. */
     private function section4(array $d): array
     {
         return Arr::only($d, [
@@ -181,7 +181,7 @@ class PeguamDaftarController extends Controller
         ]);
     }
 
-    /** _5 — bank account. */
+    /** _5 - bank account. */
     private function section5(array $d): array
     {
         return Arr::only($d, [

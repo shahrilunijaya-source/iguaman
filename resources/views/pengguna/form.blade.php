@@ -99,7 +99,7 @@
     </form>
 
     @unless ($isCreate)
-        {{-- Separate form — never nest a delete form inside the edit form. --}}
+        {{-- Separate form - never nest a delete form inside the edit form. --}}
         <form method="POST" action="{{ route('pengguna.destroy', $user) }}" onsubmit="return confirm('Padam pengguna ini?')" style="margin-top:14px;">
             @csrf @method('DELETE')
             <button type="submit" class="btn btn--ghost" style="color:var(--danger);">Padam Pengguna</button>

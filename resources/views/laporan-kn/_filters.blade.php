@@ -1,9 +1,9 @@
 {{--
   Shared GET filter form for the KN reports. Inputs:
-    $routeName  — current report route name (form action + reset target)
-    $show       — list of filter keys to render: cawangan|bulan|tahun|kategori|subkategori
-    $filters    — current filter values (assoc)
-    $canChooseBranch, $cawanganList, $kategoriList, $subkategoriList — option data
+    $routeName  - current report route name (form action + reset target)
+    $show       - list of filter keys to render: cawangan|bulan|tahun|kategori|subkategori
+    $filters    - current filter values (assoc)
+    $canChooseBranch, $cawanganList, $kategoriList, $subkategoriList - option data
   Hidden on print via @media print (class js-no-print).
 --}}
 @php

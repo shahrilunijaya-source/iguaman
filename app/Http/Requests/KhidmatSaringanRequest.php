@@ -6,12 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Eligibility 3-modal screening gate (batch 9 slice 3 — FE khidmatnasihat/index).
+ * Eligibility 3-modal screening gate (batch 9 slice 3 - FE khidmatnasihat/index).
  *
  * Modal 1: jenis (sivil_syariah | pendamping_jenayah) + income self-declaration
- *          (pendapatan_bawah_had, sivil/syariah only — "Tidak" routes to Sumbangan).
+ *          (pendapatan_bawah_had, sivil/syariah only - "Tidak" routes to Sumbangan).
  * Modal 2: two eligibility questions (must both be "Ya" to stay eligible).
- * Modal 3: terms & conditions — must be accepted to submit.
+ * Modal 3: terms & conditions - must be accepted to submit.
  *
  * The disqualifying-answer branch is handled in the controller (a "Tidak" on an
  * eligibility question is a valid input but blocks proceeding); this request only

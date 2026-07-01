@@ -20,14 +20,14 @@
 
     <div class="card" style="padding:18px; margin-bottom:16px;">
         <dl style="display:grid; grid-template-columns: 200px 1fr; gap:8px 16px; margin:0;">
-            <dt>No. Fail Kes</dt><dd>{{ $tuntutan->form->no_fail ?? '—' }}</dd>
-            <dt>Peguam (KP)</dt><dd>{{ $tuntutan->kp_peguam ?? $tuntutan->peguam->kp_peguam ?? '—' }}</dd>
-            <dt>Jenis Tuntutan</dt><dd>{{ $tuntutan->jenis_tuntutan ?? '—' }}</dd>
-            <dt>Keterangan</dt><dd>{{ $tuntutan->keterangan ?? '—' }}</dd>
+            <dt>No. Fail Kes</dt><dd>{{ $tuntutan->form->no_fail ?? '-' }}</dd>
+            <dt>Peguam (KP)</dt><dd>{{ $tuntutan->kp_peguam ?? $tuntutan->peguam->kp_peguam ?? '-' }}</dd>
+            <dt>Jenis Tuntutan</dt><dd>{{ $tuntutan->jenis_tuntutan ?? '-' }}</dd>
+            <dt>Keterangan</dt><dd>{{ $tuntutan->keterangan ?? '-' }}</dd>
             <dt>Jumlah Tuntutan</dt><dd>RM {{ number_format((float) $tuntutan->jumlah_tuntutan, 2) }}</dd>
-            <dt>Jumlah Diluluskan</dt><dd>{{ $tuntutan->jumlah_diluluskan !== null ? 'RM '.number_format((float) $tuntutan->jumlah_diluluskan, 2) : '—' }}</dd>
-            <dt>Jumlah Bayaran</dt><dd>{{ $tuntutan->jumlah_bayaran !== null ? 'RM '.number_format((float) $tuntutan->jumlah_bayaran, 2) : '—' }}</dd>
-            <dt>No. Resit</dt><dd>{{ $tuntutan->nombor_resit ?? '—' }}</dd>
+            <dt>Jumlah Diluluskan</dt><dd>{{ $tuntutan->jumlah_diluluskan !== null ? 'RM '.number_format((float) $tuntutan->jumlah_diluluskan, 2) : '-' }}</dd>
+            <dt>Jumlah Bayaran</dt><dd>{{ $tuntutan->jumlah_bayaran !== null ? 'RM '.number_format((float) $tuntutan->jumlah_bayaran, 2) : '-' }}</dd>
+            <dt>No. Resit</dt><dd>{{ $tuntutan->nombor_resit ?? '-' }}</dd>
             <dt>Status Bayaran</dt><dd>{{ $tuntutan->status_bayaran ? 'Sudah dibayar' : 'Belum' }}</dd>
         </dl>
     </div>

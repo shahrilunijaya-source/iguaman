@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** uploaded_files — document attachments, optionally linked to a case via id_kes or a KN via id_khidmat. */
+/** uploaded_files - document attachments, optionally linked to a case via id_kes or a KN via id_khidmat. */
 class UploadedFile extends Model
 {
     protected $table = 'uploaded_files';

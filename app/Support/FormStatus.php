@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Support;
 
 /**
- * CODE-04 — forms.status text values (the litigation-case decision status), previously
+ * CODE-04 - forms.status text values (the litigation-case decision status), previously
  * bare string literals scattered across KeputusanController and the report layer. A typo
  * in a `where('status', ...)` silently matched nothing; naming them here prevents that.
  * (Distinct from StatusAgihan, which is the numeric assignment-state machine.)

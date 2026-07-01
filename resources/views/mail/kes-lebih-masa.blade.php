@@ -10,9 +10,9 @@
 
     <table style="border-collapse:collapse; margin:12px 0;">
         <tr><td style="padding:4px 12px 4px 0; color:#555;">No. Fail</td><td style="padding:4px 0;"><strong>{{ $kes->no_fail ?: '#'.$kes->id }}</strong></td></tr>
-        <tr><td style="padding:4px 12px 4px 0; color:#555;">Pemohon (OYD)</td><td style="padding:4px 0;">{{ $kes->nama ?: '—' }}</td></tr>
-        <tr><td style="padding:4px 12px 4px 0; color:#555;">Kategori / Jenis</td><td style="padding:4px 0;">{{ $kes->kategori_kes ?: '—' }} · {{ $kes->jenis_kes ?: '—' }}</td></tr>
-        <tr><td style="padding:4px 12px 4px 0; color:#555;">Cawangan</td><td style="padding:4px 0;">{{ $kes->cawangan ?: '—' }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0; color:#555;">Pemohon (OYD)</td><td style="padding:4px 0;">{{ $kes->nama ?: '-' }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0; color:#555;">Kategori / Jenis</td><td style="padding:4px 0;">{{ $kes->kategori_kes ?: '-' }} · {{ $kes->jenis_kes ?: '-' }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0; color:#555;">Cawangan</td><td style="padding:4px 0;">{{ $kes->cawangan ?: '-' }}</td></tr>
     </table>
 
     <p>Kes ini kini berstatus <strong>PPUU Agih Semula</strong> dan memerlukan pemilihan Peguam Panel baharu.

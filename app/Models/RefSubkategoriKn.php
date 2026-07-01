@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Khidmat Nasihat category — level 3 (FE-only sub-type).
+ * Khidmat Nasihat category - level 3 (FE-only sub-type).
  *
  * @property int $id
  * @property int $kategori_kes_id

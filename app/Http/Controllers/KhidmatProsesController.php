@@ -14,7 +14,7 @@ use Illuminate\View\View;
 use RuntimeException;
 
 /**
- * Khidmat Nasihat officer processing — batch 11 slices A+B (FE pengesahan-janjitemu
+ * Khidmat Nasihat officer processing - batch 11 slices A+B (FE pengesahan-janjitemu
  * / khidmatnasihat officer surface). Gated permission:khidmat.proses throughout.
  *
  * Thin transport layer: branch resolution, list/dashboard rendering, and the

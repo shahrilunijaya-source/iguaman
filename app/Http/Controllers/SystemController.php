@@ -10,7 +10,7 @@ use App\Models\PeguamPanel;
 use App\Models\User;
 use Illuminate\View\View;
 
-// Staff dashboard (admin / pengarah / koordinator / pegawai) — rekod-kes + panel admin command center.
+// Staff dashboard (admin / pengarah / koordinator / pegawai) - rekod-kes + panel admin command center.
 class SystemController extends Controller
 {
     public function utama(): View
@@ -29,7 +29,7 @@ class SystemController extends Controller
         $recentKes = Form::orderByDesc('id')->limit(6)->get(['id', 'nama', 'no_fail', 'status', 'kategori_kes', 'cawangan', 'tarikh_permohonan']);
         $recentAudit = AuditTrail::orderByDesc('id')->limit(7)->get();
 
-        // Perlu Tindakan: cases needing rework — rejected Peguam Panel applications
+        // Perlu Tindakan: cases needing rework - rejected Peguam Panel applications
         // (legacy status_agihan 9/14) OR unassigned open cases awaiting agihan.
         $perluTindakan = Form::query()
             ->whereNull('tarikh_tutup_fail')

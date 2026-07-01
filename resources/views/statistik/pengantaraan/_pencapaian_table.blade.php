@@ -1,5 +1,5 @@
 {{--
-    Pencapaian Penugasan Pengantaraan — branch × 3 KPI formulas, each [denominator,
+    Pencapaian Penugasan Pengantaraan - branch × 3 KPI formulas, each [denominator,
     numerator, %]. Inline-styled for browser + dompdf parity. Expects $data, $branches.
     Per-group column order = denominator, numerator, peratus (legacy display order).
 --}}

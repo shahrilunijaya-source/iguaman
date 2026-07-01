@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 /**
- * Report 1 — Pandangan Undang-Undang detail list to .xlsx.
+ * Report 1 - Pandangan Undang-Undang detail list to .xlsx.
  * Takes the branch-scoped + filtered query straight from LaporanKnService so
  * branch isolation is enforced in one place (the controller injects it).
  */

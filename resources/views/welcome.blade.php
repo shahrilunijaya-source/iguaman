@@ -3,15 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Portal Khidmat Nasihat Jabatan Bantuan Guaman Malaysia — mohon nasihat guaman percuma, tempah janji temu dan semak kelayakan secara dalam talian.">
-    <title>Portal Khidmat Nasihat — Jabatan Bantuan Guaman Malaysia</title>
+    <meta name="description" content="Portal Khidmat Nasihat Jabatan Bantuan Guaman Malaysia - mohon nasihat guaman percuma, tempah janji temu dan semak kelayakan secara dalam talian.">
+    <title>Portal Khidmat Nasihat - Jabatan Bantuan Guaman Malaysia</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     {{-- Self-contained: inline brand styles so the landing renders regardless of Vite build state.
-         Brand tokens mirror resources/css/theme.css — teal #1a6fa8 / pine #0d2e48 / orange #e07030. --}}
+         Brand tokens mirror resources/css/theme.css - teal #1a6fa8 / pine #0d2e48 / orange #e07030. --}}
     <style>
         :root {
             --teal: #1a6fa8; --teal-600: #155d8f; --teal-700: #124070; --teal-50: #e0f2fc;
@@ -188,7 +188,7 @@
                 <h1>Nasihat guaman <em>percuma</em>, dekat dengan anda.</h1>
                 <p class="lead">
                     Mohon khidmat nasihat undang-undang, semak kelayakan dan tempah janji temu di
-                    cawangan JBG berhampiran — semuanya dalam talian, tanpa kos.
+                    cawangan JBG berhampiran - semuanya dalam talian, tanpa kos.
                 </p>
                 <div class="hero-cta">
                     @auth
@@ -217,7 +217,7 @@
                 <div class="block-head">
                     <span class="kicker">Apa yang anda boleh buat</span>
                     <h2>Satu portal untuk seluruh perjalanan bantuan guaman.</h2>
-                    <p>Dari pertanyaan pertama sehingga janji temu disahkan — uruskan semuanya di satu tempat.</p>
+                    <p>Dari pertanyaan pertama sehingga janji temu disahkan - uruskan semuanya di satu tempat.</p>
                 </div>
                 <div class="cards">
                     <article class="card">
@@ -239,7 +239,7 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                         </div>
                         <h3>Semakan Kelayakan</h3>
-                        <p>Saringan ringkas menentukan kelayakan anda sebelum permohonan — jimat masa, tepat sasaran.</p>
+                        <p>Saringan ringkas menentukan kelayakan anda sebelum permohonan - jimat masa, tepat sasaran.</p>
                     </article>
                 </div>
             </div>

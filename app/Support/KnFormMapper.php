@@ -9,7 +9,7 @@ use App\Models\KhidmatNasihat;
 use App\Models\RefKategoriKn;
 
 /**
- * ARCH-01 — validated Khidmat Nasihat input → khidmat_nasihat columns, extracted from
+ * ARCH-01 - validated Khidmat Nasihat input → khidmat_nasihat columns, extracted from
  * KhidmatNasihatController::mapInput. Keeps the wakil/mahkamah context branching, the
  * computed intake fee, and the session-authoritative screening outcome in one testable
  * place instead of inline in the transport layer.
@@ -36,7 +36,7 @@ class KnFormMapper
         return [
             'jenis_permohonan' => $isWakil ? 'SEBAGAI_WAKIL' : 'DIRI_SENDIRI',
             'jenis_wakil' => $jenisWakil,
-            // W1 — explicit source tag for KPI/reporting (prison/clinic vs public).
+            // W1 - explicit source tag for KPI/reporting (prison/clinic vs public).
             'applicant_source' => KhidmatNasihat::deriveSource($isWakil ? 'SEBAGAI_WAKIL' : 'DIRI_SENDIRI', $jenisWakil),
             'no_pengenalan_wakil' => $isWakil ? ($v['no_pengenalan_wakil'] ?? null) : null,
             'jawatan_wakil' => $isWakil ? ($v['jawatan_wakil'] ?? null) : null,

@@ -38,7 +38,7 @@ class StatistikController extends Controller
         ]);
     }
 
-    /** PERF-05: branch-scoped DISTINCT cawangan scan — cache per user. */
+    /** PERF-05: branch-scoped DISTINCT cawangan scan - cache per user. */
     private function cawanganList(Request $request)
     {
         return Cache::remember('stats:cawangan:'.$request->user()?->id, self::LIST_TTL,
@@ -72,7 +72,7 @@ class StatistikController extends Controller
     private function report(Request $request): array
     {
         // PERF-03: ~13 aggregate queries per request. Branch-scoped (CawanganScope),
-        // so the key must include the user — never share aggregates across branches.
+        // so the key must include the user - never share aggregates across branches.
         $filters = $request->only(['cawangan', 'status', 'kategori', 'q']);
         $key = 'stats:report:'.$request->user()?->id.':'.md5((string) json_encode($filters));
 
@@ -123,7 +123,7 @@ class StatistikController extends Controller
     }
 
     /**
-     * Cases per month by tarikh_permohonan — a continuous 12-month window ending
+     * Cases per month by tarikh_permohonan - a continuous 12-month window ending
      * at the most recent month that has data, with zero-count months filled in so
      * an empty month renders as a dip instead of a silently skipped x-axis label.
      * Returned newest → oldest (the view reverses it to plot left → right).

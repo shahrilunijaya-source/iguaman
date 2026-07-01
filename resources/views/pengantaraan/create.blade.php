@@ -14,7 +14,7 @@
 
     <div class="tap-card" style="max-width:720px;">
         <div class="tap-card__eyebrow">Pendaftaran Pengantaraan Terus (TERUS)</div>
-        <p class="dash-empty__sub" style="margin:2px 0 14px;">Permohonan pengantaraan secara terus — bukan daripada kes litigasi. No. pengantaraan sendiri dijana automatik.</p>
+        <p class="dash-empty__sub" style="margin:2px 0 14px;">Permohonan pengantaraan secara terus - bukan daripada kes litigasi. No. pengantaraan sendiri dijana automatik.</p>
 
         <form method="POST" action="{{ route('pengantaraan.store') }}">
             @csrf
@@ -30,7 +30,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">Cawangan <span style="color:var(--danger)">*</span></label>
                     <select class="wiz-field__input" name="cawangan" required>
-                        <option value="">— Pilih cawangan —</option>
+                        <option value="">- Pilih cawangan -</option>
                         @foreach ($cawanganList as $c)
                             <option value="{{ $c }}" @selected(old('cawangan') === $c)>{{ $c }}</option>
                         @endforeach
@@ -39,7 +39,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">Jenis Kes</label>
                     <select class="wiz-field__input" name="jenis_kes">
-                        <option value="">—</option>
+                        <option value="">-</option>
                         @foreach ($jenisList as $j)
                             <option value="{{ $j }}" @selected(old('jenis_kes') === $j)>{{ $j }}</option>
                         @endforeach

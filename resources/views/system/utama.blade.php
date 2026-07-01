@@ -23,7 +23,7 @@
     <div class="dash-greet">
         <div>
             <h1 class="dash-greet__h1">Selamat datang, {{ auth()->user()->name }}.<span class="dot"></span></h1>
-            <p class="dash-greet__sub">Ruang kerja <strong>Sistem Integrated Bantuan Guaman</strong> — khidmat nasihat, rekod kes, pengantaraan, mahkamah dan panel peguam dalam satu sistem bersepadu.</p>
+            <p class="dash-greet__sub">Ruang kerja <strong>Sistem Integrated Bantuan Guaman</strong> - khidmat nasihat, rekod kes, pengantaraan, mahkamah dan panel peguam dalam satu sistem bersepadu.</p>
         </div>
     </div>
 
@@ -61,10 +61,10 @@
     @if ($perluTindakan->isNotEmpty())
         <div class="tap-card" style="margin-bottom:18px; border-left:3px solid #C98A00;">
             <div class="tap-card__eyebrow" style="color:#C98A00;">⚠ Perlu Tindakan ({{ $perluTindakan->count() }})</div>
-            <p class="dash-empty__sub" style="margin:0 0 8px;">Kes belum diagih atau permohonan Peguam Panel ditolak — perlu kemaskini.</p>
+            <p class="dash-empty__sub" style="margin:0 0 8px;">Kes belum diagih atau permohonan Peguam Panel ditolak - perlu kemaskini.</p>
             @foreach ($perluTindakan as $k)
                 <a href="{{ route('agihan.maklumat', $k->id) }}" class="tap-card__row" style="text-decoration:none; align-items:center;">
-                    <div class="k">{{ $k->no_fail ?: '#'.$k->id }} · {{ $k->nama ?: 'Tanpa Nama' }} <span style="color:var(--mute); font-size:11px;">· {{ $k->cawangan ?: '—' }}</span></div>
+                    <div class="k">{{ $k->no_fail ?: '#'.$k->id }} · {{ $k->nama ?: 'Tanpa Nama' }} <span style="color:var(--mute); font-size:11px;">· {{ $k->cawangan ?: '-' }}</span></div>
                     <div class="v" style="text-align:right;"><span class="pill pill--overdue">{{ in_array($k->status_agihan, ['9','14']) ? 'PP Ditolak' : 'Belum Diagih' }}</span></div>
                 </a>
             @endforeach
@@ -99,11 +99,11 @@
                 <a href="{{ route('kes.show', $k->id) }}" class="tap-card__row" style="text-decoration:none; align-items:center;">
                     <div class="k" style="display:flex; flex-direction:column; gap:2px;">
                         <span style="color:var(--ink); font-weight:500;">{{ $k->nama ?: 'Tanpa Nama' }}</span>
-                        <span style="font-size:11px; color:var(--mute);">{{ $k->no_fail ?: '#'.$k->id }} · {{ $k->cawangan ?: '—' }}</span>
+                        <span style="font-size:11px; color:var(--mute);">{{ $k->no_fail ?: '#'.$k->id }} · {{ $k->cawangan ?: '-' }}</span>
                     </div>
                     <div class="v" style="text-align:right;">
                         <span class="pill pill--received">{{ $k->status ?: 'baru' }}</span>
-                        <div style="font-size:11px; color:var(--mute); margin-top:3px;">{{ optional($k->tarikh_permohonan)->format('d/m/Y') ?: '—' }}</div>
+                        <div style="font-size:11px; color:var(--mute); margin-top:3px;">{{ optional($k->tarikh_permohonan)->format('d/m/Y') ?: '-' }}</div>
                     </div>
                 </a>
             @empty

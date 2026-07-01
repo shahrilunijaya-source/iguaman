@@ -23,14 +23,14 @@ use Illuminate\Support\Facades\Mail;
  */
 class AgihanService
 {
-    /** Entry — send an approved, unassigned case into the spine, awaiting Pengarah (NULL→0). */
+    /** Entry - send an approved, unassigned case into the spine, awaiting Pengarah (NULL→0). */
     public function masuk(Form $kes, User $actor): void
     {
         $kes->update(['status_agihan' => StatusAgihan::BARU_PENGARAH]);
-        Audit::log('forms', $kes->id, Audit::UPDATE, "Kes dihantar ke proses agihan — menunggu Pengarah (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Kes dihantar ke proses agihan - menunggu Pengarah (kes #{$kes->id}).");
     }
 
-    /** Recovery — re-open a Pengarah-rejected new case for another attempt (9→0). */
+    /** Recovery - re-open a Pengarah-rejected new case for another attempt (9→0). */
     public function pengarahBukaSemula(Form $kes, User $actor, ?string $ulasan): void
     {
         $kes->update(['status_agihan' => StatusAgihan::BARU_PENGARAH]);
@@ -38,7 +38,7 @@ class AgihanService
         Audit::log('forms', $kes->id, Audit::UPDATE, "Agihan ditolak dibuka semula untuk pertimbangan baharu{$suffix} (kes #{$kes->id}).");
     }
 
-    /** Recovery — abandon assignment of a rejected case; it stays in rekod kes, unassigned (9→NULL). */
+    /** Recovery - abandon assignment of a rejected case; it stays in rekod kes, unassigned (9→NULL). */
     public function pengarahBatalAgihan(Form $kes, User $actor, string $sebab): void
     {
         $kes->update([
@@ -49,7 +49,7 @@ class AgihanService
         Audit::log('forms', $kes->id, Audit::UPDATE, "Agihan kes dibatalkan (tidak akan diagih peguam): {$sebab} (kes #{$kes->id}).");
     }
 
-    /** Tier 1 — Pengarah accepts a new case and hands it to a PPUU for lawyer selection (0→8). */
+    /** Tier 1 - Pengarah accepts a new case and hands it to a PPUU for lawyer selection (0→8). */
     public function pengarahTerima(Form $kes, User $actor, int $idPPUU): void
     {
         DB::transaction(function () use ($kes, $actor, $idPPUU) {
@@ -72,7 +72,7 @@ class AgihanService
         app(NotifikasiAgihan::class)->pengarahTerima($kes, $idPPUU);
     }
 
-    /** Tier 1 — Pengarah rejects a new case (0→9). */
+    /** Tier 1 - Pengarah rejects a new case (0→9). */
     public function pengarahTolakBaru(Form $kes, User $actor, string $sebab): void
     {
         $kes->update(['status_agihan' => StatusAgihan::DITOLAK_PENGARAH]);
@@ -80,7 +80,7 @@ class AgihanService
         app(NotifikasiAgihan::class)->pengarahTolak($kes, $sebab);
     }
 
-    /** Tier 2 — PPUU picks a panel lawyer (Pilihan A own-cawangan / B other-negeri) (8→10). */
+    /** Tier 2 - PPUU picks a panel lawyer (Pilihan A own-cawangan / B other-negeri) (8→10). */
     public function ppuuPilih(Form $kes, User $actor, array $pick): void
     {
         DB::transaction(function () use ($kes, $actor, $pick) {
@@ -107,11 +107,11 @@ class AgihanService
             $kes->update(['status_agihan' => StatusAgihan::SOKONGAN_PENGARAH]);
         });
 
-        Audit::log('forms', $kes->id, Audit::UPDATE, "PPUU memilih peguam ({$pick['namaPP']}) — dihantar untuk sokongan Pengarah (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::UPDATE, "PPUU memilih peguam ({$pick['namaPP']}) - dihantar untuk sokongan Pengarah (kes #{$kes->id}).");
         app(NotifikasiAgihan::class)->ppuuPilih($kes, $pick['namaPP']);
     }
 
-    /** Tier 2 — Pengarah endorses the PPUU pick → forward to Ketua Pengarah (10→13). */
+    /** Tier 2 - Pengarah endorses the PPUU pick → forward to Ketua Pengarah (10→13). */
     public function pengarahSokong(Form $kes, User $actor, ?string $ulasan): void
     {
         DB::transaction(function () use ($kes, $ulasan) {
@@ -125,10 +125,10 @@ class AgihanService
             $kes->update(['status_agihan' => StatusAgihan::KELULUSAN_KP]);
         });
 
-        Audit::log('forms', $kes->id, Audit::APPROVE, "Pemilihan peguam disokong Pengarah — dihantar untuk kelulusan Ketua Pengarah (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::APPROVE, "Pemilihan peguam disokong Pengarah - dihantar untuk kelulusan Ketua Pengarah (kes #{$kes->id}).");
     }
 
-    /** Tier 2 — Pengarah rejects the PPUU pick → back to PPUU to re-pick (10→4). */
+    /** Tier 2 - Pengarah rejects the PPUU pick → back to PPUU to re-pick (10→4). */
     public function pengarahTidakSokong(Form $kes, User $actor, string $ulasan): void
     {
         DB::transaction(function () use ($kes, $actor, $ulasan) {
@@ -155,10 +155,10 @@ class AgihanService
             $kes->update(['status_agihan' => StatusAgihan::PPUU_AGIH_SEMULA]);
         });
 
-        Audit::log('forms', $kes->id, Audit::UPDATE, "Pemilihan peguam tidak disokong — dikembalikan kepada PPUU (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Pemilihan peguam tidak disokong - dikembalikan kepada PPUU (kes #{$kes->id}).");
     }
 
-    /** Tier 3 — Ketua Pengarah approves → offer the case to the lawyer (13→1). */
+    /** Tier 3 - Ketua Pengarah approves → offer the case to the lawyer (13→1). */
     public function kpLulus(Form $kes, User $actor, ?string $ulasan): void
     {
         $rec = $this->aktifOrFail($kes->id);
@@ -179,11 +179,11 @@ class AgihanService
             ]);
         });
 
-        Audit::log('forms', $kes->id, Audit::APPROVE, "Agihan diluluskan Ketua Pengarah — ditawarkan kepada {$rec->nama_peguampanel} (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::APPROVE, "Agihan diluluskan Ketua Pengarah - ditawarkan kepada {$rec->nama_peguampanel} (kes #{$kes->id}).");
         $this->emailOffer($kes, $rec->kpBaru_peguampanel);
     }
 
-    /** Tier 3 — Ketua Pengarah rejects → re-submit to PPUU (13→15). */
+    /** Tier 3 - Ketua Pengarah rejects → re-submit to PPUU (13→15). */
     public function kpTolak(Form $kes, User $actor, string $ulasan): void
     {
         DB::transaction(function () use ($kes, $actor, $ulasan) {
@@ -208,7 +208,7 @@ class AgihanService
             $kes->update(['status_agihan' => StatusAgihan::KELULUSAN_KP_SEMULA]);
         });
 
-        Audit::log('forms', $kes->id, Audit::REJECT, "Agihan tidak diluluskan Ketua Pengarah: {$ulasan} — dikembalikan kepada PPUU (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::REJECT, "Agihan tidak diluluskan Ketua Pengarah: {$ulasan} - dikembalikan kepada PPUU (kes #{$kes->id}).");
         app(NotifikasiAgihan::class)->kpTolak($kes, $ulasan);
     }
 

@@ -43,8 +43,8 @@
                 @foreach ($rows as $row)
                     <tr>
                         <td>{{ $names[$row->kpBaru] ?? $row->kpBaru }}</td>
-                        <td>{{ $row->category }} — {{ $row->checkbox_value }}</td>
-                        <td><span class="kb-badge">{{ $label[$row->checkbox_value_status] ?? '—' }}</span>
+                        <td>{{ $row->category }} - {{ $row->checkbox_value }}</td>
+                        <td><span class="kb-badge">{{ $label[$row->checkbox_value_status] ?? '-' }}</span>
                             @if ($row->ulasanPengarah)<div style="font-size:11px;color:var(--mute);margin-top:4px;">Pengarah: {{ $row->ulasanPengarah }}</div>@endif
                         </td>
                         <td>

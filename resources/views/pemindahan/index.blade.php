@@ -62,9 +62,9 @@
                                 @can('khidmat.view')<a href="{{ route('khidmat.show', $p->id_rekod) }}">#{{ $p->id_rekod }}</a>@else#{{ $p->id_rekod }}@endcan
                             @endif
                         </td>
-                        <td class="pc-flow">{{ $p->cawangan_asal ?: '—' }} → <strong>{{ $p->cawangan_tujuan ?: '—' }}</strong></td>
+                        <td class="pc-flow">{{ $p->cawangan_asal ?: '-' }} → <strong>{{ $p->cawangan_tujuan ?: '-' }}</strong></td>
                         <td>
-                            {{ $p->sebab ?: '—' }}
+                            {{ $p->sebab ?: '-' }}
                             @if ($p->sebab_tolak)
                                 <div style="color:var(--danger); font-size:12px; margin-top:4px;">Tolak: {{ $p->sebab_tolak }}</div>
                             @endif

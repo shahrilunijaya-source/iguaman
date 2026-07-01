@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Khidmat Nasihat category — level 1 ("Jenis Khidmat").
+ * Khidmat Nasihat category - level 1 ("Jenis Khidmat").
  *
  * @property int $id
  * @property string $jenis_kategori

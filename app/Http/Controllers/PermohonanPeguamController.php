@@ -61,7 +61,7 @@ class PermohonanPeguamController extends Controller
         ]);
     }
 
-    /** Tier 1 — PPUU / Pembantu Tadbir initial review (semakan). */
+    /** Tier 1 - PPUU / Pembantu Tadbir initial review (semakan). */
     public function semak(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
         if (! $request->user()->can('peguam.semak')) {
@@ -78,7 +78,7 @@ class PermohonanPeguamController extends Controller
         return redirect()->route('permohonan-peguam.show', $butiran)->with('status', 'Semakan PPUU direkodkan.');
     }
 
-    /** Tier 2 — Pengarah endorsement (requires PPUU semakan first). W10: criminal
+    /** Tier 2 - Pengarah endorsement (requires PPUU semakan first). W10: criminal
      * applications are endorsed by the Pengarah Pembelaan Awam; civil/syariah by the
      * Pengarah Peguam Panel. */
     public function sokong(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
@@ -93,7 +93,7 @@ class PermohonanPeguamController extends Controller
 
         // PROC-20: cannot re-endorse an application that has already been decided.
         if ($butiran->permohonan_status !== '0') {
-            return back()->withErrors(['urutan' => 'Permohonan ini telah diputuskan — tidak boleh disokong semula.']);
+            return back()->withErrors(['urutan' => 'Permohonan ini telah diputuskan - tidak boleh disokong semula.']);
         }
 
         $data = $request->validate([
@@ -106,7 +106,7 @@ class PermohonanPeguamController extends Controller
         return redirect()->route('permohonan-peguam.show', $butiran)->with('status', 'Sokongan Pengarah direkodkan.');
     }
 
-    /** Tier 3 — Ketua Pengarah final decision (requires Pengarah sokong first). Approve promotes into peguam_panel. */
+    /** Tier 3 - Ketua Pengarah final decision (requires Pengarah sokong first). Approve promotes into peguam_panel. */
     public function keputusan(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
         if (! $request->user()->can($this->keputusanPerm($butiran))) {
@@ -128,7 +128,7 @@ class PermohonanPeguamController extends Controller
         ]);
 
         if ($data['keputusan'] === 'lulus') {
-            // PROC-01: status + panel-create + login-provision + audit are one atomic unit — a
+            // PROC-01: status + panel-create + login-provision + audit are one atomic unit - a
             // mid-failure must not leave a "Lulus" application with a panel row but no login.
             $tempPassword = DB::transaction(function () use ($butiran, $data) {
                 $butiran->update([
@@ -143,7 +143,7 @@ class PermohonanPeguamController extends Controller
             });
             $msg = 'Permohonan diluluskan dan peguam ditambah ke panel.';
             if ($tempPassword !== null) {
-                $msg .= " Akaun log masuk dijana untuk {$butiran->emelPeguam} — kata laluan sementara: {$tempPassword} (peguam wajib menukar pada log masuk pertama).";
+                $msg .= " Akaun log masuk dijana untuk {$butiran->emelPeguam} - kata laluan sementara: {$tempPassword} (peguam wajib menukar pada log masuk pertama).";
             }
         } else {
             $butiran->update([
@@ -161,7 +161,7 @@ class PermohonanPeguamController extends Controller
     public function tarikDiri(Request $request, ButiranPeguamPanel2 $butiran): RedirectResponse
     {
         // AUTH-07: withdrawal is a decision-level action (was ungated → any staff could withdraw
-        // any application), and only a still-pending application may be withdrawn — not one already
+        // any application), and only a still-pending application may be withdrawn - not one already
         // approved/rejected, which would orphan a live login against a "withdrawn" record.
         if (! $request->user()->can($this->keputusanPerm($butiran))) {
             return back()->withErrors(['akses' => 'Anda tiada kebenaran menarik diri permohonan jalur ini.']);

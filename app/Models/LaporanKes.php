@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** laporan_kes — court case report, child of forms via id_kes. */
+/** laporan_kes - court case report, child of forms via id_kes. */
 class LaporanKes extends Model
 {
     protected $table = 'laporan_kes';

@@ -1,6 +1,6 @@
 @extends('layouts.staff')
 
-@section('title', 'Pindah Cawangan — '.($kes->no_fail ?: 'Kes #'.$kes->id))
+@section('title', 'Pindah Cawangan - '.($kes->no_fail ?: 'Kes #'.$kes->id))
 
 @section('content')
 <div class="tap-head">
@@ -20,9 +20,9 @@
 
 <div class="tap-card" style="max-width:640px;">
     <dl style="display:grid; grid-template-columns:160px 1fr; gap:8px 16px; margin:0 0 18px;">
-        <dt>No. Fail</dt><dd>{{ $kes->no_fail ?: '—' }}</dd>
-        <dt>Nama</dt><dd>{{ $kes->nama ?: '—' }}</dd>
-        <dt>Cawangan Semasa</dt><dd><strong>{{ $kes->cawangan ?: '—' }}</strong></dd>
+        <dt>No. Fail</dt><dd>{{ $kes->no_fail ?: '-' }}</dd>
+        <dt>Nama</dt><dd>{{ $kes->nama ?: '-' }}</dd>
+        <dt>Cawangan Semasa</dt><dd><strong>{{ $kes->cawangan ?: '-' }}</strong></dd>
     </dl>
 
     @if ($pending)
@@ -37,7 +37,7 @@
             <div class="field" style="margin-bottom:14px;">
                 <label class="field__label" for="cawangan_tujuan_id">Cawangan Tujuan</label>
                 <select name="cawangan_tujuan_id" id="cawangan_tujuan_id" class="field__input" required>
-                    <option value="">— Pilih cawangan —</option>
+                    <option value="">- Pilih cawangan -</option>
                     @foreach ($cawanganList as $c)
                         @if (trim($c->nama) !== trim((string) $kes->cawangan))
                             <option value="{{ $c->id }}" @selected(old('cawangan_tujuan_id') == $c->id)>{{ $c->nama }}</option>

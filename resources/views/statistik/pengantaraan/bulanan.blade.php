@@ -1,6 +1,6 @@
 @extends('layouts.staff')
 
-@section('title', 'Penugasan Pengantaraan — Bulanan')
+@section('title', 'Penugasan Pengantaraan - Bulanan')
 
 @section('content')
     @php $qs = array_filter(['tahun' => $year, 'kategori' => $kategori]); @endphp

@@ -22,7 +22,7 @@
     <div class="tap-head">
         <div>
             <h1 class="tap-head__title">Pengantaraan<span class="dot"></span></h1>
-            <p class="tap-head__sub">{{ $kes->nama }} · {{ $kes->nokp ?: '—' }}</p>
+            <p class="tap-head__sub">{{ $kes->nama }} · {{ $kes->nokp ?: '-' }}</p>
         </div>
     </div>
 
@@ -101,8 +101,8 @@
         <div style="display:flex; flex-direction:column; gap:14px;">
             <div class="tap-card">
                 <div class="tap-card__eyebrow">Agihan Pengantara</div>
-                <div class="tap-card__row"><div class="k">No. Pengantaraan</div><div class="v">{{ $kes->no_pengantaraan ?: '—' }}</div></div>
-                <div class="tap-card__row"><div class="k">Sumber</div><div class="v">{{ $kes->sumber_pengantaraan ?: '—' }}</div></div>
+                <div class="tap-card__row"><div class="k">No. Pengantaraan</div><div class="v">{{ $kes->no_pengantaraan ?: '-' }}</div></div>
+                <div class="tap-card__row"><div class="k">Sumber</div><div class="v">{{ $kes->sumber_pengantaraan ?: '-' }}</div></div>
                 <div class="tap-card__row"><div class="k">Pegawai Pengantara</div><div class="v">{{ $kes->nama_pegawai_pengantara ?: 'Belum diagih' }}</div></div>
                 @if ($kes->tarikh_agih_pengantara)
                     <div class="tap-card__row"><div class="k">Tarikh Agih</div><div class="v">{{ optional($kes->tarikh_agih_pengantara)->format('d/m/Y') }}</div></div>
@@ -113,7 +113,7 @@
                         <div class="field">
                             <label class="field__label">Pegawai Pengantara</label>
                             <select class="field__input" name="id_pegawai_pengantara" required>
-                                <option value="">— Pilih pegawai —</option>
+                                <option value="">- Pilih pegawai -</option>
                                 @foreach ($pegawaiList as $id => $nama)
                                     <option value="{{ $id }}" @selected($kes->id_pegawai_pengantara == $id)>{{ $nama }}</option>
                                 @endforeach

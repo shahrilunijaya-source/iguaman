@@ -25,11 +25,11 @@
         <div style="display:flex; flex-direction:column; gap:18px;">
             <div class="tap-card">
                 <div class="tap-card__eyebrow">Maklumat Kes</div>
-                <div class="tap-card__row"><div class="k">Pemohon (OYD)</div><div class="v">{{ $kes->nama ?: '—' }}</div></div>
-                <div class="tap-card__row"><div class="k">No. KP</div><div class="v">{{ $kes->nokp ?: '—' }}</div></div>
-                <div class="tap-card__row"><div class="k">Kategori / Jenis</div><div class="v">{{ $kes->kategori_kes ?: '—' }} · {{ $kes->jenis_kes ?: '—' }}</div></div>
-                <div class="tap-card__row"><div class="k">Mahkamah</div><div class="v">{{ $kes->nama_mahkamah ?: '—' }} {{ $kes->no_mahkamah ? '('.$kes->no_mahkamah.')' : '' }}</div></div>
-                <div class="tap-card__row"><div class="k">Responden</div><div class="v">{{ $kes->nama_responden ?: '—' }}</div></div>
+                <div class="tap-card__row"><div class="k">Pemohon (OYD)</div><div class="v">{{ $kes->nama ?: '-' }}</div></div>
+                <div class="tap-card__row"><div class="k">No. KP</div><div class="v">{{ $kes->nokp ?: '-' }}</div></div>
+                <div class="tap-card__row"><div class="k">Kategori / Jenis</div><div class="v">{{ $kes->kategori_kes ?: '-' }} · {{ $kes->jenis_kes ?: '-' }}</div></div>
+                <div class="tap-card__row"><div class="k">Mahkamah</div><div class="v">{{ $kes->nama_mahkamah ?: '-' }} {{ $kes->no_mahkamah ? '('.$kes->no_mahkamah.')' : '' }}</div></div>
+                <div class="tap-card__row"><div class="k">Responden</div><div class="v">{{ $kes->nama_responden ?: '-' }}</div></div>
             </div>
 
             <div class="tap-card">
@@ -37,7 +37,7 @@
                 @forelse ($kes->laporanKes->sortByDesc('id') as $lap)
                     <div class="tap-card__row">
                         <div class="k">{{ $lap->no_kes ?: $lap->tarikh_sebutan }}</div>
-                        <div class="v">{{ $lap->status_kes ?: '—' }}{{ $lap->isu ? ' · '.$lap->isu : '' }}<br><small style="color:var(--mute)">{{ optional($lap->tarikh_sebutan)->format('d/m/Y') }} · {{ $lap->nama_pegawai }}</small></div>
+                        <div class="v">{{ $lap->status_kes ?: '-' }}{{ $lap->isu ? ' · '.$lap->isu : '' }}<br><small style="color:var(--mute)">{{ optional($lap->tarikh_sebutan)->format('d/m/Y') }} · {{ $lap->nama_pegawai }}</small></div>
                     </div>
                 @empty
                     <div class="dash-empty__sub" style="padding:6px 0;">Belum ada laporan.</div>

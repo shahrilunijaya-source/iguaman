@@ -6,7 +6,7 @@ use App\Support\RetensiLampiranService;
 use Illuminate\Console\Command;
 
 /**
- * W6 — report (default) or dispose of case attachments past the 7-year retention window.
+ * W6 - report (default) or dispose of case attachments past the 7-year retention window.
  * Report-only by default so disposal of legal records is always a deliberate `--purge` run.
  * Scheduled monthly (report-only) in routes/console.php.
  */
@@ -25,8 +25,8 @@ class PembersihanLampiran extends Command
                 '  • #%d %s (%s)%s',
                 $file->id,
                 $file->nama,
-                optional($file->uploaded_at)->format('Y-m-d') ?? '—',
-                $didPurge ? ' — DILUPUSKAN' : ''
+                optional($file->uploaded_at)->format('Y-m-d') ?? '-',
+                $didPurge ? ' - DILUPUSKAN' : ''
             ));
         });
 

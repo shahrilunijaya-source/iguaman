@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * Generic 3-tier assignment-chain notification (EPIC G — legacy agihanbaru/*
+ * Generic 3-tier assignment-chain notification (EPIC G - legacy agihanbaru/*
  * + agihansemula/* PHPMailer blocks). One parameterised mailable drives every
  * transition email: $tajuk is the subject, $mesej the body paragraphs.
  */
@@ -24,7 +24,7 @@ class AgihanTransisiMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->tajuk.' — '.($this->kes->no_fail ?: '#'.$this->kes->id),
+            subject: $this->tajuk.' - '.($this->kes->no_fail ?: '#'.$this->kes->id),
         );
     }
 

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/** ref_cuti — holiday / leave reference (legacy table is latin1). */
+/** ref_cuti - holiday / leave reference (legacy table is latin1). */
 class RefCuti extends Model
 {
     protected $table = 'ref_cuti';

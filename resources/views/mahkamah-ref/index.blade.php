@@ -49,9 +49,9 @@
         @forelse ($mahkamah as $row)
             <div class="tap-row" style="grid-template-columns: 2fr 1.2fr 1.4fr 1.2fr 90px;">
                 <div class="tap-row__title">{{ $row->nama_mahkamah }}</div>
-                <div class="tap-row__tujuan">{{ $row->negeri_mahkamah ?: '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->lokaliti_mahkamah ?: '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->jenis_mahkamah ?: '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->negeri_mahkamah ?: '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->lokaliti_mahkamah ?: '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->jenis_mahkamah ?: '-' }}</div>
                 <div style="text-align:right;"><a href="{{ route('mahkamah-ref.edit', ['jenis' => $jenis, 'id' => $row->id]) }}" class="tap-head__btn">✎</a></div>
             </div>
         @empty

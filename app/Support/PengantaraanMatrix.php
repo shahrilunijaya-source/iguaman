@@ -6,7 +6,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Penugasan Pengantaraan statistic matrices (P1 — legacy
+ * Penugasan Pengantaraan statistic matrices (P1 - legacy
  * statistik_penugasan_pengantaraan + statistik_penugasan_bulanan_pengantaraan).
  * Two all-branch pivots over the fixed 23-branch list:
  *   - kategori(): branch × [Sivil, Syariah, Jumlah] assignment counts;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
  * Ports the legacy admin (strict) variant: full hygiene gate, tarikh_perakuan as
  * the single date column for both the year filter and the month bucketing. Pure
  * integer counts (no percentage). Like SlaMatrix this deliberately bypasses
- * CawanganScope — the fixed 23-branch axis IS the report and every branch is
+ * CawanganScope - the fixed 23-branch axis IS the report and every branch is
  * always shown; the routes are HQ-gated via permission:statistik.view.
  *
  * Two legacy inconsistencies are corrected here (noted inline): the bulanan
@@ -156,7 +156,7 @@ class PengantaraanMatrix
 
     /**
      * Broader gate for the KPI funnel (legacy laporan_pencapaian): hygiene only,
-     * WITHOUT the status_pengantaraan filter — the funnel denominators count the
+     * WITHOUT the status_pengantaraan filter - the funnel denominators count the
      * full universe of certified cases, the numerators are CASE subsets.
      */
     private static function gatePencapaian(Builder $q, ?int $year): void
@@ -169,14 +169,14 @@ class PengantaraanMatrix
 
     /**
      * Branch × 3-formula compliance matrix (legacy laporan_pencapaian_penugasan).
-     * A four-stage funnel per branch — perakuan → penugasan → rujuk_minta →
-     * selesai — with three consecutive-stage percentages:
+     * A four-stage funnel per branch - perakuan → penugasan → rujuk_minta →
+     * selesai - with three consecutive-stage percentages:
      *   F1 = penugasan / perakuan, F2 = rujuk_minta / penugasan, F3 = selesai / rujuk_minta.
      *
      * Percentages are computed in PHP (legacy did it in SQL with NULLIF; we guard
      * denom>0 and show 0.0 like legacy). The on-screen file is canonical, so F2's
      * "sidang" numerator = setuju_pengantara='Ya' (the cetakan PDF adds a
-     * status_sidang='Selesai' predicate — not ported). Period filter uses the
+     * status_sidang='Selesai' predicate - not ported). Period filter uses the
      * year on tarikh_perakuan (legacy offered a start/end date range; year keeps
      * it consistent with the sibling dashboards). kategori narrows by kategori_kes.
      */

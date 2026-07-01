@@ -4,8 +4,8 @@
 @section('subtajuk', ($kes->no_fail ? 'No. Fail: '.$kes->no_fail : 'Kes #'.$kes->id).($kes->no_sistem ? ' · No. Sistem: '.$kes->no_sistem : ''))
 
 @section('kepala_kanan')
-    No. Fail: <strong>{{ $kes->no_fail ?: '—' }}</strong><br>
-    Cawangan: {{ $kes->cawangan ?: '—' }}
+    No. Fail: <strong>{{ $kes->no_fail ?: '-' }}</strong><br>
+    Cawangan: {{ $kes->cawangan ?: '-' }}
 @endsection
 
 @php
@@ -71,10 +71,10 @@
             <tr><th>No. Kes</th><th>Pihak</th><th>Tarikh Sebutan</th><th>Status</th></tr>
             @foreach ($kes->laporanKes as $lap)
                 <tr>
-                    <td>{{ $lap->no_kes ?: $lap->no_fail ?: '—' }}</td>
-                    <td>{{ $lap->pihak_pihak ?: '—' }}</td>
-                    <td>{{ optional($lap->tarikh_sebutan)->format('d/m/Y') ?: '—' }}</td>
-                    <td>{{ $lap->status_kes ?: '—' }}</td>
+                    <td>{{ $lap->no_kes ?: $lap->no_fail ?: '-' }}</td>
+                    <td>{{ $lap->pihak_pihak ?: '-' }}</td>
+                    <td>{{ optional($lap->tarikh_sebutan)->format('d/m/Y') ?: '-' }}</td>
+                    <td>{{ $lap->status_kes ?: '-' }}</td>
                 </tr>
             @endforeach
         </table>

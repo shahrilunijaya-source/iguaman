@@ -25,7 +25,7 @@
             <button type="submit" class="jbgcb-send" aria-label="Hantar">&#10148;</button>
         </form>
 
-        {{-- CFG-13: PDPA notice — messages are relayed to an external AI service. --}}
+        {{-- CFG-13: PDPA notice - messages are relayed to an external AI service. --}}
         <p class="jbgcb-notice">Mesej anda diproses oleh perkhidmatan AI luaran. Sila jangan kongsi maklumat peribadi atau sulit.</p>
     </section>
 </div>

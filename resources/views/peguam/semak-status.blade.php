@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Semak Status Permohonan Peguam Panel — JBG</title>
+    <title>Semak Status Permohonan Peguam Panel - JBG</title>
     @vite(['resources/css/system.css'])
     <style>
         .ss-wrap { max-width: 520px; margin: 48px auto; padding: 0 16px; }
@@ -65,11 +65,11 @@
                         @endphp
                         <div style="margin-bottom:10px;"><span class="ss-badge {{ $cls }}">{{ $result['label'] }}</span></div>
                         <div class="ss-row"><span class="k">No. K/P</span><span>{{ $nokp }}</span></div>
-                        <div class="ss-row"><span class="k">Tarikh Mohon</span><span>{{ optional($result['tarikhMohon'])->format('d/m/Y') ?: '—' }}</span></div>
+                        <div class="ss-row"><span class="k">Tarikh Mohon</span><span>{{ optional($result['tarikhMohon'])->format('d/m/Y') ?: '-' }}</span></div>
                         @if ($result['status'] === '1')
                             <p style="margin:10px 0 0;font-size:13px;">Permohonan anda telah <strong>diluluskan</strong>. Sila hubungi JBG atau semak emel anda untuk butiran akaun log masuk.</p>
                         @elseif ($result['status'] === '2')
-                            <div class="ss-row"><span class="k">Sebab</span><span>{{ $result['sebabTolak'] ?: '—' }}</span></div>
+                            <div class="ss-row"><span class="k">Sebab</span><span>{{ $result['sebabTolak'] ?: '-' }}</span></div>
                         @elseif ($result['status'] === '0')
                             <p style="margin:10px 0 0;font-size:13px;">Permohonan anda sedang diproses. Sila semak semula kemudian.</p>
                         @endif

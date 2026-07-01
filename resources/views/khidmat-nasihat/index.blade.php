@@ -50,9 +50,9 @@
 
         @forelse ($khidmat as $row)
             <div class="tap-row" style="grid-template-columns: 1.4fr 2fr 1.6fr 1fr 1fr 70px;">
-                <div class="tap-row__title">{{ $row->no_permohonan ?? '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->nama_mangsa ?? '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->cawangan->nama ?? '—' }}</div>
+                <div class="tap-row__title">{{ $row->no_permohonan ?? '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->nama_mangsa ?? '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->cawangan->nama ?? '-' }}</div>
                 <div class="tap-row__tujuan"><span class="pill pill--received">{{ str_replace('_', ' ', $row->status_kn) }}</span></div>
                 <div class="tap-row__tujuan">
                     @if ($row->status_bayaran)

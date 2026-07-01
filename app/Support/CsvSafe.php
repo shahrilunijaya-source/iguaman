@@ -8,7 +8,7 @@ namespace App\Support;
  * CSV / spreadsheet formula-injection guard (INJ-03).
  *
  * A cell whose text starts with `=`, `+`, `-`, `@` (or a tab/CR) is interpreted as a formula by
- * Excel / LibreOffice / Google Sheets when the export is opened — e.g. a victim `nama` of
+ * Excel / LibreOffice / Google Sheets when the export is opened - e.g. a victim `nama` of
  * `=cmd|'/c calc'!A1` runs on the analyst's machine. Neutralize by prefixing a single quote so the
  * value is always rendered as literal text. Apply at every export/CSV render boundary that emits
  * user-controlled free text (names, IC, addresses, remarks).

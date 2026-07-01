@@ -10,7 +10,7 @@
     <div class="tap-head">
         <div>
             <h1 class="tap-head__title">Laporan<span class="dot"></span></h1>
-            <p class="tap-head__sub">Laporan litigasi &amp; pengantaraan — papar, tapis, eksport CSV/PDF.</p>
+            <p class="tap-head__sub">Laporan litigasi &amp; pengantaraan - papar, tapis, eksport CSV/PDF.</p>
         </div>
     </div>
 

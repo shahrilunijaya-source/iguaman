@@ -43,7 +43,7 @@ class TarikDiriController extends Controller
         ]);
     }
 
-    /** Stage 2 — PPUU review (12→16). */
+    /** Stage 2 - PPUU review (12→16). */
     public function ppuu(Request $request, Form $kes, TarikDiriService $svc): RedirectResponse
     {
         $data = $request->validate(['ulasan' => ['required', 'string', 'max:350']]);
@@ -51,10 +51,10 @@ class TarikDiriController extends Controller
 
         $svc->ppuuSemak($kes, $request->user(), $data['ulasan']);
 
-        return back()->with('status', 'Semakan PPUU direkodkan — dihantar kepada Pengarah.');
+        return back()->with('status', 'Semakan PPUU direkodkan - dihantar kepada Pengarah.');
     }
 
-    /** Stage 3 — Pengarah review (16→17). */
+    /** Stage 3 - Pengarah review (16→17). */
     public function pengarah(Request $request, Form $kes, TarikDiriService $svc): RedirectResponse
     {
         $data = $request->validate(['ulasan' => ['required', 'string', 'max:350']]);
@@ -62,10 +62,10 @@ class TarikDiriController extends Controller
 
         $svc->pengarahSemak($kes, $request->user(), $data['ulasan']);
 
-        return back()->with('status', 'Semakan Pengarah direkodkan — dihantar kepada Ketua Pengarah.');
+        return back()->with('status', 'Semakan Pengarah direkodkan - dihantar kepada Ketua Pengarah.');
     }
 
-    /** Stage 4 — Ketua Pengarah decision (17→6 lulus / 2 tolak). */
+    /** Stage 4 - Ketua Pengarah decision (17→6 lulus / 2 tolak). */
     public function kp(Request $request, Form $kes, TarikDiriService $svc): RedirectResponse
     {
         $data = $request->validate([
@@ -78,8 +78,8 @@ class TarikDiriController extends Controller
         $svc->kpKeputusan($kes, $request->user(), $approve, $data['ulasan'] ?? '');
 
         return back()->with('status', $approve
-            ? 'Tarik diri diluluskan — kes dikembalikan untuk agihan semula.'
-            : 'Tarik diri tidak diluluskan — peguam meneruskan kes.');
+            ? 'Tarik diri diluluskan - kes dikembalikan untuk agihan semula.'
+            : 'Tarik diri tidak diluluskan - peguam meneruskan kes.');
     }
 
     private function stage(?string $status, User $user): ?string

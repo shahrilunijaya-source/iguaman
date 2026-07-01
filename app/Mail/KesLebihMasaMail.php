@@ -19,7 +19,7 @@ class KesLebihMasaMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'PEMAKLUMAN KEPERLUAN AGIHAN SEMULA — '.($this->kes->no_fail ?: '#'.$this->kes->id),
+            subject: 'PEMAKLUMAN KEPERLUAN AGIHAN SEMULA - '.($this->kes->no_fail ?: '#'.$this->kes->id),
         );
     }
 

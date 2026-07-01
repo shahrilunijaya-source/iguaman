@@ -107,7 +107,7 @@ class CawanganController extends Controller
         return redirect()->route('cawangan.index')->with('status', 'Cawangan dipadam.');
     }
 
-    // ---- Bilik (rooms) — managed inline on the cawangan edit page ----
+    // ---- Bilik (rooms) - managed inline on the cawangan edit page ----
 
     public function storeBilik(Request $request, Cawangan $cawangan): RedirectResponse
     {

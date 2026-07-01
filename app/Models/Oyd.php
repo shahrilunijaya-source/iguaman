@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/** butiran_oyd — Orang Yang Dibantu (applicant / beneficiary) details. */
+/** butiran_oyd - Orang Yang Dibantu (applicant / beneficiary) details. */
 class Oyd extends Model
 {
     protected $table = 'butiran_oyd';

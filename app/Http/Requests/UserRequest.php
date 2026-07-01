@@ -19,7 +19,7 @@ class UserRequest extends FormRequest
 
         // A non-admin must not touch an existing admin account at all (password,
         // role, lock). The /pengguna route is held by pengarah/koordinator/
-        // ketua_pengarah too — not admin-only — so guard the target here.
+        // ketua_pengarah too - not admin-only - so guard the target here.
         $target = $this->route('user');
         if ($target instanceof User && $target->hasRole(User::ROLE_ADMIN) && ! $actor->hasRole(User::ROLE_ADMIN)) {
             return false;

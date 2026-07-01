@@ -3,7 +3,7 @@
 namespace App\Support;
 
 /**
- * Cuti Umum state encoding (EPIC G — legacy ref_cuti.idnegeri).
+ * Cuti Umum state encoding (EPIC G - legacy ref_cuti.idnegeri).
  *
  * Legacy stores the states a holiday applies to as a fixed 16-slot,
  * comma-separated string. Slot k (1-based, = ref_negeri id) holds the state's

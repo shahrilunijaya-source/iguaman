@@ -10,7 +10,7 @@
 
 <div class="vb-page">
 
-    {{-- ============ LEFT — editorial ============ --}}
+    {{-- ============ LEFT - editorial ============ --}}
     <div class="vb-left">
         <div>
             <div class="vb-left__top">
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    {{-- ============ RIGHT — White form ============ --}}
+    {{-- ============ RIGHT - White form ============ --}}
     <div class="vb-right">
         <div class="vb-right__inner">
             <div class="swap__screen">

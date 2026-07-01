@@ -32,7 +32,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">Cawangan *</label>
                     <select class="wiz-field__input" name="cawangan_id" id="pen-cawangan" required>
-                        <option value="">— Pilih cawangan —</option>
+                        <option value="">- Pilih cawangan -</option>
                         @foreach ($cawanganList as $c)
                             <option value="{{ $c->id }}" @selected((int) old('cawangan_id') === $c->id)>{{ $c->nama }}</option>
                         @endforeach
@@ -41,7 +41,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">Bilik (pilihan)</label>
                     <select class="wiz-field__input" name="bilik_id" id="pen-bilik">
-                        <option value="">— Seluruh cawangan —</option>
+                        <option value="">- Seluruh cawangan -</option>
                     </select>
                 </div>
                 <div class="wiz-field">
@@ -74,7 +74,7 @@
                 var bilik = document.getElementById('pen-bilik');
                 function refresh() {
                     var list = rooms[cawangan.value] || [];
-                    bilik.innerHTML = '<option value="">— Seluruh cawangan —</option>';
+                    bilik.innerHTML = '<option value="">- Seluruh cawangan -</option>';
                     list.forEach(function (r) {
                         var o = document.createElement('option');
                         o.value = r.id; o.textContent = r.nama;

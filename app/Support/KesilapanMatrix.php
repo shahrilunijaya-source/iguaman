@@ -6,7 +6,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Kesilapan Penjanaan Nombor Fail — per-branch × month count matrix
+ * Kesilapan Penjanaan Nombor Fail - per-branch × month count matrix
  * (P1, legacy cetakan_statistik_kesilapan_penjanaan_nombor_fail.php).
  *
  * Counts files closed for a generated-number error, by MONTH(tarikh_perakuan),

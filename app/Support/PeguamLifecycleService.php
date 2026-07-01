@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
  * Panel-lawyer active/inactive lifecycle (legacy selenggara-peguampanel-detail.php +
  * query/selenggaraPengguna.php). Deactivating a lawyer who still holds active cases triggers
  * DEATH-REDISTRIBUTION: every case they handle is returned to the PPUU re-assignment pool so
- * no assisted person is left without representation — the most dangerous legacy parity gap.
+ * no assisted person is left without representation - the most dangerous legacy parity gap.
  */
 class PeguamLifecycleService
 {

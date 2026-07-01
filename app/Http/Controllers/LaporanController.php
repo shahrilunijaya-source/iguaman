@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Laporan — dedicated report screens over the forms spine.
+ * Laporan - dedicated report screens over the forms spine.
  * Litigasi (Permohonan / Pendaftaran Fail / Status Fail) and Pengantaraan
  * (Penugasan / Pencapaian / Tidak Dirujuk), each filterable + CSV/PDF export.
  * All queries respect the CawanganScope (branch isolation) automatically.
@@ -63,7 +63,7 @@ class LaporanController extends Controller
             $out = fopen('php://output', 'w');
             fputcsv($out, array_values($cols));
 
-            // PERF-01: cursor() streams rows one at a time — the full result set never lands
+            // PERF-01: cursor() streams rows one at a time - the full result set never lands
             // in PHP memory, so a large export can't exhaust memory_limit mid-request.
             $n = 0;
             foreach ($query->cursor() as $r) {
@@ -106,7 +106,7 @@ class LaporanController extends Controller
     }
 
     /**
-     * W20 — queue a bulk .xlsx export off the request cycle. The user's effective branch is
+     * W20 - queue a bulk .xlsx export off the request cycle. The user's effective branch is
      * resolved here (the queue has no auth user) and passed to the job for isolation.
      */
     public function eksportPukal(Request $request, string $type): RedirectResponse
@@ -125,7 +125,7 @@ class LaporanController extends Controller
 
         // Per-user export directory binds a finished file to its generator, closing the
         // predictable-filename, non-owner-bound export IDOR (see muatTurunEksport). dispatchSync
-        // because Hostinger shared hosting runs no queue worker — a queued job would never execute.
+        // because Hostinger shared hosting runs no queue worker - a queued job would never execute.
         try {
             ExportLaporanJob::dispatchSync($type, $filters, 'exports/'.$user->id.'/'.$file);
         } catch (\Throwable $e) {
@@ -141,8 +141,8 @@ class LaporanController extends Controller
     }
 
     /**
-     * W20 — stream a finished bulk-export file. Scoped to the requesting user's own export
-     * directory (exports/{userId}/) so a user can only download files they generated — closing the
+     * W20 - stream a finished bulk-export file. Scoped to the requesting user's own export
+     * directory (exports/{userId}/) so a user can only download files they generated - closing the
      * predictable-filename, non-owner-bound export IDOR. basename() blocks path traversal.
      */
     public function muatTurunEksport(Request $request, string $fail): StreamedResponse

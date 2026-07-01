@@ -3,7 +3,7 @@
 namespace App\Support;
 
 /**
- * Canonical numeric state machine for forms.status_agihan — the legacy peguam-panel
+ * Canonical numeric state machine for forms.status_agihan - the legacy peguam-panel
  * case-assignment spine. The current build had diverged by writing string labels
  * ('Ditawarkan'…) into a column legacy used numerically; this restores the numeric
  * machine as canonical and maps the legacy strings for backward reads.
@@ -47,7 +47,7 @@ final class StatusAgihan
 
     public const SEMAKAN_KP_TD = '17';       // withdrawal: awaiting Ketua Pengarah review
 
-    public const PP_SELESAI = '18';          // W16: lawyer marked case work done — awaiting JBG confirmation
+    public const PP_SELESAI = '18';          // W16: lawyer marked case work done - awaiting JBG confirmation
 
     public const KES_DITUTUP = '19';         // W16: JBG confirmed lawyer's selesai → file closed
 
@@ -90,12 +90,12 @@ final class StatusAgihan
 
     public const BUCKET_TARIK_DIRI = ['12', '16', '17'];
 
-    /** Pengarah-rejected new cases (status 9) — recovery queue so they are never stranded. */
+    /** Pengarah-rejected new cases (status 9) - recovery queue so they are never stranded. */
     public const BUCKET_DITOLAK = ['9'];
 
     /**
      * W16 closure states: lawyer-selesai awaiting JBG confirm (18) + JBG-closed (19).
-     * Intentionally NOT registered in the AgihanSpine assignment buckets — these are
+     * Intentionally NOT registered in the AgihanSpine assignment buckets - these are
      * closure-workflow states, surfaced via KeputusanController::senaraiSelesai (18,
      * the dedicated Pengesahan Selesai queue + sidebar link) and the closed-files list
      * keyed on tarikh_tutup_fail (19), not the case-assignment spine.
@@ -106,7 +106,7 @@ final class StatusAgihan
     public static function label(?string $code): string
     {
         if ($code === null || $code === '') {
-            return '—';
+            return '-';
         }
 
         $code = self::LEGACY_STRING_MAP[$code] ?? $code;

@@ -93,7 +93,7 @@
                 <label style="display:flex;align-items:center;gap:10px;font-size:14px;">
                     <input type="radio" name="pendapatan_bawah_had" value="Tidak"
                            @checked(old('pendapatan_bawah_had') === 'Tidak')>
-                    Tidak (melebihi had — sumbangan RM 260 dikenakan)
+                    Tidak (melebihi had - sumbangan RM 260 dikenakan)
                 </label>
             </div>
 

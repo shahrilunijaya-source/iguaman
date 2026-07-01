@@ -47,10 +47,10 @@
 
         @forelse ($log as $row)
             <div class="tap-row" style="grid-template-columns: 150px 160px 110px 2fr 1.2fr;">
-                <div class="tap-row__no">{{ optional($row->modified_date)->format('d/m/Y H:i') ?: '—' }}</div>
+                <div class="tap-row__no">{{ optional($row->modified_date)->format('d/m/Y H:i') ?: '-' }}</div>
                 <div class="tap-row__tujuan">{{ $row->table_name }} <span style="color:var(--mute)">#{{ $row->record_id }}</span></div>
                 <div><span class="pill {{ $tone[$row->action_type] ?? 'pill--pending' }}">{{ $row->action_type }}</span></div>
-                <div class="tap-row__sub">{{ $row->remarks ?: '—' }}</div>
+                <div class="tap-row__sub">{{ $row->remarks ?: '-' }}</div>
                 <div class="tap-row__tujuan">{{ $row->modified_by }}</div>
             </div>
         @empty

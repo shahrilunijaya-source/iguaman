@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 
 /**
- * Transition notifications for the 3-tier assignment chain (EPIC G — legacy
+ * Transition notifications for the 3-tier assignment chain (EPIC G - legacy
  * agihanbaru/* + formAgihanBaruKP.php PHPMailer blocks). Resolves recipients by
  * role (HQ-wide) or branch (Ketua Cawangan / Pengarah Negeri ≈ branch
  * pengarah/koordinator) and sends the parameterised AgihanTransisiMail.

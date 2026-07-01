@@ -1,5 +1,5 @@
 /*
- * Inpres — System surface
+ * Inpres - System surface
  *
  * Ported from KDN-iLPF/System (ilpf.css + workspace.css + login.css + tapisan.css)
  * Adapted for JPN officer workflow (citizen document approvals).
@@ -15,7 +15,7 @@
 @import url("./theme.css");
 
 /* ================================================================
-   TOKENS — officer console is a DARK surface.
+   TOKENS - officer console is a DARK surface.
    Brand / neutrals / fonts / radii / shadows come from theme.css.
    Only the dark --ai-* surface overrides live here (they win over
    theme.css's light portal defaults because this :root loads after
@@ -23,8 +23,8 @@
    ================================================================ */
 
 :root {
-  /* AI surface — DARK (officer console) */
-  --ai-bg:      var(--pine-900);            /* #040f1c — company dark brand (blue-950) */
+  /* AI surface - DARK (officer console) */
+  --ai-bg:      var(--pine-900);            /* #040f1c - company dark brand (blue-950) */
   --ai-bg-deep: #0A0F14;                    /* near-black, neutral */
   --ai-border:  rgba(var(--brand-rgb), 0.22);    /* blue hairline on dark */
   --ai-text:    #FFFFFF;
@@ -53,7 +53,7 @@ body.system button { cursor: pointer; border: 0; background: none; padding: 0; }
 
 a.system-link, body.system a { color: inherit; text-decoration: none; }
 
-/* The DOT — micro signature */
+/* The DOT - micro signature */
 .dot {
   display: inline-block;
   width: 6px;
@@ -188,7 +188,7 @@ body.system .btn--block,
 .va-form__row a:hover { color: var(--teal); }
 
 /* ================================================================
-   LOGIN — Variant B (split editorial)
+   LOGIN - Variant B (split editorial)
    ================================================================ */
 
 .vb-page {
@@ -414,7 +414,7 @@ body.system .btn--block,
   transition: background 120ms;
 }
 .ws-topbar__btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
-/* UX-10: active nav tab (peguam topbar) — the old ternary set no class either way. */
+/* UX-10: active nav tab (peguam topbar) - the old ternary set no class either way. */
 .ws-topbar__btn.is-active { background: rgba(255,255,255,0.10); color: #fff; }
 .ws-topbar__btn .badge {
   display: inline-grid; place-items: center;
@@ -997,7 +997,7 @@ body.system .btn--block,
 }
 
 /* ================================================================
-   TAPISAN — list (queue) + detail
+   TAPISAN - list (queue) + detail
    ================================================================ */
 
 .tap-head {
@@ -1593,7 +1593,7 @@ body.system .btn--block,
 .toast .dot { background: var(--teal); }
 
 /* ================================================================
-   WIZARD — Pendaftaran Kelahiran Baru (5-step stepper)
+   WIZARD - Pendaftaran Kelahiran Baru (5-step stepper)
    ================================================================ */
 
 .wiz-head {
@@ -1933,7 +1933,7 @@ body.system .btn--block,
 .wiz-consent strong { color: var(--pine); }
 
 /* ================================================================
-   KANBAN — Tugasan Saya (4 columns drag-drop)
+   KANBAN - Tugasan Saya (4 columns drag-drop)
    ================================================================ */
 
 .kan-head {
@@ -2264,7 +2264,7 @@ body.system .btn--block,
 .kan-col__body.is-dragover .kan-card { opacity: 0.5; }
 
 /* ================================================================
-   STATISTIK & ANALITIK — inline SVG charts
+   STATISTIK & ANALITIK - inline SVG charts
    ================================================================ */
 
 .stat-head {
@@ -2820,7 +2820,7 @@ body.system .btn--block,
 .stat-anom__row strong { color: #fff; font-weight: 600; }
 
 /* ================================================================
-   DEMO USERS MODAL — login helper showing roles + accounts
+   DEMO USERS MODAL - login helper showing roles + accounts
    ================================================================ */
 
 .demo-modal {
@@ -3109,7 +3109,7 @@ body.system .btn--block,
 }
 
 /* ================================================================
-   STUB MODAL — "Modul tidak tersedia dalam prototaip"
+   STUB MODAL - "Modul tidak tersedia dalam prototaip"
    ================================================================ */
 
 .stub-modal {
@@ -3230,7 +3230,7 @@ body.system .btn--block,
 .stub-modal__btn--ghost:hover { background: var(--paper-2); }
 
 /* ========================================
-   SUPERVISOR KANBAN — Team Swimlane Matrix
+   SUPERVISOR KANBAN - Team Swimlane Matrix
    ======================================== */
 
 .sv-pool {
@@ -3456,7 +3456,7 @@ body.system .btn--block,
 }
 
 /* ========================================
-   ADMIN KANBAN — System Job Queue
+   ADMIN KANBAN - System Job Queue
    ======================================== */
 
 .jb-board {
@@ -3666,7 +3666,7 @@ body.system .btn--block,
 }
 
 /* =========================================================================
-   CONTRAST GUARANTEE — white text on every coloured-background control.
+   CONTRAST GUARANTEE - white text on every coloured-background control.
    Bulletproofs against cached/older CSS: any green/teal/orange/pine button,
    chip, badge, or pill reads white. (Audited across all boards.)
    ========================================================================= */
@@ -3696,7 +3696,7 @@ body.system .btn--block,
 }
 
 /* ================================================================
-   PORTAL AWAM — citizen-facing shell (header / main / footer / auth)
+   PORTAL AWAM - citizen-facing shell (header / main / footer / auth)
    The awam layout renders body.awam-shell (NOT body.system), so the
    base reset above does not reach it. Give it its own reset + portal
    chrome here. Brand tokens come from theme.css.

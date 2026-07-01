@@ -20,7 +20,7 @@ class KesDitawarkanMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Tawaran Kes Bantuan Guaman — '.($this->kes->no_fail ?: '#'.$this->kes->id),
+            subject: 'Tawaran Kes Bantuan Guaman - '.($this->kes->no_fail ?: '#'.$this->kes->id),
         );
     }
 

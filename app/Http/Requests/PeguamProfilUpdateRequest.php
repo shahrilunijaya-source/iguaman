@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 /**
  * Logged-in panel lawyer self-service profile update (legacy profilUpdate.php).
  * Writes the editable subset of butiran_peguam_panel_2/_3/_4/_5 + re-uploads.
- * Identity fields (namaPeguam/kpBaru/kpLama/jantina) are readonly — never accepted here.
+ * Identity fields (namaPeguam/kpBaru/kpLama/jantina) are readonly - never accepted here.
  * FIXES the legacy bug where cso4/cso5 documents could not be replaced (all 18 docs editable).
  */
 class PeguamProfilUpdateRequest extends FormRequest

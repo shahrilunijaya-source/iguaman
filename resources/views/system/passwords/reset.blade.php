@@ -19,7 +19,7 @@
                 <span class="line">Kata laluan</span>
                 <span class="line"><span class="accent">baharu</span>.</span>
             </h2>
-            <p class="vb-left__lede">Pilih kata laluan kukuh — minimum 8 aksara.</p>
+            <p class="vb-left__lede">Pilih kata laluan kukuh - minimum 8 aksara.</p>
         </div>
         <div class="vb-left__foot"><span class="stamp">iGuaman · Sistem Integrated Bantuan Guaman</span></div>
     </div>

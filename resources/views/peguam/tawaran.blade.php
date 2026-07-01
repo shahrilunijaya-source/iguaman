@@ -6,7 +6,7 @@
     <div class="tap-head">
         <div>
             <h1 class="tap-head__title">Tawaran Penugasan<span class="dot"></span></h1>
-            <p class="tap-head__sub"><strong>{{ $tawaran->count() }}</strong> tawaran menunggu — terima dalam {{ $deadlineDays }} hari.</p>
+            <p class="tap-head__sub"><strong>{{ $tawaran->count() }}</strong> tawaran menunggu - terima dalam {{ $deadlineDays }} hari.</p>
         </div>
     </div>
 
@@ -22,8 +22,8 @@
                     <div class="tap-card__eyebrow">{{ $t->no_fail ?: '#'.$t->id }}</div>
                     <h3 style="margin:2px 0 4px; font-size:16px;">{{ $t->nama ?: 'Tanpa Nama' }}</h3>
                     <p class="dash-empty__sub" style="margin:0;">
-                        {{ $t->kategori_kes ?: '—' }} · {{ $t->jenis_kes ?: '' }} · {{ $t->cawangan ?: '—' }}<br>
-                        Ditawarkan: {{ optional($t->tarikh_penugasan_peguam_panel)->format('d/m/Y') ?: '—' }}
+                        {{ $t->kategori_kes ?: '-' }} · {{ $t->jenis_kes ?: '' }} · {{ $t->cawangan ?: '-' }}<br>
+                        Ditawarkan: {{ optional($t->tarikh_penugasan_peguam_panel)->format('d/m/Y') ?: '-' }}
                         @if ($overdue)<span class="pill pill--overdue" style="margin-left:6px;">Lewat tempoh</span>@endif
                     </p>
                 </div>

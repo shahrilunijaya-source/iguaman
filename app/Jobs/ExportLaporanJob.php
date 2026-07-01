@@ -12,11 +12,11 @@ use Illuminate\Queue\SerializesModels;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
- * W20 — bulk report export off the request cycle. Large reports (thousands of rows) were
+ * W20 - bulk report export off the request cycle. Large reports (thousands of rows) were
  * generated synchronously, blocking the response; this runs on the `database` queue and
  * writes the finished .xlsx to disk for the user to download.
  *
- * Branch isolation: the queue has no auth user, so CawanganScope is a no-op here — the
+ * Branch isolation: the queue has no auth user, so CawanganScope is a no-op here - the
  * enqueuing controller resolves the user's effective branch and passes it in `filters`.
  */
 class ExportLaporanJob implements ShouldQueue

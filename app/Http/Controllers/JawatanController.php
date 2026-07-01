@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
-/** ref_jawatan — staff job-title reference. Single-field CRUD, inline on the index page. */
+/** ref_jawatan - staff job-title reference. Single-field CRUD, inline on the index page. */
 class JawatanController extends Controller
 {
     public function index(Request $request): View

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * sejarah_ppuu — PPUU case-assignment history spine: the PPUU lawyer pick (Pilihan A/B),
+ * sejarah_ppuu - PPUU case-assignment history spine: the PPUU lawyer pick (Pilihan A/B),
  * Pengarah endorsement, and Ketua Pengarah decision for one case, with aktif/tutup rotation
  * (one aktif row per case at a time). Drives the 3-tier agihan + tarik-diri workflows.
  */

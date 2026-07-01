@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * Khidmat Nasihat — legal-advisory application (batch 9 core record).
+ * Khidmat Nasihat - legal-advisory application (batch 9 core record).
  * Adapted from the .NET KhidmatNasihat entity. Foundation slice: schema +
  * list/show; the wizard create flow + eligibility screening land later.
  */
@@ -19,7 +19,7 @@ class KhidmatNasihat extends Model
     protected $guarded = ['id'];
 
     /**
-     * W21 — branch isolation, extending CawanganScope beyond Form. KN keys on the
+     * W21 - branch isolation, extending CawanganScope beyond Form. KN keys on the
      * numeric cawangan_id (+ cawangan_asal_id for D2 dual-branch), so the scope is
      * constructed by-branch-id. Closes the index()/route-binding cross-branch read
      * gap; view-all / no-branch staff and lawyers still see everything.
@@ -104,7 +104,7 @@ class KhidmatNasihat extends Model
     /** Assigned to (or claimed by) an external panel lawyer. Terminal. */
     public const PL_DIAGIH = 'DIAGIH';
 
-    /** Grab pool expired with no claim (7 days) — back to officer for re-assign/re-open. */
+    /** Grab pool expired with no claim (7 days) - back to officer for re-assign/re-open. */
     public const PL_LUPUT = 'LUPUT';
 
     /** How an external lawyer got the KN (mod_agihan_peguam). */
@@ -118,7 +118,7 @@ class KhidmatNasihat extends Model
     }
 
     /**
-     * Assigned advisory officer (Pegawai Khidmat Nasihat) — batch 11 slice B.
+     * Assigned advisory officer (Pegawai Khidmat Nasihat) - batch 11 slice B.
      * Set on assign-PKN, which moves status_kn BAHARU->DALAM_PROSES.
      */
     public function pegawaiKn(): BelongsTo
@@ -127,7 +127,7 @@ class KhidmatNasihat extends Model
     }
 
     /**
-     * Linked litigation case (forms row) — batch 11 slice C "Buka Kes" bridge.
+     * Linked litigation case (forms row) - batch 11 slice C "Buka Kes" bridge.
      * Set once, when an officer opens a case from a SELESAI KN. id_forms is
      * mass-assignable ($guarded = ['id']); no DB FK (forms is the legacy spine).
      */
@@ -137,7 +137,7 @@ class KhidmatNasihat extends Model
     }
 
     /**
-     * Resolve the linked court (slice 3 MAHKAMAH context). No DB FK — id_mahkamah
+     * Resolve the linked court (slice 3 MAHKAMAH context). No DB FK - id_mahkamah
      * points into mahkamah_sivil or mahkamah_syariah per jenis_mahkamah_pihak.
      */
     public function mahkamah(): ?Model
@@ -179,7 +179,7 @@ class KhidmatNasihat extends Model
     }
 
     /**
-     * Linked appointment (batch 10 temu_janji). No DB FK — wired at integration
+     * Linked appointment (batch 10 temu_janji). No DB FK - wired at integration
      * via khidmat_nasihat.id_temu_janji <-> temu_janji.id (see migration notes).
      */
     public function temuJanji(): BelongsTo

@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 /**
- * "Tarik Diri Mewakili OYD" — a panel lawyer withdraws from representing an assisted person.
+ * "Tarik Diri Mewakili OYD" - a panel lawyer withdraws from representing an assisted person.
  * 4-stage chain (legacy tarikdiri/peguampanel.php + query/tarikdiri.php):
  *   PP submit 2→12 · PPUU semak 12→16 · Pengarah semak 16→17 · KP keputusan 17→{6 lulus | 2 tolak}
  * On approval the case is returned to the PPUU re-assignment pool (forms.status_agihan=4).
@@ -30,7 +30,7 @@ class TarikDiriService
         'Anak guam mohon menukar peguam panel',
     ];
 
-    /** Stage 1 — PP submits a withdrawal request (2→12). Returns the created history row. */
+    /** Stage 1 - PP submits a withdrawal request (2→12). Returns the created history row. */
     public function ppSubmit(Form $kes, User $actor, array $data): SejarahPeguamPanel
     {
         return DB::transaction(function () use ($kes, $actor, $data) {
@@ -56,21 +56,21 @@ class TarikDiriService
         });
     }
 
-    /** Stage 2 — PPUU reviews + forwards to Pengarah (12→16). */
+    /** Stage 2 - PPUU reviews + forwards to Pengarah (12→16). */
     public function ppuuSemak(Form $kes, User $actor, string $ulasan): void
     {
         $this->advance($kes, $actor, StatusAgihan::SEMAKAN_PENGARAH_TD, ['ulasanPPUU' => $ulasan]);
-        Audit::log('forms', $kes->id, Audit::UPDATE, "Tarik diri disemak PPUU — dihantar kepada Pengarah (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Tarik diri disemak PPUU - dihantar kepada Pengarah (kes #{$kes->id}).");
     }
 
-    /** Stage 3 — Pengarah reviews + forwards to Ketua Pengarah (16→17). */
+    /** Stage 3 - Pengarah reviews + forwards to Ketua Pengarah (16→17). */
     public function pengarahSemak(Form $kes, User $actor, string $ulasan): void
     {
         $this->advance($kes, $actor, StatusAgihan::SEMAKAN_KP_TD, ['ulasanPengarah' => $ulasan]);
-        Audit::log('forms', $kes->id, Audit::UPDATE, "Tarik diri disemak Pengarah — dihantar kepada Ketua Pengarah (kes #{$kes->id}).");
+        Audit::log('forms', $kes->id, Audit::UPDATE, "Tarik diri disemak Pengarah - dihantar kepada Ketua Pengarah (kes #{$kes->id}).");
     }
 
-    /** Stage 4 — Ketua Pengarah decides: approve (→6, return to pool) or reject (→2, PP continues). */
+    /** Stage 4 - Ketua Pengarah decides: approve (→6, return to pool) or reject (→2, PP continues). */
     public function kpKeputusan(Form $kes, User $actor, bool $approve, string $ulasan): void
     {
         DB::transaction(function () use ($kes, $actor, $approve, $ulasan) {
@@ -106,7 +106,7 @@ class TarikDiriService
                     'tarikh_penugasan_peguam_panel' => null,
                 ]);
 
-                Audit::log('forms', $kes->id, Audit::APPROVE, "Tarik diri diluluskan Ketua Pengarah — kes dikembalikan untuk agihan semula (kes #{$kes->id}).");
+                Audit::log('forms', $kes->id, Audit::APPROVE, "Tarik diri diluluskan Ketua Pengarah - kes dikembalikan untuk agihan semula (kes #{$kes->id}).");
             } else {
                 $row->update([
                     'status' => StatusAgihan::DITERIMA,
@@ -120,7 +120,7 @@ class TarikDiriService
 
                 $kes->update(['status_agihan' => StatusAgihan::DITERIMA]);
 
-                Audit::log('forms', $kes->id, Audit::REJECT, "Tarik diri tidak diluluskan Ketua Pengarah — peguam meneruskan kes (kes #{$kes->id}).");
+                Audit::log('forms', $kes->id, Audit::REJECT, "Tarik diri tidak diluluskan Ketua Pengarah - peguam meneruskan kes (kes #{$kes->id}).");
             }
         });
     }

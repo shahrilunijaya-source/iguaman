@@ -25,7 +25,7 @@
         @forelse ($tuntutan as $row)
             <div class="tap-row" style="grid-template-columns: 1.4fr 1.6fr 1fr 1fr 70px;">
                 <div class="tap-row__title">{{ $row->no_tuntutan }}</div>
-                <div class="tap-row__tujuan">{{ $row->form->no_fail ?? '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->form->no_fail ?? '-' }}</div>
                 <div class="tap-row__tujuan">{{ number_format((float) $row->jumlah_tuntutan, 2) }}</div>
                 <div class="tap-row__tujuan"><span class="pill pill--received">{{ $row->statusLabel() }}</span></div>
                 <div style="text-align:right;"><a href="{{ route('peguam.tuntutan.show', $row) }}" class="tap-head__btn">›</a></div>

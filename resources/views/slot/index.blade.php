@@ -29,7 +29,7 @@
             <div class="wiz-field" style="flex:1;">
                 <label class="wiz-field__label">Cawangan</label>
                 <select class="wiz-field__input" name="cawangan_id" onchange="this.form.submit()">
-                    <option value="">— Pilih cawangan —</option>
+                    <option value="">- Pilih cawangan -</option>
                     @foreach ($cawanganList as $c)
                         <option value="{{ $c->id }}" @selected($selected && $selected->id === $c->id)>{{ $c->nama }}</option>
                     @endforeach
@@ -46,8 +46,8 @@
             <div style="display:flex; gap:24px; flex-wrap:wrap; font-size:13px;">
                 <div><strong style="font-size:20px;">{{ number_format($summary['jumlah'] ?? 0) }}</strong><br><span style="color:var(--mute);">Jumlah slot</span></div>
                 <div><strong style="font-size:20px;">{{ number_format($summary['ditempah'] ?? 0) }}</strong><br><span style="color:var(--mute);">Telah ditempah</span></div>
-                <div><strong style="font-size:20px;">{{ ($summary['mula'] ?? null) ? \Illuminate\Support\Carbon::parse($summary['mula'])->format('d/m/Y') : '—' }}</strong><br><span style="color:var(--mute);">Slot terawal</span></div>
-                <div><strong style="font-size:20px;">{{ ($summary['tamat'] ?? null) ? \Illuminate\Support\Carbon::parse($summary['tamat'])->format('d/m/Y') : '—' }}</strong><br><span style="color:var(--mute);">Slot terakhir</span></div>
+                <div><strong style="font-size:20px;">{{ ($summary['mula'] ?? null) ? \Illuminate\Support\Carbon::parse($summary['mula'])->format('d/m/Y') : '-' }}</strong><br><span style="color:var(--mute);">Slot terawal</span></div>
+                <div><strong style="font-size:20px;">{{ ($summary['tamat'] ?? null) ? \Illuminate\Support\Carbon::parse($summary['tamat'])->format('d/m/Y') : '-' }}</strong><br><span style="color:var(--mute);">Slot terakhir</span></div>
             </div>
         </div>
 
@@ -94,7 +94,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">Bilik</label>
                     <select class="wiz-field__input" name="bilik_id">
-                        <option value="">— Cawangan (tanpa bilik) —</option>
+                        <option value="">- Cawangan (tanpa bilik) -</option>
                         @foreach ($bilikList as $b)
                             <option value="{{ $b->id }}">{{ $b->nama_bilik }}</option>
                         @endforeach
@@ -123,7 +123,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">Bilik</label>
                     <select class="wiz-field__input" name="bilik_id">
-                        <option value="">— Cawangan (tanpa bilik) —</option>
+                        <option value="">- Cawangan (tanpa bilik) -</option>
                         @foreach ($bilikList as $b)
                             <option value="{{ $b->id }}">{{ $b->nama_bilik }}</option>
                         @endforeach

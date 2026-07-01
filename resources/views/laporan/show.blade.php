@@ -3,7 +3,7 @@
 @section('title', $report['label'])
 
 @php
-    $fmt = fn ($v) => $v instanceof \Illuminate\Support\Carbon ? $v->format('d/m/Y') : (($v === null || $v === '') ? '—' : $v);
+    $fmt = fn ($v) => $v instanceof \Illuminate\Support\Carbon ? $v->format('d/m/Y') : (($v === null || $v === '') ? '-' : $v);
     $qs = request()->only(['cawangan', 'dari', 'hingga']);
 @endphp
 

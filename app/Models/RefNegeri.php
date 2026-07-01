@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/** ref_negeri — state reference. */
+/** ref_negeri - state reference. */
 class RefNegeri extends Model
 {
     protected $table = 'ref_negeri';

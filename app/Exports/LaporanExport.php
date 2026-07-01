@@ -12,10 +12,10 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 /**
- * W20 — generic forms-report .xlsx export driven by a column map (field => heading) and a
+ * W20 - generic forms-report .xlsx export driven by a column map (field => heading) and a
  * report query. Used by the queued ExportLaporanJob for bulk report exports.
  *
- * PERF-01: FromQuery (not FromCollection) so maatwebsite chunks the query — a thousands-row
+ * PERF-01: FromQuery (not FromCollection) so maatwebsite chunks the query - a thousands-row
  * report is written in batches instead of materialising the whole result set in memory.
  */
 class LaporanExport implements FromQuery, WithHeadings, WithMapping

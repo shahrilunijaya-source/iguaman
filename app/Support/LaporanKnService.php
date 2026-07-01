@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 /**
- * Khidmat Nasihat statistical reports — batch 12 slice 2.
+ * Khidmat Nasihat statistical reports - batch 12 slice 2.
  *
  * Branch-scoped aggregation queries behind the 8 KN reports. KhidmatNasihat has
  * NO CawanganScope (it keys on cawangan_id, not the legacy `cawangan` string
@@ -22,7 +22,7 @@ use Illuminate\Support\Collection;
  * resolution rule as {@see KhidmatProsesService::branchFilter()}:
  *
  *   - a staff officer pinned to a branch string (and without cawangan.view-all)
- *     is forced to that branch's cawangan_id — they cannot widen via the filter;
+ *     is forced to that branch's cawangan_id - they cannot widen via the filter;
  *   - a cawangan.view-all / no-branch user (or a lawyer) sees ALL branches and
  *     MAY narrow to one branch via the `cawangan` (branch name) filter.
  *
@@ -101,7 +101,7 @@ class LaporanKnService
     // ---- Bucket-aggregate reports (2 Cara Mengetahui, 7 Kepuasan) ---------
 
     /**
-     * Report 2 — count of each soalan_1 bucket across maklum_balas joined to KN.
+     * Report 2 - count of each soalan_1 bucket across maklum_balas joined to KN.
      *
      * @param  array{cawangan_id?:int|null,bulan?:int|string,tahun?:int|string}  $f
      * @return array<string,int> bucket-key => count (every CARA_BUCKETS key present)
@@ -126,7 +126,7 @@ class LaporanKnService
     }
 
     /**
-     * Report 7 — count of each satisfaction level across maklum_balas joined to KN.
+     * Report 7 - count of each satisfaction level across maklum_balas joined to KN.
      *
      * @param  array{cawangan_id?:int|null,bulan?:int|string,tahun?:int|string}  $f
      * @return array<string,int> level => count (every KEPUASAN_LEVELS key present)
@@ -166,7 +166,7 @@ class LaporanKnService
     // ---- Month pivots (3 Cawangan, 4 Kategori, 5 Subkategori) -------------
 
     /**
-     * Report 3 — branch (rows) × 12 months count of KN.
+     * Report 3 - branch (rows) × 12 months count of KN.
      *
      * @param  array{cawangan_id?:int|null,tahun?:int|string,id_kategori?:int|string}  $f
      * @return list<array{label:string,months:array<int,int>,total:int}>
@@ -186,7 +186,7 @@ class LaporanKnService
     }
 
     /**
-     * Report 4 — kategori (rows) × 12 months count of KN.
+     * Report 4 - kategori (rows) × 12 months count of KN.
      *
      * @param  array{cawangan_id?:int|null,tahun?:int|string}  $f
      * @return list<array{label:string,months:array<int,int>,total:int}>
@@ -205,7 +205,7 @@ class LaporanKnService
     }
 
     /**
-     * Report 5 — subkategori (rows) × 12 months count of KN.
+     * Report 5 - subkategori (rows) × 12 months count of KN.
      *
      * @param  array{cawangan_id?:int|null,tahun?:int|string,id_kategori?:int|string}  $f
      * @return list<array{label:string,months:array<int,int>,total:int}>
@@ -259,7 +259,7 @@ class LaporanKnService
     // ---- Report 8: Kaum × Jantina pivot ----------------------------------
 
     /**
-     * Report 8 — bangsa (rows) × jantina (Lelaki/Perempuan cols) count of KN.
+     * Report 8 - bangsa (rows) × jantina (Lelaki/Perempuan cols) count of KN.
      *
      * @param  array{cawangan_id?:int|null,bulan?:int|string,tahun?:int|string,id_kategori?:int|string}  $f
      * @return list<array{label:string,Lelaki:int,Perempuan:int,total:int}>

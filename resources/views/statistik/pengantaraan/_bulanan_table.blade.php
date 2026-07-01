@@ -1,5 +1,5 @@
 {{--
-    Penugasan Pengantaraan Bulanan — branch × 12 months + Jumlah. Inline-styled
+    Penugasan Pengantaraan Bulanan - branch × 12 months + Jumlah. Inline-styled
     for browser + dompdf parity. Expects $data, $branches, $bulan (1..12 labels).
 --}}
 @php

@@ -30,7 +30,7 @@ class PengantaraanService
 
     public function __construct(private readonly NoFailGenerator $noFail) {}
 
-    /** W18 — standalone (TERUS) intake: a tagged forms row with its own no_pengantaraan. */
+    /** W18 - standalone (TERUS) intake: a tagged forms row with its own no_pengantaraan. */
     public function daftarTerus(array $attrs, User $actor): Form
     {
         return DB::transaction(function () use ($attrs, $actor): Form {
@@ -53,7 +53,7 @@ class PengantaraanService
         });
     }
 
-    /** W18 (litigation path) — tag an existing case as a LITIGASI mediation + own number. */
+    /** W18 (litigation path) - tag an existing case as a LITIGASI mediation + own number. */
     public function tandakanLitigasi(Form $kes, User $actor): void
     {
         if (filled($kes->no_pengantaraan)) {
@@ -72,10 +72,10 @@ class PengantaraanService
         });
 
         Audit::log('forms', $kes->id, Audit::UPDATE,
-            "Pengantaraan dibuka dari litigasi — no {$kes->fresh()->no_pengantaraan}.", $actor->name);
+            "Pengantaraan dibuka dari litigasi - no {$kes->fresh()->no_pengantaraan}.", $actor->name);
     }
 
-    /** W19 — assign a mediator (staff officer) + write a MEDIASI claim-ledger row. */
+    /** W19 - assign a mediator (staff officer) + write a MEDIASI claim-ledger row. */
     public function agihPengantara(Form $kes, int $officerId, User $actor): void
     {
         $officer = User::find($officerId);

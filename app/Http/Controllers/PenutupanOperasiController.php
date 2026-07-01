@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Penutupan Operasi — per-branch (+optional room) operational closures (date ranges).
+ * Penutupan Operasi - per-branch (+optional room) operational closures (date ranges).
  * Dates inside an active range are excluded by SlotAvailabilityService + SlotGenerator.
  * Gated permission:slot.manage. CRUD shape mirrors CutiController.
  */

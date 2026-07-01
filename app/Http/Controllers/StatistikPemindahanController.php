@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
- * W8 + W4 — branch-transfer statistics (KPI Pemindahan). Reads ONLY the
+ * W8 + W4 - branch-transfer statistics (KPI Pemindahan). Reads ONLY the
  * pemindahan_cawangan ledger (KpiController stays SLA-only). Per-branch
  * MASUK (in) / KELUAR (out) counts across the 12 months of a chosen year.
  *
  * KELUAR = transfers initiated FROM a branch, by tarikh_pindah.
  * MASUK   = transfers received AT a branch, by COALESCE(tarikh_terima, tarikh_pindah).
  * Rejected (DITOLAK) transfers reverse the move, so they are excluded from both
- * sides — the matrix reflects live/accepted movement only.
+ * sides - the matrix reflects live/accepted movement only.
  *
  * $jenis is always a hardcoded constant (never request input), so the raw
  * MONTH()/YEAR() expressions carry no user data (mirrors KpiController).

@@ -25,9 +25,9 @@
 
 <div class="tap-card" style="margin-bottom:18px;">
     <div class="tap-card__eyebrow">Khidmat Nasihat</div>
-    <div class="tap-card__row"><div class="k">Mangsa</div><div class="v">{{ $kn->nama_mangsa ?: '—' }}</div></div>
-    <div class="tap-card__row"><div class="k">Jenis Kes</div><div class="v">{{ $kn->jenis_kes ?: '—' }}</div></div>
-    <div class="tap-card__row"><div class="k">Cawangan</div><div class="v">{{ optional($kn->cawangan)->nama ?: '—' }}</div></div>
+    <div class="tap-card__row"><div class="k">Mangsa</div><div class="v">{{ $kn->nama_mangsa ?: '-' }}</div></div>
+    <div class="tap-card__row"><div class="k">Jenis Kes</div><div class="v">{{ $kn->jenis_kes ?: '-' }}</div></div>
+    <div class="tap-card__row"><div class="k">Cawangan</div><div class="v">{{ optional($kn->cawangan)->nama ?: '-' }}</div></div>
 </div>
 
 <div class="tap-card">
@@ -45,9 +45,9 @@
                     @foreach ($shortlist as $p)
                         <tr>
                             <td><input type="radio" name="id_peguam_panel" value="{{ $p['id'] }}" required></td>
-                            <td>{{ $p['nama'] ?: '—' }}</td>
-                            <td>{{ $p['kp'] ?: '—' }}</td>
-                            <td>{{ $p['firma'] ?: '—' }}</td>
+                            <td>{{ $p['nama'] ?: '-' }}</td>
+                            <td>{{ $p['kp'] ?: '-' }}</td>
+                            <td>{{ $p['firma'] ?: '-' }}</td>
                             <td><span class="sl-beban">{{ $p['beban'] }}</span></td>
                         </tr>
                     @endforeach

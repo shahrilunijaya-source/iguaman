@@ -7,7 +7,7 @@ use App\Models\PeguamPanel;
 use App\Support\PeguamShortlistService;
 use Illuminate\View\View;
 
-// Agihan (case assignment) — workload (beban tugas) view. Case assignment itself now goes
+// Agihan (case assignment) - workload (beban tugas) view. Case assignment itself now goes
 // through the 3-tier spine (AgihanSpineController); the legacy single-step path was retired.
 class AgihanController extends Controller
 {

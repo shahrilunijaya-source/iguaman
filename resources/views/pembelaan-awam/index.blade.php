@@ -47,11 +47,11 @@
         @forelse ($kes as $row)
             <div class="tap-row" style="grid-template-columns: 1.5fr 1.4fr 1.3fr 1fr 70px;">
                 <div class="tap-row__title">
-                    {{ $row->no_fail ?? '—' }}
+                    {{ $row->no_fail ?? '-' }}
                     @if ($row->is_segera)<span style="margin-left:6px; font-size:11px; font-weight:700; color:#b91c1c; background:rgba(185,28,28,0.1); padding:1px 7px; border-radius:6px;">SEGERA</span>@endif
                 </div>
-                <div class="tap-row__tujuan">{{ $row->nama ?? '—' }}<br><span style="color:var(--muted,#64748b); font-size:12px;">{{ $row->nokp ?? '' }}</span></div>
-                <div class="tap-row__tujuan">{{ $row->no_pertuduhan ?? '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->nama ?? '-' }}<br><span style="color:var(--muted,#64748b); font-size:12px;">{{ $row->nokp ?? '' }}</span></div>
+                <div class="tap-row__tujuan">{{ $row->no_pertuduhan ?? '-' }}</div>
                 <div class="tap-row__tujuan"><span class="pill pill--received">{{ \App\Support\StatusAgihan::label($row->status_agihan) }}</span></div>
                 <div style="text-align:right;"><a href="{{ route('pembelaan.show', $row) }}" class="tap-head__btn">›</a></div>
             </div>

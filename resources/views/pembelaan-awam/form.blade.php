@@ -25,7 +25,7 @@
         </label>
         <label>Cawangan
             <select name="cawangan" class="tap-chip" required>
-                <option value="">— Pilih —</option>
+                <option value="">- Pilih -</option>
                 @foreach ($cawanganList as $c)
                     <option value="{{ $c }}" @selected(old('cawangan') === $c)>{{ $c }}</option>
                 @endforeach

@@ -26,7 +26,7 @@ use Illuminate\View\View;
 use RuntimeException;
 
 /**
- * Khidmat Nasihat (legal-advisory applications) — batch 9.
+ * Khidmat Nasihat (legal-advisory applications) - batch 9.
  *
  *  - index/show (slice 1): read-only list + detail, gated permission:khidmat.view.
  *  - create/store/edit/update (slice 2): the staff-driven "Permohonan Baharu"
@@ -78,7 +78,7 @@ class KhidmatNasihatController extends Controller
         return view('khidmat-nasihat.show', ['khidmat' => $khidmat]);
     }
 
-    /** W3 — transfer form: pick a destination branch for this advisory. Gated permission:khidmat.manage. */
+    /** W3 - transfer form: pick a destination branch for this advisory. Gated permission:khidmat.manage. */
     public function pindahForm(Request $request, KhidmatNasihat $khidmat): View|RedirectResponse
     {
         if ($block = $this->assertBranchAccess($khidmat)) {
@@ -97,7 +97,7 @@ class KhidmatNasihatController extends Controller
         ]);
     }
 
-    /** W3 — execute the KN transfer. The service moves cawangan_id + records the move. */
+    /** W3 - execute the KN transfer. The service moves cawangan_id + records the move. */
     public function pindah(PindahKnRequest $request, KhidmatNasihat $khidmat): RedirectResponse
     {
         $data = $request->validated();
@@ -112,9 +112,9 @@ class KhidmatNasihatController extends Controller
     }
 
     /**
-     * Eligibility 3-modal screening page (slice 3 — FE khidmatnasihat/index).
+     * Eligibility 3-modal screening page (slice 3 - FE khidmatnasihat/index).
      * A citizen-context applicant must clear: (1) saringan/jenis + income
-     * declaration, (2) eligibility questions, (3) terms & conditions — before
+     * declaration, (2) eligibility questions, (3) terms & conditions - before
      * the create wizard opens. Staff-driven here; gated khidmat.manage.
      */
     public function saringan(): View
@@ -161,7 +161,7 @@ class KhidmatNasihatController extends Controller
     /**
      * Enforce the eligibility screening as a hard gate before a citizen-context
      * final submit. Only DIRI_SENDIRI applications (the FE saringan flow) are
-     * gated — SEBAGAI_WAKIL is officer-driven and skips citizen screening, and a
+     * gated - SEBAGAI_WAKIL is officer-driven and skips citizen screening, and a
      * draft save is allowed through. The pass flag is read from the SESSION
      * (authoritative), never the client-supplied hidden field, so a tampered
      * POST cannot fake a pass.
@@ -262,7 +262,7 @@ class KhidmatNasihatController extends Controller
     }
 
     /**
-     * W2 — record a manual (counter) payment of the KN intake fee: receipt details +
+     * W2 - record a manual (counter) payment of the KN intake fee: receipt details +
      * an optional resit upload. Flips the KN payment flag and stamps the central ledger
      * row (DIBAYAR). Gated permission:khidmat.proses. Schema future-proofed for a live
      * iPayment gateway by the open kaedah_bayaran set (TUNAI today, IPAYMENT later).

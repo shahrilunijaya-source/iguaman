@@ -60,7 +60,7 @@
     </header>
 
     <footer>
-        <span class="l">Dijana oleh {{ $oleh ?? '—' }} · {{ $dijana ?? '' }}</span>
+        <span class="l">Dijana oleh {{ $oleh ?? '-' }} · {{ $dijana ?? '' }}</span>
         <span class="r pg"></span>
     </footer>
 

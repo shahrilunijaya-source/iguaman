@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-// Pengurusan Pengguna — user/account management (users). Admin-gated (routes).
+// Pengurusan Pengguna - user/account management (users). Admin-gated (routes).
 class UserController extends Controller
 {
     public function index(Request $request): View
@@ -102,7 +102,7 @@ class UserController extends Controller
             return back()->withErrors(['user' => 'Anda tidak boleh menyahaktifkan akaun sendiri.']);
         }
 
-        // DB-06: deactivate, never hard-delete — a hard delete detaches this user from every
+        // DB-06: deactivate, never hard-delete - a hard delete detaches this user from every
         // officer/audit record (nullOnDelete) and loses accountability. Login already blocks
         // inactive accounts, so deactivation removes access while preserving the trail.
         $user->update(['is_active' => false]);

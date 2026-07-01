@@ -99,7 +99,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Jantina</label>
                         <select class="wiz-field__select" name="jantina">
-                            <option value="">—</option>
+                            <option value="">-</option>
                             @foreach (['Lelaki', 'Perempuan'] as $opt)
                                 <option value="{{ $opt }}" @selected($val('jantina') === $opt)>{{ $opt }}</option>
                             @endforeach
@@ -120,7 +120,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">OKU</label>
                         <select class="wiz-field__select" name="oku">
-                            <option value="">—</option>
+                            <option value="">-</option>
                             @foreach (['Ya', 'Tidak'] as $opt)
                                 <option value="{{ $opt }}" @selected($val('oku') === $opt)>{{ $opt }}</option>
                             @endforeach
@@ -146,7 +146,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Cawangan *</label>
                         <select class="wiz-field__select" name="cawangan" required>
-                            <option value="">— Pilih —</option>
+                            <option value="">- Pilih -</option>
                             @foreach ($cawanganList as $c)
                                 <option value="{{ $c }}" @selected($val('cawangan') === $c)>{{ $c }}</option>
                             @endforeach
@@ -164,7 +164,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Kategori Kes</label>
                         <select class="wiz-field__select" name="kategori_kes">
-                            <option value="">—</option>
+                            <option value="">-</option>
                             @foreach ($kategoriList as $k)
                                 <option value="{{ $k }}" @selected($val('kategori_kes') === $k)>{{ $k }}</option>
                             @endforeach
@@ -173,7 +173,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Jenis Kes</label>
                         <select class="wiz-field__select" name="jenis_kes">
-                            <option value="">—</option>
+                            <option value="">-</option>
                             @foreach ($jenisList as $j)
                                 <option value="{{ $j }}" @selected($val('jenis_kes') === $j)>{{ $j }}</option>
                             @endforeach
@@ -366,7 +366,7 @@
                         const res = await fetch('{{ route('kes.semak-nokp') }}?nokp=' + encodeURIComponent(ic), { headers: { 'Accept': 'application/json' } });
                         const data = await res.json();
                         if (data.exists) {
-                            // Build with textContent, never innerHTML — r.nama/no_fail/status are
+                            // Build with textContent, never innerHTML - r.nama/no_fail/status are
                             // free-text case fields and must not be interpreted as HTML (stored XSS).
                             nokpDup.textContent = '';
                             const warn = document.createElement('strong');
@@ -378,7 +378,7 @@
                             data.records.forEach(r => {
                                 nokpDup.appendChild(document.createElement('br'));
                                 nokpDup.appendChild(document.createTextNode(
-                                    '• #' + r.id + ' — ' + r.nama + ' (' + r.no_fail + ', ' + r.status + ')'
+                                    '• #' + r.id + ' - ' + r.nama + ' (' + r.no_fail + ', ' + r.status + ')'
                                 ));
                             });
                             nokpDup.style.display = 'block';

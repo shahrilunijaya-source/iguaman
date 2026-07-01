@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/** posters — announcements / notices. */
+/** posters - announcements / notices. */
 class Poster extends Model
 {
     protected $table = 'posters';

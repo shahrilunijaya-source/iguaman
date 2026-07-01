@@ -38,14 +38,14 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::policy(KhidmatNasihat::class, KhidmatNasihatPolicy::class);
 
-        // W21 — real-time integration: a branch transfer fans out a queued notification
+        // W21 - real-time integration: a branch transfer fans out a queued notification
         // to the destination branch's supervisors without blocking the transfer txn.
         Event::listen(PemindahanCawanganDimulakan::class, MaklumkanPemindahanMasuk::class);
 
         // AUTH-08: minimum password strength for change-password + reset flows.
         Password::defaults(fn () => Password::min(12)->letters()->numbers());
 
-        // AUTH-08: login rate limit — per-identifier (blunts distributed credential stuffing
+        // AUTH-08: login rate limit - per-identifier (blunts distributed credential stuffing
         // against one account, which IP-only throttling misses) AND a looser per-IP cap.
         RateLimiter::for('login', fn (Request $request) => [
             Limit::perMinute(5)->by(Str::lower((string) $request->input('email')).'|'.$request->ip()),

@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
-    <title>@yield('title', 'Maklum Balas') — JBG</title>
+    <title>@yield('title', 'Maklum Balas') - JBG</title>
     <style>
-        /* Minimal self-contained public surface (no public layout yet — batch 13).
+        /* Minimal self-contained public surface (no public layout yet - batch 13).
            First public page in the app, so it carries its own brand styling rather
            than the staff shell. Brand tokens mirror theme.css (teal #1a6fa8 /
            pine #0d2e48) as CSS-var fallbacks, so the page renders standalone and

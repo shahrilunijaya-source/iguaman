@@ -44,7 +44,7 @@ class ImportLegacyData extends Command
         $src = (string) $this->option('source');
 
         // --source is interpolated into cross-DB SQL identifiers, so it must be a bare schema
-        // name — never attacker/typo-controlled SQL. Whitelist before any query touches it.
+        // name - never attacker/typo-controlled SQL. Whitelist before any query touches it.
         if (preg_match('/^[A-Za-z0-9_]+$/', $src) !== 1) {
             $this->error("Invalid --source database name: `{$src}` (allowed: letters, digits, underscore).");
 
@@ -63,7 +63,7 @@ class ImportLegacyData extends Command
 
         $this->info("Importing from `{$src}` -> unified schema...");
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
-        // Legacy data contains '0000-00-00' zero-dates — relax strict mode for the copy.
+        // Legacy data contains '0000-00-00' zero-dates - relax strict mode for the copy.
         DB::statement("SET SESSION sql_mode='NO_ENGINE_SUBSTITUTION'");
 
         if ($this->option('fresh')) {

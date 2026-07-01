@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** Bilik (rooms) under a JBG cawangan — consumed by appointment slot generation (batch 10). */
+/** Bilik (rooms) under a JBG cawangan - consumed by appointment slot generation (batch 10). */
 class Bilik extends Model
 {
     protected $table = 'bilik';

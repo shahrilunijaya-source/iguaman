@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Maklum Balas — post-appointment satisfaction feedback (batch 12 slice 1).
+ * Maklum Balas - post-appointment satisfaction feedback (batch 12 slice 1).
  * One row per Khidmat Nasihat (DB-unique on khidmat_nasihat_id). Captured via a
  * public, throttled link once the advisory appointment is SELESAI. No login.
  */

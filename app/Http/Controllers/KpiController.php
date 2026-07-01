@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
- * Penetapan Petunjuk Prestasi Utama (KPI) — yearly SLA dashboard.
+ * Penetapan Petunjuk Prestasi Utama (KPI) - yearly SLA dashboard.
  * Each KPI measures the % of cases meeting a time target (DATEDIFF on forms dates),
  * grouped by month + case type (kategori_kes). Ports the legacy JBG KPI screen.
  *

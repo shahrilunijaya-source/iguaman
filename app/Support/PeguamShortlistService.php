@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
- * W11 — automated case-distribution support. Ranks panel lawyers by current open
+ * W11 - automated case-distribution support. Ranks panel lawyers by current open
  * caseload (least-loaded first) so PPUU picks from a workload-aware shortlist
  * instead of the full flat list. Reused by W5 (external-lawyer assignment).
  *
  * "Open caseload" = cases in the DITAWARKAN/DITERIMA buckets (offer outstanding or
- * actively handled), NOT closed/withdrawn — those should not weigh down a lawyer.
+ * actively handled), NOT closed/withdrawn - those should not weigh down a lawyer.
  */
 class PeguamShortlistService
 {
@@ -36,7 +36,7 @@ class PeguamShortlistService
     {
         // PERF-02: this all-forms GROUP BY is recomputed on every assignment screen (called by
         // both the workload dashboard and shortlist()). Cache briefly, keyed per user because
-        // Form is branch-scoped (CawanganScope) — never share one branch's load with another.
+        // Form is branch-scoped (CawanganScope) - never share one branch's load with another.
         return Cache::remember('peguam:beban:'.auth()->id(), self::BEBAN_TTL, fn () => Form::query()
             ->whereNotNull('nama_pegawai_yang_dapat_kes')
             ->where('nama_pegawai_yang_dapat_kes', '!=', '')

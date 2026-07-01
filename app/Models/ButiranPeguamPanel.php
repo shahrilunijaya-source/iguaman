@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/** butiran_peguam_panel — lawyer profile v1 (qualification, firm, bank, insurance, CLP/CSO). */
+/** butiran_peguam_panel - lawyer profile v1 (qualification, firm, bank, insurance, CLP/CSO). */
 class ButiranPeguamPanel extends Model
 {
     protected $table = 'butiran_peguam_panel';

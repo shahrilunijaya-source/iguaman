@@ -9,7 +9,7 @@ use App\Models\KhidmatNasihat;
 use Illuminate\Support\Facades\DB;
 
 /**
- * W12 — reverse sync from the litigation case (forms) back to the originating
+ * W12 - reverse sync from the litigation case (forms) back to the originating
  * Khidmat Nasihat. Explicit service call (NOT a model event): Form is updated
  * from many controllers + the assignment machine, so a saved-event would fire
  * spuriously. Idempotent and a no-op when the case has no linked KN.

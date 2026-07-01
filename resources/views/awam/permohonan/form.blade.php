@@ -99,7 +99,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Jantina</label>
                         <select class="wiz-field__select" name="jantina_mangsa">
-                            <option value="">—</option>
+                            <option value="">-</option>
                             @foreach (['Lelaki', 'Perempuan'] as $opt)
                                 <option value="{{ $opt }}" @selected(old('jantina_mangsa') === $opt)>{{ $opt }}</option>
                             @endforeach
@@ -149,7 +149,7 @@
                         <label class="wiz-field__label">Cawangan JBG *</label>
                         <select class="wiz-field__select" name="cawangan_id" id="knCawangan"
                                 data-negeri-map='@json($cawanganList->pluck('negeri_id', 'id'))' required>
-                            <option value="">— Pilih —</option>
+                            <option value="">- Pilih -</option>
                             @foreach ($cawanganList as $c)
                                 <option value="{{ $c->id }}" @selected(old('cawangan_id') == $c->id)>{{ $c->nama }}</option>
                             @endforeach
@@ -159,7 +159,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Negeri</label>
                         <select class="wiz-field__select" name="id_negeri" id="knNegeri">
-                            <option value="">—</option>
+                            <option value="">-</option>
                             @foreach ($negeriList as $id => $nama)
                                 <option value="{{ $id }}" @selected(old('id_negeri') == $id)>{{ $nama }}</option>
                             @endforeach
@@ -168,7 +168,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Kategori Kes</label>
                         <select class="wiz-field__select" name="id_kategori" id="knKategori">
-                            <option value="">— Pilih —</option>
+                            <option value="">- Pilih -</option>
                             @foreach ($kategoriList as $k)
                                 <option value="{{ $k->id }}" @selected(old('id_kategori') == $k->id)>{{ $k->jenis_kategori }}</option>
                             @endforeach
@@ -199,7 +199,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Tarikh Temu Janji *</label>
                         <select class="wiz-field__select" name="tarikh_temu_janji" id="knTarikh" data-selected="{{ old('tarikh_temu_janji') }}">
-                            <option value="">— Pilih cawangan dahulu —</option>
+                            <option value="">- Pilih cawangan dahulu -</option>
                         </select>
                         @error('tarikh_temu_janji') <div class="wiz-field__hint" style="color:#dc2626;">{{ $message }}</div> @enderror
                     </div>
@@ -325,7 +325,7 @@
                 masaGrid.innerHTML = '<span class="kn-hint">Pilih tarikh dahulu.</span>';
                 masaInput.value = '';
                 if (!cawangan.value) {
-                    tarikhSel.innerHTML = '<option value="">— Pilih cawangan dahulu —</option>';
+                    tarikhSel.innerHTML = '<option value="">- Pilih cawangan dahulu -</option>';
                     branchHint.textContent = 'Pilih cawangan di Langkah 1 untuk memuatkan tarikh tersedia.';
                     return;
                 }
@@ -335,7 +335,7 @@
                     const res = await fetch(tarikhUrl + '?cawangan_id=' + encodeURIComponent(cawangan.value), { headers: { 'Accept': 'application/json' } });
                     const data = await res.json();
                     const dates = data.dates || [];
-                    tarikhSel.innerHTML = '<option value="">— Pilih tarikh —</option>';
+                    tarikhSel.innerHTML = '<option value="">- Pilih tarikh -</option>';
                     dates.forEach((d) => {
                         const o = document.createElement('option');
                         o.value = d; o.textContent = d;

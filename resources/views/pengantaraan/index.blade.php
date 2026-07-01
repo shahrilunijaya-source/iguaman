@@ -30,11 +30,11 @@
         <div class="tap-card" style="margin-bottom:12px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
                 <div>
-                    <div class="tap-card__eyebrow">{{ $m->no_pengantaraan ?: 'Tiada No.' }} · {{ $m->sumber_pengantaraan ?: '—' }}</div>
+                    <div class="tap-card__eyebrow">{{ $m->no_pengantaraan ?: 'Tiada No.' }} · {{ $m->sumber_pengantaraan ?: '-' }}</div>
                     <h3 style="margin:2px 0 4px; font-size:15px;">{{ $m->nama ?: 'Tanpa Nama' }}</h3>
                     <p class="dash-empty__sub" style="margin:0;">
-                        {{ $m->nokp ?: '—' }} · {{ $m->cawangan ?: '—' }} · {{ $m->jenis_kes ?: '—' }}<br>
-                        Status: {{ $m->status_pengantaraan ?: '—' }}
+                        {{ $m->nokp ?: '-' }} · {{ $m->cawangan ?: '-' }} · {{ $m->jenis_kes ?: '-' }}<br>
+                        Status: {{ $m->status_pengantaraan ?: '-' }}
                         @if ($m->nama_pegawai_pengantara) · Pengantara: {{ $m->nama_pegawai_pengantara }} @endif
                     </p>
                 </div>

@@ -83,7 +83,7 @@ class KhidmatNasihatService
     }
 
     /**
-     * ARCH-01 — W1 fee-waiver proof, moved out of KhidmatNasihatController. Stores the
+     * ARCH-01 - W1 fee-waiver proof, moved out of KhidmatNasihatController. Stores the
      * optional waiver document when the application is fee-exempt and links it via
      * khidmat_nasihat.id_lampiran_waiver.
      */
@@ -101,7 +101,7 @@ class KhidmatNasihatService
     }
 
     /**
-     * ARCH-01 — persist a KN-linked document on the W6 repository disk (mirrors
+     * ARCH-01 - persist a KN-linked document on the W6 repository disk (mirrors
      * LampiranController) and link it via uploaded_files.id_khidmat. The caller wires
      * the specific FK column (id_lampiran_waiver / id_lampiran_resit).
      */
@@ -110,7 +110,7 @@ class KhidmatNasihatService
         $path = $file->store('lampiran', config('filesystems.lampiran_disk', 'repositori'));
 
         return UploadedFile::create([
-            'nama' => "{$nama} — {$khidmat->no_permohonan}",
+            'nama' => "{$nama} - {$khidmat->no_permohonan}",
             'file_name' => basename($path),
             'file_path' => $path,
             'file_type' => strtolower($file->getClientOriginalExtension() ?: $file->extension()),

@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-// Jenis Kes maintenance — case-type reference master (ref_kes).
+// Jenis Kes maintenance - case-type reference master (ref_kes).
 class RefKesController extends Controller
 {
     private function rules(): array

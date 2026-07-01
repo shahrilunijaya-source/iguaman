@@ -10,7 +10,7 @@
 
 <div class="vb-page">
 
-    {{-- ============ LEFT — editorial ============ --}}
+    {{-- ============ LEFT - editorial ============ --}}
     <div class="vb-left">
         <div>
             <div class="vb-left__top">
@@ -27,7 +27,7 @@
                 <span class="line">panel peguam.<span class="dot dot--lg"></span></span>
             </h2>
             <p class="vb-left__lede">
-                Ruang kerja iGuaman — khidmat nasihat, rekod kes, pengantaraan, mahkamah dan panel peguam, semuanya dalam satu sistem bersepadu.
+                Ruang kerja iGuaman - khidmat nasihat, rekod kes, pengantaraan, mahkamah dan panel peguam, semuanya dalam satu sistem bersepadu.
             </p>
 
             <div class="vb-left__decisive">
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    {{-- ============ RIGHT — White form ============ --}}
+    {{-- ============ RIGHT - White form ============ --}}
     <div class="vb-right">
         <div class="vb-right__inner">
             <div class="swap__screen">
@@ -142,7 +142,7 @@
 
 </div>
 
-{{-- ============ DEMO USERS MODAL (local/staging only — never in production) ============ --}}
+{{-- ============ DEMO USERS MODAL (local/staging only - never in production) ============ --}}
 @unless(app()->isProduction())
 <div class="demo-modal" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle">
     <div class="demo-modal__card">

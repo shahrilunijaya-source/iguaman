@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
-// Plain Laravel auth — NO Filament/Breeze/Jetstream. Login view = resources/views/system/login.blade.php.
+// Plain Laravel auth - NO Filament/Breeze/Jetstream. Login view = resources/views/system/login.blade.php.
 // Unified users table (staff + lawyers); landing area decided by role/user_type.
 class SystemAuthController extends Controller
 {

@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Cuti Umum — public-holiday reference master (EPIC G, legacy ref_cuti CRUD).
+ * Cuti Umum - public-holiday reference master (EPIC G, legacy ref_cuti CRUD).
  * Per-holiday date range + the states it applies to, encoded into the legacy
  * 16-slot ref_cuti.idnegeri string via CutiNegeri.
  */

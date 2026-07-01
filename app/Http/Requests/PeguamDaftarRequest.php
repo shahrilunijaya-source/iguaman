@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Public lawyer panel application (daftar peguam panel) — full 7-section parity with
+ * Public lawyer panel application (daftar peguam panel) - full 7-section parity with
  * legacy daftar.php: Butiran / Pengendalian Kes / Pengkhususan / Kelayakan Profesion /
  * Firma / Akaun Pembayaran / Senarai Semak (18 PDF docs). Writes butiran_peguam_panel_2..6
  * with permohonan_status='0' (Baharu) → staff endorse/decide. No auth (no login yet).
@@ -133,7 +133,7 @@ class PeguamDaftarRequest extends FormRequest
             'bandarBank' => ['required', 'string', 'max:255'],
             'negeriBank' => ['required', 'string', 'max:255'],
 
-            // Honeypot — bots fill it, humans never see it. Must be empty/absent.
+            // Honeypot - bots fill it, humans never see it. Must be empty/absent.
             'website' => ['prohibited'],
         ];
 

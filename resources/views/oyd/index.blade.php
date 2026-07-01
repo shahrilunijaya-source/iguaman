@@ -37,14 +37,14 @@
 
         @forelse ($oyd as $row)
             <a href="{{ route('oyd.show', $row) }}" class="tap-row" style="grid-template-columns: 160px 2fr 1.2fr 1.4fr 80px;">
-                <div class="tap-row__no">{{ $row->kp_oyd ?: '—' }}</div>
+                <div class="tap-row__no">{{ $row->kp_oyd ?: '-' }}</div>
                 <div>
                     <div class="tap-row__title">{{ $row->nama_oyd ?: 'Tanpa Nama' }}</div>
-                    <div class="tap-row__sub">{{ $row->bandar_oyd ?: '—' }}</div>
+                    <div class="tap-row__sub">{{ $row->bandar_oyd ?: '-' }}</div>
                 </div>
-                <div class="tap-row__tujuan">{{ $row->notelefon_oyd ?: '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->negeri_oyd ?: '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->umur_oyd ?: '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->notelefon_oyd ?: '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->negeri_oyd ?: '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->umur_oyd ?: '-' }}</div>
             </a>
         @empty
             <div class="dash-empty" style="border:0">

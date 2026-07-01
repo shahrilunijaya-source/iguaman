@@ -14,8 +14,8 @@
 
 <div class="tap-head">
     <div>
-        <h1 class="tap-head__title">Semakan Tarik Diri — Kes #{{ $kes->id }}<span class="dot"></span></h1>
-        <p class="tap-head__sub">No. Fail: {{ $kes->no_fail ?: '—' }}</p>
+        <h1 class="tap-head__title">Semakan Tarik Diri - Kes #{{ $kes->id }}<span class="dot"></span></h1>
+        <p class="tap-head__sub">No. Fail: {{ $kes->no_fail ?: '-' }}</p>
     </div>
     <a href="{{ route('tarikdiri.senarai') }}" class="btn btn--ghost">← Senarai</a>
 </div>
@@ -30,12 +30,12 @@
 <div class="tap-card">
     <span class="td-badge">{{ $statusLabel }}</span>
     <div style="margin-top:12px;">
-        <div class="td-row"><div class="k">OYD</div><div class="v">{{ $kes->nama ?: '—' }} ({{ $kes->nokp ?: '—' }})</div></div>
-        <div class="td-row"><div class="k">Peguam</div><div class="v">{{ $kes->nama_pegawai_yang_dapat_kes ?: '—' }}</div></div>
+        <div class="td-row"><div class="k">OYD</div><div class="v">{{ $kes->nama ?: '-' }} ({{ $kes->nokp ?: '-' }})</div></div>
+        <div class="td-row"><div class="k">Peguam</div><div class="v">{{ $kes->nama_pegawai_yang_dapat_kes ?: '-' }}</div></div>
         @if ($rec)
-            <div class="td-row"><div class="k">Sebab Tarik Diri</div><div class="v">{{ $rec->pilihanTarikDiri ?: '—' }}</div></div>
-            <div class="td-row"><div class="k">Justifikasi</div><div class="v">{{ $rec->alasan ?: '—' }}</div></div>
-            <div class="td-row"><div class="k">Tarikh Bicara Seterusnya</div><div class="v">{{ optional($rec->tarikhNextBicaraKes)->format('d/m/Y') ?: '—' }}</div></div>
+            <div class="td-row"><div class="k">Sebab Tarik Diri</div><div class="v">{{ $rec->pilihanTarikDiri ?: '-' }}</div></div>
+            <div class="td-row"><div class="k">Justifikasi</div><div class="v">{{ $rec->alasan ?: '-' }}</div></div>
+            <div class="td-row"><div class="k">Tarikh Bicara Seterusnya</div><div class="v">{{ optional($rec->tarikhNextBicaraKes)->format('d/m/Y') ?: '-' }}</div></div>
             @if ($rec->ulasanPPUU)<div class="td-row"><div class="k">Ulasan PPUU</div><div class="v">{{ $rec->ulasanPPUU }}</div></div>@endif
             @if ($rec->ulasanPengarah)<div class="td-row"><div class="k">Ulasan Pengarah</div><div class="v">{{ $rec->ulasanPengarah }}</div></div>@endif
         @endif

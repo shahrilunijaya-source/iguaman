@@ -14,7 +14,7 @@ use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Kesilapan Penjanaan Nombor Fail — files closed for a generated-number error
+ * Kesilapan Penjanaan Nombor Fail - files closed for a generated-number error
  * (P1, legacy cetakan_statistik_* + export_kesilapan_nombor_fail.php). The
  * inverse of EPIC F's universal Kesilapan exclusion: an all-branch per-month
  * count matrix + a wide CSV of the underlying records.
@@ -51,7 +51,7 @@ class KesilapanController extends Controller
             }
             fputcsv($out, array_merge(['BIL.'], array_map(fn ($c) => $c[0], WideExport::kesilapanColumns())));
 
-            // PERF-01: cursor() streams rows from the DB — no full result set in memory.
+            // PERF-01: cursor() streams rows from the DB - no full result set in memory.
             $bil = 1;
             foreach ($query->cursor() as $r) {
                 fputcsv($out, WideExport::kesilapanRow($r, $bil++));

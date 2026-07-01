@@ -51,7 +51,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">Jantina</label>
                     <select class="wiz-field__select" name="jantina_oyd">
-                        <option value="">—</option>
+                        <option value="">-</option>
                         @foreach (['Lelaki', 'Perempuan'] as $opt)
                             <option value="{{ $opt }}" @selected($val('jantina_oyd') === $opt)>{{ $opt }}</option>
                         @endforeach
@@ -68,7 +68,7 @@
                 <div class="wiz-field">
                     <label class="wiz-field__label">OKU</label>
                     <select class="wiz-field__select" name="oku_oyd">
-                        <option value="">—</option>
+                        <option value="">-</option>
                         @foreach (['Ya', 'Tidak'] as $opt)
                             <option value="{{ $opt }}" @selected($val('oku_oyd') === $opt)>{{ $opt }}</option>
                         @endforeach

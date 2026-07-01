@@ -29,7 +29,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use RuntimeException;
 
-// External lawyer (peguam) area — assigned cases, offer accept/reject (tawaran),
+// External lawyer (peguam) area - assigned cases, offer accept/reject (tawaran),
 // lawyer-side case reporting, and profile.
 class PeguamController extends Controller
 {
@@ -83,7 +83,7 @@ class PeguamController extends Controller
     {
         $this->authorizeCase($kes);
 
-        // PROC-21: only an active offer (DITAWARKAN) may be accepted — not a case already
+        // PROC-21: only an active offer (DITAWARKAN) may be accepted - not a case already
         // withdrawn, closed, or bounced back to the pool while the offer screen was open.
         abort_unless(StatusAgihan::normalise($kes->status_agihan) === StatusAgihan::DITAWARKAN, 409, 'Tawaran ini tidak lagi aktif.');
 
@@ -123,7 +123,7 @@ class PeguamController extends Controller
             'status_agihan' => StatusAgihan::PPUU_AGIH_SEMULA,
         ]);
 
-        Audit::log('forms', $kes->id, Audit::UPDATE, 'Tawaran kes ditolak oleh peguam — dikembalikan untuk agihan semula');
+        Audit::log('forms', $kes->id, Audit::UPDATE, 'Tawaran kes ditolak oleh peguam - dikembalikan untuk agihan semula');
 
         return redirect()->route('peguam.tawaran')->with('status', 'Tawaran ditolak. Kes dikembalikan kepada JBG.');
     }
@@ -172,7 +172,7 @@ class PeguamController extends Controller
         return view('peguam.tarik-diri', ['kes' => $kes, 'reasons' => TarikDiriService::REASONS]);
     }
 
-    /** Submit a withdrawal request (status 2→12) — enters the PPUU→Pengarah→KP review chain. */
+    /** Submit a withdrawal request (status 2→12) - enters the PPUU→Pengarah→KP review chain. */
     public function tarikDiriStore(Request $request, Form $kes, TarikDiriService $svc): RedirectResponse
     {
         $this->authorizeCase($kes);
@@ -211,7 +211,7 @@ class PeguamController extends Controller
     }
 
     /**
-     * W16 — lawyer marks an actively-handled case as done (status 2 → 18 / PP_SELESAI).
+     * W16 - lawyer marks an actively-handled case as done (status 2 → 18 / PP_SELESAI).
      * Writes the lawyer-side closure columns + a SejarahPeguamPanel marker; the file is
      * not officially closed until JBG confirms (KeputusanController::sahkanSelesai → 19).
      */
@@ -248,7 +248,7 @@ class PeguamController extends Controller
         return redirect()->route('peguam.kes.show', $kes)->with('status', 'Kes ditandakan selesai. Menunggu pengesahan JBG.');
     }
 
-    /** W5 — open-grab Khidmat Nasihat pool any active panel lawyer may self-claim. */
+    /** W5 - open-grab Khidmat Nasihat pool any active panel lawyer may self-claim. */
     public function grabSenarai(): View
     {
         $pool = app(AgihanLuarService::class)->grabPool()->get();
@@ -260,7 +260,7 @@ class PeguamController extends Controller
         ]);
     }
 
-    /** W5 — claim an open-grab KN for the signed-in lawyer (race-safe in the service). */
+    /** W5 - claim an open-grab KN for the signed-in lawyer (race-safe in the service). */
     public function grab(KhidmatNasihat $khidmat): RedirectResponse
     {
         $profile = $this->profile();
@@ -378,7 +378,7 @@ class PeguamController extends Controller
         'HSBC', 'UOB', 'Standard Chartered', 'Agrobank', 'MBSB Bank',
     ];
 
-    /** The signed-in lawyer's IC (kpBaru) — the key for butiran_peguam_panel_2..6. */
+    /** The signed-in lawyer's IC (kpBaru) - the key for butiran_peguam_panel_2..6. */
     private function lawyerKp(): ?string
     {
         $user = Auth::user();

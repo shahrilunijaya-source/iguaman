@@ -7,7 +7,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * W7 — validate a case branch-transfer. Authorization is at the route
+ * W7 - validate a case branch-transfer. Authorization is at the route
  * (permission:kes.pindah); the service enforces the origin-branch guard.
  */
 class PindahKesRequest extends FormRequest

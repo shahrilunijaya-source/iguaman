@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Janji Temu (appointment). Links to a slot + (later) khidmat_nasihat (Batch 9,
- * wired at integration — no FK). status mirrors the FE appointment lifecycle.
+ * wired at integration - no FK). status mirrors the FE appointment lifecycle.
  */
 class TemuJanji extends Model
 {

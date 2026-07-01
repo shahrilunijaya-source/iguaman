@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Jadual Janji Temu — read-only month calendar of booked appointments per branch
+ * Jadual Janji Temu - read-only month calendar of booked appointments per branch
  * (Batch 10 slice 3, FE janjitemu/jadual-janji-temu).
  *
  * Renders temu_janji bookings on a month grid for one cawangan and marks the days

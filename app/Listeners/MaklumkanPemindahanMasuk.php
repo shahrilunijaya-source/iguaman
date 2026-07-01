@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 
 /**
- * W21 — when a transfer is initiated, e-mail the destination branch supervisors
+ * W21 - when a transfer is initiated, e-mail the destination branch supervisors
  * (pengarah/koordinator) that an incoming record awaits acceptance. Queued, so the
  * notification never blocks or rolls back the transfer transaction; best-effort
  * (a mail failure is reported, never thrown).

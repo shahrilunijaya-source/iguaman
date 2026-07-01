@@ -1,5 +1,5 @@
 /*
- * iGuaman Color System — Blue Palette
+ * iGuaman Color System - Blue Palette
  * Generated color tokens for the Sistem Integrated Bantuan Guaman.
  * Use these CSS custom properties throughout the system.
  *
@@ -29,22 +29,22 @@
 
   /* ─── Status / Semantic ────────────────────────────────────── */
 
-  /* Warning — amber (alert borders, icons) */
+  /* Warning - amber (alert borders, icons) */
   --color-warning-700:   #a87008;
   --color-warning-500:   #d4940d;   /* ★ alert border, warning icon   */
   --color-warning-100:   #fff3cd;   /* alert background tint          */
 
-  /* Danger — orange (unassigned counts, errors) */
+  /* Danger - orange (unassigned counts, errors) */
   --color-danger-700:    #b84e14;
   --color-danger-500:    #e07030;   /* ★ critical numbers, errors     */
   --color-danger-100:    #fde8d8;   /* error background tint          */
 
-  /* Success — green */
+  /* Success - green */
   --color-success-700:   #166048;
   --color-success-500:   #1e9060;   /* ★ success states, badges       */
   --color-success-100:   #d4f0e4;   /* success background tint        */
 
-  /* Info — slate blue (distinct from brand) */
+  /* Info - slate blue (distinct from brand) */
   --color-info-700:      #35508a;
   --color-info-500:      #5a7fca;   /* ★ info badges, tooltips        */
   --color-info-100:      #dde6f8;   /* info background tint           */

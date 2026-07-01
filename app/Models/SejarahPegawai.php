@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** sejarah_pegawai — officer reassignment history for a case. */
+/** sejarah_pegawai - officer reassignment history for a case. */
 class SejarahPegawai extends Model
 {
     protected $table = 'sejarah_pegawai';

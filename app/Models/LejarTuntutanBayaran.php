@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * lejar_tuntutan_bayaran — central claim ledger (W15). Polymorphic by
+ * lejar_tuntutan_bayaran - central claim ledger (W15). Polymorphic by
  * (sumber, sumber_id); reused by wishes 5 / 9 / 19. Hard link id_kes -> forms.id.
  */
 class LejarTuntutanBayaran extends Model

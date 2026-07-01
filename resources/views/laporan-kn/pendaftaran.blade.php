@@ -38,13 +38,13 @@
             <tbody>
                 @forelse ($rows as $row)
                     <tr>
-                        <td>{{ $row->no_permohonan ?? '—' }}</td>
-                        <td>{{ $row->nama_mangsa ?? '—' }}</td>
-                        <td>{{ $row->id_pengenalan_mangsa ?? '—' }}</td>
-                        <td>{{ $row->umur_mangsa ?? '—' }}</td>
-                        <td>{{ $row->status_kn ?? '—' }}</td>
-                        <td>{{ optional($row->temuJanji?->tarikh_temu_janji)->format('Y-m-d') ?? '—' }}</td>
-                        <td>{{ $row->ulasan_permohonan ?? '—' }}</td>
+                        <td>{{ $row->no_permohonan ?? '-' }}</td>
+                        <td>{{ $row->nama_mangsa ?? '-' }}</td>
+                        <td>{{ $row->id_pengenalan_mangsa ?? '-' }}</td>
+                        <td>{{ $row->umur_mangsa ?? '-' }}</td>
+                        <td>{{ $row->status_kn ?? '-' }}</td>
+                        <td>{{ optional($row->temuJanji?->tarikh_temu_janji)->format('Y-m-d') ?? '-' }}</td>
+                        <td>{{ $row->ulasan_permohonan ?? '-' }}</td>
                     </tr>
                 @empty
                     <tr><td colspan="7" style="padding:16px; color:var(--mute); text-align:center;">Tiada rekod.</td></tr>

@@ -105,13 +105,13 @@
                     <div class="wiz-field" id="knWakilCtxField" style="display:none;">
                         <label class="wiz-field__label">Konteks Wakil *</label>
                         <select class="wiz-field__select" name="jenis_wakil" id="knJenisWakil">
-                            <option value="">— Pilih —</option>
+                            <option value="">- Pilih -</option>
                             @foreach (['PENJARA' => 'Penjara', 'JKM' => 'JKM', 'MAHKAMAH' => 'Mahkamah'] as $v => $label)
                                 <option value="{{ $v }}" @selected($val('jenis_wakil') === $v)>{{ $label }}</option>
                             @endforeach
                         </select>
                         @error('jenis_wakil') <div class="wiz-field__hint" style="color:var(--danger)">{{ $message }}</div> @enderror
-                        <div class="wiz-field__hint" id="knWakilFreeHint" style="display:none; color:var(--success);">Penjara / JKM — bayaran dikecualikan (RM0).</div>
+                        <div class="wiz-field__hint" id="knWakilFreeHint" style="display:none; color:var(--success);">Penjara / JKM - bayaran dikecualikan (RM0).</div>
                     </div>
                 </div>
             </div>
@@ -139,14 +139,14 @@
                 </div>
             </div>
 
-            {{-- Mahkamah (court) section — only for the MAHKAMAH wakil context. --}}
+            {{-- Mahkamah (court) section - only for the MAHKAMAH wakil context. --}}
             <div class="tap-card" style="margin-bottom:18px; display:none;" id="knMahkamahCard">
                 <div class="tap-card__eyebrow">Maklumat Mahkamah</div>
                 <div class="wiz-grid">
                     <div class="wiz-field">
                         <label class="wiz-field__label">Jenis Mahkamah *</label>
                         <select class="wiz-field__select" name="jenis_mahkamah_pihak" id="knJenisMahkamah">
-                            <option value="">— Pilih —</option>
+                            <option value="">- Pilih -</option>
                             @foreach (['SIVIL' => 'Sivil', 'SYARIAH' => 'Syariah'] as $v => $label)
                                 <option value="{{ $v }}" @selected($val('jenis_mahkamah_pihak') === $v)>{{ $label }}</option>
                             @endforeach
@@ -156,7 +156,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Mahkamah *</label>
                         <select class="wiz-field__select" name="id_mahkamah" id="knMahkamah" data-selected="{{ $val('id_mahkamah') }}">
-                            <option value="">— Pilih jenis mahkamah dahulu —</option>
+                            <option value="">- Pilih jenis mahkamah dahulu -</option>
                         </select>
                         @error('id_mahkamah') <div class="wiz-field__hint" style="color:var(--danger)">{{ $message }}</div> @enderror
                     </div>
@@ -183,7 +183,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Jantina</label>
                         <select class="wiz-field__select" name="jantina_mangsa">
-                            <option value="">—</option>
+                            <option value="">-</option>
                             @foreach (['Lelaki', 'Perempuan'] as $opt)
                                 <option value="{{ $opt }}" @selected($val('jantina_mangsa') === $opt)>{{ $opt }}</option>
                             @endforeach
@@ -240,7 +240,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Cawangan (JBG) *</label>
                         <select class="wiz-field__select" name="cawangan_id" id="knCawangan" data-negeri-map='@json($cawanganList->pluck('negeri_id', 'id'))' required>
-                            <option value="">— Pilih —</option>
+                            <option value="">- Pilih -</option>
                             @foreach ($cawanganList as $c)
                                 <option value="{{ $c->id }}" @selected((string) $val('cawangan_id') === (string) $c->id)>{{ $c->nama }}</option>
                             @endforeach
@@ -250,7 +250,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Negeri</label>
                         <select class="wiz-field__select" name="id_negeri" id="knNegeri">
-                            <option value="">—</option>
+                            <option value="">-</option>
                             @foreach ($negeriList as $id => $nama)
                                 <option value="{{ $id }}" @selected((string) $val('id_negeri') === (string) $id)>{{ $nama }}</option>
                             @endforeach
@@ -259,7 +259,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Kategori (Jenis Khidmat) *</label>
                         <select class="wiz-field__select" name="id_kategori" id="knKategori" required>
-                            <option value="">— Pilih —</option>
+                            <option value="">- Pilih -</option>
                             @foreach ($kategoriList as $k)
                                 <option value="{{ $k->id }}" data-jenis="{{ $k->jenis_kategori }}" @selected((string) $val('id_kategori') === (string) $k->id)>{{ $k->jenis_kategori }}</option>
                             @endforeach
@@ -269,14 +269,14 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Kategori Kes</label>
                         <select class="wiz-field__select" name="id_kategori_kes" id="knKategoriKes" data-selected="{{ $val('id_kategori_kes') }}">
-                            <option value="">—</option>
+                            <option value="">-</option>
                         </select>
                         <div class="wiz-field__hint">Pilih kategori dahulu.</div>
                     </div>
                     <div class="wiz-field">
                         <label class="wiz-field__label">Subkategori</label>
                         <select class="wiz-field__select" name="id_subkategori" id="knSubkategori" data-selected="{{ $val('id_subkategori') }}">
-                            <option value="">—</option>
+                            <option value="">-</option>
                         </select>
                         <div class="wiz-field__hint">Pilih kategori kes dahulu.</div>
                     </div>
@@ -310,7 +310,7 @@
                             Percuma (dikecualikan sepenuhnya)
                         </label>
                     </div>
-                    {{-- W1: fee-waiver proof — only meaningful when Percuma is ticked. --}}
+                    {{-- W1: fee-waiver proof - only meaningful when Percuma is ticked. --}}
                     <div class="wiz-field wiz-field--span-2">
                         <label class="wiz-field__label">Bukti Pengecualian Bayaran (jika percuma)</label>
                         <input type="file" class="wiz-field__input" name="lampiran_waiver" id="knWaiver"
@@ -343,7 +343,7 @@
                     <div class="wiz-field">
                         <label class="wiz-field__label">Tarikh Temu Janji</label>
                         <select class="wiz-field__select" name="tarikh_temu_janji" id="knTarikh" data-selected="{{ $val('tarikh_temu_janji') }}">
-                            <option value="">— Pilih cawangan dahulu —</option>
+                            <option value="">- Pilih cawangan dahulu -</option>
                         </select>
                         @error('tarikh_temu_janji') <div class="wiz-field__hint" style="color:var(--danger)">{{ $message }}</div> @enderror
                     </div>
@@ -466,8 +466,8 @@
                 const wakilCtx = isWakil ? jenisWakilEl.value : '';
                 let fee = 10, path = 'Kadar asas';
                 if (percumaEl.checked) { fee = 0; path = 'Percuma (pengecualian penuh)'; }
-                else if (wakilCtx === 'PENJARA' || wakilCtx === 'JKM') { fee = 0; path = 'Wakil ' + wakilCtx + ' — tiada bayaran'; }
-                else if (jenis === 'PENDAMPING JENAYAH' || jenis === 'PENDAMPING GUAMAN') { fee = 0; path = 'Pendamping — tiada bayaran'; }
+                else if (wakilCtx === 'PENJARA' || wakilCtx === 'JKM') { fee = 0; path = 'Wakil ' + wakilCtx + ' - tiada bayaran'; }
+                else if (jenis === 'PENDAMPING JENAYAH' || jenis === 'PENDAMPING GUAMAN') { fee = 0; path = 'Pendamping - tiada bayaran'; }
                 else if ((jenis === 'SIVIL' || jenis === 'SYARIAH') && income > 50000) { fee = 260; path = 'Laluan Sumbangan (pendapatan > RM50,000)'; }
                 feeEl.textContent = fmt(fee);
                 feePathEl.textContent = path;
@@ -498,7 +498,7 @@
             }
             function loadMahkamah() {
                 const rows = MAHKAMAH[jenisMahkamahEl.value] || [];
-                mahkamahSel.innerHTML = '<option value="">' + (rows.length ? '— Pilih mahkamah —' : '— Pilih jenis mahkamah dahulu —') + '</option>';
+                mahkamahSel.innerHTML = '<option value="">' + (rows.length ? '- Pilih mahkamah -' : '- Pilih jenis mahkamah dahulu -') + '</option>';
                 rows.forEach((r) => {
                     const o = document.createElement('option');
                     o.value = r.id; o.textContent = r.nama_mahkamah;
@@ -528,7 +528,7 @@
             const kategoriKes = document.getElementById('knKategoriKes');
             const subkategori = document.getElementById('knSubkategori');
             function fill(sel, rows, selected) {
-                sel.innerHTML = '<option value="">—</option>';
+                sel.innerHTML = '<option value="">-</option>';
                 (rows || []).forEach((r) => {
                     const o = document.createElement('option');
                     o.value = r.id; o.textContent = r.nama;
@@ -562,7 +562,7 @@
                 masaGrid.innerHTML = '<span class="kn-hint">Pilih tarikh dahulu.</span>';
                 masaInput.value = '';
                 if (!cawangan.value) {
-                    tarikhSel.innerHTML = '<option value="">— Pilih cawangan dahulu —</option>';
+                    tarikhSel.innerHTML = '<option value="">- Pilih cawangan dahulu -</option>';
                     branchHint.textContent = 'Pilih cawangan di Langkah 1 untuk memuatkan tarikh tersedia.';
                     return;
                 }
@@ -572,7 +572,7 @@
                     const res = await fetch(tarikhUrl + '?cawangan_id=' + encodeURIComponent(cawangan.value), { headers: { 'Accept': 'application/json' } });
                     const data = await res.json();
                     const dates = data.dates || [];
-                    tarikhSel.innerHTML = '<option value="">— Pilih tarikh —</option>';
+                    tarikhSel.innerHTML = '<option value="">- Pilih tarikh -</option>';
                     dates.forEach((d) => {
                         const o = document.createElement('option');
                         o.value = d; o.textContent = d;

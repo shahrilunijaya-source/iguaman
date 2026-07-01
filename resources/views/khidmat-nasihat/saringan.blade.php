@@ -68,7 +68,7 @@
                 <div class="sg-modal__body">
                     <p class="sg-q">Pilih jenis khidmat nasihat yang dipohon:</p>
                     <select class="wiz-field__select" id="sgJenis" name="saringan_jenis" style="margin-bottom:18px;">
-                        <option value="">— Pilih —</option>
+                        <option value="">- Pilih -</option>
                         <option value="sivil_syariah">Sivil / Syariah</option>
                         <option value="pendamping_jenayah">Pendamping Guaman / Jenayah</option>
                     </select>
@@ -83,7 +83,7 @@
                         </div>
                         <div class="sg-err" id="sgIncomeErr">Sila jawab pengisytiharan pendapatan.</div>
                         <div class="sg-card" id="sgSumbanganNote" style="display:none;">
-                            <div class="sg-fee">Pendapatan melebihi RM50,000 — <strong>Laluan Sumbangan</strong>:
+                            <div class="sg-fee">Pendapatan melebihi RM50,000 - <strong>Laluan Sumbangan</strong>:
                                 FI Khidmat Nasihat RM10.00 + Sumbangan RM250.00 = <strong>RM260.00</strong>.</div>
                         </div>
                     </div>

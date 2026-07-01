@@ -37,12 +37,12 @@
             <tbody>
                 @forelse ($rows as $row)
                     <tr>
-                        <td>{{ $row->no_permohonan ?? '—' }}</td>
-                        <td>{{ $row->nama_mangsa ?? '—' }}</td>
-                        <td>{{ $row->kategori?->jenis_kategori ?? '—' }}</td>
-                        <td>{{ $row->subkategori?->nama ?? '—' }}</td>
-                        <td>{{ $row->cawangan?->nama ?? '—' }}</td>
-                        <td>{{ $row->ulasan_pegawai ?? '—' }}</td>
+                        <td>{{ $row->no_permohonan ?? '-' }}</td>
+                        <td>{{ $row->nama_mangsa ?? '-' }}</td>
+                        <td>{{ $row->kategori?->jenis_kategori ?? '-' }}</td>
+                        <td>{{ $row->subkategori?->nama ?? '-' }}</td>
+                        <td>{{ $row->cawangan?->nama ?? '-' }}</td>
+                        <td>{{ $row->ulasan_pegawai ?? '-' }}</td>
                     </tr>
                 @empty
                     <tr><td colspan="6" style="padding:16px; color:var(--mute); text-align:center;">Tiada rekod.</td></tr>

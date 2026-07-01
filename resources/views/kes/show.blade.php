@@ -93,7 +93,7 @@
     <div class="tap-title" style="border:1px solid var(--line); border-radius: var(--r-lg); margin-bottom: 18px;">
         <div>
             <h1 class="tap-title__h1">{{ $kes->nama ?: 'Tanpa Nama' }}<span class="dot"></span></h1>
-            <p class="tap-title__sub">No. KP <strong>{{ $kes->nokp ?: '—' }}</strong> · {{ $kes->cawangan ?: '—' }}</p>
+            <p class="tap-title__sub">No. KP <strong>{{ $kes->nokp ?: '-' }}</strong> · {{ $kes->cawangan ?: '-' }}</p>
             <div class="tap-title__chips">
                 @if ($kes->kategori_kes)<span class="tap-title__chip">{{ $kes->kategori_kes }}</span>@endif
                 @if ($kes->jenis_kes)<span class="tap-title__chip">{{ $kes->jenis_kes }}</span>@endif
@@ -101,7 +101,7 @@
             </div>
         </div>
         <div class="tap-title__meta">
-            <div class="due">{{ optional($kes->tarikh_permohonan)->format('d/m/Y') ?: '—' }}</div>
+            <div class="due">{{ optional($kes->tarikh_permohonan)->format('d/m/Y') ?: '-' }}</div>
             <div>Tarikh Permohonan</div>
         </div>
     </div>
@@ -160,7 +160,7 @@
                     @foreach ($kes->laporanKes as $lap)
                         <div class="tap-card__row">
                             <div class="k">{{ $lap->no_kes ?: $lap->no_fail ?: 'Laporan' }}</div>
-                            <div class="v">{{ $lap->status_kes ?: '—' }} · {{ $lap->isu ?: ($lap->pihak_pihak ?: '') }}</div>
+                            <div class="v">{{ $lap->status_kes ?: '-' }} · {{ $lap->isu ?: ($lap->pihak_pihak ?: '') }}</div>
                         </div>
                     @endforeach
                 </div>
@@ -177,7 +177,7 @@
                     </p>
 
                     @if (\App\Support\StatusAgihan::normalise($kes->status_agihan) === \App\Support\StatusAgihan::PP_SELESAI)
-                        {{-- W16: lawyer marked this case selesai — JBG confirms or returns it. --}}
+                        {{-- W16: lawyer marked this case selesai - JBG confirms or returns it. --}}
                         <div class="formerr" style="color: var(--success); background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.18); margin-bottom:10px;">
                             Peguam menandakan kes ini <strong>selesai</strong>@if ($kes->tarikh_selesai) pada {{ optional($kes->tarikh_selesai)->format('d/m/Y') }}@endif. Menunggu pengesahan JBG.
                         </div>
@@ -220,7 +220,7 @@
                     @forelse ($kes->sejarahPeguamPanel as $h)
                         <div class="audit-row">
                             <div class="audit-row__dot"></div>
-                            <div class="audit-row__body"><strong>{{ $h->nama_pp_lama ?: '—' }}</strong><br>{{ $h->status ?: '' }} {{ $h->alasan ? '· '.$h->alasan : '' }}</div>
+                            <div class="audit-row__body"><strong>{{ $h->nama_pp_lama ?: '-' }}</strong><br>{{ $h->status ?: '' }} {{ $h->alasan ? '· '.$h->alasan : '' }}</div>
                             <div class="audit-row__when">{{ optional($h->tarikh_penugasan)->format('d/m/y') }}</div>
                         </div>
                     @empty
@@ -250,7 +250,7 @@
                     @forelse ($kes->sejarahPegawai as $h)
                         <div class="audit-row">
                             <div class="audit-row__dot"></div>
-                            <div class="audit-row__body"><strong>{{ $h->nama_pegawai_lama ?: '—' }}</strong></div>
+                            <div class="audit-row__body"><strong>{{ $h->nama_pegawai_lama ?: '-' }}</strong></div>
                             <div class="audit-row__when">{{ optional($h->tarikh_kemaskini)->format('d/m/y') }}</div>
                         </div>
                     @empty

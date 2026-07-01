@@ -10,9 +10,9 @@
     <table style="border-collapse:collapse; margin:12px 0;">
         <tr><td style="padding:4px 12px 4px 0; color:#555;">Jenis Rekod</td><td style="padding:4px 0;"><strong>{{ $pindah->jenis_rekod === \App\Models\PemindahanCawangan::JENIS_KES ? 'Kes' : 'Khidmat Nasihat' }}</strong></td></tr>
         <tr><td style="padding:4px 12px 4px 0; color:#555;">No. Rekod</td><td style="padding:4px 0;">#{{ $pindah->id_rekod }}</td></tr>
-        <tr><td style="padding:4px 12px 4px 0; color:#555;">Dari Cawangan</td><td style="padding:4px 0;">{{ $pindah->cawangan_asal ?: '—' }}</td></tr>
-        <tr><td style="padding:4px 12px 4px 0; color:#555;">Ke Cawangan</td><td style="padding:4px 0;"><strong>{{ $pindah->cawangan_tujuan ?: '—' }}</strong></td></tr>
-        <tr><td style="padding:4px 12px 4px 0; color:#555;">Sebab</td><td style="padding:4px 0;">{{ $pindah->sebab ?: '—' }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0; color:#555;">Dari Cawangan</td><td style="padding:4px 0;">{{ $pindah->cawangan_asal ?: '-' }}</td></tr>
+        <tr><td style="padding:4px 12px 4px 0; color:#555;">Ke Cawangan</td><td style="padding:4px 0;"><strong>{{ $pindah->cawangan_tujuan ?: '-' }}</strong></td></tr>
+        <tr><td style="padding:4px 12px 4px 0; color:#555;">Sebab</td><td style="padding:4px 0;">{{ $pindah->sebab ?: '-' }}</td></tr>
     </table>
 
     <p>Sila log masuk ke Sistem Integrated Bantuan Guaman untuk menerima atau menolak pemindahan ini.</p>

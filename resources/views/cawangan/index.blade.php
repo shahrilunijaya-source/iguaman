@@ -46,7 +46,7 @@
                     @unless ($row->status_aktif)<span class="pill" style="opacity:.6;">Tidak Aktif</span>@endunless
                 </div>
                 <div class="tap-row__tujuan"><span class="pill pill--received">{{ $row->jenis }}</span></div>
-                <div class="tap-row__tujuan">{{ $row->negeri->nama ?? '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->negeri->nama ?? '-' }}</div>
                 <div class="tap-row__tujuan">{{ $row->bilik_count }}</div>
                 <div style="text-align:right;"><a href="{{ route('cawangan.edit', $row) }}" class="tap-head__btn">✎</a></div>
             </div>

@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 /**
- * Slot auto-generation (parity map §4 — "slot auto-generate per branch/room").
+ * Slot auto-generation (parity map §4 - "slot auto-generate per branch/room").
  *
  * Given a branch (+optional room) and a date range, create slot_temu_janji rows for
  * every WORKING day at intervals of the branch's tempoh_slot_minit between masa_buka
@@ -23,7 +23,7 @@ use Illuminate\Support\Collection;
  * Idempotent: an existing (cawangan, bilik, date, masa_mula) slot is never duplicated.
  * Mirrors the exclusion rules of SlotAvailabilityService so generated supply lines up
  * with computed availability. Lead-time (MIN_WORKING_DAYS) is an availability concern,
- * NOT a generation one — slots are generated for the whole working range.
+ * NOT a generation one - slots are generated for the whole working range.
  */
 class SlotGenerator
 {
@@ -199,7 +199,7 @@ class SlotGenerator
     }
 
     /**
-     * Existing slot keys 'Y-m-d|H:i' for the (branch, room, range) — the idempotency guard.
+     * Existing slot keys 'Y-m-d|H:i' for the (branch, room, range) - the idempotency guard.
      * bilik_id null is matched as null so branch-level and room-level supply don't collide.
      */
     private function existingSlotKeys(int $cawanganId, ?int $bilikId, Carbon $start, Carbon $end): array

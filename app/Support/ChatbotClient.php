@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * ARCH-06 — adapter for the standalone JBG chatbot microservice (Python/FastAPI).
+ * ARCH-06 - adapter for the standalone JBG chatbot microservice (Python/FastAPI).
  * Wraps the two-step protocol (POST /generate_token with basic auth, then POST
  * /forward_message with the bearer token) so the rest of the app depends on this
  * contract, not on the HTTP details or the bot credentials. Never throws:
@@ -44,7 +44,7 @@ class ChatbotClient
                 ->post("{$this->base()}/forward_message", [
                     'message' => $message,
                     'session_id' => $sessionId,
-                    // Bot's Pydantic model types user_name as str — send '' (not null)
+                    // Bot's Pydantic model types user_name as str - send '' (not null)
                     // for guests, else it rejects the body with 422.
                     'user_name' => $userName,
                 ]);

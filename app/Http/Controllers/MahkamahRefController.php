@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-// Mahkamah reference maintenance — civil (mahkamah_sivil) + syariah (mahkamah_syariah) court registry.
+// Mahkamah reference maintenance - civil (mahkamah_sivil) + syariah (mahkamah_syariah) court registry.
 // Single controller serves both via the {jenis} segment ('sivil' | 'syariah').
 class MahkamahRefController extends Controller
 {

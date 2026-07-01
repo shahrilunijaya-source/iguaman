@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
- * W5 — assign a completed (SELESAI) Khidmat Nasihat to an EXTERNAL panel lawyer.
+ * W5 - assign a completed (SELESAI) Khidmat Nasihat to an EXTERNAL panel lawyer.
  *
  * Two modes over the status_agihan_pl machine (own column; never overloads status_kn):
  *   - GRAB:   officer opens the KN to a pool (BUKA_GRAB); any active panel lawyer
@@ -160,7 +160,7 @@ class AgihanLuarService
 
         if ($changed) {
             Audit::log('khidmat_nasihat', $kn->id, Audit::UPDATE,
-                'Grab tamat tempoh (luput) — '.self::REASON_LUPUT, self::ACTOR);
+                'Grab tamat tempoh (luput) - '.self::REASON_LUPUT, self::ACTOR);
         }
     }
 
@@ -219,7 +219,7 @@ class AgihanLuarService
             ->orderByDesc('id');
     }
 
-    /** Open-grab pool for panel lawyers (all branches — lawyers are not branch-scoped). */
+    /** Open-grab pool for panel lawyers (all branches - lawyers are not branch-scoped). */
     public function grabPool(): Builder
     {
         return KhidmatNasihat::query()

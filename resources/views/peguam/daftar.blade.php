@@ -222,7 +222,7 @@
                     <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
                 </div>
 
-                {{-- ============ STEP 1 — BUTIRAN PEGUAM ============ --}}
+                {{-- ============ STEP 1 - BUTIRAN PEGUAM ============ --}}
                 <div class="wz-step" data-step="0">
                     <div class="tap-card">
                         <div class="tap-card__eyebrow">1 · Butiran Peguam Panel</div>
@@ -260,7 +260,7 @@
                                 <textarea name="kelulusanAkademik" class="field__input" rows="2" maxlength="500" required style="text-transform:uppercase; height:auto; padding:10px 14px;" placeholder="cth. LLB (Hons), Universiti Malaya" aria-label="cth. LLB (Hons), Universiti Malaya">{{ old('kelulusanAkademik') }}</textarea>
                             </div>
                             <div class="field">
-                                <label class="field__label">Tarikh Diterima Masuk — Peguambela/Peguamcara <span class="req">*</span></label>
+                                <label class="field__label">Tarikh Diterima Masuk - Peguambela/Peguamcara <span class="req">*</span></label>
                                 <input type="date" name="tarikhDiterimaMasuk" class="field__input" value="{{ old('tarikhDiterimaMasuk') }}" required>
                             </div>
                             <div class="field">
@@ -268,7 +268,7 @@
                                 <input type="number" name="tahunPengalaman" class="field__input" value="{{ old('tahunPengalaman') }}" min="0" max="99" required>
                             </div>
                             <div class="field">
-                                <label class="field__label">Tarikh Diterima Masuk — Peguam Syarie</label>
+                                <label class="field__label">Tarikh Diterima Masuk - Peguam Syarie</label>
                                 <input type="date" name="tarikhDiterimaMasukSyarie" class="field__input" value="{{ old('tarikhDiterimaMasukSyarie') }}">
                             </div>
                             <div class="field">
@@ -283,7 +283,7 @@
                     </div>
                 </div>
 
-                {{-- ============ STEP 2 — PENGENDALIAN KES & BIDANG ============ --}}
+                {{-- ============ STEP 2 - PENGENDALIAN KES & BIDANG ============ --}}
                 <div class="wz-step" data-step="1">
                     <div class="tap-card">
                         <div class="tap-card__eyebrow">2 · Pengendalian Kes</div>
@@ -320,7 +320,7 @@
                     </div>
                 </div>
 
-                {{-- ============ STEP 3 — KELAYAKAN PROFESION ============ --}}
+                {{-- ============ STEP 3 - KELAYAKAN PROFESION ============ --}}
                 <div class="wz-step" data-step="2">
                     <div class="tap-card">
                         <div class="tap-card__eyebrow">3 · Sijil Amalan Guaman (CLP)</div>
@@ -334,11 +334,11 @@
                                 <input type="file" name="clp" class="field__input file-input" accept=".pdf">
                             </div>
                             <div class="field">
-                                <label class="field__label">Tempoh Sah — Mula <span class="req">*</span></label>
+                                <label class="field__label">Tempoh Sah - Mula <span class="req">*</span></label>
                                 <input type="date" name="clpMula" class="field__input" value="{{ old('clpMula') }}" required>
                             </div>
                             <div class="field">
-                                <label class="field__label">Tempoh Sah — Hingga <span class="req">*</span></label>
+                                <label class="field__label">Tempoh Sah - Hingga <span class="req">*</span></label>
                                 <input type="date" name="clpAkhir" class="field__input" value="{{ old('clpAkhir') }}" required>
                             </div>
                         </div>
@@ -396,11 +396,11 @@
                                         </select>
                                     </div>
                                     <div class="field">
-                                        <label class="field__label">Tempoh Sah — Mula</label>
+                                        <label class="field__label">Tempoh Sah - Mula</label>
                                         <input type="date" name="cso{{ $i }}Mula" class="field__input" value="{{ old('cso'.$i.'Mula') }}">
                                     </div>
                                     <div class="field">
-                                        <label class="field__label">Tempoh Sah — Hingga</label>
+                                        <label class="field__label">Tempoh Sah - Hingga</label>
                                         <input type="date" name="cso{{ $i }}Akhir" class="field__input" value="{{ old('cso'.$i.'Akhir') }}">
                                     </div>
                                     <div class="field col-2">
@@ -452,11 +452,11 @@
                                 <input type="text" name="sijilAhli_namaBadan" class="field__input" value="{{ old('sijilAhli_namaBadan') }}" maxlength="255" style="text-transform:uppercase;">
                             </div>
                             <div class="field">
-                                <label class="field__label">Sijil Ahli — Mula</label>
+                                <label class="field__label">Sijil Ahli - Mula</label>
                                 <input type="date" name="sijilAhli_mula" class="field__input" value="{{ old('sijilAhli_mula') }}">
                             </div>
                             <div class="field">
-                                <label class="field__label">Sijil Ahli — Hingga</label>
+                                <label class="field__label">Sijil Ahli - Hingga</label>
                                 <input type="date" name="sijilAhli_akhir" class="field__input" value="{{ old('sijilAhli_akhir') }}">
                             </div>
                             <div class="field">
@@ -468,11 +468,11 @@
                                 <input type="text" name="sijilAkreditasi_namaBadan" class="field__input" value="{{ old('sijilAkreditasi_namaBadan') }}" maxlength="255" style="text-transform:uppercase;">
                             </div>
                             <div class="field">
-                                <label class="field__label">Akreditasi — Mula</label>
+                                <label class="field__label">Akreditasi - Mula</label>
                                 <input type="date" name="sijilAkreditasi_mula" class="field__input" value="{{ old('sijilAkreditasi_mula') }}">
                             </div>
                             <div class="field">
-                                <label class="field__label">Akreditasi — Hingga</label>
+                                <label class="field__label">Akreditasi - Hingga</label>
                                 <input type="date" name="sijilAkreditasi_akhir" class="field__input" value="{{ old('sijilAkreditasi_akhir') }}">
                             </div>
                             <div class="field">
@@ -494,7 +494,7 @@
                     </div>
                 </div>
 
-                {{-- ============ STEP 4 — FIRMA & BAYARAN ============ --}}
+                {{-- ============ STEP 4 - FIRMA & BAYARAN ============ --}}
                 <div class="wz-step" data-step="3">
                     <div class="tap-card">
                         <div class="tap-card__eyebrow">4 · Maklumat Firma Guaman</div>
@@ -561,11 +561,11 @@
                                 <input type="file" name="insuransTR" class="field__input file-input" accept=".pdf">
                             </div>
                             <div class="field">
-                                <label class="field__label">Tempoh Sah Polisi — Mula</label>
+                                <label class="field__label">Tempoh Sah Polisi - Mula</label>
                                 <input type="date" name="polisiMula" class="field__input" value="{{ old('polisiMula') }}">
                             </div>
                             <div class="field">
-                                <label class="field__label">Tempoh Sah Polisi — Hingga</label>
+                                <label class="field__label">Tempoh Sah Polisi - Hingga</label>
                                 <input type="date" name="polisiAkhir" class="field__input" value="{{ old('polisiAkhir') }}">
                             </div>
                         </div>
@@ -618,7 +618,7 @@
                     </div>
                 </div>
 
-                {{-- ============ STEP 5 — DOKUMEN ============ --}}
+                {{-- ============ STEP 5 - DOKUMEN ============ --}}
                 <div class="wz-step" data-step="4">
                     <div class="tap-card">
                         <div class="tap-card__eyebrow">6 · Senarai Semak Dokumen</div>
@@ -693,7 +693,7 @@
         }
 
         // First VISIBLE required field in a step that fails native validity
-        // (used for per-step Next gating — only the active step is visible).
+        // (used for per-step Next gating - only the active step is visible).
         function firstInvalid(stepEl) {
             var els = stepEl.querySelectorAll('input, select, textarea');
             for (var j = 0; j < els.length; j++) {
@@ -745,7 +745,7 @@
         });
 
         // Final pre-submit sweep: confirm EVERY required field across ALL steps
-        // is filled before the form POSTs. Cuts server bounces — important here
+        // is filled before the form POSTs. Cuts server bounces - important here
         // because a server-side validation failure clears all file inputs and
         // forces the applicant to re-attach every PDF.
         form.addEventListener('submit', function (e) {

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
  * Legal-aid file-number generator (legacy jFail.php). Format:
  *   JBG.{STATE}({jenis_kes}){seq}/{MMYYYY}   e.g.  JBG.KUL(085)1/032026
  * where seq is the running ROW_NUMBER() within (cawangan, jenis_kes) ordered by application
- * date (cumulative — no yearly reset). Replaces the degraded JBG/{abbrev}/{id}/{mmYY} stub.
+ * date (cumulative - no yearly reset). Replaces the degraded JBG/{abbrev}/{id}/{mmYY} stub.
  */
 class NoFailGenerator
 {
@@ -55,7 +55,7 @@ class NoFailGenerator
     }
 
     /**
-     * W17 — a mediation's OWN file number, an independent PGT series that never
+     * W17 - a mediation's OWN file number, an independent PGT series that never
      * reuses the litigation no_fail. Format mirrors generate() with a PGT prefix:
      *   PGT.{STATE}({jenis_kes}){seq}/{MMYYYY}
      * seq is the next running number within the (cawangan, jenis_kes) partition of
@@ -85,7 +85,7 @@ class NoFailGenerator
     }
 
     /**
-     * W9 — Pembelaan Awam (public criminal defence) file number: a distinct PBA series so
+     * W9 - Pembelaan Awam (public criminal defence) file number: a distinct PBA series so
      * criminal-defence files are visually separable from the litigation `JBG.` series.
      *   PBA.{STATE}({jenis_kes}){seq}/{MMYYYY}   e.g.  PBA.KUL(085)1/072026
      * Sequence runs within (cawangan, jenis_kes) over Pembelaan-tagged rows only.

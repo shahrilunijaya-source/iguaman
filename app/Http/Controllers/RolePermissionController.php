@@ -11,7 +11,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
-// Akses — per-role permission matrix. Gated permission:urus.peranan.
+// Akses - per-role permission matrix. Gated permission:urus.peranan.
 class RolePermissionController extends Controller
 {
     /**
@@ -35,7 +35,7 @@ class RolePermissionController extends Controller
 
     public function update(Request $request, Role $role): RedirectResponse
     {
-        // admin is super-admin via Gate::before — its matrix is decorative, and
+        // admin is super-admin via Gate::before - its matrix is decorative, and
         // editing it risks emptying the only super-admin's access. Refuse outright.
         if ($role->name === User::ROLE_ADMIN) {
             return back()->withErrors(['permissions' => 'Matriks akses Admin tidak boleh diubah (Admin = akses penuh).']);

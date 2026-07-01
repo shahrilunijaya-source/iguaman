@@ -14,7 +14,7 @@
 <div class="tap-head">
     <div>
         <h1 class="tap-head__title">Tarik Diri Mewakili OYD<span class="dot"></span></h1>
-        <p class="tap-head__sub">Kes #{{ $kes->id }} · {{ $kes->no_fail ?: '—' }}</p>
+        <p class="tap-head__sub">Kes #{{ $kes->id }} · {{ $kes->no_fail ?: '-' }}</p>
     </div>
     <a href="{{ route('peguam.kes.show', $kes) }}" class="btn btn--ghost">← Kes</a>
 </div>
@@ -24,7 +24,7 @@
 @endif
 
 <div class="td-note">
-    <strong>Perhatian — Seksyen 24, Akta Bantuan Guaman 1971.</strong>
+    <strong>Perhatian - Seksyen 24, Akta Bantuan Guaman 1971.</strong>
     Permohonan tarik diri akan disemak oleh PPUU, Pengarah, dan diluluskan oleh Ketua Pengarah.
     Peguam dikehendaki meneruskan tanggungjawab sehingga kelulusan diperoleh.
 </div>
@@ -34,7 +34,7 @@
     <div class="td-grid">
         <div class="ag-row col-2" style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);">
             <span style="color:var(--mute);font-size:13px;">OYD</span>
-            <strong style="font-size:13px;">{{ $kes->nama ?: '—' }} ({{ $kes->nokp ?: '—' }})</strong>
+            <strong style="font-size:13px;">{{ $kes->nama ?: '-' }} ({{ $kes->nokp ?: '-' }})</strong>
         </div>
         <div class="field col-2">
             <label class="field__label">Sebab Tarik Diri <span class="req">*</span></label>

@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 /**
- * W15 — claim-ledger export to .xlsx. Takes the branch-scoped + filtered query
+ * W15 - claim-ledger export to .xlsx. Takes the branch-scoped + filtered query
  * from LejarTuntutanService::listQuery. Eager-loaded relations avoid N+1.
  */
 class LejarTuntutanExport implements FromQuery, WithHeadings, WithMapping

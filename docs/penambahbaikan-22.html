@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iGuaman · Sistem Integrated Bantuan Guaman — 22 Penambahbaikan Status</title>
+<title>iGuaman · Sistem Integrated Bantuan Guaman - 22 Penambahbaikan Status</title>
 <style>
   :root{
     --teal:#00B8A9; --teal-600:#009B8E; --teal-700:#007D72; --teal-50:#E6F8F6; --teal-100:#C7EFEA;
@@ -111,7 +111,7 @@
   <div class="hero">
     <div class="eyebrow">Penambahbaikan Subsistem · Status Report</div>
     <h1>22 enhancements, <b>shipped &amp; tested</b>.</h1>
-    <p class="lead">The full SENARAI PENAMBAHBAIKAN — every improvement request against the consolidated iGuaman app, sequenced foundation-first around a central claim ledger, with the live status, the commit it landed in, and a one-line remark.</p>
+    <p class="lead">The full SENARAI PENAMBAHBAIKAN - every improvement request against the consolidated iGuaman app, sequenced foundation-first around a central claim ledger, with the live status, the commit it landed in, and a one-line remark.</p>
     <div class="quickstats">
       <div class="qs"><b>22</b><span>Wishes in scope</span></div>
       <div class="qs"><b>21</b><span>Fully shipped</span></div>
@@ -150,7 +150,7 @@
       <thead><tr><th>#</th><th>Wish</th><th>Area</th><th>Status</th><th>Commit</th><th>Remark</th></tr></thead>
       <tbody>
 
-        <tr class="phase-head"><td colspan="6">Foundations — DB integrity &amp; the central ledger</td></tr>
+        <tr class="phase-head"><td colspan="6">Foundations - DB integrity &amp; the central ledger</td></tr>
         <tr data-area="X" data-status="done">
           <td class="w">W22</td>
           <td class="wish">DB structure changes for integrity / consistency</td>
@@ -183,7 +183,7 @@
           <td><span class="area a-pp">PP</span></td>
           <td><span class="badge done">✔ DONE</span></td>
           <td class="commit"><code>4689c45</code></td>
-          <td class="remark">Reverse case→KN sync via <code>KesKnSyncService</code> (explicit service calls, not model events) — forms state flows back to <code>khidmat_nasihat</code>.</td>
+          <td class="remark">Reverse case→KN sync via <code>KesKnSyncService</code> (explicit service calls, not model events) - forms state flows back to <code>khidmat_nasihat</code>.</td>
         </tr>
         <tr data-area="PP" data-status="done">
           <td class="w">W10</td>
@@ -217,7 +217,7 @@
           <td><span class="area a-rk">RK</span></td>
           <td><span class="badge done">✔ DONE</span></td>
           <td class="commit"><code>f507a18</code></td>
-          <td class="remark">Shared <code>pemindahan_cawangan</code> engine. All history (<code>sejarah_*</code>, lampiran, ledger) keys off <code>id_kes</code> which never moves — only the branch label does. Dual-branch visibility (D2).</td>
+          <td class="remark">Shared <code>pemindahan_cawangan</code> engine. All history (<code>sejarah_*</code>, lampiran, ledger) keys off <code>id_kes</code> which never moves - only the branch label does. Dual-branch visibility (D2).</td>
         </tr>
         <tr data-area="KN" data-status="done">
           <td class="w">W3</td>
@@ -233,7 +233,7 @@
           <td><span class="area a-rk">RK</span></td>
           <td><span class="badge done">✔ DONE</span></td>
           <td class="commit"><code>8512c27</code></td>
-          <td class="remark"><code>StatistikPemindahanController</code> — 12-month in/out matrix per branch (OUT by origin, IN by destination). Year picker.</td>
+          <td class="remark"><code>StatistikPemindahanController</code> - 12-month in/out matrix per branch (OUT by origin, IN by destination). Year picker.</td>
         </tr>
         <tr data-area="KN" data-status="done">
           <td class="w">W4</td>
@@ -295,7 +295,7 @@
           <td><span class="area a-pa">PA</span></td>
           <td><span class="badge done">✔ DONE</span></td>
           <td class="commit"><code>b06b13f</code></td>
-          <td class="remark">No new table — pembelaan cases are tagged <code>forms</code> rows on the existing 3-tier spine. <code>PBA…</code> number series; ledger row on close.</td>
+          <td class="remark">No new table - pembelaan cases are tagged <code>forms</code> rows on the existing 3-tier spine. <code>PBA…</code> number series; ledger row on close.</td>
         </tr>
         <tr data-area="PA" data-status="done">
           <td class="w">W14</td>
@@ -329,7 +329,7 @@
           <td><span class="area a-x">×</span></td>
           <td><span class="badge done">✔ DONE</span></td>
           <td class="commit"><code>b5ebda0</code></td>
-          <td class="remark">Laravel events + a <b>queued</b> listener (a branch transfer notifies the destination branch). <code>CawanganScope</code> extended beyond <code>forms</code> to <code>khidmat_nasihat</code> — closes the cross-branch read gap.</td>
+          <td class="remark">Laravel events + a <b>queued</b> listener (a branch transfer notifies the destination branch). <code>CawanganScope</code> extended beyond <code>forms</code> to <code>khidmat_nasihat</code> - closes the cross-branch read gap.</td>
         </tr>
         <tr data-area="X" data-status="spike">
           <td class="w">W13</td>
@@ -351,11 +351,11 @@
 
   <div class="note" style="background:var(--paper-2);border-color:var(--line);border-left-color:var(--pine)">
     <span>🛡</span>
-    <div><b>Post-v2 hardening pass (audit remediation):</b> on top of these 22 wishes a full security / architecture / performance / a11y audit was remediated — transactional lifecycle writes, per-branch cache tenancy, cursor-streamed exports, DB integrity backstops (FKs, unique slot tuple), soft-deletes + user deactivation, field-level audit forensics (<code>actor_id</code> + before/after diff), <code>aria-label</code> on every form field, chatbot PII minimisation + PDPA notice, and PHPStan level 5 + CI. Suite 351 → <b>377</b>.</div>
+    <div><b>Post-v2 hardening pass (audit remediation):</b> on top of these 22 wishes a full security / architecture / performance / a11y audit was remediated - transactional lifecycle writes, per-branch cache tenancy, cursor-streamed exports, DB integrity backstops (FKs, unique slot tuple), soft-deletes + user deactivation, field-level audit forensics (<code>actor_id</code> + before/after diff), <code>aria-label</code> on every form field, chatbot PII minimisation + PDPA notice, and PHPStan level 5 + CI. Suite 351 → <b>377</b>.</div>
   </div>
 
   <footer>
-    <span>iGuaman · Sistem Integrated Bantuan Guaman · Penambahbaikan status — merged to <code>main</code> @ <code>213e35b</code>, 377/377 green, pushed to production.</span>
+    <span>iGuaman · Sistem Integrated Bantuan Guaman · Penambahbaikan status - merged to <code>main</code> @ <code>213e35b</code>, 377/377 green, pushed to production.</span>
     <span>JBG · Jabatan Bantuan Guaman Malaysia</span>
   </footer>
 

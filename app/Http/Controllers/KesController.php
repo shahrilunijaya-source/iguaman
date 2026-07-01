@@ -17,12 +17,12 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use RuntimeException;
 
-// Kes (Case) backbone over the `forms` spine — list/filter/search, detail, and permohonan CRUD.
+// Kes (Case) backbone over the `forms` spine - list/filter/search, detail, and permohonan CRUD.
 // Foundation for the rekod-kes domain (pengantaraan/mahkamah build on this).
 class KesController extends Controller
 {
     // PERF-05: filter dropdowns re-scanned forms with DISTINCT on nearly every page.
-    // Cache per user — the Form-based lists are branch-scoped (CawanganScope).
+    // Cache per user - the Form-based lists are branch-scoped (CawanganScope).
     private const LIST_TTL = 300;
 
     public function index(Request $request): View
@@ -67,7 +67,7 @@ class KesController extends Controller
         return redirect()->route('kes.show', $kes)->with('status', 'Permohonan baharu direkodkan. No. Fail: '.$kes->no_fail);
     }
 
-    /** AJAX duplicate-IC guard (legacy check_nokp.php) — returns prior applications for an IC. */
+    /** AJAX duplicate-IC guard (legacy check_nokp.php) - returns prior applications for an IC. */
     public function checkNokp(Request $request): JsonResponse
     {
         $nokp = trim((string) $request->query('nokp', ''));
@@ -127,7 +127,7 @@ class KesController extends Controller
         return redirect()->route('kes.show', $kes)->with('status', 'Kes dikemaskini.');
     }
 
-    /** W7 — transfer form: pick a destination branch for this case. Gated permission:kes.pindah. */
+    /** W7 - transfer form: pick a destination branch for this case. Gated permission:kes.pindah. */
     public function pindahForm(Form $kes): View
     {
         $pending = PemindahanCawangan::where('jenis_rekod', PemindahanCawangan::JENIS_KES)
@@ -142,7 +142,7 @@ class KesController extends Controller
         ]);
     }
 
-    /** W7 — execute the case transfer. The service moves the branch label + records the move. */
+    /** W7 - execute the case transfer. The service moves the branch label + records the move. */
     public function pindah(PindahKesRequest $request, Form $kes): RedirectResponse
     {
         $data = $request->validated();

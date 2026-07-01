@@ -29,14 +29,14 @@
                 <tbody>
                     @foreach ($khidmat as $k)
                         <tr style="border-bottom:1px solid var(--line);">
-                            <td style="padding:10px 12px;">{{ $k->no_permohonan ?: '—' }}</td>
+                            <td style="padding:10px 12px;">{{ $k->no_permohonan ?: '-' }}</td>
                             <td style="padding:10px 12px;">
                                 <span style="font-size:12px;padding:3px 10px;border-radius:999px;background:#f0f9f8;color:var(--pine-deep);font-weight:600;">
                                     {{ $k->status_kn }}
                                 </span>
                             </td>
                             <td style="padding:10px 12px;">
-                                {{ $k->temuJanji?->tarikh_temu_janji?->format('d/m/Y') ?? '—' }}
+                                {{ $k->temuJanji?->tarikh_temu_janji?->format('d/m/Y') ?? '-' }}
                             </td>
                             <td style="padding:10px 12px;text-align:right;">
                                 <a href="{{ route('awam.permohonan.show', $k) }}"

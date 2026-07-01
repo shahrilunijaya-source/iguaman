@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 // Lampiran (case attachments). Files stored on the private repository disk and
-// streamed back through auth — legal documents are never web-public.
-// W6 — 25 MB cap; new files land on the dedicated `repositori` disk, reads fall
+// streamed back through auth - legal documents are never web-public.
+// W6 - 25 MB cap; new files land on the dedicated `repositori` disk, reads fall
 // back to the legacy `local` disk so pre-switch attachments stay reachable.
 class LampiranController extends Controller
 {
@@ -50,7 +50,7 @@ class LampiranController extends Controller
     {
         // Branch/ownership guard: an attachment may only be pulled by a user who can see its
         // owning case (id_kes) or KN (id_khidmat). Both models carry the CawanganScope, so a
-        // whereKey()->exists() returns false when the record is out of the user's branch —
+        // whereKey()->exists() returns false when the record is out of the user's branch -
         // closing the cross-branch attachment IDOR (the read path had no check, unlike destroy()).
         $this->authorizeAttachment($lampiran);
 

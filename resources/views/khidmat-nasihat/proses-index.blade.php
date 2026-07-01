@@ -72,11 +72,11 @@
 
         @forelse ($khidmat as $row)
             <div class="tap-row" style="grid-template-columns: 1.3fr 1.7fr 1.3fr 1fr 1.3fr 1.4fr;">
-                <div class="tap-row__title">{{ $row->no_permohonan ?? '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->nama_mangsa ?? '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->cawangan->nama ?? '—' }}</div>
+                <div class="tap-row__title">{{ $row->no_permohonan ?? '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->nama_mangsa ?? '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->cawangan->nama ?? '-' }}</div>
                 <div class="tap-row__tujuan"><span class="pill pill--received">{{ str_replace('_', ' ', $row->status_kn) }}</span></div>
-                <div class="tap-row__tujuan">{{ $row->pegawaiKn->name ?? '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->pegawaiKn->name ?? '-' }}</div>
                 <div class="tap-row__tujuan" style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                     @include('khidmat-nasihat.partials.proses-actions', ['row' => $row, 'pegawaiList' => $pegawaiList])
                     <a href="{{ route('khidmat.show', $row) }}" class="tap-head__btn">›</a>

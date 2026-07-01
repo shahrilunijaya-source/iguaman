@@ -6,7 +6,7 @@
     <div class="tap-head">
         <div>
             <h1 class="tap-head__title">Failkan Tuntutan<span class="dot"></span></h1>
-            <p class="tap-head__sub">Kes: <strong>{{ $kes->no_fail ?? $kes->id }}</strong> — {{ $kes->nama }}</p>
+            <p class="tap-head__sub">Kes: <strong>{{ $kes->no_fail ?? $kes->id }}</strong> - {{ $kes->nama }}</p>
         </div>
         <a href="{{ route('peguam.kes.show', $kes) }}" class="btn">‹ Kembali</a>
     </div>

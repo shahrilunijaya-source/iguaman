@@ -23,12 +23,12 @@
             <div class="tap-card__eyebrow">Maklumat Pemohon</div>
             <div class="tap-card__row"><div class="k">Nama</div><div class="v">{{ $p->namaPeguam }}</div></div>
             <div class="tap-card__row"><div class="k">No. KP</div><div class="v">{{ $p->kpBaru }}</div></div>
-            <div class="tap-card__row"><div class="k">Telefon</div><div class="v">{{ $p->noTelBimbit ?: '—' }}</div></div>
-            <div class="tap-card__row"><div class="k">Emel</div><div class="v">{{ $p->emelPeguam ?: '—' }}</div></div>
-            <div class="tap-card__row"><div class="k">Kelulusan Akademik</div><div class="v">{{ $p->kelulusanAkademik ?: '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Telefon</div><div class="v">{{ $p->noTelBimbit ?: '-' }}</div></div>
+            <div class="tap-card__row"><div class="k">Emel</div><div class="v">{{ $p->emelPeguam ?: '-' }}</div></div>
+            <div class="tap-card__row"><div class="k">Kelulusan Akademik</div><div class="v">{{ $p->kelulusanAkademik ?: '-' }}</div></div>
             <div class="tap-card__row"><div class="k">Pengalaman</div><div class="v">{{ $p->tahunPengalaman ?: '0' }} tahun · {{ $p->bilanganKes ?: '0' }} kes</div></div>
-            <div class="tap-card__row"><div class="k">Keterangan Kes</div><div class="v">{{ $p->keteranganKes ?: '—' }}</div></div>
-            <div class="tap-card__row"><div class="k">Tarikh Mohon</div><div class="v">{{ optional($p->tarikhMohon)->format('d/m/Y') ?: '—' }}</div></div>
+            <div class="tap-card__row"><div class="k">Keterangan Kes</div><div class="v">{{ $p->keteranganKes ?: '-' }}</div></div>
+            <div class="tap-card__row"><div class="k">Tarikh Mohon</div><div class="v">{{ optional($p->tarikhMohon)->format('d/m/Y') ?: '-' }}</div></div>
             @if ($p->permohonan_status === '2' && $p->sebabTidakDiluluskan)
                 <div class="tap-card__row"><div class="k">Sebab Tolak</div><div class="v">{{ $p->sebabTidakDiluluskan }}</div></div>
             @endif
@@ -44,7 +44,7 @@
                 @if ($p->semakan_ppuu !== null && $p->semakan_ppuu !== '')
                     <p class="vb-sub" style="margin:0 0 10px;">
                         <strong>{{ $p->semakan_ppuu === '1' ? 'Disemak & Disokong' : 'Tidak Disokong' }}</strong>
-                        @if ($p->ulasan_semakan_ppuu) — {{ $p->ulasan_semakan_ppuu }} @endif
+                        @if ($p->ulasan_semakan_ppuu) - {{ $p->ulasan_semakan_ppuu }} @endif
                     </p>
                 @endif
                 @can('peguam.semak')
@@ -68,7 +68,7 @@
                 @if ($p->sokonganPengarah !== null && $p->sokonganPengarah !== '')
                     <p class="vb-sub" style="margin:0 0 10px;">
                         <strong>{{ $p->sokonganPengarah === '1' ? 'Disokong' : 'Tidak Disokong' }}</strong>
-                        @if ($p->ulasan_sokonganPengarah) — {{ $p->ulasan_sokonganPengarah }} @endif
+                        @if ($p->ulasan_sokonganPengarah) - {{ $p->ulasan_sokonganPengarah }} @endif
                     </p>
                 @endif
                 @can('peguam.sokong')

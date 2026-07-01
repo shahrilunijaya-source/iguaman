@@ -10,7 +10,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Public satisfaction-feedback submission (batch 12 slice 1). No auth — the
+ * Public satisfaction-feedback submission (batch 12 slice 1). No auth - the
  * route is a public, throttled link. Validates the JBG-awareness checkboxes
  * (at least one), the conditional free text, and the satisfaction enum.
  */

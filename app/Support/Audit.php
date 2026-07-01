@@ -7,8 +7,8 @@ use App\Models\AuditTrail;
 /**
  * Thin writer for the legacy audit_trail table.
  *
- *  - log()     — record-level entry (field_name/old/new null) with a human-readable remark.
- *  - changes() — LOG-05 field-level before/after diff (one row per changed field).
+ *  - log()     - record-level entry (field_name/old/new null) with a human-readable remark.
+ *  - changes() - LOG-05 field-level before/after diff (one row per changed field).
  *
  * Both stamp the acting user's id (LOG-06) alongside the display name. action_type must
  * match the legacy enum.
@@ -42,7 +42,7 @@ class Audit
     }
 
     /**
-     * LOG-05 — write a before/after diff for a sensitive update: one row per field whose value
+     * LOG-05 - write a before/after diff for a sensitive update: one row per field whose value
      * actually changed. Falls back to a single record-level entry when nothing changed so the
      * action still leaves a breadcrumb.
      *

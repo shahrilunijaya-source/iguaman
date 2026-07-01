@@ -72,7 +72,7 @@ class AgihanSpineController extends Controller
         ]);
     }
 
-    /** Entry — send an approved, unassigned case into the spine (NULL→0). agihan.manage. */
+    /** Entry - send an approved, unassigned case into the spine (NULL→0). agihan.manage. */
     public function masuk(Form $kes, AgihanService $svc): RedirectResponse
     {
         abort_unless(StatusAgihan::normalise($kes->status_agihan) === null, 422, 'Kes ini sudah dalam proses agihan.');
@@ -82,7 +82,7 @@ class AgihanSpineController extends Controller
         return redirect()->route('agihan.maklumat', $kes)->with('status', 'Kes dihantar ke proses agihan. Menunggu tindakan Pengarah.');
     }
 
-    /** Recovery — re-open a Pengarah-rejected case for another assignment attempt (9→0). */
+    /** Recovery - re-open a Pengarah-rejected case for another assignment attempt (9→0). */
     public function bukaSemula(Request $request, Form $kes, AgihanService $svc): RedirectResponse
     {
         $data = $request->validate(['ulasan' => ['nullable', 'string', 'max:255']]);
@@ -93,7 +93,7 @@ class AgihanSpineController extends Controller
         return back()->with('status', 'Kes dibuka semula untuk pertimbangan agihan baharu.');
     }
 
-    /** Recovery — abandon assignment of a rejected case (9→NULL, stays in rekod kes). */
+    /** Recovery - abandon assignment of a rejected case (9→NULL, stays in rekod kes). */
     public function batalAgihan(Request $request, Form $kes, AgihanService $svc): RedirectResponse
     {
         $data = $request->validate(['sebab' => ['required', 'string', 'max:255']]);
@@ -104,7 +104,7 @@ class AgihanSpineController extends Controller
         return back()->with('status', 'Agihan kes dibatalkan.');
     }
 
-    /** Tier 1 — Pengarah accepts a new case + assigns a PPUU (0→8). */
+    /** Tier 1 - Pengarah accepts a new case + assigns a PPUU (0→8). */
     public function pengarahTerima(Request $request, Form $kes, AgihanService $svc): RedirectResponse
     {
         $data = $request->validate(['idPPUU' => ['required', 'integer', 'exists:users,id']]);
@@ -112,10 +112,10 @@ class AgihanSpineController extends Controller
 
         $svc->pengarahTerima($kes, $request->user(), (int) $data['idPPUU']);
 
-        return back()->with('status', 'Agihan baru diterima — diserah kepada PPUU untuk pemilihan peguam.');
+        return back()->with('status', 'Agihan baru diterima - diserah kepada PPUU untuk pemilihan peguam.');
     }
 
-    /** Tier 1 — Pengarah rejects a new case (0→9). */
+    /** Tier 1 - Pengarah rejects a new case (0→9). */
     public function pengarahTolak(Request $request, Form $kes, AgihanService $svc): RedirectResponse
     {
         $data = $request->validate(['sebab' => ['required', 'string', 'max:255']]);
@@ -126,7 +126,7 @@ class AgihanSpineController extends Controller
         return back()->with('status', 'Agihan baru ditolak.');
     }
 
-    /** Tier 2 — PPUU picks a panel lawyer (8→10, or re-pick from 4/15). */
+    /** Tier 2 - PPUU picks a panel lawyer (8→10, or re-pick from 4/15). */
     public function ppuuPilih(Request $request, Form $kes, AgihanService $svc): RedirectResponse
     {
         $data = $request->validate([
@@ -146,10 +146,10 @@ class AgihanSpineController extends Controller
             'ulasan' => $data['ulasan'] ?? null,
         ]);
 
-        return back()->with('status', "Peguam {$peguam->nama_peguam} dipilih — dihantar untuk sokongan Pengarah.");
+        return back()->with('status', "Peguam {$peguam->nama_peguam} dipilih - dihantar untuk sokongan Pengarah.");
     }
 
-    /** Tier 2 — Pengarah endorses (→13) or rejects (→4) the PPUU pick. */
+    /** Tier 2 - Pengarah endorses (→13) or rejects (→4) the PPUU pick. */
     public function pengarahKeputusan(Request $request, Form $kes, AgihanService $svc): RedirectResponse
     {
         $data = $request->validate([
@@ -160,16 +160,16 @@ class AgihanSpineController extends Controller
 
         if ($data['keputusan'] === 'sokong') {
             $svc->pengarahSokong($kes, $request->user(), $data['ulasan'] ?? null);
-            $msg = 'Pemilihan disokong — dihantar untuk kelulusan Ketua Pengarah.';
+            $msg = 'Pemilihan disokong - dihantar untuk kelulusan Ketua Pengarah.';
         } else {
             $svc->pengarahTidakSokong($kes, $request->user(), $data['ulasan']);
-            $msg = 'Pemilihan tidak disokong — dikembalikan kepada PPUU.';
+            $msg = 'Pemilihan tidak disokong - dikembalikan kepada PPUU.';
         }
 
         return back()->with('status', $msg);
     }
 
-    /** Tier 3 — Ketua Pengarah approves (→1 offer) or rejects (→15) the assignment. */
+    /** Tier 3 - Ketua Pengarah approves (→1 offer) or rejects (→15) the assignment. */
     public function kpKeputusan(Request $request, Form $kes, AgihanService $svc): RedirectResponse
     {
         $data = $request->validate([
@@ -180,10 +180,10 @@ class AgihanSpineController extends Controller
 
         if ($data['keputusan'] === 'lulus') {
             $svc->kpLulus($kes, $request->user(), $data['ulasan'] ?? null);
-            $msg = 'Agihan diluluskan — ditawarkan kepada peguam panel.';
+            $msg = 'Agihan diluluskan - ditawarkan kepada peguam panel.';
         } else {
             $svc->kpTolak($kes, $request->user(), $data['ulasan']);
-            $msg = 'Agihan tidak diluluskan — dikembalikan kepada PPUU.';
+            $msg = 'Agihan tidak diluluskan - dikembalikan kepada PPUU.';
         }
 
         return back()->with('status', $msg);
@@ -202,7 +202,7 @@ class AgihanSpineController extends Controller
                 && $is([User::ROLE_PPUU, User::ROLE_KOORDINATOR, User::ROLE_ADMIN]) => 'ppuu_pilih',
             $status === StatusAgihan::SOKONGAN_PENGARAH && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'pengarah_sokong',
             $status === StatusAgihan::KELULUSAN_KP && $is([User::ROLE_KETUA_PENGARAH, User::ROLE_ADMIN]) => 'kp_keputusan',
-            // Pengarah-rejected case (9): recovery — re-open or abandon.
+            // Pengarah-rejected case (9): recovery - re-open or abandon.
             $status === StatusAgihan::DITOLAK_PENGARAH && $is([User::ROLE_PENGARAH, User::ROLE_ADMIN]) => 'ditolak_pengarah',
             default => null,
         };

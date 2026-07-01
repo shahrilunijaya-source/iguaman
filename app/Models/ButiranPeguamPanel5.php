@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** butiran_peguam_panel_5 — lawyer payment bank account. */
+/** butiran_peguam_panel_5 - lawyer payment bank account. */
 class ButiranPeguamPanel5 extends Model
 {
     protected $table = 'butiran_peguam_panel_5';

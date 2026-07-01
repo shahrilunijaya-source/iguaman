@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Khidmat Nasihat category — level 2 (.NET "JenisKes").
+ * Khidmat Nasihat category - level 2 (.NET "JenisKes").
  *
  * @property int $id
  * @property int $kategori_id

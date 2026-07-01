@@ -4,7 +4,7 @@
 @section('subtajuk', ($kes->no_fail ? 'No. Fail: '.$kes->no_fail : 'Kes #'.$kes->id).($kes->no_sistem ? ' · No. Sistem: '.$kes->no_sistem : ''))
 
 @section('kepala_kanan')
-    No. Fail: <strong>{{ $kes->no_fail ?: '—' }}</strong><br>
+    No. Fail: <strong>{{ $kes->no_fail ?: '-' }}</strong><br>
     Tarikh: {{ $tarikhCetak }}
 @endsection
 
@@ -14,7 +14,7 @@
     $butiran = array_filter([
         'Nama OYD' => $kes->nama,
         'No. KP' => $kes->nokp,
-        'Kategori / Jenis Kes' => trim(($kes->kategori_kes ?: '—').' · '.($kes->jenis_kes ?: '—'), ' ·'),
+        'Kategori / Jenis Kes' => trim(($kes->kategori_kes ?: '-').' · '.($kes->jenis_kes ?: '-'), ' ·'),
         'Cawangan' => $kes->cawangan,
         'Peguam Panel' => $kes->nama_pegawai_yang_dapat_kes,
         'Tarikh Penugasan Peguam' => $f($kes->tarikh_penugasan_peguam_panel),
@@ -51,7 +51,7 @@
         <tr>
             <td>
                 <div class="line">Pegawai Bertanggungjawab</div>
-                {{ $oleh ?? '—' }}<br>
+                {{ $oleh ?? '-' }}<br>
                 <span class="muted">Jabatan Bantuan Guaman</span>
             </td>
             <td>

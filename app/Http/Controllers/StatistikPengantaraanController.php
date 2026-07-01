@@ -10,7 +10,7 @@ use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Statistik Penugasan Pengantaraan — two all-branch assignment matrices
+ * Statistik Penugasan Pengantaraan - two all-branch assignment matrices
  * (P1, legacy statistik_penugasan_pengantaraan + _bulanan). HQ-gated in routes;
  * PengantaraanMatrix bypasses CawanganScope on purpose (fixed 23-branch axis).
  */

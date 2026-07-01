@@ -27,7 +27,7 @@
 <div class="tap-head">
     <div>
         <h1 class="tap-head__title">Agihan Peguam Luar<span class="dot"></span></h1>
-        <p class="tap-head__sub">Agih Khidmat Nasihat selesai kepada peguam panel luar — buka grab (siapa cepat) atau agih terus.</p>
+        <p class="tap-head__sub">Agih Khidmat Nasihat selesai kepada peguam panel luar - buka grab (siapa cepat) atau agih terus.</p>
     </div>
 </div>
 
@@ -65,9 +65,9 @@
                     @php $pl = $k->status_agihan_pl; @endphp
                     <tr>
                         <td>@can('khidmat.view')<a href="{{ route('khidmat.show', $k) }}">{{ $k->id }}</a>@else{{ $k->id }}@endcan</td>
-                        <td>{{ $k->no_permohonan ?: '—' }}</td>
-                        <td>{{ $k->nama_mangsa ?: '—' }}</td>
-                        <td>{{ optional($k->cawangan)->nama ?: '—' }}</td>
+                        <td>{{ $k->no_permohonan ?: '-' }}</td>
+                        <td>{{ $k->nama_mangsa ?: '-' }}</td>
+                        <td>{{ optional($k->cawangan)->nama ?: '-' }}</td>
                         <td>
                             @if ($pl && isset($plLabel[$pl]))
                                 <span class="al-pill {{ $plLabel[$pl][1] }}">{{ $plLabel[$pl][0] }}</span>
@@ -75,7 +75,7 @@
                                 <span class="al-pill al-pill--baru">Belum Diagih</span>
                             @endif
                         </td>
-                        <td>{{ optional($k->peguamPanel)->nama_peguam ?: '—' }}</td>
+                        <td>{{ optional($k->peguamPanel)->nama_peguam ?: '-' }}</td>
                         <td>
                             <div class="al-actions">
                                 @if ($pl !== \App\Models\KhidmatNasihat::PL_DIAGIH)

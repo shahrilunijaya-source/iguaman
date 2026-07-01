@@ -15,7 +15,7 @@
 <div class="tap-head">
     <div>
         <h1 class="tap-head__title">Pengesahan Selesai<span class="dot"></span></h1>
-        <p class="tap-head__sub">Kes yang ditandakan selesai oleh peguam panel — menunggu pengesahan &amp; penutupan fail JBG</p>
+        <p class="tap-head__sub">Kes yang ditandakan selesai oleh peguam panel - menunggu pengesahan &amp; penutupan fail JBG</p>
     </div>
 </div>
 
@@ -41,11 +41,11 @@
                 @foreach ($kes as $k)
                     <tr>
                         <td><a href="{{ route('kes.show', $k) }}">{{ $k->id }}</a></td>
-                        <td>{{ $k->no_fail ?: '—' }}</td>
-                        <td>{{ $k->nama ?: '—' }}</td>
-                        <td>{{ $k->cawangan ?: '—' }}</td>
-                        <td>{{ $k->nama_pegawai_yang_dapat_kes ?: '—' }}</td>
-                        <td>{{ optional($k->tarikh_selesai)->format('d/m/Y') ?: '—' }}</td>
+                        <td>{{ $k->no_fail ?: '-' }}</td>
+                        <td>{{ $k->nama ?: '-' }}</td>
+                        <td>{{ $k->cawangan ?: '-' }}</td>
+                        <td>{{ $k->nama_pegawai_yang_dapat_kes ?: '-' }}</td>
+                        <td>{{ optional($k->tarikh_selesai)->format('d/m/Y') ?: '-' }}</td>
                         <td>
                             <div class="ks-actions">
                                 <form method="POST" action="{{ route('keputusan.kes.sahkan-selesai', $k) }}" onsubmit="return confirm('Sahkan penyelesaian & tutup fail kes ini?')">

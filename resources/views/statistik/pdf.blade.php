@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-    <h1>Sistem Integrated Bantuan Guaman — Laporan Statistik</h1>
+    <h1>Sistem Integrated Bantuan Guaman - Laporan Statistik</h1>
     <div class="meta">Dijana {{ $dijana }} oleh {{ $oleh }}</div>
 
     <table class="kpis">

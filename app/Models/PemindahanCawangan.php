@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * W7 + W3 — a single branch-transfer of a case (forms) or advisory
+ * W7 + W3 - a single branch-transfer of a case (forms) or advisory
  * (khidmat_nasihat). Polymorphic over `jenis_rekod` + `id_rekod`; the moved
  * record's branch label is changed at transfer time, this row tracks the
  * DIPINDAH -> DITERIMA/DITOLAK lifecycle (reject reverses the label).
  *
- * No DB FKs — id_rekod / cawangan_*_id are soft links (legacy signed-int ids).
+ * No DB FKs - id_rekod / cawangan_*_id are soft links (legacy signed-int ids).
  * No CawanganScope here; branch isolation is enforced in
  * {@see TransferCawanganService}.
  */

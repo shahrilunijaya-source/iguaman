@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Support;
 
 /**
- * ARCH-04 — Malay month names, the single source for statistik period labels.
+ * ARCH-04 - Malay month names, the single source for statistik period labels.
  * Previously copied verbatim into KesilapanController, StatistikSlaController and
  * PengantaraanMatrix.
  */

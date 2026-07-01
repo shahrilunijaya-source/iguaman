@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Concerns;
 use Illuminate\Http\Request;
 
 /**
- * ARCH-04 / CODE-06 — shared statistik period parsing. The identical year()/month()
+ * ARCH-04 / CODE-06 - shared statistik period parsing. The identical year()/month()
  * helpers were duplicated across StatistikSlaController, StatistikPengantaraanController
  * (and inline elsewhere); this is the one definition.
  */

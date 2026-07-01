@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * forms — the case spine (94 cols): legal-aid application, mediation, court case, assignment.
+ * forms - the case spine (94 cols): legal-aid application, mediation, court case, assignment.
  * Legacy column names preserved. Decompose into Case + detail tables in a later phase.
  */
 class Form extends Model
@@ -47,7 +47,7 @@ class Form extends Model
     ];
 
     /**
-     * W9 — civil litigation rows (everything that is NOT tagged Pembelaan Awam).
+     * W9 - civil litigation rows (everything that is NOT tagged Pembelaan Awam).
      * `is_pembelaan_awam` defaults to 0, so legacy/civil rows match without a backfill.
      */
     public function scopeLitigasi(Builder $query): Builder
@@ -57,14 +57,14 @@ class Form extends Model
         });
     }
 
-    /** W9 — Pembelaan Awam (public criminal defence) rows only. */
+    /** W9 - Pembelaan Awam (public criminal defence) rows only. */
     public function scopePembelaan(Builder $query): Builder
     {
         return $query->where('is_pembelaan_awam', true);
     }
 
     /**
-     * ARCH-03 — shared free-text case search (nama / nokp / no_fail). This exact
+     * ARCH-03 - shared free-text case search (nama / nokp / no_fail). This exact
      * predicate was copy-pasted into KesController (list + closed) and
      * StatistikController; one definition here stops the three drifting apart.
      */

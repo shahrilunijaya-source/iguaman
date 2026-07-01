@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 // Server-side proxy to the standalone JBG chatbot microservice (Python/FastAPI).
-// The browser widget only ever talks to this endpoint — the bot's basic-auth creds
+// The browser widget only ever talks to this endpoint - the bot's basic-auth creds
 // and JWT never reach the client. The two-step token+forward protocol lives in the
 // ChatbotClient adapter (ARCH-06); this controller owns transport + the session id.
 class ChatbotController extends Controller
@@ -26,7 +26,7 @@ class ChatbotController extends Controller
             $request->session()->put('chatbot_sid', $sid);
         }
 
-        // CFG-13: minimise PII sent to the external AI service — do NOT forward the user's name.
+        // CFG-13: minimise PII sent to the external AI service - do NOT forward the user's name.
         // The bot only needs the message + a stable session id for conversation threading; it
         // types user_name as a required string, so send '' (the guest value) for everyone.
         $result = $bot->ask($data['message'], (int) $sid, '');

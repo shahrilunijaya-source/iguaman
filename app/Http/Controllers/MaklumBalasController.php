@@ -14,7 +14,7 @@ use Illuminate\View\View;
 
 /**
  * Public satisfaction-feedback flow (batch 12 slice 1). A citizen opens a link
- * after their advisory appointment is SELESAI — no login. One feedback per KN,
+ * after their advisory appointment is SELESAI - no login. One feedback per KN,
  * enforced by the DB unique index plus an app-level guard. Throttled at routes.
  */
 class MaklumBalasController extends Controller

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/** sejarah_sidang — hearing/session history for a case. */
+/** sejarah_sidang - hearing/session history for a case. */
 class SejarahSidang extends Model
 {
     protected $table = 'sejarah_sidang';

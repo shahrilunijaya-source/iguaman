@@ -7,7 +7,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * W3 — validate a Khidmat Nasihat branch-transfer. Authorization is at the route
+ * W3 - validate a Khidmat Nasihat branch-transfer. Authorization is at the route
  * (permission:khidmat.manage); the service enforces origin-branch + status guards.
  */
 class PindahKnRequest extends FormRequest

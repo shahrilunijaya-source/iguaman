@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 /**
- * W15 — lawyer self-service claim ledger (peguam area, gate lawyer.area).
+ * W15 - lawyer self-service claim ledger (peguam area, gate lawyer.area).
  * A lawyer files claims against cases assigned to them and tracks their status.
  */
 class TuntutanController extends Controller
@@ -58,7 +58,7 @@ class TuntutanController extends Controller
 
         if ($seeded !== null) {
             return redirect()->route('peguam.tuntutan.show', $seeded)
-                ->with('status', 'Tuntutan Peguam Luar untuk kes ini telah wujud — sila lengkapkan dan hantar di bawah.');
+                ->with('status', 'Tuntutan Peguam Luar untuk kes ini telah wujud - sila lengkapkan dan hantar di bawah.');
         }
 
         $data = $request->validate([
@@ -95,7 +95,7 @@ class TuntutanController extends Controller
     }
 
     /**
-     * W5 — fill the amount on a KN-seeded DRAF PEGUAM_LUAR claim and submit it (DRAF -> DIHANTAR).
+     * W5 - fill the amount on a KN-seeded DRAF PEGUAM_LUAR claim and submit it (DRAF -> DIHANTAR).
      * The only lawyer-driven way to complete a row seeded at external-lawyer assignment.
      */
     public function lengkap(Request $request, LejarTuntutanBayaran $tuntutan): RedirectResponse
@@ -120,7 +120,7 @@ class TuntutanController extends Controller
             ->with('status', "Tuntutan {$tuntutan->no_tuntutan} dihantar.");
     }
 
-    /** The signed-in lawyer's IC (kpBaru) — the ledger join key. */
+    /** The signed-in lawyer's IC (kpBaru) - the ledger join key. */
     private function lawyerKp(): ?string
     {
         $user = Auth::user();

@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-// OYD (Orang Yang Dibantu) registry — beneficiary master records (butiran_oyd).
+// OYD (Orang Yang Dibantu) registry - beneficiary master records (butiran_oyd).
 class OydController extends Controller
 {
     public function index(Request $request): View

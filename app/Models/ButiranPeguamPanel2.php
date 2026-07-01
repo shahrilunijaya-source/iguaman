@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-/** butiran_peguam_panel_2 — lawyer panel application v2 (director endorsement + KP decision workflow). */
+/** butiran_peguam_panel_2 - lawyer panel application v2 (director endorsement + KP decision workflow). */
 class ButiranPeguamPanel2 extends Model
 {
     protected $table = 'butiran_peguam_panel_2';
@@ -15,7 +15,7 @@ class ButiranPeguamPanel2 extends Model
 
     protected $guarded = ['id'];
 
-    /** Application track (W10) — forks the approver tier. */
+    /** Application track (W10) - forks the approver tier. */
     public const JALUR_JENAYAH = 'JENAYAH';
 
     public const JALUR_SIVIL_SYARIAH = 'SIVIL_SYARIAH';

@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-// Pegawai JBG officer registry — managed list (pegawai_jbg). Supervisory roles only (routes).
+// Pegawai JBG officer registry - managed list (pegawai_jbg). Supervisory roles only (routes).
 class PegawaiController extends Controller
 {
     private function rules(): array

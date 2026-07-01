@@ -22,7 +22,7 @@
     <div class="tap-head">
         <div>
             <h1 class="tap-head__title">Kes Mahkamah<span class="dot"></span></h1>
-            <p class="tap-head__sub">{{ $kes->nama }} · {{ $kes->no_fail ?: '—' }}</p>
+            <p class="tap-head__sub">{{ $kes->nama }} · {{ $kes->no_fail ?: '-' }}</p>
         </div>
     </div>
 
@@ -102,7 +102,7 @@
         @forelse ($kes->laporanKes as $lap)
             <div class="tap-card__row" style="grid-template-columns: 1fr auto;">
                 <div>
-                    <div class="v"><strong>{{ $lap->no_kes ?: 'Laporan #'.$lap->id }}</strong> — {{ $lap->status_kes ?: '—' }}</div>
+                    <div class="v"><strong>{{ $lap->no_kes ?: 'Laporan #'.$lap->id }}</strong> - {{ $lap->status_kes ?: '-' }}</div>
                     <div class="k" style="text-transform:none; margin-top:2px;">{{ $lap->isu ?: ($lap->pihak_pihak ?: '') }} {{ $lap->tarikh_sebutan ? '· sebutan '.optional($lap->tarikh_sebutan)->format('d/m/Y') : '' }}</div>
                 </div>
                 <form method="POST" action="{{ route('laporan.destroy', [$kes, $lap]) }}" onsubmit="return confirm('Padam laporan ini?')">

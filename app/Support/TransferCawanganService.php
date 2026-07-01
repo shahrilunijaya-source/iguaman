@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
- * W7 + W3 — shared branch-transfer engine for cases (forms) and advisories
+ * W7 + W3 - shared branch-transfer engine for cases (forms) and advisories
  * (khidmat_nasihat). Mirrors the W5 AgihanLuarService lock-based pattern:
  * each public method is ONE guarded transition under DB::transaction +
  * lockForUpdate, with Audit::log AFTER the txn. Guards throw RuntimeException
@@ -30,7 +30,7 @@ use RuntimeException;
  *
  * Branch identity is asymmetric: forms key on `cawangan` (a NAME string, scoped
  * by CawanganScope), khidmat_nasihat keys on `cawangan_id` (an int, no global
- * scope) — so each path resolves and guards on its own column.
+ * scope) - so each path resolves and guards on its own column.
  */
 class TransferCawanganService
 {
@@ -74,7 +74,7 @@ class TransferCawanganService
         Audit::log('forms', $kes->id, Audit::UPDATE,
             "Kes dipindahkan ke cawangan {$pindah->cawangan_tujuan} (kes #{$kes->id}).", $actor->name);
 
-        // W21 — notify the destination branch (queued; never rolls back the transfer).
+        // W21 - notify the destination branch (queued; never rolls back the transfer).
         PemindahanCawanganDimulakan::dispatch($pindah);
 
         return $pindah;
@@ -96,7 +96,7 @@ class TransferCawanganService
             $asalId = $fresh->cawangan_id;
 
             if ($asalId === null) {
-                throw new RuntimeException('Khidmat Nasihat ini tiada cawangan asal — tidak boleh dipindahkan.');
+                throw new RuntimeException('Khidmat Nasihat ini tiada cawangan asal - tidak boleh dipindahkan.');
             }
 
             if ($tujuan->id === (int) $asalId) {
@@ -127,13 +127,13 @@ class TransferCawanganService
         Audit::log('khidmat_nasihat', $kn->id, Audit::UPDATE,
             "Khidmat Nasihat dipindahkan ke cawangan {$pindah->cawangan_tujuan} (KN #{$kn->id}).", $actor->name);
 
-        // W21 — notify the destination branch (queued; never rolls back the transfer).
+        // W21 - notify the destination branch (queued; never rolls back the transfer).
         PemindahanCawanganDimulakan::dispatch($pindah);
 
         return $pindah;
     }
 
-    /** Destination accepts the transfer (acknowledgement only — the label already moved). */
+    /** Destination accepts the transfer (acknowledgement only - the label already moved). */
     public function terima(PemindahanCawangan $pindah, User $actor): void
     {
         $rekodId = DB::transaction(function () use ($pindah, $actor): int {
@@ -155,7 +155,7 @@ class TransferCawanganService
             "Pemindahan ke cawangan {$pindah->cawangan_tujuan} diterima.", $actor->name);
     }
 
-    /** Destination rejects the transfer — reverse the branch label back to the origin. */
+    /** Destination rejects the transfer - reverse the branch label back to the origin. */
     public function tolak(PemindahanCawangan $pindah, string $sebab, User $actor): void
     {
         $rekodId = DB::transaction(function () use ($pindah, $sebab, $actor): int {
@@ -195,7 +195,7 @@ class TransferCawanganService
         });
 
         Audit::log($this->auditTable($pindah), $rekodId, Audit::REJECT,
-            "Pemindahan ke cawangan {$pindah->cawangan_tujuan} ditolak — dikembalikan ke {$pindah->cawangan_asal}.", $actor->name);
+            "Pemindahan ke cawangan {$pindah->cawangan_tujuan} ditolak - dikembalikan ke {$pindah->cawangan_asal}.", $actor->name);
     }
 
     /**

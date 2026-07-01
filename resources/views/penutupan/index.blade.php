@@ -41,15 +41,15 @@
 
         @forelse ($penutupan as $row)
             <div class="tap-row" style="grid-template-columns: 1.6fr 1.2fr 1.4fr 2fr 70px;">
-                <div class="tap-row__title">{{ $row->cawangan->nama ?? '—' }}</div>
+                <div class="tap-row__title">{{ $row->cawangan->nama ?? '-' }}</div>
                 <div class="tap-row__tujuan">{{ $row->bilik->nama_bilik ?? 'Seluruh cawangan' }}</div>
                 <div class="tap-row__tujuan">
-                    {{ optional($row->tarikh_mula)->format('d/m/Y') ?: '—' }}
+                    {{ optional($row->tarikh_mula)->format('d/m/Y') ?: '-' }}
                     @if ($row->tarikh_tamat && optional($row->tarikh_mula)?->format('Y-m-d') !== $row->tarikh_tamat->format('Y-m-d'))
                         – {{ $row->tarikh_tamat->format('d/m/Y') }}
                     @endif
                 </div>
-                <div class="tap-row__tujuan">{{ $row->sebab ?: '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->sebab ?: '-' }}</div>
                 <div style="text-align:right;">
                     <form method="POST" action="{{ route('penutupan.destroy', $row) }}" onsubmit="return confirm('Padam penutupan ini?')">
                         @csrf @method('DELETE')

@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 /**
  * Auto re-assign panel-lawyer offers left unanswered past the 7-day window
- * (EPIC G — legacy cron_lebih_masa.php). Scheduled daily in routes/console.php.
+ * (EPIC G - legacy cron_lebih_masa.php). Scheduled daily in routes/console.php.
  */
 class AgihanLebihMasa extends Command
 {

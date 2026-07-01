@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 /**
- * ARCH-02 — litigation-case core, extracted from KesController so the create/update
+ * ARCH-02 - litigation-case core, extracted from KesController so the create/update
  * rules live in a testable service like every sibling domain (KhidmatProses, LejarTuntutan,
  * Pengantaraan …) rather than inline in the transport layer.
  */
@@ -19,7 +19,7 @@ class KesService
 
     /**
      * Register a new litigation case. Stamps the legacy audit columns, then generates
-     * the file number when the officer left it blank — both in one transaction so a
+     * the file number when the officer left it blank - both in one transaction so a
      * case never persists without its running no_fail (legacy generated it at intake).
      */
     public function cipta(array $data, User $actor): Form

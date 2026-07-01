@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
- * W9 — Pembelaan Awam (public criminal defence) register.
+ * W9 - Pembelaan Awam (public criminal defence) register.
  *
  * Per decision D3, pembelaan cases are tagged `forms` rows (is_pembelaan_awam = 1), not a
  * separate table. This controller owns intake + the criminal-defence register; assignment,
@@ -83,7 +83,7 @@ class PembelaanAwamController extends Controller
         $data['didaftarkan_oleh'] = $request->user()->name;
         $data['diterima'] = ''; // NOT NULL in legacy schema
 
-        // PROC-02: create + file-number assignment + audit are atomic — a failure after create
+        // PROC-02: create + file-number assignment + audit are atomic - a failure after create
         // must not leave a registered case with a blank no_fail (an orphan with no file number).
         $kes = DB::transaction(function () use ($data) {
             $kes = Form::create($data);
@@ -112,7 +112,7 @@ class PembelaanAwamController extends Controller
         ]);
     }
 
-    /** W14 — issue an interim legal-aid certificate (SEGERA cases; override via perm). */
+    /** W14 - issue an interim legal-aid certificate (SEGERA cases; override via perm). */
     public function keluarInterim(Request $request, Form $kes, PerakuanService $svc): RedirectResponse
     {
         abort_unless((bool) $kes->is_pembelaan_awam, 404);
@@ -124,7 +124,7 @@ class PembelaanAwamController extends Controller
         return back()->with('status', 'Perakuan interim dikeluarkan. No. Perakuan: '.$kes->fresh()->no_perakuan);
     }
 
-    /** W14 — finalise an interim certificate to muktamad. */
+    /** W14 - finalise an interim certificate to muktamad. */
     public function muktamad(Request $request, Form $kes, PerakuanService $svc): RedirectResponse
     {
         abort_unless((bool) $kes->is_pembelaan_awam, 404);

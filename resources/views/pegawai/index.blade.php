@@ -48,9 +48,9 @@
         @forelse ($pegawai as $row)
             <div class="tap-row" style="grid-template-columns: 2fr 1.4fr 1.2fr 1fr 90px 90px;">
                 <div class="tap-row__title">{{ $row->nama }}</div>
-                <div class="tap-row__tujuan">{{ $row->jawatan ?: '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->bahagian ?: '—' }}</div>
-                <div class="tap-row__tujuan">{{ $row->cawangan ?: '—' }}</div>
+                <div class="tap-row__tujuan">{{ $row->jawatan ?: '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->bahagian ?: '-' }}</div>
+                <div class="tap-row__tujuan">{{ $row->cawangan ?: '-' }}</div>
                 <div><span class="pill {{ ($row->status_aktif ?? '1') === '1' ? 'pill--received' : 'pill--overdue' }}">{{ ($row->status_aktif ?? '1') === '1' ? 'Aktif' : 'Tidak' }}</span></div>
                 <div style="text-align:right;"><a href="{{ route('pegawai.edit', $row) }}" class="tap-head__btn">✎</a></div>
             </div>

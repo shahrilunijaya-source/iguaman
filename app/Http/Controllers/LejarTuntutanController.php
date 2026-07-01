@@ -15,7 +15,7 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
- * W15 — claim ledger (lejar tuntutan bayaran), officer + approval surface.
+ * W15 - claim ledger (lejar tuntutan bayaran), officer + approval surface.
  * Thin transport; lifecycle lives in {@see LejarTuntutanService}. The lawyer
  * self-service side is {@see Peguam\TuntutanController}.
  */

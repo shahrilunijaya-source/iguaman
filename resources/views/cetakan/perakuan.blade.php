@@ -9,7 +9,7 @@
 @section('subtajuk', ($kes->no_perakuan ? 'No. Perakuan: '.$kes->no_perakuan : '').($kes->no_fail ? ' · No. Fail: '.$kes->no_fail : ''))
 
 @section('kepala_kanan')
-    No. Perakuan: <strong>{{ $kes->no_perakuan ?: '—' }}</strong><br>
+    No. Perakuan: <strong>{{ $kes->no_perakuan ?: '-' }}</strong><br>
     Tarikh: {{ $tarikhCetak }}
 @endsection
 
@@ -67,7 +67,7 @@
         <tr>
             <td>
                 <div class="line">Pegawai Bertanggungjawab</div>
-                {{ $oleh ?? '—' }}<br>
+                {{ $oleh ?? '-' }}<br>
                 <span class="muted">Jabatan Bantuan Guaman</span>
             </td>
             <td>

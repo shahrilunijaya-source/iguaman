@@ -41,11 +41,11 @@
                 @foreach ($kes as $k)
                     <tr>
                         <td>{{ $k->id }}</td>
-                        <td>{{ $k->no_fail ?: '—' }}</td>
-                        <td>{{ $k->nama ?: '—' }}</td>
-                        <td>{{ $k->cawangan ?: '—' }}</td>
+                        <td>{{ $k->no_fail ?: '-' }}</td>
+                        <td>{{ $k->nama ?: '-' }}</td>
+                        <td>{{ $k->cawangan ?: '-' }}</td>
                         <td><span class="ag-status">{{ \App\Support\StatusAgihan::label($k->status_agihan) }}</span></td>
-                        <td>{{ $k->nama_pegawai_yang_dapat_kes ?: '—' }}</td>
+                        <td>{{ $k->nama_pegawai_yang_dapat_kes ?: '-' }}</td>
                         <td><a href="{{ route('agihan.maklumat', $k) }}" class="btn btn--ghost" style="padding:4px 12px;font-size:12px;">Tindakan →</a></td>
                     </tr>
                 @endforeach

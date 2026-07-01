@@ -92,11 +92,11 @@
             <input type="file" name="clp" class="field__input" accept=".pdf">
         </div>
         <div class="field">
-            <label class="field__label">Tempoh Sah — Mula <span class="req">*</span></label>
+            <label class="field__label">Tempoh Sah - Mula <span class="req">*</span></label>
             <input type="date" name="clpMula" class="field__input" value="{{ old('clpMula', $d($p3->clpMula)) }}" required>
         </div>
         <div class="field">
-            <label class="field__label">Tempoh Sah — Hingga <span class="req">*</span></label>
+            <label class="field__label">Tempoh Sah - Hingga <span class="req">*</span></label>
             <input type="date" name="clpAkhir" class="field__input" value="{{ old('clpAkhir', $d($p3->clpAkhir)) }}" required>
         </div>
     </div>
@@ -148,11 +148,11 @@
                     </select>
                 </div>
                 <div class="field">
-                    <label class="field__label">Tempoh — Mula</label>
+                    <label class="field__label">Tempoh - Mula</label>
                     <input type="date" name="cso{{ $i }}Mula" class="field__input" value="{{ old('cso'.$i.'Mula', $d($p3->{'cso'.$i.'Mula'})) }}">
                 </div>
                 <div class="field">
-                    <label class="field__label">Tempoh — Hingga</label>
+                    <label class="field__label">Tempoh - Hingga</label>
                     <input type="date" name="cso{{ $i }}Akhir" class="field__input" value="{{ old('cso'.$i.'Akhir', $d($p3->{'cso'.$i.'Akhir'})) }}">
                 </div>
                 <div class="field col-2">
@@ -273,11 +273,11 @@
             @if ($hasDoc('insuransTR'))<div class="pe-doc">✓ Sijil dimuat naik</div>@endif
         </div>
         <div class="field">
-            <label class="field__label">Tempoh Polisi — Mula</label>
+            <label class="field__label">Tempoh Polisi - Mula</label>
             <input type="date" name="polisiMula" class="field__input" value="{{ old('polisiMula', $d($p4->polisiMula)) }}">
         </div>
         <div class="field">
-            <label class="field__label">Tempoh Polisi — Hingga</label>
+            <label class="field__label">Tempoh Polisi - Hingga</label>
             <input type="date" name="polisiAkhir" class="field__input" value="{{ old('polisiAkhir', $d($p4->polisiAkhir)) }}">
         </div>
     </div>

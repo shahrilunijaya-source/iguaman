@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Laporan Penuh — wide-column CSV exports (EPIC F, legacy `export_*.php`).
+ * Laporan Penuh - wide-column CSV exports (EPIC F, legacy `export_*.php`).
  * Permohonan / Pendaftaran Fail / Status Fail, with the legacy title+filter
  * envelope, derived BULAN/TAHUN columns, ref_kes JENIS KES join, and NoKP
  * emitted as an Excel text formula. CawanganScope enforces the legacy
@@ -37,7 +37,7 @@ class LaporanPenuhController extends Controller
             }
             fputcsv($out, array_merge(['BIL.'], WideExport::headers($type)));
 
-            // PERF-01: cursor() streams rows from the DB — no full result set in memory.
+            // PERF-01: cursor() streams rows from the DB - no full result set in memory.
             $bil = 1;
             foreach ($query->cursor() as $r) {
                 fputcsv($out, WideExport::row($r, $type, $bil++));

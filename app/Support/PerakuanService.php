@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 /**
- * W14 — interim → muktamad legal-aid certificate (Perakuan Bantuan Guaman) lifecycle for
+ * W14 - interim → muktamad legal-aid certificate (Perakuan Bantuan Guaman) lifecycle for
  * Pembelaan Awam (criminal) cases. A SEGERA case may be issued an INTERIM certificate
  * immediately so representation can start; once the application is fully approved the
  * certificate is finalised to MUKTAMAD. Guarded transitions mirror the AgihanService pattern
@@ -50,7 +50,7 @@ class PerakuanService
         // PROC-16: an INTERIM certificate with no number is an impossible state. Fail loudly so the
         // upstream break is investigated, instead of silently minting a number that masks it.
         abort_if(blank($kes->no_perakuan), 422,
-            'Perakuan interim ini tiada nombor — data tidak konsisten. Semak semula pengeluaran interim.');
+            'Perakuan interim ini tiada nombor - data tidak konsisten. Semak semula pengeluaran interim.');
 
         DB::transaction(function () use ($kes) {
             $kes->update([

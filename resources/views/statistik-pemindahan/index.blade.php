@@ -1,6 +1,6 @@
 @extends('layouts.staff')
 
-@section('title', 'Statistik Pemindahan — '.$tajuk)
+@section('title', 'Statistik Pemindahan - '.$tajuk)
 
 @section('content')
 <style>

@@ -1,17 +1,17 @@
 /* ============================================================
-   theme.css — InPreS design tokens  (SINGLE PER-COMPANY SWAP SURFACE)
+   theme.css - InPreS design tokens  (SINGLE PER-COMPANY SWAP SURFACE)
    ------------------------------------------------------------
    This is the ONE file a company clone edits to re-skin the whole
    product (public Portal + officer System). Layout/structure lives
    in app.css / portal.css / system.css and stays identical across
-   inpres-a / -x / -t — only the values in the COMPANY BRAND block
+   inpres-a / -x / -t - only the values in the COMPANY BRAND block
    below (colors + fonts) change per company.
 
    Imported first by app.css, portal.css and system.css. Defines all
    three legacy token vocabularies so existing var(--*) references
    keep working unchanged:
      --teal/--pine/--orange + scales   (portal skin + system)
-     --ai-*                            (portal "AI surface" — light)
+     --ai-*                            (portal "AI surface" - light)
      --font/--mono, --font-sans/-mono  (type)
    The officer console is a DARK surface: system.css re-declares the
    handful of dark --ai-* values after importing this file, so they
@@ -23,11 +23,11 @@
 
 :root {
   /* ╔════════════════════════════════════════════════════════╗
-     ║  COMPANY BRAND — EDIT THIS BLOCK PER COMPANY           ║
+     ║  COMPANY BRAND - EDIT THIS BLOCK PER COMPANY           ║
      ║  (colors + fonts). Everything below derives from here.  ║
      ╚════════════════════════════════════════════════════════╝ */
 
-  /* ---- iGuaman blue palette — canonical source (docs/iguaman-colors.css) ---- */
+  /* ---- iGuaman blue palette - canonical source (docs/iguaman-colors.css) ---- */
   --color-blue-950: #040f1c;
   --color-blue-800: #0d2e48;   /* nav / dark surfaces      */
   --color-blue-700: #124070;   /* hover on dark surfaces   */
@@ -55,7 +55,7 @@
   --pine-shade:  var(--color-blue-950);
 
   /* ---- Spotlight brand (legacy name --orange): alerts, "wow" → palette danger-orange ---- */
-  --orange:      #e07030;          /* danger-500 — critical numbers, late/overdue */
+  --orange:      #e07030;          /* danger-500 - critical numbers, late/overdue */
   --orange-600:  #b84e14;          /* danger-700 */
   --orange-50:   #fde8d8;          /* danger-100 */
   --orange-soft: rgba(var(--orange-rgb), 0.12);
@@ -63,13 +63,13 @@
   /* ---- Ink navy: dark text/ink on light wizard + officer cards ---- */
   --ink-navy:    var(--color-blue-800);
 
-  /* RGB triplets — MUST match the hexes above (used in rgba() glows/tints) */
+  /* RGB triplets - MUST match the hexes above (used in rgba() glows/tints) */
   --brand-rgb:    26, 111, 168;  /* match --teal / blue-600 */
   --pine-rgb:     13, 46, 72;    /* match --pine / blue-800 */
   --orange-rgb:   224, 112, 48;  /* match --orange          */
   --ink-navy-rgb: 13, 46, 72;    /* match --ink-navy        */
 
-  /* ---- Fonts (Inter — crisp neutral, Linear-substitute voice) ---- */
+  /* ---- Fonts (Inter - crisp neutral, Linear-substitute voice) ---- */
   --ai-font:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;   /* portal shell */
   --ai-mono:   'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;                       /* portal skin + system */
@@ -78,14 +78,14 @@
   --mono:      var(--font-mono);   /* system alias */
 
   /* ╔════════════════════════════════════════════════════════╗
-     ║  END COMPANY BRAND — values below are shared/derived    ║
+     ║  END COMPANY BRAND - values below are shared/derived    ║
      ╚════════════════════════════════════════════════════════╝ */
 
-  /* ---------- Neutrals (cool-shifted — iGuaman blue system) ---------- */
-  --ink:            #1a2030;   /* gray-900 — primary text / headings */
+  /* ---------- Neutrals (cool-shifted - iGuaman blue system) ---------- */
+  --ink:            #1a2030;   /* gray-900 - primary text / headings */
   --ink-2:          #38404e;   /* gray-800 */
-  --paper:          #f6f7fa;   /* gray-50 — page background */
-  --paper-2:        #eef0f4;   /* gray-100 — sunk panels / sidebar */
+  --paper:          #f6f7fa;   /* gray-50 - page background */
+  --paper-2:        #eef0f4;   /* gray-100 - sunk panels / sidebar */
   --paper-elevated: #ffffff;
 
   --gray-50:  #f6f7fa;
@@ -99,21 +99,21 @@
   --gray-800: #1a2030;
 
   /* system-vocabulary neutrals */
-  --line:   #dce2ea;   /* gray-200 — borders / dividers */
+  --line:   #dce2ea;   /* gray-200 - borders / dividers */
   --line-2: #ccd0d8;   /* gray-300 */
-  --mute:   #58606e;   /* gray-600 — body / muted text */
-  --mute-2: #9a9fa8;   /* gray-400 — labels / captions */
+  --mute:   #58606e;   /* gray-600 - body / muted text */
+  --mute-2: #9a9fa8;   /* gray-400 - labels / captions */
 
   /* ---------- Status (iGuaman palette semantic) ---------- */
-  --success:        #1e9060;   /* success-500 — green */
-  --warning:        #d4940d;   /* warning-500 — amber */
+  --success:        #1e9060;   /* success-500 - green */
+  --warning:        #d4940d;   /* warning-500 - amber */
   --danger:         #EF4444;   /* keep true-red for destructive actions */
   --status-success: var(--success);
   --status-warning: #d4940d;
   --status-danger:  #E5484D;
-  --status-info:    #5a7fca;   /* info-500 — slate blue */
+  --status-info:    #5a7fca;   /* info-500 - slate blue */
 
-  /* ---------- Portal "AI surface" — LIGHT (system.css overrides for dark) ---------- */
+  /* ---------- Portal "AI surface" - LIGHT (system.css overrides for dark) ---------- */
   --ai-bg:          #fafbfc;
   --ai-bg-2:        #f6f9fc;
   --ai-glass:       #ffffff;
@@ -193,7 +193,7 @@
   --sh-2: 0 4px 14px rgba(10, 14, 19, 0.06), 0 1px 2px rgba(10, 14, 19, 0.04);
   --sh-3: 0 18px 48px -16px rgba(0, 38, 36, 0.25), 0 4px 14px rgba(10, 14, 19, 0.06);
 
-  /* ---------- Glow — signature button effect ---------- */
+  /* ---------- Glow - signature button effect ---------- */
   --glow-teal:    0 0 0 1px rgba(var(--brand-rgb), 0.20),
                   0 6px 20px -4px rgba(var(--brand-rgb), 0.45),
                   0 2px 6px rgba(var(--pine-rgb), 0.10);
@@ -207,7 +207,7 @@
                   0 6px 20px -4px rgba(var(--pine-rgb), 0.35),
                   0 2px 6px rgba(var(--pine-rgb), 0.10);
 
-  /* ---------- Body backdrop tint (portal) — brand-derived ---------- */
+  /* ---------- Body backdrop tint (portal) - brand-derived ---------- */
   --body-tint-1: rgba(var(--brand-rgb), 0.06);   /* teal glow, top */
   --body-tint-2: rgba(var(--orange-rgb), 0.04);  /* orange glow, bottom-right */
 
@@ -244,7 +244,7 @@
 }
 
 /* ============================================================
-   Base type styles — semantic (portal). Moved from portal-tokens.
+   Base type styles - semantic (portal). Moved from portal-tokens.
    ============================================================ */
 
 .t-display {
@@ -303,7 +303,7 @@
 .t-mono { font-family: var(--font-mono); font-size: var(--fs-body-sm); }
 
 /* ============================================================
-   Signature: The Dot — colored dot after wordmarks
+   Signature: The Dot - colored dot after wordmarks
    ============================================================ */
 
 .brand-dot {

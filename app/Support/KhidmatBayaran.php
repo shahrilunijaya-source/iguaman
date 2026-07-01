@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace App\Support;
 
 /**
- * Khidmat Nasihat payment computation (parity map §2 — eligibility/payment logic
+ * Khidmat Nasihat payment computation (parity map §2 - eligibility/payment logic
  * recovered from the Nuxt FE). Pure + testable: no DB, no Eloquent. Feed it the
  * level-1 category name + declared income + exemption flag and it returns the fee.
  *
  * Rules (first match wins):
- *   1. is_percuma                 → RM0   (full exemption — overrides everything).
- *   2. wakil context PENJARA|JKM  → RM0   (slice 3: prison/welfare rep — no fee,
+ *   1. is_percuma                 → RM0   (full exemption - overrides everything).
+ *   2. wakil context PENJARA|JKM  → RM0   (slice 3: prison/welfare rep - no fee,
  *                                          mirrors FE idPenjara/idJKM → RM0.00).
- *   3. PENDAMPING JENAYAH         → RM0   (penjara accompaniment — no fee).
- *      PENDAMPING GUAMAN          → RM0   (JKM accompaniment — no fee).
+ *   3. PENDAMPING JENAYAH         → RM0   (penjara accompaniment - no fee).
+ *      PENDAMPING GUAMAN          → RM0   (JKM accompaniment - no fee).
  *   4. SIVIL / SYARIAH AND income > RM50,000 → RM260 ("Laluan Sumbangan").
  *   5. default                    → RM10.
  *
- * MAHKAMAH wakil context is intentionally NOT free — the court representative
+ * MAHKAMAH wakil context is intentionally NOT free - the court representative
  * still pays per the normal income matrix (matches the Nuxt FE, where only
  * idPenjara/idJKM zero the fee).
  */
@@ -27,7 +27,7 @@ final class KhidmatBayaran
     /** Default advisory fee. */
     public const FI_ASAS = 10.0;
 
-    /** "Laluan Sumbangan" fee — Sivil/Syariah applicants above the income threshold. */
+    /** "Laluan Sumbangan" fee - Sivil/Syariah applicants above the income threshold. */
     public const FI_SUMBANGAN = 260.0;
 
     /** Full / accompaniment exemption. */

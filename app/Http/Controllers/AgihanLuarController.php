@@ -14,7 +14,7 @@ use Illuminate\View\View;
 use RuntimeException;
 
 /**
- * W5 — officer surface for assigning a completed Khidmat Nasihat to an external
+ * W5 - officer surface for assigning a completed Khidmat Nasihat to an external
  * panel lawyer (GRAB pool or direct ASSIGN). Gated permission:agihan.luar.
  * Transport only; the guarded state machine lives in {@see AgihanLuarService}.
  */
@@ -49,7 +49,7 @@ class AgihanLuarController extends Controller
     /** Direct-assign picker: the W11 workload shortlist of active panel lawyers. */
     public function agihForm(Request $request, KhidmatNasihat $khidmat): View|RedirectResponse
     {
-        // Branch guard — KN has no CawanganScope; a branch-pinned officer cannot view another branch's KN.
+        // Branch guard - KN has no CawanganScope; a branch-pinned officer cannot view another branch's KN.
         $branchId = $this->svc->branchFilter($request->user());
         if ($branchId !== null && (int) $khidmat->cawangan_id !== $branchId) {
             return redirect()->route('agihan-luar.index')->with('error', 'KN ini bukan di bawah cawangan anda.');

@@ -21,7 +21,7 @@
         @endforeach
     </div>
 
-    {{-- W10: approval-track (jalur) filter — criminal vs civil/syariah queues. --}}
+    {{-- W10: approval-track (jalur) filter - criminal vs civil/syariah queues. --}}
     <div class="tap-filters">
         <a href="{{ route('permohonan-peguam.index', ['status' => $status]) }}" class="tap-chip {{ ($jalur ?? '') === '' || $jalur === null ? 'is-active' : '' }}">Semua Jalur</a>
         @foreach ($jalurList as $j)
@@ -41,9 +41,9 @@
             <a href="{{ route('permohonan-peguam.show', $p) }}" class="tap-row" style="grid-template-columns: 2fr 1.2fr 1fr 1fr 120px;">
                 <div class="tap-row__title">{{ $p->namaPeguam }}</div>
                 <div class="tap-row__no">{{ $p->kpBaru }}</div>
-                <div class="tap-row__tujuan">{{ $p->sokonganPengarah === '1' ? 'Disokong' : ($p->sokonganPengarah === '0' ? 'Tidak Sokong' : '—') }}</div>
+                <div class="tap-row__tujuan">{{ $p->sokonganPengarah === '1' ? 'Disokong' : ($p->sokonganPengarah === '0' ? 'Tidak Sokong' : '-') }}</div>
                 <div><span class="pill {{ $pills[$p->permohonan_status] ?? 'pill--received' }}">{{ $statusLabels[$p->permohonan_status] ?? 'Baharu' }}</span></div>
-                <div class="tap-row__due"><div class="tap-row__due-label">{{ optional($p->tarikhMohon)->format('d/m/Y') ?: '—' }}</div></div>
+                <div class="tap-row__due"><div class="tap-row__due-label">{{ optional($p->tarikhMohon)->format('d/m/Y') ?: '-' }}</div></div>
             </a>
         @empty
             <div class="dash-empty" style="border:0"><div class="dash-empty__title">Tiada permohonan<span class="dot"></span></div></div>

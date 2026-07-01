@@ -13,7 +13,7 @@
                 <span style="color:var(--muted,#64748b);">Belum dikeluarkan</span>
             @endif
         </div>
-        <div><span style="color:var(--muted,#64748b); font-size:12px;">No. Perakuan</span><br>{{ $kes->no_perakuan ?? '—' }}</div>
+        <div><span style="color:var(--muted,#64748b); font-size:12px;">No. Perakuan</span><br>{{ $kes->no_perakuan ?? '-' }}</div>
     </div>
 
     <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -32,7 +32,7 @@
                     </button>
                 </form>
                 @unless ($kes->is_segera)
-                    <span style="align-self:center; color:var(--muted,#64748b); font-size:12px;">Kes bukan segera — perlu kebenaran pengurus untuk keluar interim.</span>
+                    <span style="align-self:center; color:var(--muted,#64748b); font-size:12px;">Kes bukan segera - perlu kebenaran pengurus untuk keluar interim.</span>
                 @endunless
             @elseif ($status === \App\Support\PerakuanService::STATUS_INTERIM)
                 <form method="POST" action="{{ route('pembelaan.perakuan.muktamad', $kes) }}">

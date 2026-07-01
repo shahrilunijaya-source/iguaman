@@ -6,7 +6,7 @@ use App\Support\AgihanLuarService;
 use Illuminate\Console\Command;
 
 /**
- * W5 — expire Khidmat Nasihat grabs left unclaimed past the 7-day window
+ * W5 - expire Khidmat Nasihat grabs left unclaimed past the 7-day window
  * (status_agihan_pl BUKA_GRAB -> LUPUT). Scheduled daily in routes/console.php.
  * Mirrors the Lebih Masa cron (agihan:lebih-masa).
  */

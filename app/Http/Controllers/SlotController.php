@@ -7,14 +7,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Slot availability JSON endpoints — consumed by the Batch 9 appointment wizard
+ * Slot availability JSON endpoints - consumed by the Batch 9 appointment wizard
  * (step 3 date/time picker) at integration. Read-only; gated by slot.view.
  */
 class SlotController extends Controller
 {
     public function __construct(private readonly SlotAvailabilityService $slots) {}
 
-    /** GET /slot/tarikh — open booking dates for a branch. */
+    /** GET /slot/tarikh - open booking dates for a branch. */
     public function availability(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -32,7 +32,7 @@ class SlotController extends Controller
         return response()->json(['dates' => $dates]);
     }
 
-    /** GET /slot/masa — open times for a branch on a date. */
+    /** GET /slot/masa - open times for a branch on a date. */
     public function times(Request $request): JsonResponse
     {
         $data = $request->validate([

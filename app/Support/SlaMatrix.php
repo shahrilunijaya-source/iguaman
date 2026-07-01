@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Per-branch SLA statistic matrices (EPIC F — legacy `cetakan_statistik_*`).
+ * Per-branch SLA statistic matrices (EPIC F - legacy `cetakan_statistik_*`).
  *
  * Five dashboards measure the % of cases meeting a time target (DATEDIFF on a
  * pair of forms dates), pivoted over a FIXED 23-branch list × 4 case kategori,

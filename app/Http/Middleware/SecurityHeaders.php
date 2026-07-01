@@ -26,7 +26,7 @@ class SecurityHeaders
             }
         }
 
-        // HSTS (INJ-02): only over HTTPS — browsers ignore it on plain HTTP, and sending it there
+        // HSTS (INJ-02): only over HTTPS - browsers ignore it on plain HTTP, and sending it there
         // before TLS is confirmed can lock users out. Full CSP is a separate, nonce-based rollout.
         if ($request->isSecure() && ! $response->headers->has('Strict-Transport-Security')) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
