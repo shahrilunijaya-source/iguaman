@@ -16,6 +16,7 @@ use App\Support\KhidmatBayaran;
 use App\Support\KhidmatNasihatService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -112,7 +113,8 @@ class PermohonanController extends Controller
     }
 
     private const DISK = 'local';
-    private const DIR  = 'lampiran';
+
+    private const DIR = 'lampiran';
 
     public function upload(AwamLampiranRequest $request, KhidmatNasihat $khidmat): RedirectResponse
     {
@@ -122,11 +124,11 @@ class PermohonanController extends Controller
         $path = $file->store(self::DIR, self::DISK);
 
         $row = UploadedFile::create([
-            'nama'        => $file->getClientOriginalName(),
-            'file_name'   => basename($path),
-            'file_path'   => $path,
-            'file_type'   => strtolower($file->extension()), // MIME-derived, not client-controlled
-            'id_khidmat'  => $khidmat->id,
+            'nama' => $file->getClientOriginalName(),
+            'file_name' => basename($path),
+            'file_path' => $path,
+            'file_type' => strtolower($file->extension()), // MIME-derived, not client-controlled
+            'id_khidmat' => $khidmat->id,
             'uploaded_at' => now(),
         ]);
 
@@ -183,7 +185,7 @@ class PermohonanController extends Controller
         $temu = $khidmat->temuJanji()->first();
         abort_if($temu === null, 422, 'Tiada temu janji untuk diubah.');
         abort_if(in_array($temu->status, ['HADIR', 'TIDAK_HADIR', 'SELESAI', 'BATAL'], true), 422, 'Temu janji ini tidak boleh diubah.');
-        abort_if(\Illuminate\Support\Carbon::parse($temu->tarikh_temu_janji)->isPast(), 422, 'Temu janji lampau tidak boleh diubah.');
+        abort_if(Carbon::parse($temu->tarikh_temu_janji)->isPast(), 422, 'Temu janji lampau tidak boleh diubah.');
     }
 
     private function mapInput(AwamPermohonanRequest $request): array

@@ -133,7 +133,7 @@ class Phase7W21Test extends TestCase
 
     public function test_notification_listener_is_queued(): void
     {
-        $this->assertInstanceOf(ShouldQueue::class, new MaklumkanPemindahanMasuk());
+        $this->assertInstanceOf(ShouldQueue::class, new MaklumkanPemindahanMasuk);
     }
 
     // ---- CawanganScope on KhidmatNasihat ----

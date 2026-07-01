@@ -15,6 +15,7 @@ use Spatie\Permission\PermissionRegistrar;
 return new class extends Migration
 {
     private const ROLE = 'prison_officer';
+
     private const GRANTS = ['system.view', 'khidmat.view', 'khidmat.manage'];
 
     public function up(): void

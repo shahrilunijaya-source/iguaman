@@ -6,8 +6,10 @@ use App\Models\Form;
 use App\Models\LaporanKes;
 use App\Models\SejarahSidang;
 use App\Models\User;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 /**
@@ -24,15 +26,15 @@ class Phase3cTest extends TestCase
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
         DB::purge('mysql');
         DB::reconnect('mysql');
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-        (new \Database\Seeders\RolePermissionSeeder())->run();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        (new RolePermissionSeeder)->run();
         $this->cleanup();
     }
 
     protected function tearDown(): void
     {
         $this->cleanup();
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
         parent::tearDown();
     }
 

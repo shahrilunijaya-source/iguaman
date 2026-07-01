@@ -8,6 +8,7 @@ use App\Models\SejarahPeguamPanel;
 use App\Models\SejarahPpuu;
 use App\Models\User;
 use App\Support\AgihanService;
+use App\Support\PeguamShortlistService;
 use App\Support\StatusAgihan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -65,7 +66,7 @@ class AgihanSpineController extends Controller
                 ->where('is_active', true)->orderBy('name')->get(['id', 'name', 'role']),
             'peguamList' => PeguamPanel::orderBy('nama_peguam')->get(['id', 'nama_peguam', 'kp_peguam', 'nama_firma']),
             // W11: workload-ranked shortlist (least-loaded first) for the PPUU pick.
-            'peguamShortlist' => app(\App\Support\PeguamShortlistService::class)->shortlist(['limit' => 15]),
+            'peguamShortlist' => app(PeguamShortlistService::class)->shortlist(['limit' => 15]),
             'sejarahPpuu' => SejarahPpuu::where('id_kes', $kes->id)->orderByDesc('id')->get(),
             'sejarahPp' => SejarahPeguamPanel::where('id_kes', $kes->id)->orderByDesc('id')->get(),
         ]);

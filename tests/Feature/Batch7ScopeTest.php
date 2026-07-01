@@ -13,15 +13,17 @@ use Tests\TestCase;
 class Batch7ScopeTest extends TestCase
 {
     private const TAGA = 'PHPUNITA';
+
     private const TAGB = 'PHPUNITB';
 
     protected function setUp(): void
     {
         parent::setUp();
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
-        DB::purge('mysql'); DB::reconnect('mysql');
+        DB::purge('mysql');
+        DB::reconnect('mysql');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
-        (new RolePermissionSeeder())->run();
+        (new RolePermissionSeeder)->run();
         $this->cleanup();
         Form::create(['nama' => 'A', 'cawangan' => self::TAGA, 'diterima' => '', 'created_at' => now()]);
         Form::create(['nama' => 'B', 'cawangan' => self::TAGB, 'diterima' => '', 'created_at' => now()]);
@@ -48,6 +50,7 @@ class Batch7ScopeTest extends TestCase
             'role' => $role, 'cawangan' => $cawangan, 'is_active' => true,
         ]);
         $u->syncRoles([$role]);
+
         return $u;
     }
 

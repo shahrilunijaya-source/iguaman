@@ -12,6 +12,7 @@ use App\Models\RefKategoriKn;
 use App\Models\RefSubkategoriKn;
 use App\Models\TemuJanji;
 use App\Models\User;
+use App\Support\LaporanKnService;
 use Database\Seeders\Batch8MastersSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\TestUsersSeeder;
@@ -291,7 +292,7 @@ class Batch12LaporanKnTest extends TestCase
         $other = $this->makeKn(['cawangan_id' => $selangor->id]);
         $this->makeFeedback($other, ['soalan_1a' => true, 'soalan_1b' => true]);
 
-        $svc = app(\App\Support\LaporanKnService::class);
+        $svc = app(LaporanKnService::class);
 
         // Pinned-officer branch filter (Putrajaya): only 1a=1, 1b=0.
         $counts = $svc->caraMengetahuiCounts(['bulan' => 3, 'tahun' => 2026, 'cawangan_id' => $putrajaya->id]);
@@ -315,7 +316,7 @@ class Batch12LaporanKnTest extends TestCase
         $k3 = $this->makeKn();
         $this->makeFeedback($k3, ['soalan_2a' => 'BAIK']);
 
-        $svc = app(\App\Support\LaporanKnService::class);
+        $svc = app(LaporanKnService::class);
         $counts = $svc->kepuasanCounts(['bulan' => 3, 'tahun' => 2026]);
 
         $this->assertSame(2, $counts['CEMERLANG']);
@@ -337,7 +338,7 @@ class Batch12LaporanKnTest extends TestCase
         $this->makeKn(['cawangan_id' => $putrajaya->id, 'created_at' => '2026-03-20 10:00:00']);
         $this->makeKn(['cawangan_id' => $putrajaya->id, 'created_at' => '2026-07-01 10:00:00']);
 
-        $svc = app(\App\Support\LaporanKnService::class);
+        $svc = app(LaporanKnService::class);
         $pivot = $svc->pivotByCawangan(['tahun' => 2026]);
 
         // Find the Putrajaya row.
@@ -364,7 +365,7 @@ class Batch12LaporanKnTest extends TestCase
         $this->makeKn(['id_kategori' => $this->kategoriA->id, 'created_at' => '2026-03-05 10:00:00']);
         $this->makeKn(['id_kategori' => $this->kategoriB->id, 'created_at' => '2026-06-05 10:00:00']);
 
-        $svc = app(\App\Support\LaporanKnService::class);
+        $svc = app(LaporanKnService::class);
         $pivot = $svc->pivotByKategori(['tahun' => 2026]);
 
         $rowA = collect($pivot)->firstWhere('label', self::TAG.' Kategori A');
@@ -380,7 +381,7 @@ class Batch12LaporanKnTest extends TestCase
         $this->makeKn(['id_subkategori' => $this->subA->id, 'created_at' => '2026-02-01 10:00:00']);
         $this->makeKn(['id_subkategori' => $this->subA->id, 'created_at' => '2026-02-15 10:00:00']);
 
-        $svc = app(\App\Support\LaporanKnService::class);
+        $svc = app(LaporanKnService::class);
         $pivot = $svc->pivotBySubkategori(['tahun' => 2026]);
 
         $row = collect($pivot)->firstWhere('label', self::TAG.' Sub A');
@@ -397,7 +398,7 @@ class Batch12LaporanKnTest extends TestCase
         $this->makeKn(['bangsa' => self::TAG.'-MELAYU', 'jantina_mangsa' => 'Perempuan']);
         $this->makeKn(['bangsa' => self::TAG.'-CINA', 'jantina_mangsa' => 'Perempuan']);
 
-        $svc = app(\App\Support\LaporanKnService::class);
+        $svc = app(LaporanKnService::class);
         $pivot = $svc->pivotByKaumJantina(['bulan' => 3, 'tahun' => 2026]);
 
         $melayu = collect($pivot)->firstWhere('label', self::TAG.'-MELAYU');

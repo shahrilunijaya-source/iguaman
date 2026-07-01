@@ -9,6 +9,7 @@ use App\Models\SlotTemuJanji;
 use App\Models\User;
 use App\Support\CutiNegeri;
 use App\Support\SlotGenerator;
+use Carbon\Carbon;
 use Database\Seeders\Batch8MastersSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\TestUsersSeeder;
@@ -31,10 +32,15 @@ class Batch10SlotGenTest extends TestCase
     private const NEGERI_ID = 16; // Putrajaya
 
     private const FROM = '2026-08-03';      // Monday
+
     private const TO = '2026-08-09';        // Sunday
+
     private const HOLIDAY = '2026-08-05';   // Wednesday
+
     private const CLOSED = '2026-08-06';    // Thursday
+
     private const SATURDAY = '2026-08-08';
+
     private const SUNDAY = '2026-08-09';
 
     protected function setUp(): void
@@ -136,7 +142,7 @@ class Batch10SlotGenTest extends TestCase
         $this->assertSame(4, $result['created']);
 
         $times = SlotTemuJanji::where('cawangan_id', $cawangan->id)->orderBy('masa_mula')->pluck('masa_mula')
-            ->map(fn ($t) => \Carbon\Carbon::parse($t)->format('H:i'))->all();
+            ->map(fn ($t) => Carbon::parse($t)->format('H:i'))->all();
         $this->assertSame(['08:00', '08:15', '08:30', '08:45'], $times);
     }
 

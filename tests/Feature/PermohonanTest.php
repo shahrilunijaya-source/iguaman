@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\Form;
 use App\Models\User;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 /**
@@ -28,8 +30,8 @@ class PermohonanTest extends TestCase
         DB::purge('mysql');
         DB::reconnect('mysql');
 
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-        (new \Database\Seeders\RolePermissionSeeder())->run();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        (new RolePermissionSeeder)->run();
 
         $this->cleanup();
     }
@@ -37,7 +39,7 @@ class PermohonanTest extends TestCase
     protected function tearDown(): void
     {
         $this->cleanup();
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
         parent::tearDown();
     }
 

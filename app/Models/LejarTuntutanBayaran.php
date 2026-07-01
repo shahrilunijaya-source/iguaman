@@ -27,17 +27,27 @@ class LejarTuntutanBayaran extends Model
     ];
 
     public const SUMBER_KN = 'KN';
+
     public const SUMBER_PEMBELAAN_AWAM = 'PEMBELAAN_AWAM';
+
     public const SUMBER_MEDIASI = 'MEDIASI';
+
     public const SUMBER_PEGUAM_LUAR = 'PEGUAM_LUAR';
+
     public const SUMBER_LAIN = 'LAIN';
 
     public const STATUS_DRAF = 'DRAF';
+
     public const STATUS_DIHANTAR = 'DIHANTAR';
+
     public const STATUS_SEMAKAN = 'SEMAKAN';
+
     public const STATUS_DILULUS = 'DILULUS';
+
     public const STATUS_DITOLAK = 'DITOLAK';
+
     public const STATUS_DIBAYAR = 'DIBAYAR';
+
     public const STATUS_BATAL = 'BATAL';
 
     /** Human labels (Bahasa Melayu) for the lifecycle. */

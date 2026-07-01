@@ -48,7 +48,7 @@ class PeguamLifecycleService
     /** Reactivate a previously deactivated lawyer (does not auto-reassign cases back). */
     public function reactivate(PeguamPanel $lawyer, User $actor): void
     {
-        DB::transaction(function () use ($lawyer, $actor) {
+        DB::transaction(function () use ($lawyer) {
             $lawyer->update([
                 'statusAktif' => PeguamPanel::AKTIF,
                 'sebabTidakAktif' => null,

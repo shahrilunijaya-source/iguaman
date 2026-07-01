@@ -33,9 +33,13 @@ class JadualJanjiTemuTest extends TestCase
     private const NEGERI_ID = 16;
 
     private const MONTH = '2026-07';
+
     private const BOOKED = '2026-07-15';   // Wednesday — a booked appointment
+
     private const HOLIDAY = '2026-07-13';  // Monday — ref_cuti for the branch state
+
     private const CLOSED = '2026-07-14';   // Tuesday — penutupan_operasi
+
     private const WEEKEND = '2026-07-11';  // Saturday
 
     protected function setUp(): void

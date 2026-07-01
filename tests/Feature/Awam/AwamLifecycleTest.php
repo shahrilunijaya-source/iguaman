@@ -7,6 +7,7 @@ use App\Models\KhidmatNasihat;
 use App\Models\SlotTemuJanji;
 use App\Models\TemuJanji;
 use App\Models\User;
+use App\Support\KhidmatNasihatService;
 use Carbon\Carbon;
 use Database\Seeders\Batch8MastersSeeder;
 use Database\Seeders\RolePermissionSeeder;
@@ -126,7 +127,7 @@ class AwamLifecycleTest extends TestCase
             'jumlah_bayaran' => 0,
         ]);
 
-        app(\App\Support\KhidmatNasihatService::class)->bookSlot($kn, $date, $time, $user->name);
+        app(KhidmatNasihatService::class)->bookSlot($kn, $date, $time, $user->name);
 
         return $kn->fresh();
     }

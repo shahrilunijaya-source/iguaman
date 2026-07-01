@@ -36,7 +36,7 @@ class UserController extends Controller
 
     public function create(): View
     {
-        return view('pengguna.form', ['user' => new User(), 'mode' => 'create']);
+        return view('pengguna.form', ['user' => new User, 'mode' => 'create']);
     }
 
     public function store(UserRequest $request): RedirectResponse

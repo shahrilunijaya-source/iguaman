@@ -15,9 +15,7 @@ class KesDitawarkanMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Form $kes, public PeguamPanel $peguam)
-    {
-    }
+    public function __construct(public Form $kes, public PeguamPanel $peguam) {}
 
     public function envelope(): Envelope
     {

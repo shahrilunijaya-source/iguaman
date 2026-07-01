@@ -30,6 +30,7 @@ class SejarahPpuu extends Model
     ];
 
     public const REKOD_AKTIF = 'aktif';
+
     public const REKOD_TUTUP = 'tutup';
 
     public function form(): BelongsTo

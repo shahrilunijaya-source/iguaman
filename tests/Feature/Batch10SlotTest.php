@@ -32,11 +32,17 @@ class Batch10SlotTest extends TestCase
     private const NEGERI_ID = 16;
 
     private const TODAY = '2026-07-06';        // Monday
+
     private const EARLIEST = '2026-07-10';     // Friday (= Mon + 4 working days)
+
     private const BELOW_WINDOW = '2026-07-08'; // Wednesday (only 2 working days ahead)
+
     private const WEEKEND = '2026-07-11';      // Saturday
+
     private const HOLIDAY = '2026-07-13';      // Monday (ref_cuti)
+
     private const CLOSED = '2026-07-14';       // Tuesday (penutupan_operasi)
+
     private const OPEN = '2026-07-15';         // Wednesday (fully bookable)
 
     protected function setUp(): void

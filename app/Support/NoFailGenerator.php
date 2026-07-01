@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\Form;
+use App\Models\Scopes\CawanganScope;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -73,7 +74,7 @@ class NoFailGenerator
     /** Next mediation sequence within the (cawangan, jenis_kes) partition. */
     private function pengantaraanSequence(Form $kes): int
     {
-        $n = Form::withoutGlobalScope(\App\Models\Scopes\CawanganScope::class)
+        $n = Form::withoutGlobalScope(CawanganScope::class)
             ->whereNotNull('no_pengantaraan')
             ->where('no_pengantaraan', '!=', '')
             ->where('cawangan', $kes->cawangan)

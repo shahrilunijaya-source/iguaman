@@ -5,6 +5,8 @@ namespace Tests\Feature\Awam;
 use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
@@ -55,13 +57,13 @@ class AwamAuthTest extends TestCase
         $this->assertDatabaseHas('roles', ['name' => 'awam']);
         $this->assertDatabaseHas('permissions', ['name' => 'awam.portal']);
 
-        $role = \Spatie\Permission\Models\Role::findByName('awam');
+        $role = Role::findByName('awam');
         $this->assertTrue($role->hasPermissionTo('awam.portal'));
     }
 
     public function test_awam_user_home_route_is_awam_dashboard(): void
     {
-        $user = \App\Models\User::factory()->create(['user_type' => 'awam']);
+        $user = User::factory()->create(['user_type' => 'awam']);
 
         $this->assertTrue($user->isAwam());
         $this->assertSame('awam.dashboard', $user->homeRoute());
@@ -79,7 +81,7 @@ class AwamAuthTest extends TestCase
 
         $response->assertRedirect(route('awam.dashboard'));
         $this->assertAuthenticated();
-        $u = \App\Models\User::where('nokp', '900101015555')->first();
+        $u = User::where('nokp', '900101015555')->first();
         $this->assertSame('awam', $u->user_type);
         $this->assertTrue($u->hasRole('awam'));
     }
@@ -107,9 +109,9 @@ class AwamAuthTest extends TestCase
 
     public function test_awam_login_by_ic_succeeds(): void
     {
-        $u = \App\Models\User::factory()->create([
+        $u = User::factory()->create([
             'user_type' => 'awam', 'nokp' => '880202025555',
-            'password' => \Illuminate\Support\Facades\Hash::make('rahsia123'), 'is_active' => true,
+            'password' => Hash::make('rahsia123'), 'is_active' => true,
         ]);
         $u->assignRole('awam');
 
@@ -121,7 +123,7 @@ class AwamAuthTest extends TestCase
 
     public function test_awam_cannot_reach_staff_area(): void
     {
-        $u = \App\Models\User::factory()->create(['user_type' => 'awam']);
+        $u = User::factory()->create(['user_type' => 'awam']);
         $u->assignRole('awam');
 
         $this->actingAs($u)->get('/system')->assertStatus(403);

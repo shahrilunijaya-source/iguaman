@@ -36,7 +36,7 @@ class OydController extends Controller
 
     public function create(): View
     {
-        return view('oyd.form', ['oyd' => new Oyd(), 'mode' => 'create']);
+        return view('oyd.form', ['oyd' => new Oyd, 'mode' => 'create']);
     }
 
     public function store(OydRequest $request): RedirectResponse

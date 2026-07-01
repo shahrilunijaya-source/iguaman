@@ -6,6 +6,7 @@ use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\TestUsersSeeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
@@ -31,8 +32,8 @@ class Batch7RbacMatrixTest extends TestCase
         DB::purge('mysql');
         DB::reconnect('mysql');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
-        (new RolePermissionSeeder())->run();
-        (new TestUsersSeeder())->run();
+        (new RolePermissionSeeder)->run();
+        (new TestUsersSeeder)->run();
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
@@ -50,6 +51,7 @@ class Batch7RbacMatrixTest extends TestCase
             'ppuu' => 'ppuu@test.local', 'pembantu_tadbir' => 'pembantu@test.local',
             'ketua_pengarah' => 'kp@test.local', 'peguam' => 'peguam@test.local',
         ];
+
         return User::where('email', $map[$role])->firstOrFail();
     }
 
@@ -57,23 +59,23 @@ class Batch7RbacMatrixTest extends TestCase
     {
         // routeName => [routeName, [allowed roles]]
         return [
-            'system.utama'    => ['system.utama', ['admin','pengarah','koordinator','pegawai','ppuu','pembantu_tadbir','ketua_pengarah']],
-            'kes.index'       => ['kes.index',    ['admin','pengarah','koordinator','pegawai','ppuu','pembantu_tadbir','ketua_pengarah']],
-            'pegawai.index'   => ['pegawai.index',['admin','pengarah','koordinator','ketua_pengarah']],
-            'pengguna.index'  => ['pengguna.index',['admin','pengarah','koordinator','ketua_pengarah']],
-            'audit.index'     => ['audit.index',  ['admin','pengarah','koordinator','ketua_pengarah']],
+            'system.utama' => ['system.utama', ['admin', 'pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah']],
+            'kes.index' => ['kes.index',    ['admin', 'pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah']],
+            'pegawai.index' => ['pegawai.index', ['admin', 'pengarah', 'koordinator', 'ketua_pengarah']],
+            'pengguna.index' => ['pengguna.index', ['admin', 'pengarah', 'koordinator', 'ketua_pengarah']],
+            'audit.index' => ['audit.index',  ['admin', 'pengarah', 'koordinator', 'ketua_pengarah']],
             // admin is super-admin (Gate::before) so it reaches every area, the lawyer
             // area included — consistent with every staff row above. Under the legacy
             // role:peguam gate admin was excluded; permission:lawyer.area + Gate::before
             // now (correctly) lets admin through.
-            'peguam.dashboard'=> ['peguam.dashboard',['peguam','admin']],
+            'peguam.dashboard' => ['peguam.dashboard', ['peguam', 'admin']],
         ];
     }
 
     #[DataProvider('getMatrix')]
     public function test_get_route_access(string $routeName, array $allowed): void
     {
-        foreach (['admin','pengarah','koordinator','pegawai','ppuu','pembantu_tadbir','ketua_pengarah','peguam'] as $role) {
+        foreach (['admin', 'pengarah', 'koordinator', 'pegawai', 'ppuu', 'pembantu_tadbir', 'ketua_pengarah', 'peguam'] as $role) {
             $u = $this->user($role);
             $res = $this->actingAs($u)->get(route($routeName));
             if (in_array($role, $allowed, true)) {
@@ -100,7 +102,7 @@ class Batch7RbacMatrixTest extends TestCase
      */
     public function test_no_comma_delimited_spatie_middleware(): void
     {
-        foreach (\Illuminate\Support\Facades\Route::getRoutes() as $route) {
+        foreach (Route::getRoutes() as $route) {
             foreach ($route->gatherMiddleware() as $mw) {
                 if (is_string($mw) && preg_match('/^(role|permission|role_or_permission):(.+)$/', $mw, $m)) {
                     $this->assertStringNotContainsString(',', $m[2],

@@ -15,6 +15,7 @@ use Illuminate\View\View;
 class PosterController extends Controller
 {
     private const DISK = 'local';
+
     private const DIR = 'poster';
 
     public function index(Request $request): View
@@ -32,7 +33,7 @@ class PosterController extends Controller
 
     public function create(): View
     {
-        return view('poster.form', ['poster' => new Poster(), 'mode' => 'create']);
+        return view('poster.form', ['poster' => new Poster, 'mode' => 'create']);
     }
 
     public function store(PosterRequest $request): RedirectResponse

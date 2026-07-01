@@ -45,7 +45,7 @@ class PegawaiController extends Controller
 
     public function create(): View
     {
-        return view('pegawai.form', ['pegawai' => new PegawaiJbg(), 'mode' => 'create']);
+        return view('pegawai.form', ['pegawai' => new PegawaiJbg, 'mode' => 'create']);
     }
 
     public function store(Request $request): RedirectResponse

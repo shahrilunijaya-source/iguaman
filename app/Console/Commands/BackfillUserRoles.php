@@ -13,12 +13,14 @@ use Spatie\Permission\Models\Role;
 class BackfillUserRoles extends Command
 {
     protected $signature = 'rbac:backfill-roles {--dry}';
+
     protected $description = 'Assign Spatie roles to existing users from the legacy role column';
 
     public function handle(): int
     {
         $known = Role::pluck('name')->all();
-        $assigned = 0; $fallback = 0;
+        $assigned = 0;
+        $fallback = 0;
 
         User::query()->chunkById(200, function ($users) use ($known, &$assigned, &$fallback) {
             foreach ($users as $user) {
@@ -26,7 +28,8 @@ class BackfillUserRoles extends Command
                 if (! $role || ! in_array($role, $known, true)) {
                     $safe = $user->user_type === User::TYPE_LAWYER ? User::ROLE_PEGUAM : User::ROLE_PEGAWAI;
                     $this->warn("User {$user->id} ({$user->email}) role='{$role}' unknown/empty -> fallback '{$safe}'");
-                    $role = $safe; $fallback++;
+                    $role = $safe;
+                    $fallback++;
                 }
                 if (! $this->option('dry')) {
                     $user->syncRoles([$role]);

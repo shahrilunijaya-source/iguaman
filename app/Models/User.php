@@ -17,23 +17,33 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     // Roles (string). Staff: admin/pengarah/koordinator/pegawai (+ legacy tiers
     // ppuu/pembantu_tadbir/ketua_pengarah from peguam-panel). External: peguam.
     public const ROLE_ADMIN = 'admin';
+
     public const ROLE_PENGARAH = 'pengarah';
+
     public const ROLE_KOORDINATOR = 'koordinator';
+
     public const ROLE_PEGAWAI = 'pegawai';
+
     public const ROLE_PEGUAM = 'peguam';
+
     // Legacy peguam-panel tiers (mapped onto the unified staff area).
     public const ROLE_PPUU = 'ppuu';                       // Penolong Pegawai Undang-Undang — case distributor
+
     public const ROLE_PEMBANTU_TADBIR = 'pembantu_tadbir'; // clerk
+
     public const ROLE_KETUA_PENGARAH = 'ketua_pengarah';   // Director General — final approval
+
     public const ROLE_PRISON_OFFICER = 'prison_officer';   // W1 — files KN on behalf of inmates (prison/clinic source)
 
     public const TYPE_STAFF = 'staff';
+
     public const TYPE_LAWYER = 'lawyer';
+
     public const TYPE_AWAM = 'awam';
 
     protected function casts(): array

@@ -45,7 +45,7 @@ class RefKesController extends Controller
 
     public function create(): View
     {
-        return view('ref-kes.form', ['refKes' => new RefKes(), 'mode' => 'create']);
+        return view('ref-kes.form', ['refKes' => new RefKes, 'mode' => 'create']);
     }
 
     public function store(Request $request): RedirectResponse

@@ -11,6 +11,7 @@ use App\Models\RefKategoriKn;
 use App\Models\RefSubkategoriKn;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 /**
  * Khidmat Nasihat statistical reports — batch 12 slice 2.
@@ -70,7 +71,7 @@ class LaporanKnService
     }
 
     /** Branch dropdown list (only meaningful for view-all users). */
-    public function cawanganList(): \Illuminate\Support\Collection
+    public function cawanganList(): Collection
     {
         return Cawangan::orderBy('nama')->pluck('nama', 'id');
     }
@@ -237,7 +238,7 @@ class LaporanKnService
      * Fold flat {label,bulan,total} rows into one entry per label with a dense
      * 1..12 month map and a row total.
      *
-     * @param  \Illuminate\Support\Collection<int,object>  $rows
+     * @param  Collection<int,object>  $rows
      * @return list<array{label:string,months:array<int,int>,total:int}>
      */
     private function shapeMonthPivot($rows): array
@@ -297,13 +298,13 @@ class LaporanKnService
     // ---- Filter option lists ---------------------------------------------
 
     /** Active kategori options for filter dropdowns. */
-    public function kategoriList(): \Illuminate\Support\Collection
+    public function kategoriList(): Collection
     {
         return RefKategoriKn::orderBy('jenis_kategori')->pluck('jenis_kategori', 'id');
     }
 
     /** Active subkategori options for filter dropdowns. */
-    public function subkategoriList(): \Illuminate\Support\Collection
+    public function subkategoriList(): Collection
     {
         return RefSubkategoriKn::orderBy('nama')->pluck('nama', 'id');
     }

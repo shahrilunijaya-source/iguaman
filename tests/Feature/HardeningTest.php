@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 /** Pre-prod hardening — forced password change + security headers. Real DB, self-cleaning. */
@@ -16,15 +18,15 @@ class HardeningTest extends TestCase
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
         DB::purge('mysql');
         DB::reconnect('mysql');
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
-        (new \Database\Seeders\RolePermissionSeeder())->run();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        (new RolePermissionSeeder)->run();
         User::where('email', 'like', '%@phpunit.local')->delete();
     }
 
     protected function tearDown(): void
     {
         User::where('email', 'like', '%@phpunit.local')->delete();
-        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
         parent::tearDown();
     }
 

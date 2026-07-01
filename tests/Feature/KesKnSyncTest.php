@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Cawangan;
 use App\Models\Form;
 use App\Models\KhidmatNasihat;
 use App\Models\User;
@@ -57,7 +58,7 @@ class KesKnSyncTest extends TestCase
             'status_kn' => KhidmatNasihat::STATUS_SELESAI,
             'jenis_permohonan' => 'DIRI_SENDIRI',
             'jenis_kes' => 'SV',
-            'cawangan_id' => \App\Models\Cawangan::value('id'),
+            'cawangan_id' => Cawangan::value('id'),
         ]);
     }
 

@@ -16,10 +16,11 @@ class Batch7AdminUiTest extends TestCase
     {
         parent::setUp();
         config(['database.default' => 'mysql', 'database.connections.mysql.database' => env('DB_DATABASE', 'iguaman_2in1')]);
-        DB::purge('mysql'); DB::reconnect('mysql');
+        DB::purge('mysql');
+        DB::reconnect('mysql');
         app(PermissionRegistrar::class)->forgetCachedPermissions();
-        (new RolePermissionSeeder())->run();
-        (new TestUsersSeeder())->run();
+        (new RolePermissionSeeder)->run();
+        (new TestUsersSeeder)->run();
         app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
@@ -30,8 +31,15 @@ class Batch7AdminUiTest extends TestCase
         parent::tearDown();
     }
 
-    private function admin(): User { return User::where('email', 'admin@test.local')->firstOrFail(); }
-    private function pegawai(): User { return User::where('email', 'pegawai@test.local')->firstOrFail(); }
+    private function admin(): User
+    {
+        return User::where('email', 'admin@test.local')->firstOrFail();
+    }
+
+    private function pegawai(): User
+    {
+        return User::where('email', 'pegawai@test.local')->firstOrFail();
+    }
 
     public function test_non_admin_cannot_reach_peranan(): void
     {
@@ -60,6 +68,6 @@ class Batch7AdminUiTest extends TestCase
             ->assertRedirect();
         app(PermissionRegistrar::class)->forgetCachedPermissions();
         $this->assertFalse(Role::findByName('koordinator', 'web')->hasPermissionTo('audit.view'));
-        (new RolePermissionSeeder())->run(); // restore matrix
+        (new RolePermissionSeeder)->run(); // restore matrix
     }
 }

@@ -7,7 +7,6 @@ use App\Models\KhidmatNasihat;
 use App\Models\SlotTemuJanji;
 use App\Models\UploadedFile;
 use App\Models\User;
-use Carbon\Carbon;
 use Database\Seeders\Batch8MastersSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Database\Seeders\TestUsersSeeder;
@@ -23,7 +22,8 @@ use Tests\TestCase;
  */
 class AwamLampiranTest extends TestCase
 {
-    private const TAG  = 'PHPUNIT';
+    private const TAG = 'PHPUNIT';
+
     private const DISK = 'local';
 
     protected function setUp(): void
@@ -66,10 +66,10 @@ class AwamLampiranTest extends TestCase
         $user = User::updateOrCreate(
             ['email' => $email],
             [
-                'name'                 => self::TAG.' Awam '.strtoupper($suffix),
-                'user_type'            => User::TYPE_AWAM,
-                'password'             => bcrypt('password'),
-                'is_active'            => true,
+                'name' => self::TAG.' Awam '.strtoupper($suffix),
+                'user_type' => User::TYPE_AWAM,
+                'password' => bcrypt('password'),
+                'is_active' => true,
                 'must_change_password' => false,
             ]
         );
@@ -81,14 +81,14 @@ class AwamLampiranTest extends TestCase
     private function makeKn(User $user): KhidmatNasihat
     {
         return KhidmatNasihat::create([
-            'no_permohonan'  => self::TAG.'-UL-'.uniqid(),
-            'nama_mangsa'    => self::TAG.' Mangsa UL',
+            'no_permohonan' => self::TAG.'-UL-'.uniqid(),
+            'nama_mangsa' => self::TAG.' Mangsa UL',
             'jenis_permohonan' => 'DIRI_SENDIRI',
-            'id_pengguna'    => $user->id,
-            'cawangan_id'    => Cawangan::where('status_aktif', true)->value('id') ?? 1,
-            'status_kn'      => KhidmatNasihat::STATUS_BAHARU,
-            'is_percuma'     => false,
-            'perakuan'       => true,
+            'id_pengguna' => $user->id,
+            'cawangan_id' => Cawangan::where('status_aktif', true)->value('id') ?? 1,
+            'status_kn' => KhidmatNasihat::STATUS_BAHARU,
+            'is_percuma' => false,
+            'perakuan' => true,
             'jumlah_bayaran' => 0,
         ]);
     }
@@ -98,7 +98,7 @@ class AwamLampiranTest extends TestCase
         Storage::fake(self::DISK);
 
         $owner = $this->makeAwamUser('ul1');
-        $kn    = $this->makeKn($owner);
+        $kn = $this->makeKn($owner);
 
         $this->actingAs($owner)
             ->post(route('awam.lampiran.store', $kn), [
@@ -108,7 +108,7 @@ class AwamLampiranTest extends TestCase
 
         $this->assertDatabaseHas('uploaded_files', [
             'id_khidmat' => $kn->id,
-            'nama'       => 'surat.pdf',
+            'nama' => 'surat.pdf',
         ]);
     }
 
@@ -117,7 +117,7 @@ class AwamLampiranTest extends TestCase
         Storage::fake(self::DISK);
 
         $owner = $this->makeAwamUser('ul2');
-        $kn    = $this->makeKn($owner);
+        $kn = $this->makeKn($owner);
 
         $this->actingAs($owner)
             ->post(route('awam.lampiran.store', $kn), [
@@ -132,7 +132,7 @@ class AwamLampiranTest extends TestCase
 
         $owner = $this->makeAwamUser('ul3');
         $other = $this->makeAwamUser('ul4');
-        $kn    = $this->makeKn($owner);
+        $kn = $this->makeKn($owner);
 
         $this->actingAs($other)
             ->post(route('awam.lampiran.store', $kn), [
@@ -146,7 +146,7 @@ class AwamLampiranTest extends TestCase
         Storage::fake(self::DISK);
 
         $owner = $this->makeAwamUser('ul5');
-        $kn    = $this->makeKn($owner);
+        $kn = $this->makeKn($owner);
 
         // Upload first.
         $this->actingAs($owner)
@@ -167,7 +167,7 @@ class AwamLampiranTest extends TestCase
 
         $owner = $this->makeAwamUser('ul6');
         $other = $this->makeAwamUser('ul7');
-        $kn    = $this->makeKn($owner);
+        $kn = $this->makeKn($owner);
 
         $this->actingAs($owner)
             ->post(route('awam.lampiran.store', $kn), [

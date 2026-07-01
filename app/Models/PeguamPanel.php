@@ -20,12 +20,16 @@ class PeguamPanel extends Model
     ];
 
     public const AKTIF = '1';
+
     public const TIDAK_AKTIF = '0';
 
     /** Deactivation justifications (legacy: JK Disiplin / Meninggal / Lain-lain). */
     public const SEBAB_DISIPLIN = 'Tindakan JK Disiplin';
+
     public const SEBAB_MENINGGAL = 'Meninggal Dunia';
+
     public const SEBAB_LAIN = 'Lain-lain';
+
     public const SEBAB_LIST = [self::SEBAB_DISIPLIN, self::SEBAB_MENINGGAL, self::SEBAB_LAIN];
 
     public function isAktif(): bool

@@ -12,9 +12,13 @@ use App\Models\AuditTrail;
 class Audit
 {
     public const INSERT = 'INSERT';
+
     public const UPDATE = 'UPDATE';
+
     public const DELETE = 'DELETE';
+
     public const APPROVE = 'APPROVE';
+
     public const REJECT = 'REJECT';
 
     public static function log(string $table, int $recordId, string $action, ?string $remarks = null, ?string $by = null): void

@@ -62,7 +62,7 @@ class MahkamahRefController extends Controller
     {
         $model = $this->modelClass($jenis);
 
-        return view('mahkamah-ref.form', ['jenis' => $jenis, 'mahkamah' => new $model(), 'mode' => 'create']);
+        return view('mahkamah-ref.form', ['jenis' => $jenis, 'mahkamah' => new $model, 'mode' => 'create']);
     }
 
     public function store(string $jenis, Request $request): RedirectResponse
