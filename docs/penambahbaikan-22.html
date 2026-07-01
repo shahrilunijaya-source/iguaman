@@ -116,7 +116,7 @@
       <div class="qs"><b>22</b><span>Wishes in scope</span></div>
       <div class="qs"><b>21</b><span>Fully shipped</span></div>
       <div class="qs"><b>1</b><span>Spike / deferred</span></div>
-      <div class="qs"><b>351</b><span>Tests green</span></div>
+      <div class="qs"><b>377</b><span>Tests green</span></div>
       <div class="qs"><b>5</b><span>Commits this round</span></div>
     </div>
   </div>
@@ -136,7 +136,7 @@
 
   <div class="legend">
     <span class="b"><span class="badge done">✔ DONE</span> built, tested, on trunk</span>
-    <span class="b"><span class="badge spike">◐ SPIKE</span> seam built, feature-flagged off, full build deferred</span>
+    <span class="b"><span class="badge spike">◐ SPIKE</span> decision made, dead seam removed, full build deferred</span>
     <span class="b"><span class="area a-kn">KN</span> Khidmat Nasihat</span>
     <span class="b"><span class="area a-rk">RK</span> Rekod Kes</span>
     <span class="b"><span class="area a-pp">PP</span> Peguam Panel</span>
@@ -336,8 +336,8 @@
           <td class="wish">Extract received docs → prefill online form (OCR)</td>
           <td><span class="area a-x">×</span></td>
           <td><span class="badge spike">◐ SPIKE</span></td>
-          <td class="commit"><code>ad62f1f</code></td>
-          <td class="remark">Decision doc + a feature-flagged <code>OcrPrefillService</code> seam (flag OFF). Full OCR (Tesseract vs Textract) deferred — recommend routing through the existing Python microservice. <b>Only non-shipped item.</b></td>
+          <td class="commit"><code>447e19b</code></td>
+          <td class="remark">Decision doc kept; OCR to route through the existing Python microservice (Tesseract vs Textract not yet chosen). The flag-off <code>OcrPrefillService</code> seam (<code>ad62f1f</code>) was <b>removed as dead code</b> in the hardening pass (ARCH-05). <b>Only non-shipped item.</b></td>
         </tr>
 
       </tbody>
@@ -346,11 +346,16 @@
 
   <div class="note">
     <span>🧪</span>
-    <div><b>Verification:</b> the full PHPUnit suite is <b>351/351 green</b> on a scratch MySQL DB (<code>iguaman_2in1_test</code>, never the dev DB). Every wish landed as a small atomic commit on branch <code>feat/penambahbaikan-subsistem</code>. Not yet shipped to <code>main</code> / production.</div>
+    <div><b>Verification:</b> the full PHPUnit suite is <b>377/377 green</b> (1,882 assertions) against the live MySQL dev DB (<code>iguaman_2in1</code>); every test seeds &amp; cleans its own <code>PHPUNIT</code>-tagged rows. Shipped: merged to <code>main</code> (<code>213e35b</code>) and pushed to production via the Hostinger webhook.</div>
+  </div>
+
+  <div class="note" style="background:var(--paper-2);border-color:var(--line);border-left-color:var(--pine)">
+    <span>🛡</span>
+    <div><b>Post-v2 hardening pass (audit remediation):</b> on top of these 22 wishes a full security / architecture / performance / a11y audit was remediated — transactional lifecycle writes, per-branch cache tenancy, cursor-streamed exports, DB integrity backstops (FKs, unique slot tuple), soft-deletes + user deactivation, field-level audit forensics (<code>actor_id</code> + before/after diff), <code>aria-label</code> on every form field, chatbot PII minimisation + PDPA notice, and PHPStan level 5 + CI. Suite 351 → <b>377</b>.</div>
   </div>
 
   <footer>
-    <span>iGuaman 2in1 · Penambahbaikan status — trunk <code>feat/penambahbaikan-subsistem</code> @ <code>b5ebda0</code>.</span>
+    <span>iGuaman 2in1 · Penambahbaikan status — merged to <code>main</code> @ <code>213e35b</code>, 377/377 green, pushed to production.</span>
     <span>JBG · Jabatan Bantuan Guaman Malaysia</span>
   </footer>
 

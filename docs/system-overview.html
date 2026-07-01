@@ -255,11 +255,16 @@
     <section id="whatsnew">
       <div class="sec-eyebrow">What's new</div>
       <h2 class="sec-h"><span class="num">v2</span>22 Penambahbaikan — shipped &amp; tested</h2>
-      <p class="sec-sub">v2 closes the full <b>SENARAI PENAMBAHBAIKAN SUBSISTEM</b>: 22 improvement requests against the consolidated app, sequenced foundation-first around a new <b>central claim ledger</b>. 21 fully shipped, 1 (OCR) a feature-flagged spike. All on branch <code>feat/penambahbaikan-subsistem</code>; suite <b>351/351 green</b>. <a href="penambahbaikan-22.html"><b>See the full 22-wish status →</b></a></p>
+      <p class="sec-sub">v2 closes the full <b>SENARAI PENAMBAHBAIKAN SUBSISTEM</b>: 22 improvement requests against the consolidated app, sequenced foundation-first around a new <b>central claim ledger</b>. 21 fully shipped, 1 (OCR) deferred to the Python microservice. Merged to <code>main</code> and pushed to production; suite <b>377/377 green</b>. <a href="penambahbaikan-22.html"><b>See the full 22-wish status →</b></a></p>
 
       <div class="note">
         <span class="ic">🆕</span>
         <div><b>The big additions vs v1:</b> a central polymorphic <b>claim ledger</b> (W15) · a shared <b>branch-transfer engine</b> + transfer KPI (W7/W3/W8/W4) · <b>Pembelaan Awam</b> on the litigation spine + interim/muktamad certificate (W9/W14) · <b>Mediation</b> with its own number, standalone intake &amp; mediator assignment (W17/W18/W19) · a <b>prison_officer</b> intake role + manual <b>iPayment</b> receipts (W1/W2) · a real <b>event/queue</b> integration layer (W21). The role count grew 8 → <b>12</b> and permissions to <b>55</b>.</div>
+      </div>
+
+      <div class="note o">
+        <span class="ic">🛡</span>
+        <div><b>Post-v2 hardening pass:</b> a full security / architecture / performance / accessibility audit was remediated on top of these 22 wishes — transactional lifecycle writes, per-branch <b>cache tenancy</b>, cursor-streamed exports, DB integrity backstops (FKs, unique slot tuple), <b>soft-deletes</b> + user deactivation, field-level <b>audit forensics</b> (<code>actor_id</code> + before/after diff), <code>aria-label</code> on every form field, chatbot PII minimisation + PDPA notice, and <b>PHPStan level 5 + CI</b>. Suite grew 351 → <b>377</b>.</div>
       </div>
 
       <div class="grid g3">
@@ -444,7 +449,7 @@
         <div class="card"><h4>🔁 Forced password change</h4><p>Migrated legacy accounts pinned to <code>/password/change</code> via <code>ForcePasswordChange</code> middleware until <code>must_change_password</code> clears.</p></div>
         <div class="card"><h4>⏱ Throttling</h4><p>Login (10/min), public forms &amp; uploads (6–20/min), chatbot (20/min), feedback (6/min). Honeypot + captcha on public application forms.</p></div>
         <div class="card"><h4>📎 Private file access</h4><p>Attachments stored on a private disk, streamed only through auth + ownership checks. Citizens can only download their own KN documents.</p></div>
-        <div class="card"><h4>🧾 Audit + headers</h4><p><code>audit_trail</code> records sensitive actions; <code>SecurityHeaders</code> middleware sets hardening headers; CSRF on all state-changing forms.</p></div>
+        <div class="card"><h4>🧾 Audit + headers</h4><p><code>audit_trail</code> records sensitive actions with the acting user (<code>actor_id</code>) and field-level before/after diffs; <code>SecurityHeaders</code> middleware sets hardening headers; CSRF on all state-changing forms.</p></div>
       </div>
     </section>
 
@@ -911,7 +916,7 @@
           <span class="node end">ref_subkategori_kn<small>L3 · Sub</small></span>
         </div>
         <div class="branchline" style="font-size:.83rem;color:var(--muted)">
-          L1 values: <b>SIVIL · SYARIAH · PENDAMPING JENAYAH · PENDAMPING GUAMAN</b>. Each level cascades on delete. <code>khidmat_nasihat</code> references L1 (<code>id_kategori</code>) + L3 (<code>id_subkategori</code>), both nullOnDelete so reference data outlives advisory records.
+          L1 values: <b>SIVIL · SYARIAH · PENDAMPING JENAYAH · PENDAMPING GUAMAN</b>. Each level cascade-<b>soft-deletes</b> its children (recoverable, per-child audit). <code>khidmat_nasihat</code> references L1 (<code>id_kategori</code>) + L3 (<code>id_subkategori</code>), both nullOnDelete so reference data outlives advisory records.
         </div>
       </div>
     </section>
@@ -974,7 +979,7 @@
 </div>
 
 <footer>
-  <span>iGuaman 2in1 · System understanding <b>v2</b> — updated 2026-07-01 after the 22 penambahbaikan (trunk <code>feat/penambahbaikan-subsistem</code> @ <code>b5ebda0</code>, suite 351/351). <a href="penambahbaikan-22.html">Full status →</a></span>
+  <span>iGuaman 2in1 · System understanding <b>v2</b> — updated 2026-07-02 after the 22 penambahbaikan + hardening pass (merged to <code>main</code> @ <code>213e35b</code>, suite 377/377, pushed to production). <a href="penambahbaikan-22.html">Full status →</a></span>
   <span>JBG · Jabatan Bantuan Guaman Malaysia</span>
 </footer>
 
