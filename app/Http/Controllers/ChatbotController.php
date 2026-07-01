@@ -26,7 +26,10 @@ class ChatbotController extends Controller
             $request->session()->put('chatbot_sid', $sid);
         }
 
-        $result = $bot->ask($data['message'], (int) $sid, $request->user()?->name ?? '');
+        // CFG-13: minimise PII sent to the external AI service — do NOT forward the user's name.
+        // The bot only needs the message + a stable session id for conversation threading; it
+        // types user_name as a required string, so send '' (the guest value) for everyone.
+        $result = $bot->ask($data['message'], (int) $sid, '');
 
         return response()->json(['reply' => $result['reply']], $result['status']);
     }

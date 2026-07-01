@@ -24,6 +24,9 @@
                    placeholder="Taip soalan anda…" aria-label="Mesej" required>
             <button type="submit" class="jbgcb-send" aria-label="Hantar">&#10148;</button>
         </form>
+
+        {{-- CFG-13: PDPA notice — messages are relayed to an external AI service. --}}
+        <p class="jbgcb-notice">Mesej anda diproses oleh perkhidmatan AI luaran. Sila jangan kongsi maklumat peribadi atau sulit.</p>
     </section>
 </div>
 
@@ -54,6 +57,7 @@
     .jbgcb-input:focus { outline:2px solid var(--jbgcb-teal); border-color:transparent; }
     .jbgcb-send { border:0; border-radius:.6rem; background:var(--jbgcb-teal); color:#fff; padding:0 .9rem; font-size:1rem; cursor:pointer; }
     .jbgcb-send:disabled { opacity:.5; cursor:not-allowed; }
+    .jbgcb-notice { margin:0; padding:.4rem .8rem .6rem; font-size:.65rem; line-height:1.3; color:#64748b; background:#fff; border-top:1px solid rgba(13,46,72,.06); }
     @media (prefers-reduced-motion:reduce) { .jbgcb-fab { transition:none; } }
 </style>
 
