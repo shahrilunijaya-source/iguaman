@@ -6,6 +6,7 @@ use App\Models\Form;
 use App\Models\LejarTuntutanBayaran;
 use App\Models\PeguamPanel;
 use App\Support\Audit;
+use App\Support\FormStatus;
 use App\Support\KesKnSyncService;
 use App\Support\LejarTuntutanService;
 use App\Support\StatusAgihan;
@@ -37,7 +38,7 @@ class KeputusanController extends Controller
         $this->gate($request);
 
         // PROC-12: don't re-decide a case that already has an outcome (re-POST / stale button).
-        abort_if(in_array($kes->status, ['Diterima', 'Ditolak', 'Fail Tutup'], true), 409, 'Permohonan ini telah diputuskan.');
+        abort_if(in_array($kes->status, FormStatus::TERMINAL, true), 409, 'Permohonan ini telah diputuskan.');
 
         $data = $request->validate([
             'kelulusan' => ['nullable', 'string', 'max:20'],
@@ -47,7 +48,7 @@ class KeputusanController extends Controller
         $kes->update([
             'keputusan' => 'Diluluskan',
             'diterima' => 'Ya',
-            'status' => 'Diterima',
+            'status' => FormStatus::DITERIMA,
             'kelulusan' => $data['kelulusan'] ?? null,
             'sumbangan' => $data['sumbangan'] ?? null,
             'tarikh_perakuan' => now()->toDateString(),
@@ -66,14 +67,14 @@ class KeputusanController extends Controller
         $this->gate($request);
 
         // PROC-12: don't re-decide a case that already has an outcome.
-        abort_if(in_array($kes->status, ['Diterima', 'Ditolak', 'Fail Tutup'], true), 409, 'Permohonan ini telah diputuskan.');
+        abort_if(in_array($kes->status, FormStatus::TERMINAL, true), 409, 'Permohonan ini telah diputuskan.');
 
         $data = $request->validate(['reason' => ['nullable', 'string', 'max:100']]);
 
         $kes->update([
             'keputusan' => 'Ditolak',
             'diterima' => 'Tidak',
-            'status' => 'Ditolak',
+            'status' => FormStatus::DITOLAK,
             'reason' => $data['reason'] ?? null,
             'tarikh_pemakluman' => now()->toDateString(),
             'tarikh_pengarahKemaskini' => now(),
@@ -90,7 +91,7 @@ class KeputusanController extends Controller
         $this->gate($request);
 
         // PROC-12: block double-close — re-closing would re-seed the claim ledger and re-push the KN.
-        abort_if($kes->status === 'Fail Tutup', 409, 'Fail ini telah ditutup.');
+        abort_if($kes->status === FormStatus::FAIL_TUTUP, 409, 'Fail ini telah ditutup.');
 
         $data = $request->validate([
             'sebab_tutup_fail' => ['nullable', 'string'],
@@ -101,7 +102,7 @@ class KeputusanController extends Controller
         DB::transaction(function () use ($kes, $request, $data) {
             $kes->update([
                 'tarikh_tutup_fail' => now()->toDateString(),
-                'status' => 'Fail Tutup',
+                'status' => FormStatus::FAIL_TUTUP,
                 'sebab_tutup_fail' => $data['sebab_tutup_fail'] ?? null,
                 'kos' => $data['kos'] ?? null,
             ]);
@@ -145,7 +146,7 @@ class KeputusanController extends Controller
         DB::transaction(function () use ($kes, $request) {
             $kes->update([
                 'status_agihan' => StatusAgihan::KES_DITUTUP,
-                'status' => 'Fail Tutup',
+                'status' => FormStatus::FAIL_TUTUP,
                 // Preserve an existing official closure date — never re-stamp a legally meaningful field.
                 'tarikh_tutup_fail' => filled($kes->tarikh_tutup_fail) ? $kes->tarikh_tutup_fail : now()->toDateString(),
             ]);

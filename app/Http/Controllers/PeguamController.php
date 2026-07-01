@@ -107,12 +107,12 @@ class PeguamController extends Controller
             'id_kes' => $kes->id,
             'nama_pp_lama' => $kes->nama_pegawai_yang_dapat_kes,
             'tarikh_penugasan' => $kes->tarikh_penugasan_peguam_panel,
-            'status' => 'T',
+            'status' => SejarahPeguamPanel::STATUS_TOLAK,
             'alasan' => $data['alasan'] ?? 'Tawaran ditolak oleh peguam',
             'kp_pp_lama' => null,
             'modifiedBy' => Auth::user()->name,
             'modifiedDate' => now(),
-            'status_agihan' => 'T',
+            'status_agihan' => SejarahPeguamPanel::STATUS_TOLAK,
         ]);
 
         // Offer declined → bounce back to the PPUU re-pick pool (numeric '4'), the same
@@ -229,7 +229,7 @@ class PeguamController extends Controller
             'id_kes' => $kes->id,
             'nama_pp_lama' => $kes->nama_pegawai_yang_dapat_kes,
             'tarikh_penugasan' => $kes->tarikh_penugasan_peguam_panel,
-            'status' => 'S',
+            'status' => SejarahPeguamPanel::STATUS_SELESAI,
             'alasan' => $data['sebab_selesai'] ?? 'Kes ditandakan selesai oleh peguam',
             'kp_pp_lama' => $this->lawyerKp(),
             'modifiedBy' => Auth::user()->name,
