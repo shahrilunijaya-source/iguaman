@@ -6,6 +6,8 @@ use App\Models\Cawangan;
 use App\Models\KhidmatNasihat;
 use App\Models\SlotTemuJanji;
 use App\Models\TemuJanji;
+use App\Models\UploadedFile;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -78,6 +80,43 @@ class KhidmatNasihatService
 
             return $this->bookSlot($khidmat, $tarikh, $masa, $oleh);
         });
+    }
+
+    /**
+     * ARCH-01 — W1 fee-waiver proof, moved out of KhidmatNasihatController. Stores the
+     * optional waiver document when the application is fee-exempt and links it via
+     * khidmat_nasihat.id_lampiran_waiver.
+     */
+    public function storeWaiver(KhidmatNasihat $khidmat, Request $request): void
+    {
+        if (! $request->boolean('is_percuma') || ! $request->hasFile('lampiran_waiver')) {
+            return;
+        }
+
+        $row = $this->storeLampiran($khidmat, $request->file('lampiran_waiver'), 'Bukti Pengecualian Bayaran');
+        $khidmat->update(['id_lampiran_waiver' => $row->id]);
+
+        Audit::log('khidmat_nasihat', $khidmat->id, Audit::UPDATE,
+            "Bukti pengecualian bayaran dimuat naik: {$row->nama}");
+    }
+
+    /**
+     * ARCH-01 — persist a KN-linked document on the W6 repository disk (mirrors
+     * LampiranController) and link it via uploaded_files.id_khidmat. The caller wires
+     * the specific FK column (id_lampiran_waiver / id_lampiran_resit).
+     */
+    public function storeLampiran(KhidmatNasihat $khidmat, \Illuminate\Http\UploadedFile $file, string $nama): UploadedFile
+    {
+        $path = $file->store('lampiran', config('filesystems.lampiran_disk', 'repositori'));
+
+        return UploadedFile::create([
+            'nama' => "{$nama} — {$khidmat->no_permohonan}",
+            'file_name' => basename($path),
+            'file_path' => $path,
+            'file_type' => strtolower($file->getClientOriginalExtension() ?: $file->extension()),
+            'id_khidmat' => $khidmat->id,
+            'uploaded_at' => now(),
+        ]);
     }
 
     private function nextNoPermohonan(KhidmatNasihat $khidmat): string
