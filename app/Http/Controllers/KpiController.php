@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -21,6 +22,9 @@ use Illuminate\View\View;
 class KpiController extends Controller
 {
     public const TYPES = ['Sivil', 'Syariah', 'Jenayah', 'Pendamping Guaman'];
+
+    /** PERF-04: cache the (all-branch) KPI aggregate briefly. */
+    private const CACHE_TTL = 300;
 
     private function noMediation(Builder $q): void
     {
@@ -99,42 +103,47 @@ class KpiController extends Controller
      */
     private function compute(array $def, int $year): array
     {
-        // Column names come from the trusted $def array, never request input.
-        $diff = "DATEDIFF(`{$def['end']}`, `{$def['start']}`)";
+        // PERF-04: cache the scalar result (matrix + totals). $def carries a closure filter,
+        // so it is excluded from the cache payload and re-attached after.
+        $cached = Cache::remember("kpi:{$def['key']}:{$year}", self::CACHE_TTL, function () use ($def, $year) {
+            // Column names come from the trusted $def array, never request input.
+            $diff = "DATEDIFF(`{$def['end']}`, `{$def['start']}`)";
 
-        $rows = DB::table('forms')
-            ->selectRaw("kategori_kes AS jenis, MONTH(`{$def['month']}`) AS bulan,
-                SUM(CASE WHEN {$diff} <= {$def['target']} THEN 1 ELSE 0 END) AS met,
-                SUM(CASE WHEN {$diff} > {$def['target']} THEN 1 ELSE 0 END) AS missed")
-            ->whereYear($def['month'], $year)
-            ->whereNotNull($def['start'])
-            ->whereNotNull($def['end'])
-            ->whereIn('kategori_kes', $def['types'])
-            ->when($def['filter'], fn ($q) => tap($q, $def['filter']))
-            ->groupBy('jenis', DB::raw("MONTH(`{$def['month']}`)"))
-            ->get();
+            $rows = DB::table('forms')
+                ->selectRaw("kategori_kes AS jenis, MONTH(`{$def['month']}`) AS bulan,
+                    SUM(CASE WHEN {$diff} <= {$def['target']} THEN 1 ELSE 0 END) AS met,
+                    SUM(CASE WHEN {$diff} > {$def['target']} THEN 1 ELSE 0 END) AS missed")
+                ->whereYear($def['month'], $year)
+                ->whereNotNull($def['start'])
+                ->whereNotNull($def['end'])
+                ->whereIn('kategori_kes', $def['types'])
+                ->when($def['filter'], fn ($q) => tap($q, $def['filter']))
+                ->groupBy('jenis', DB::raw("MONTH(`{$def['month']}`)"))
+                ->get();
 
-        $matrix = [];
-        foreach ($def['types'] as $t) {
-            $matrix[$t] = array_fill(1, 12, ['met' => 0, 'missed' => 0]);
-        }
-
-        $totalMet = 0;
-        $totalAll = 0;
-        foreach ($rows as $r) {
-            if (! isset($matrix[$r->jenis][(int) $r->bulan])) {
-                continue;
+            $matrix = [];
+            foreach ($def['types'] as $t) {
+                $matrix[$t] = array_fill(1, 12, ['met' => 0, 'missed' => 0]);
             }
-            $matrix[$r->jenis][(int) $r->bulan] = ['met' => (int) $r->met, 'missed' => (int) $r->missed];
-            $totalMet += (int) $r->met;
-            $totalAll += (int) $r->met + (int) $r->missed;
-        }
 
-        return [
-            'def' => $def,
-            'matrix' => $matrix,
-            'achieved' => $totalAll > 0 ? round($totalMet / $totalAll * 100) : null,
-            'total' => $totalAll,
-        ];
+            $totalMet = 0;
+            $totalAll = 0;
+            foreach ($rows as $r) {
+                if (! isset($matrix[$r->jenis][(int) $r->bulan])) {
+                    continue;
+                }
+                $matrix[$r->jenis][(int) $r->bulan] = ['met' => (int) $r->met, 'missed' => (int) $r->missed];
+                $totalMet += (int) $r->met;
+                $totalAll += (int) $r->met + (int) $r->missed;
+            }
+
+            return [
+                'matrix' => $matrix,
+                'achieved' => $totalAll > 0 ? round($totalMet / $totalAll * 100) : null,
+                'total' => $totalAll,
+            ];
+        });
+
+        return ['def' => $def] + $cached;
     }
 }

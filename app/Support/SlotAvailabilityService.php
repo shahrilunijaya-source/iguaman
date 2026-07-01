@@ -7,6 +7,7 @@ use App\Models\PenutupanOperasi;
 use App\Models\RefCuti;
 use App\Models\SlotTemuJanji;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * Slot-availability engine (parity map §4 — the hard core of Batch 10).
@@ -139,7 +140,7 @@ class SlotAvailabilityService
      * past + near dates too — booking enforcement stays in availableDates/Times).
      *
      * @return array<string, array{status: string, label: string}>
-     *         'Y-m-d' => one of: weekend | holiday | closure | open
+     *                                                             'Y-m-d' => one of: weekend | holiday | closure | open
      */
     public function dayStatuses(int $cawanganId, string $from, string $to, ?array $weekend = null): array
     {
@@ -193,6 +194,9 @@ class SlotAvailabilityService
         return in_array($date->dayOfWeekIso, $weekend, true);
     }
 
+    /** PERF-08: memo of ref_cuti for this instance — holidayDates runs up to 3× per request. */
+    private ?Collection $cutiMemo = null;
+
     /**
      * Holiday dates covering $negeriId, as a 'Y-m-d' => true lookup.
      * A ref_cuti row applies when its idnegeri bitmask (decoded) contains the state.
@@ -204,7 +208,7 @@ class SlotAvailabilityService
         }
 
         $dates = [];
-        foreach (RefCuti::all() as $cuti) {
+        foreach (($this->cutiMemo ??= RefCuti::all()) as $cuti) {
             if (! in_array($negeriId, CutiNegeri::decode($cuti->idnegeri), true)) {
                 continue;
             }

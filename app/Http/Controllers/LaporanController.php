@@ -55,18 +55,24 @@ class LaporanController extends Controller
     {
         $report = $this->report($type);
         $cols = $report['columns'];
-        $rows = $this->query($report, $request)->get();
+        $query = $this->query($report, $request);
         $filename = $type.'-'.now()->format('Ymd-His').'.csv';
+        $userId = $request->user()->id;
 
-        Log::info('export.download', ['type' => $type, 'format' => 'csv', 'user_id' => $request->user()->id, 'rows' => $rows->count()]);
-
-        return response()->streamDownload(function () use ($cols, $rows) {
+        return response()->streamDownload(function () use ($cols, $query, $type, $userId) {
             $out = fopen('php://output', 'w');
             fputcsv($out, array_values($cols));
-            foreach ($rows as $r) {
+
+            // PERF-01: cursor() streams rows one at a time — the full result set never lands
+            // in PHP memory, so a large export can't exhaust memory_limit mid-request.
+            $n = 0;
+            foreach ($query->cursor() as $r) {
                 fputcsv($out, array_map(fn ($f) => $this->cell($r, $f), array_keys($cols)));
+                $n++;
             }
             fclose($out);
+
+            Log::info('export.download', ['type' => $type, 'format' => 'csv', 'user_id' => $userId, 'rows' => $n]);
         }, $filename, ['Content-Type' => 'text/csv']);
     }
 

@@ -13,6 +13,7 @@ use App\Support\TransferCawanganService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use RuntimeException;
 
@@ -20,6 +21,10 @@ use RuntimeException;
 // Foundation for the rekod-kes domain (pengantaraan/mahkamah build on this).
 class KesController extends Controller
 {
+    // PERF-05: filter dropdowns re-scanned forms with DISTINCT on nearly every page.
+    // Cache per user — the Form-based lists are branch-scoped (CawanganScope).
+    private const LIST_TTL = 300;
+
     public function index(Request $request): View
     {
         $filters = $request->only(['cawangan', 'status', 'kategori', 'q']);
@@ -44,7 +49,7 @@ class KesController extends Controller
             'kes' => $kes,
             'filters' => $filters,
             'cawanganList' => $this->cawanganList(),
-            'statusList' => Form::query()->whereNotNull('status')->where('status', '!=', '')->distinct()->orderBy('status')->pluck('status'),
+            'statusList' => $this->statusList(),
             'kategoriList' => $this->kategoriList(),
         ]);
     }
@@ -176,17 +181,26 @@ class KesController extends Controller
             'kes' => $kes,
             'cawanganList' => $this->cawanganList(),
             'kategoriList' => $this->kategoriList(),
-            'jenisList' => RefKes::query()->whereNotNull('jenis_kes')->where('jenis_kes', '!=', '')->distinct()->orderBy('jenis_kes')->pluck('jenis_kes'),
+            'jenisList' => Cache::remember('kes:jenis', self::LIST_TTL,
+                fn () => RefKes::query()->whereNotNull('jenis_kes')->where('jenis_kes', '!=', '')->distinct()->orderBy('jenis_kes')->pluck('jenis_kes')),
         ];
     }
 
     private function cawanganList()
     {
-        return Form::query()->whereNotNull('cawangan')->where('cawangan', '!=', '')->distinct()->orderBy('cawangan')->pluck('cawangan');
+        return Cache::remember('kes:cawangan:'.auth()->id(), self::LIST_TTL,
+            fn () => Form::query()->whereNotNull('cawangan')->where('cawangan', '!=', '')->distinct()->orderBy('cawangan')->pluck('cawangan'));
     }
 
     private function kategoriList()
     {
-        return Form::query()->whereNotNull('kategori_kes')->where('kategori_kes', '!=', '')->distinct()->orderBy('kategori_kes')->pluck('kategori_kes');
+        return Cache::remember('kes:kategori:'.auth()->id(), self::LIST_TTL,
+            fn () => Form::query()->whereNotNull('kategori_kes')->where('kategori_kes', '!=', '')->distinct()->orderBy('kategori_kes')->pluck('kategori_kes'));
+    }
+
+    private function statusList()
+    {
+        return Cache::remember('kes:status:'.auth()->id(), self::LIST_TTL,
+            fn () => Form::query()->whereNotNull('status')->where('status', '!=', '')->distinct()->orderBy('status')->pluck('status'));
     }
 }

@@ -44,9 +44,10 @@ class ExportLaporanJob implements ShouldQueue
             return;
         }
 
-        $rows = LaporanRegistry::buildQuery($report, $this->filters, bypassScope: true)->get();
+        // PERF-01: pass the query (not ->get()) so LaporanExport (FromQuery) chunks it.
+        $query = LaporanRegistry::buildQuery($report, $this->filters, bypassScope: true);
 
-        Excel::store(new LaporanExport($report['columns'], $rows), $this->path, $this->disk);
+        Excel::store(new LaporanExport($report['columns'], $query), $this->path, $this->disk);
     }
 
     /** Surface a failed generation instead of leaving the download route waiting on a phantom file. */

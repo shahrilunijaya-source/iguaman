@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -23,6 +24,9 @@ use Illuminate\Support\Facades\DB;
  */
 class SlaMatrix
 {
+    /** PERF-04: cache the (all-branch, HQ-gated) SLA pivot briefly. */
+    public const CACHE_TTL = 300;
+
     /** Case categories shown as matrix columns (forms.kategori_kes values). */
     public const KATEGORI = ['Sivil', 'Syariah', 'Jenayah', 'Pendamping Guaman'];
 
@@ -130,23 +134,30 @@ class SlaMatrix
     {
         $def = self::definitions()[$key];
 
-        // Column names come from the trusted $def array, never from request input.
-        $diff = "DATEDIFF(`{$def['end']}`, `{$def['start']}`)";
+        // PERF-04: the DATEDIFF aggregate scans forms. Cache the pivoted result briefly;
+        // $def carries a closure (not serialisable), so only the scalar pivot is cached.
+        $cacheKey = "sla:{$key}:".($year ?? 'all').':'.($month ?? 'all');
+        $pivoted = Cache::remember($cacheKey, self::CACHE_TTL, function () use ($def, $year, $month) {
+            // Column names come from the trusted $def array, never from request input.
+            $diff = "DATEDIFF(`{$def['end']}`, `{$def['start']}`)";
 
-        $grouped = DB::table('forms')
-            ->selectRaw("cawangan, kategori_kes AS jenis,
-                SUM(CASE WHEN {$diff} <= {$def['target']} THEN 1 ELSE 0 END) AS capai,
-                SUM(CASE WHEN {$diff} > {$def['target']} THEN 1 ELSE 0 END) AS tidak")
-            ->whereNotNull($def['start'])
-            ->whereNotNull($def['end'])
-            ->whereIn('kategori_kes', self::KATEGORI)
-            ->when($year, fn (Builder $q) => $q->whereYear($def['end'], $year))
-            ->when($month, fn (Builder $q) => $q->whereMonth($def['end'], $month))
-            ->where(fn (Builder $q) => $def['filter']($q))
-            ->groupBy('cawangan', 'jenis')
-            ->get();
+            $grouped = DB::table('forms')
+                ->selectRaw("cawangan, kategori_kes AS jenis,
+                    SUM(CASE WHEN {$diff} <= {$def['target']} THEN 1 ELSE 0 END) AS capai,
+                    SUM(CASE WHEN {$diff} > {$def['target']} THEN 1 ELSE 0 END) AS tidak")
+                ->whereNotNull($def['start'])
+                ->whereNotNull($def['end'])
+                ->whereIn('kategori_kes', self::KATEGORI)
+                ->when($year, fn (Builder $q) => $q->whereYear($def['end'], $year))
+                ->when($month, fn (Builder $q) => $q->whereMonth($def['end'], $month))
+                ->where(fn (Builder $q) => $def['filter']($q))
+                ->groupBy('cawangan', 'jenis')
+                ->get();
 
-        return ['def' => $def] + self::pivot($grouped, self::BRANCHES, self::KATEGORI);
+            return self::pivot($grouped, self::BRANCHES, self::KATEGORI);
+        });
+
+        return ['def' => $def] + $pivoted;
     }
 
     /**

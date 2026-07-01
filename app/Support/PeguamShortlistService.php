@@ -7,6 +7,7 @@ namespace App\Support;
 use App\Models\Form;
 use App\Models\PeguamPanel;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -22,6 +23,9 @@ class PeguamShortlistService
     /** Statuses that count as an open, weighing caseload. */
     private const OPEN_BUCKETS = [StatusAgihan::DITAWARKAN, StatusAgihan::DITERIMA];
 
+    /** PERF-02: brief cache for the workload GROUP BY (assignment data changes fast). */
+    private const BEBAN_TTL = 60;
+
     /**
      * Open-case counts keyed by lawyer name (the legacy join key on forms).
      * Single source of truth for the workload dashboard and the shortlist.
@@ -30,20 +34,23 @@ class PeguamShortlistService
      */
     public function bebanByNama(): Collection
     {
-        return Form::query()
+        // PERF-02: this all-forms GROUP BY is recomputed on every assignment screen (called by
+        // both the workload dashboard and shortlist()). Cache briefly, keyed per user because
+        // Form is branch-scoped (CawanganScope) — never share one branch's load with another.
+        return Cache::remember('peguam:beban:'.auth()->id(), self::BEBAN_TTL, fn () => Form::query()
             ->whereNotNull('nama_pegawai_yang_dapat_kes')
             ->where('nama_pegawai_yang_dapat_kes', '!=', '')
             ->whereIn('status_agihan', StatusAgihan::bucketValues(self::OPEN_BUCKETS))
             ->select('nama_pegawai_yang_dapat_kes', DB::raw('COUNT(*) as n'))
             ->groupBy('nama_pegawai_yang_dapat_kes')
-            ->pluck('n', 'nama_pegawai_yang_dapat_kes');
+            ->pluck('n', 'nama_pegawai_yang_dapat_kes'));
     }
 
     /**
      * Workload-ranked shortlist of active panel lawyers (least-loaded first).
      *
      * @param  array{bidang?:string,limit?:int}  $opt  Optional practice-area code
-     *         (matches butiran_peguam_panel_6.category) + result cap.
+     *                                                 (matches butiran_peguam_panel_6.category) + result cap.
      * @return Collection<int,array{id:int,nama:string,kp:?string,firma:?string,beban:int}>
      */
     public function shortlist(array $opt = []): Collection

@@ -24,11 +24,11 @@ class LaporanPenuhController extends Controller
 
         $meta = WideExport::meta($type);
         $filters = $request->only(['dari', 'hingga', 'kategori', 'cawangan', 'status']);
-        $rows = $this->query($type, $meta, $request)->get();
+        $query = $this->query($type, $meta, $request);
 
         $filename = $meta['file'].'_'.now()->format('Ymd_His').'.csv';
 
-        return response()->streamDownload(function () use ($type, $filters, $rows) {
+        return response()->streamDownload(function () use ($type, $filters, $query) {
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF"); // UTF-8 BOM so Excel reads Malay text + the ="..." IC trick.
 
@@ -37,8 +37,9 @@ class LaporanPenuhController extends Controller
             }
             fputcsv($out, array_merge(['BIL.'], WideExport::headers($type)));
 
+            // PERF-01: cursor() streams rows from the DB — no full result set in memory.
             $bil = 1;
-            foreach ($rows as $r) {
+            foreach ($query->cursor() as $r) {
                 fputcsv($out, WideExport::row($r, $type, $bil++));
             }
             fclose($out);

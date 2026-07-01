@@ -86,10 +86,10 @@ class StatistikSlaController extends Controller
         $kategori = $request->input('kategori') ?: null;
 
         $meta = SlaListExport::meta($key);
-        $rows = SlaListExport::query($key, $year, $month, $cawangan, $kategori)->get();
+        $query = SlaListExport::query($key, $year, $month, $cawangan, $kategori);
         $filename = $meta['file'].'_'.now()->format('Ymd_His').'.csv';
 
-        return response()->streamDownload(function () use ($key, $meta, $rows, $year, $month, $cawangan, $kategori) {
+        return response()->streamDownload(function () use ($key, $meta, $query, $year, $month, $cawangan, $kategori) {
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF"); // UTF-8 BOM so Excel reads Malay text + the ="..." IC trick.
 
@@ -98,8 +98,9 @@ class StatistikSlaController extends Controller
             }
             fputcsv($out, array_merge(['BIL.'], SlaListExport::headers($key)));
 
+            // PERF-01: cursor() streams rows from the DB — no full result set in memory.
             $bil = 1;
-            foreach ($rows as $r) {
+            foreach ($query->cursor() as $r) {
                 fputcsv($out, SlaListExport::row($r, $key, $bil++));
             }
             fclose($out);

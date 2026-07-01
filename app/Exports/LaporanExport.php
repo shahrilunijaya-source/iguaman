@@ -5,23 +5,26 @@ declare(strict_types=1);
 namespace App\Exports;
 
 use App\Support\CsvSafe;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
 /**
  * W20 — generic forms-report .xlsx export driven by a column map (field => heading) and a
- * resolved row collection. Used by the queued ExportLaporanJob for bulk report exports.
+ * report query. Used by the queued ExportLaporanJob for bulk report exports.
+ *
+ * PERF-01: FromQuery (not FromCollection) so maatwebsite chunks the query — a thousands-row
+ * report is written in batches instead of materialising the whole result set in memory.
  */
-class LaporanExport implements FromCollection, WithHeadings, WithMapping
+class LaporanExport implements FromQuery, WithHeadings, WithMapping
 {
-    public function __construct(private array $columns, private Collection $rows) {}
+    public function __construct(private array $columns, private Builder $query) {}
 
-    public function collection(): Collection
+    public function query(): Builder
     {
-        return $this->rows;
+        return $this->query;
     }
 
     public function headings(): array

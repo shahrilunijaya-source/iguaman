@@ -8,6 +8,7 @@ use App\Models\PenutupanOperasi;
 use App\Models\RefCuti;
 use App\Models\SlotTemuJanji;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * Slot auto-generation (parity map §4 — "slot auto-generate per branch/room").
@@ -136,6 +137,9 @@ class SlotGenerator
         return $times;
     }
 
+    /** PERF-08: memo of ref_cuti for this instance (holidayDates re-scanned it per call). */
+    private ?Collection $cutiMemo = null;
+
     /** 'Y-m-d' => true holiday lookup for the branch state (mirrors SlotAvailabilityService). */
     private function holidayDates(?int $negeriId): array
     {
@@ -144,7 +148,7 @@ class SlotGenerator
         }
 
         $dates = [];
-        foreach (RefCuti::all() as $cuti) {
+        foreach (($this->cutiMemo ??= RefCuti::all()) as $cuti) {
             if (! in_array($negeriId, CutiNegeri::decode($cuti->idnegeri), true)) {
                 continue;
             }

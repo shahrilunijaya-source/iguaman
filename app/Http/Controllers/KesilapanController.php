@@ -43,10 +43,10 @@ class KesilapanController extends Controller
     public function csv(Request $request): StreamedResponse
     {
         $filters = $request->only(['bulan', 'tahun', 'cawangan', 'kategori']);
-        $rows = $this->query($request)->get();
+        $query = $this->query($request);
         $filename = 'laporan_kesilapan_penjanaan_nombor_fail_'.now()->format('Ymd_His').'.csv';
 
-        return response()->streamDownload(function () use ($filters, $rows) {
+        return response()->streamDownload(function () use ($filters, $query) {
             $out = fopen('php://output', 'w');
             fwrite($out, "\xEF\xBB\xBF");
 
@@ -55,8 +55,9 @@ class KesilapanController extends Controller
             }
             fputcsv($out, array_merge(['BIL.'], array_map(fn ($c) => $c[0], WideExport::kesilapanColumns())));
 
+            // PERF-01: cursor() streams rows from the DB — no full result set in memory.
             $bil = 1;
-            foreach ($rows as $r) {
+            foreach ($query->cursor() as $r) {
                 fputcsv($out, WideExport::kesilapanRow($r, $bil++));
             }
             fclose($out);
