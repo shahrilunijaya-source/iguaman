@@ -56,7 +56,7 @@
         <input type="date" name="hingga" value="{{ $filters['hingga'] ?? '' }}" class="tap-chip" onchange="this.form.submit()" aria-label="Hingga tarikh">
         <div class="tap-search">
             <span class="tap-search__icon">⌕</span>
-            <input type="text" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari no. permohonan / nama mangsa…">
+            <input type="text" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari no. permohonan / nama mangsa…" aria-label="Cari no. permohonan / nama mangsa…">
         </div>
     </form>
 

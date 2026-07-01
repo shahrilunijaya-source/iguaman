@@ -20,7 +20,7 @@
     <form method="GET" action="{{ route('poster.index') }}" class="tap-filters">
         <div class="tap-search">
             <span class="tap-search__icon">⌕</span>
-            <input type="text" name="q" value="{{ $q ?? '' }}" placeholder="Cari tajuk poster…">
+            <input type="text" name="q" value="{{ $q ?? '' }}" placeholder="Cari tajuk poster…" aria-label="Cari tajuk poster…">
         </div>
     </form>
 

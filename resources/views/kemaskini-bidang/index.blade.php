@@ -53,7 +53,7 @@
                                     <form method="POST" action="{{ route('kemaskini-bidang.pengarah', $row) }}" style="display:flex;gap:6px;align-items:center;">
                                         @csrf
                                         <input type="hidden" name="keputusan" value="sokong">
-                                        <input type="text" name="ulasan" placeholder="Ulasan" maxlength="500" style="font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:6px;">
+                                        <input type="text" name="ulasan" placeholder="Ulasan" aria-label="Ulasan" maxlength="500" style="font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:6px;">
                                         <button class="btn btn--primary" style="padding:3px 10px;font-size:11px;">Sokong</button>
                                     </form>
                                     <form method="POST" action="{{ route('kemaskini-bidang.pengarah', $row) }}">@csrf<input type="hidden" name="keputusan" value="tolak"><button class="btn btn--ghost" style="padding:3px 10px;font-size:11px;">Tolak</button></form>

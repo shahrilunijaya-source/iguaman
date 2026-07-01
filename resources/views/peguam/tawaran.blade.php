@@ -34,7 +34,7 @@
                     </form>
                     <form method="POST" action="{{ route('peguam.tolak', $t) }}" class="va-form" onsubmit="return confirm('Tolak tawaran ini? Kes dikembalikan kepada JBG.')">
                         @csrf
-                        <input class="field__input" name="alasan" placeholder="Sebab tolak (pilihan)" maxlength="255">
+                        <input class="field__input" name="alasan" placeholder="Sebab tolak (pilihan)" aria-label="Sebab tolak (pilihan)" maxlength="255">
                         <button type="submit" class="btn btn--ghost btn--block" style="color:var(--danger);">✕ Tolak</button>
                     </form>
                 </div>

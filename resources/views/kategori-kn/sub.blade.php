@@ -28,7 +28,7 @@
         <div class="tap-card__eyebrow">Tambah Subkategori</div>
         <form method="POST" action="{{ route('kategori-kn.sub.store', $kes) }}" style="display:flex; gap:8px;">
             @csrf
-            <input class="wiz-field__input" name="nama" placeholder="Nama subkategori baharu…" maxlength="255" required style="flex:1;">
+            <input class="wiz-field__input" name="nama" placeholder="Nama subkategori baharu…" aria-label="Nama subkategori baharu…" maxlength="255" required style="flex:1;">
             <button type="submit" class="btn btn--primary">+ Tambah</button>
         </form>
     </div>

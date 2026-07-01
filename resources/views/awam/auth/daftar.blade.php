@@ -76,20 +76,20 @@
 
                     <div class="field">
                         <label class="field__label">No. Kad Pengenalan</label>
-                        <input type="text" name="nokp" class="field__input" placeholder="900101015555" value="{{ old('nokp') }}" required>
+                        <input type="text" name="nokp" class="field__input" placeholder="900101015555" aria-label="900101015555" value="{{ old('nokp') }}" required>
                         @error('nokp') <span class="field__hint field__hint--error">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="field">
                         <label class="field__label">Emel <span style="text-transform:none; font-weight:400; color: var(--mute-2);">(pilihan)</span></label>
-                        <input type="email" name="email" class="field__input" placeholder="nama@contoh.com" value="{{ old('email') }}">
+                        <input type="email" name="email" class="field__input" placeholder="nama@contoh.com" aria-label="nama@contoh.com" value="{{ old('email') }}">
                         @error('email') <span class="field__hint field__hint--error">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="field">
                         <label class="field__label">Kata Laluan</label>
                         <div class="field__row">
-                            <input type="password" name="password" id="passwordField" class="field__input" placeholder="••••••••" required>
+                            <input type="password" name="password" id="passwordField" class="field__input" placeholder="••••••••" aria-label="••••••••" required>
                             <button type="button" class="field__eye" aria-label="Tunjuk kata laluan" onclick="
                                 const f = document.getElementById('passwordField');
                                 f.type = f.type === 'text' ? 'password' : 'text';
@@ -102,12 +102,12 @@
 
                     <div class="field">
                         <label class="field__label">Sahkan Kata Laluan</label>
-                        <input type="password" name="password_confirmation" class="field__input" placeholder="••••••••" required>
+                        <input type="password" name="password_confirmation" class="field__input" placeholder="••••••••" aria-label="••••••••" required>
                     </div>
 
                     <div class="field">
                         <label class="field__label">Pengesahan · Berapa {{ $captchaA ?? '?' }} + {{ $captchaB ?? '?' }}?</label>
-                        <input type="number" name="captcha" class="field__input" placeholder="Jawapan" required>
+                        <input type="number" name="captcha" class="field__input" placeholder="Jawapan" aria-label="Jawapan" required>
                         @error('captcha') <span class="field__hint field__hint--error">{{ $message }}</span> @enderror
                     </div>
 

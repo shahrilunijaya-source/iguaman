@@ -69,7 +69,8 @@
     <div class="tap-card" style="margin-bottom:18px;">
         <div class="tap-card__eyebrow">Trend Permohonan Bulanan</div>
         @if ($n)
-            <svg viewBox="0 0 {{ $W }} {{ $H }}" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block;">
+            <svg role="img" viewBox="0 0 {{ $W }} {{ $H }}" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block;">
+                <title>Graf trend bilangan permohonan mengikut bulan</title>
                 <defs>
                     <linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stop-color="#1a6fa8" stop-opacity="0.28"/>
@@ -99,7 +100,8 @@
             <div class="tap-card__eyebrow">Taburan Status</div>
             @if ($donutTotal)
                 <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
-                    <svg viewBox="0 0 140 140" width="150" height="150">
+                    <svg role="img" viewBox="0 0 140 140" width="150" height="150">
+                        <title>Carta donat taburan kes mengikut status</title>
                         <g transform="rotate(-90 70 70)">
                             @php $off = 0; @endphp
                             @foreach ($donutData as $label => $val)

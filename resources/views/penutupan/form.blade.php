@@ -54,7 +54,7 @@
                 </div>
                 <div class="wiz-field wiz-field--span-2">
                     <label class="wiz-field__label">Sebab</label>
-                    <input class="wiz-field__input" name="sebab" value="{{ old('sebab') }}" maxlength="255" placeholder="cth. Penyelenggaraan bangunan">
+                    <input class="wiz-field__input" name="sebab" value="{{ old('sebab') }}" maxlength="255" placeholder="cth. Penyelenggaraan bangunan" aria-label="cth. Penyelenggaraan bangunan">
                 </div>
             </div>
         </div>

@@ -97,7 +97,7 @@
 
                     <div class="field">
                         <label class="field__label">Pengesahan · Berapa {{ $captchaA ?? '?' }} + {{ $captchaB ?? '?' }}?</label>
-                        <input type="number" name="captcha" class="field__input" placeholder="Jawapan" required>
+                        <input type="number" name="captcha" class="field__input" placeholder="Jawapan" aria-label="Jawapan" required>
                     </div>
 
                     <div class="va-form__row">

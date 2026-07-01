@@ -126,7 +126,7 @@
                     </div>
                     <div class="wiz-field">
                         <label class="wiz-field__label">Jawatan Wakil</label>
-                        <input class="wiz-field__input" name="jawatan_wakil" value="{{ $val('jawatan_wakil') }}" placeholder="Pegawai Penjara / Pegawai JKM">
+                        <input class="wiz-field__input" name="jawatan_wakil" value="{{ $val('jawatan_wakil') }}" placeholder="Pegawai Penjara / Pegawai JKM" aria-label="Pegawai Penjara / Pegawai JKM">
                     </div>
                     <div class="wiz-field">
                         <label class="wiz-field__label">Nama Orang Yang Diwakili</label>
@@ -178,7 +178,7 @@
                     </div>
                     <div class="wiz-field">
                         <label class="wiz-field__label">Jenis Pengenalan</label>
-                        <input class="wiz-field__input" name="jenis_pengenalan_mangsa" value="{{ $val('jenis_pengenalan_mangsa') }}" placeholder="KP / Pasport">
+                        <input class="wiz-field__input" name="jenis_pengenalan_mangsa" value="{{ $val('jenis_pengenalan_mangsa') }}" placeholder="KP / Pasport" aria-label="KP / Pasport">
                     </div>
                     <div class="wiz-field">
                         <label class="wiz-field__label">Jantina</label>

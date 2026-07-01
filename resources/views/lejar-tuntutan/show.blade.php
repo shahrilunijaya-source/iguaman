@@ -50,12 +50,12 @@
             @can('tuntutan.lulus')
                 <form method="POST" action="{{ route('tuntutan.lulus', $tuntutan) }}" style="display:flex; gap:8px; align-items:center;">
                     @csrf
-                    <input type="number" step="0.01" name="jumlah_diluluskan" placeholder="Jumlah diluluskan" value="{{ $tuntutan->jumlah_tuntutan }}" class="tap-chip">
+                    <input type="number" step="0.01" name="jumlah_diluluskan" placeholder="Jumlah diluluskan" aria-label="Jumlah diluluskan" value="{{ $tuntutan->jumlah_tuntutan }}" class="tap-chip">
                     <button class="btn btn--primary">Luluskan</button>
                 </form>
                 <form method="POST" action="{{ route('tuntutan.tolak', $tuntutan) }}" style="display:flex; gap:8px; align-items:center;">
                     @csrf
-                    <input type="text" name="ulasan_pelulus" placeholder="Sebab tolak" class="tap-chip" required>
+                    <input type="text" name="ulasan_pelulus" placeholder="Sebab tolak" aria-label="Sebab tolak" class="tap-chip" required>
                     <button class="btn">Tolak</button>
                 </form>
             @endcan
@@ -65,11 +65,11 @@
             @can('tuntutan.bayar')
                 <form method="POST" action="{{ route('tuntutan.bayar', $tuntutan) }}" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; max-width:520px;">
                     @csrf
-                    <input type="text" name="nombor_resit" placeholder="No. Resit" class="tap-chip" required>
+                    <input type="text" name="nombor_resit" placeholder="No. Resit" aria-label="No. Resit" class="tap-chip" required>
                     <input type="date" name="tarikh_resit" class="tap-chip" required>
-                    <input type="text" name="kaedah_bayaran" placeholder="Kaedah (EFT/Cek/Tunai)" class="tap-chip" required>
-                    <input type="text" name="rujukan_bayaran" placeholder="Rujukan bayaran" class="tap-chip">
-                    <input type="number" step="0.01" name="jumlah_bayaran" placeholder="Jumlah bayaran" value="{{ $tuntutan->jumlah_diluluskan ?? $tuntutan->jumlah_tuntutan }}" class="tap-chip" required>
+                    <input type="text" name="kaedah_bayaran" placeholder="Kaedah (EFT/Cek/Tunai)" aria-label="Kaedah (EFT/Cek/Tunai)" class="tap-chip" required>
+                    <input type="text" name="rujukan_bayaran" placeholder="Rujukan bayaran" aria-label="Rujukan bayaran" class="tap-chip">
+                    <input type="number" step="0.01" name="jumlah_bayaran" placeholder="Jumlah bayaran" aria-label="Jumlah bayaran" value="{{ $tuntutan->jumlah_diluluskan ?? $tuntutan->jumlah_tuntutan }}" class="tap-chip" required>
                     <button class="btn btn--primary">Rekod Bayaran</button>
                 </form>
             @endcan

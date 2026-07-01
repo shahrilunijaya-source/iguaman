@@ -32,7 +32,7 @@
             </select>
         </label>
         <label>Jenis Kes (kod)
-            <input type="text" name="jenis_kes" value="{{ old('jenis_kes') }}" class="tap-chip" maxlength="5" placeholder="cth. 085">
+            <input type="text" name="jenis_kes" value="{{ old('jenis_kes') }}" class="tap-chip" maxlength="5" placeholder="cth. 085" aria-label="cth. 085">
         </label>
         <label>Kategori Kes
             <input type="text" name="kategori_kes" value="{{ old('kategori_kes') }}" class="tap-chip" maxlength="100">

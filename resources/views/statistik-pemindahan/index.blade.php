@@ -44,6 +44,7 @@
     @if (empty($matrix))
         <div class="dash-empty__sub" style="padding:12px 0;">Tiada pemindahan {{ strtolower($tajuk) }} bagi tahun {{ $year }}.</div>
     @else
+        <div class="table-scroll">
         <table class="sp-table">
             <thead>
                 <tr>
@@ -78,6 +79,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         <p class="sp-legend" style="margin-top:12px;">Setiap sel: <span class="sp-in">masuk</span> / <span class="sp-out">keluar</span>.</p>
     @endif
 </div>

@@ -48,7 +48,7 @@
             </div>
             <div class="field" style="margin-bottom:18px;">
                 <label class="field__label" for="sebab">Sebab Pemindahan</label>
-                <textarea name="sebab" id="sebab" class="field__input" rows="3" maxlength="1000" required placeholder="Cth: pemohon berpindah / bidang kuasa cawangan tujuan.">{{ old('sebab') }}</textarea>
+                <textarea name="sebab" id="sebab" class="field__input" rows="3" maxlength="1000" required placeholder="Cth: pemohon berpindah / bidang kuasa cawangan tujuan." aria-label="Cth: pemohon berpindah / bidang kuasa cawangan tujuan.">{{ old('sebab') }}</textarea>
             </div>
             <button type="submit" class="btn btn--primary">Pindahkan Khidmat Nasihat</button>
         </form>

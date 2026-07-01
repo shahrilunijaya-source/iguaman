@@ -23,7 +23,7 @@
 
     <form method="GET" action="{{ route('statistik-pengantaraan.pencapaian') }}" class="tap-filters">
         <label class="field__label" style="margin:0;">Tahun</label>
-        <input type="number" name="tahun" value="{{ $year }}" min="2000" max="2100" placeholder="Semua" class="field__input" style="width:120px;">
+        <input type="number" name="tahun" value="{{ $year }}" min="2000" max="2100" placeholder="Semua" aria-label="Semua" class="field__input" style="width:120px;">
         <select name="kategori" class="tap-chip">
             <option value="">Semua Kategori</option>
             <option value="Sivil" @selected($kategori === 'Sivil')>Sivil</option>

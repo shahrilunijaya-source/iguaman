@@ -22,7 +22,7 @@
     <form method="GET" action="{{ route('oyd.index') }}" class="tap-filters">
         <div class="tap-search">
             <span class="tap-search__icon">⌕</span>
-            <input type="text" name="q" value="{{ $q ?? '' }}" placeholder="Cari nama, no. KP, atau telefon…">
+            <input type="text" name="q" value="{{ $q ?? '' }}" placeholder="Cari nama, no. KP, atau telefon…" aria-label="Cari nama, no. KP, atau telefon…">
         </div>
     </form>
 

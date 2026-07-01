@@ -32,7 +32,7 @@
         </select>
         <div class="tap-search">
             <span class="tap-search__icon">⌕</span>
-            <input type="text" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari catatan atau pengguna…">
+            <input type="text" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari catatan atau pengguna…" aria-label="Cari catatan atau pengguna…">
         </div>
     </form>
 

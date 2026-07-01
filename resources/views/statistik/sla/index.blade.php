@@ -17,7 +17,7 @@
 
     <form method="GET" action="{{ route('statistik-sla.index') }}" class="tap-filters">
         <label class="field__label" style="margin:0;">Tahun</label>
-        <input type="number" name="tahun" value="{{ $year }}" min="2000" max="2100" placeholder="Semua" class="field__input" style="width:120px;">
+        <input type="number" name="tahun" value="{{ $year }}" min="2000" max="2100" placeholder="Semua" aria-label="Semua" class="field__input" style="width:120px;">
         <select name="bulan" class="tap-chip">
             <option value="">Semua Bulan</option>
             @foreach ($bulanNama as $n => $nama)

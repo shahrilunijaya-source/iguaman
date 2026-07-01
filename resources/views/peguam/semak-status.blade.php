@@ -41,7 +41,7 @@
                 @csrf
                 <div class="ss-field">
                     <label for="kpBaru">No. Kad Pengenalan</label>
-                    <input id="kpBaru" name="kpBaru" value="{{ old('kpBaru', $nokp) }}" maxlength="20" required autofocus placeholder="cth: 880101015523">
+                    <input id="kpBaru" name="kpBaru" value="{{ old('kpBaru', $nokp) }}" maxlength="20" required autofocus placeholder="cth: 880101015523" aria-label="cth: 880101015523">
                 </div>
                 <label class="honey">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
                 <button type="submit" class="ss-btn">Semak Status</button>

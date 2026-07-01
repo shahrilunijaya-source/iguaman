@@ -50,13 +50,13 @@
                 <div class="tap-card__eyebrow">Rekod Laporan Baharu</div>
                 <form method="POST" action="{{ route('peguam.laporan', $kes) }}" class="va-form">
                     @csrf
-                    <input class="field__input" name="no_kes" placeholder="No. Kes Mahkamah">
-                    <input class="field__input" name="pihak_pihak" placeholder="Pihak-pihak">
+                    <input class="field__input" name="no_kes" placeholder="No. Kes Mahkamah" aria-label="No. Kes Mahkamah">
+                    <input class="field__input" name="pihak_pihak" placeholder="Pihak-pihak" aria-label="Pihak-pihak">
                     <input type="date" class="field__input" name="tarikh_sebutan">
-                    <input class="field__input" name="isu" placeholder="Isu">
-                    <input class="field__input" name="status_kes" placeholder="Status kes">
-                    <textarea class="field__input" name="fakta_ringkas" rows="2" placeholder="Fakta ringkas"></textarea>
-                    <textarea class="field__input" name="ringkasan" rows="2" placeholder="Ringkasan / perkembangan"></textarea>
+                    <input class="field__input" name="isu" placeholder="Isu" aria-label="Isu">
+                    <input class="field__input" name="status_kes" placeholder="Status kes" aria-label="Status kes">
+                    <textarea class="field__input" name="fakta_ringkas" rows="2" placeholder="Fakta ringkas" aria-label="Fakta ringkas"></textarea>
+                    <textarea class="field__input" name="ringkasan" rows="2" placeholder="Ringkasan / perkembangan" aria-label="Ringkasan / perkembangan"></textarea>
                     <button type="submit" class="btn btn--primary btn--block">Rekod Laporan</button>
                 </form>
             </div>
@@ -67,7 +67,7 @@
                     <p class="dash-empty__sub" style="margin:0 0 10px;">Setelah ditandakan selesai, kes akan dihantar kepada JBG untuk pengesahan &amp; penutupan fail.</p>
                     <form method="POST" action="{{ route('peguam.selesai', $kes) }}" class="va-form" onsubmit="return confirm('Tandakan kes ini selesai?')">
                         @csrf
-                        <input class="field__input" name="sebab_selesai" placeholder="Sebab / cara selesai (pilihan)" maxlength="50">
+                        <input class="field__input" name="sebab_selesai" placeholder="Sebab / cara selesai (pilihan)" aria-label="Sebab / cara selesai (pilihan)" maxlength="50">
                         <button type="submit" class="btn btn--primary btn--block">✓ Tandakan Selesai</button>
                     </form>
                 </div>

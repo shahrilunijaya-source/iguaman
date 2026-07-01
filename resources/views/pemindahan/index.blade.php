@@ -43,6 +43,7 @@
     @if ($pindahan->isEmpty())
         <div class="dash-empty__sub" style="padding:12px 0;">Tiada pemindahan cawangan.</div>
     @else
+        <div class="table-scroll">
         <table class="pc-table">
             <thead>
                 <tr>
@@ -81,7 +82,7 @@
                                         <summary>Tolak</summary>
                                         <form method="POST" action="{{ route('pemindahan.tolak', $p) }}" onsubmit="return confirm('Tolak pemindahan ini? Rekod akan dikembalikan ke cawangan asal.')">
                                             @csrf
-                                            <textarea name="sebab_tolak" class="field__input" rows="2" maxlength="1000" required placeholder="Sebab penolakan"></textarea>
+                                            <textarea name="sebab_tolak" class="field__input" rows="2" maxlength="1000" required placeholder="Sebab penolakan" aria-label="Sebab penolakan"></textarea>
                                             <button type="submit" class="btn btn--ghost" style="padding:4px 12px;font-size:12px;color:var(--danger);">Sahkan Tolak</button>
                                         </form>
                                     </details>
@@ -92,6 +93,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         <div style="margin-top:16px;">{{ $pindahan->links() }}</div>
     @endif
 </div>

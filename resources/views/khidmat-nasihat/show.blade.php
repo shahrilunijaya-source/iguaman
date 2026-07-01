@@ -81,7 +81,7 @@
                 <form method="POST" action="{{ route('khidmat.bayar', $khidmat) }}" enctype="multipart/form-data" style="margin-top:12px; display:grid; gap:8px;">
                     @csrf
                     <div class="tap-card__eyebrow">Rekod Bayaran (Kaunter)</div>
-                    <input type="text" name="nombor_resit" placeholder="No. Resit" required class="wiz-field__input">
+                    <input type="text" name="nombor_resit" placeholder="No. Resit" aria-label="No. Resit" required class="wiz-field__input">
                     <input type="date" name="tarikh_resit" required class="wiz-field__input">
                     <select name="kaedah_bayaran" required class="wiz-field__select">
                         <option value="TUNAI">Tunai</option>
@@ -90,7 +90,7 @@
                         <option value="EWALLET">e-Wallet</option>
                         <option value="IPAYMENT">iPayment</option>
                     </select>
-                    <input type="text" name="rujukan_bayaran" placeholder="Rujukan (pilihan)" class="wiz-field__input">
+                    <input type="text" name="rujukan_bayaran" placeholder="Rujukan (pilihan)" aria-label="Rujukan (pilihan)" class="wiz-field__input">
                     <input type="file" name="lampiran_resit" accept=".pdf,.jpg,.jpeg,.png" class="wiz-field__input">
                     <button type="submit" class="btn btn--primary">Rekod Bayaran</button>
                     @error('nombor_resit') <div style="color:var(--danger); font-size:12px;">{{ $message }}</div> @enderror

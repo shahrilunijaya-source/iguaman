@@ -16,7 +16,7 @@
     @endif
 
     <form method="GET" action="{{ route('pengantaraan.senarai') }}" style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
-        <input class="field__input" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari nama / KP / no. pengantaraan" style="max-width:280px;">
+        <input class="field__input" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari nama / KP / no. pengantaraan" aria-label="Cari nama / KP / no. pengantaraan" style="max-width:280px;">
         <select class="field__input" name="sumber" style="max-width:200px;">
             <option value="">Semua sumber</option>
             <option value="TERUS" @selected(($filters['sumber'] ?? '') === 'TERUS')>Terus</option>

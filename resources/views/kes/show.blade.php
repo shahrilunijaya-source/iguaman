@@ -147,7 +147,7 @@
 
                 <form method="POST" action="{{ route('lampiran.store', $kes) }}" enctype="multipart/form-data" style="margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                     @csrf
-                    <input type="text" name="nama" class="field__input" placeholder="Nama dokumen (pilihan)" style="flex:1; min-width:160px;">
+                    <input type="text" name="nama" class="field__input" placeholder="Nama dokumen (pilihan)" aria-label="Nama dokumen (pilihan)" style="flex:1; min-width:160px;">
                     <input type="file" name="fail" required class="field__input" style="flex:1; min-width:160px;">
                     <button type="submit" class="btn btn--primary">Muat Naik</button>
                 </form>
@@ -187,25 +187,25 @@
                         </form>
                         <form method="POST" action="{{ route('keputusan.kes.tolak-selesai', $kes) }}" class="va-form" onsubmit="return confirm('Kembalikan kes ini kepada peguam?')">
                             @csrf
-                            <input class="field__input" name="reason" placeholder="Sebab tolak (pilihan)" maxlength="255">
+                            <input class="field__input" name="reason" placeholder="Sebab tolak (pilihan)" aria-label="Sebab tolak (pilihan)" maxlength="255">
                             <button type="submit" class="btn btn--ghost btn--block" style="color:var(--danger);">↩ Kembalikan Kepada Peguam</button>
                         </form>
                     @elseif (blank($kes->tarikh_tutup_fail))
                         <form method="POST" action="{{ route('kes.lulus', $kes) }}" class="va-form" style="margin-bottom:10px;">
                             @csrf
-                            <input class="field__input" name="kelulusan" placeholder="Kelulusan (pilihan)" maxlength="20">
-                            <input class="field__input" name="sumbangan" placeholder="Sumbangan (pilihan)" maxlength="20">
+                            <input class="field__input" name="kelulusan" placeholder="Kelulusan (pilihan)" aria-label="Kelulusan (pilihan)" maxlength="20">
+                            <input class="field__input" name="sumbangan" placeholder="Sumbangan (pilihan)" aria-label="Sumbangan (pilihan)" maxlength="20">
                             <button type="submit" class="btn btn--primary btn--block">✓ Luluskan Permohonan</button>
                         </form>
                         <form method="POST" action="{{ route('kes.tolak', $kes) }}" class="va-form" style="margin-bottom:10px;" onsubmit="return confirm('Tolak permohonan ini?')">
                             @csrf
-                            <input class="field__input" name="reason" placeholder="Sebab tolak (pilihan)" maxlength="100">
+                            <input class="field__input" name="reason" placeholder="Sebab tolak (pilihan)" aria-label="Sebab tolak (pilihan)" maxlength="100">
                             <button type="submit" class="btn btn--ghost btn--block" style="color:var(--danger);">✕ Tolak Permohonan</button>
                         </form>
                         <form method="POST" action="{{ route('kes.tutupfail', $kes) }}" class="va-form" onsubmit="return confirm('Tutup fail ini secara rasmi?')">
                             @csrf
-                            <input class="field__input" name="kos" placeholder="Kos (pilihan)" maxlength="10">
-                            <input class="field__input" name="sebab_tutup_fail" placeholder="Sebab tutup fail (pilihan)">
+                            <input class="field__input" name="kos" placeholder="Kos (pilihan)" aria-label="Kos (pilihan)" maxlength="10">
+                            <input class="field__input" name="sebab_tutup_fail" placeholder="Sebab tutup fail (pilihan)" aria-label="Sebab tutup fail (pilihan)">
                             <button type="submit" class="btn btn--ghost btn--block">🔒 Tutup Fail</button>
                         </form>
                     @else

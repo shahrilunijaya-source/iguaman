@@ -12,7 +12,8 @@
     $barW = $groupW / max($nT, 1);
 @endphp
 
-<svg viewBox="0 0 {{ $W }} {{ $H }}" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block;">
+<svg role="img" viewBox="0 0 {{ $W }} {{ $H }}" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block;">
+    <title>Carta bar bulanan pencapaian {{ $kpi['def']['label'] ?? 'KPI' }} mengikut kategori kes (peratus dalam tempoh sasaran)</title>
     {{-- gridlines + y labels --}}
     @foreach ([0, 25, 50, 75, 100] as $g)
         @php $gy = $padT + (1 - $g / 100) * $innerH; @endphp

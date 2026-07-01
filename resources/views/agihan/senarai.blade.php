@@ -30,6 +30,7 @@
     @if ($kes->isEmpty())
         <div class="dash-empty__sub" style="padding:12px 0;">Tiada kes dalam kategori {{ $title }}.</div>
     @else
+        <div class="table-scroll">
         <table class="ag-table">
             <thead>
                 <tr>
@@ -50,6 +51,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         <div style="margin-top:16px;">{{ $kes->links() }}</div>
     @endif
 </div>

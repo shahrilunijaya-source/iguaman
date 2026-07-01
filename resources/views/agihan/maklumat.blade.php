@@ -70,7 +70,7 @@
             @csrf
             <div class="field col-2">
                 <label class="field__label">Ulasan (pilihan)</label>
-                <input type="text" name="ulasan" class="field__input" maxlength="255" placeholder="Sebab buka semula">
+                <input type="text" name="ulasan" class="field__input" maxlength="255" placeholder="Sebab buka semula" aria-label="Sebab buka semula">
             </div>
             <button type="submit" class="btn btn--primary" style="margin-top:12px;">Buka Semula untuk Agihan</button>
         </form>
@@ -78,7 +78,7 @@
             @csrf
             <div class="field col-2">
                 <label class="field__label">Sebab Pembatalan <span class="req">*</span></label>
-                <input type="text" name="sebab" class="field__input" maxlength="255" required placeholder="Sebab kes tidak akan diagih peguam">
+                <input type="text" name="sebab" class="field__input" maxlength="255" required placeholder="Sebab kes tidak akan diagih peguam" aria-label="Sebab kes tidak akan diagih peguam">
             </div>
             <button type="submit" class="btn btn--ghost" style="margin-top:12px;">Batalkan Agihan</button>
         </form>
@@ -104,7 +104,7 @@
             @csrf
             <div class="field col-2">
                 <label class="field__label">Sebab Penolakan <span class="req">*</span></label>
-                <input type="text" name="sebab" class="field__input" maxlength="255" required placeholder="Nyatakan sebab tolak agihan baru">
+                <input type="text" name="sebab" class="field__input" maxlength="255" required placeholder="Nyatakan sebab tolak agihan baru" aria-label="Nyatakan sebab tolak agihan baru">
             </div>
             <button type="submit" class="btn btn--ghost" style="margin-top:12px;">Tolak Agihan</button>
         </form>

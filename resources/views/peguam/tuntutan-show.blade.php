@@ -38,8 +38,8 @@
             <form method="POST" action="{{ route('peguam.tuntutan.lengkap', $tuntutan) }}" class="va-form" onsubmit="return confirm('Hantar tuntutan ini untuk semakan? Tidak boleh diubah selepas dihantar.')">
                 @csrf
                 <input class="field__input" name="jenis_tuntutan" value="{{ old('jenis_tuntutan', $tuntutan->jenis_tuntutan) }}" placeholder="Jenis tuntutan" maxlength="100" required>
-                <textarea class="field__input" name="keterangan" rows="2" placeholder="Keterangan (pilihan)">{{ old('keterangan', $tuntutan->keterangan) }}</textarea>
-                <input class="field__input" type="number" step="0.01" min="0.01" name="jumlah_tuntutan" value="{{ old('jumlah_tuntutan') }}" placeholder="Jumlah tuntutan (RM)" required>
+                <textarea class="field__input" name="keterangan" rows="2" placeholder="Keterangan (pilihan)" aria-label="Keterangan (pilihan)">{{ old('keterangan', $tuntutan->keterangan) }}</textarea>
+                <input class="field__input" type="number" step="0.01" min="0.01" name="jumlah_tuntutan" value="{{ old('jumlah_tuntutan') }}" placeholder="Jumlah tuntutan (RM)" aria-label="Jumlah tuntutan (RM)" required>
                 <button type="submit" class="btn btn--primary">Hantar Tuntutan</button>
             </form>
         </div>

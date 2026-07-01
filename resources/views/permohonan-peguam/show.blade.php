@@ -54,7 +54,7 @@
                             <option value="1">Sokong</option>
                             <option value="0">Tidak Sokong</option>
                         </select>
-                        <input class="field__input" name="ulasan_semakan_ppuu" placeholder="Ulasan (pilihan)" maxlength="600">
+                        <input class="field__input" name="ulasan_semakan_ppuu" placeholder="Ulasan (pilihan)" aria-label="Ulasan (pilihan)" maxlength="600">
                         <button type="submit" class="btn btn--primary btn--block">Rekod Semakan</button>
                     </form>
                 @else
@@ -78,7 +78,7 @@
                             <option value="1">Sokong</option>
                             <option value="0">Tidak Sokong</option>
                         </select>
-                        <input class="field__input" name="ulasan_sokonganPengarah" placeholder="Ulasan (pilihan)" maxlength="600">
+                        <input class="field__input" name="ulasan_sokonganPengarah" placeholder="Ulasan (pilihan)" aria-label="Ulasan (pilihan)" maxlength="600">
                         <button type="submit" class="btn btn--primary btn--block">Rekod Sokongan</button>
                     </form>
                 @else
@@ -96,7 +96,7 @@
                             <option value="lulus">Lulus (tambah ke panel)</option>
                             <option value="tolak">Tidak Lulus</option>
                         </select>
-                        <input class="field__input" name="ulasan" placeholder="Ulasan (pilihan)" maxlength="200">
+                        <input class="field__input" name="ulasan" placeholder="Ulasan (pilihan)" aria-label="Ulasan (pilihan)" maxlength="200">
                         <button type="submit" class="btn btn--primary btn--block">Simpan Keputusan</button>
                     </form>
                 @else
@@ -109,7 +109,7 @@
                 <div class="tap-card__eyebrow">Tarik Diri</div>
                 <form method="POST" action="{{ route('permohonan-peguam.tarik', $p) }}" class="va-form" onsubmit="return confirm('Rekod tarik diri?')">
                     @csrf
-                    <input class="field__input" name="sebabBatal" placeholder="Sebab (pilihan)" maxlength="200">
+                    <input class="field__input" name="sebabBatal" placeholder="Sebab (pilihan)" aria-label="Sebab (pilihan)" maxlength="200">
                     <button type="submit" class="btn btn--ghost btn--block">Rekod Tarik Diri</button>
                 </form>
             </div>

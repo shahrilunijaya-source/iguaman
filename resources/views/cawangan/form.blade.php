@@ -114,7 +114,7 @@
             </table>
             <form method="POST" action="{{ route('cawangan.bilik.store', $cawangan) }}" style="display:flex; gap:8px;">
                 @csrf
-                <input class="wiz-field__input" name="nama_bilik" placeholder="Nama bilik baharu…" maxlength="255" required style="flex:1;">
+                <input class="wiz-field__input" name="nama_bilik" placeholder="Nama bilik baharu…" aria-label="Nama bilik baharu…" maxlength="255" required style="flex:1;">
                 <button type="submit" class="btn btn--ghost">+ Tambah Bilik</button>
             </form>
         </div>

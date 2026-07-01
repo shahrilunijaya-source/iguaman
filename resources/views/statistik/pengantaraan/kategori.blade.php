@@ -19,7 +19,7 @@
 
     <form method="GET" action="{{ route('statistik-pengantaraan.kategori') }}" class="tap-filters">
         <label class="field__label" style="margin:0;">Tahun</label>
-        <input type="number" name="tahun" value="{{ $year }}" min="2000" max="2100" placeholder="Semua" class="field__input" style="width:120px;">
+        <input type="number" name="tahun" value="{{ $year }}" min="2000" max="2100" placeholder="Semua" aria-label="Semua" class="field__input" style="width:120px;">
         <button type="submit" class="btn btn--primary">Tapis</button>
         @if ($year)
             <a href="{{ route('statistik-pengantaraan.kategori') }}" class="tap-chip">✕ Reset</a>

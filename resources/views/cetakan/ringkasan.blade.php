@@ -10,6 +10,8 @@
 
 @php
     $f = fn ($v) => $v instanceof \Illuminate\Support\Carbon ? $v->format('d/m/Y') : (($v === null || $v === '') ? null : $v);
+    // UX-11: monetary fields as RM with thousands separators, not raw integers.
+    $m = fn ($v) => ($v === null || $v === '') ? null : 'RM '.number_format((float) $v, 2);
 
     $groups = [
         'Maklumat Pemohon' => [
@@ -26,7 +28,7 @@
         'Keputusan' => [
             'Keputusan' => $kes->keputusan, 'Diterima' => $kes->diterima, 'Kelulusan' => $kes->kelulusan,
             'Keputusan Menteri' => $kes->keputusan_menteri, 'Tarikh Perakuan' => $f($kes->tarikh_perakuan),
-            'Tarikh Pemakluman' => $f($kes->tarikh_pemakluman), 'Sumbangan' => $kes->sumbangan, 'Nilai Sumbangan' => $kes->nilai_sumbangan,
+            'Tarikh Pemakluman' => $f($kes->tarikh_pemakluman), 'Sumbangan' => $kes->sumbangan, 'Nilai Sumbangan' => $m($kes->nilai_sumbangan),
         ],
         'Agihan & Peguam Panel' => [
             'Agih Kepada' => $kes->agih_kepada, 'Status Agihan' => $kes->status_agihan,
@@ -44,8 +46,8 @@
         ],
         'Penutupan & Kos' => [
             'Status' => $kes->status, 'Tarikh Selesai' => $f($kes->tarikh_selesai), 'Sebab Selesai' => $kes->sebab_selesai,
-            'Tarikh Tutup Fail' => $f($kes->tarikh_tutup_fail), 'Kos' => $kes->kos, 'Kos OYD' => $kes->kos_oyd,
-            'Kos Pihak Lawan' => $kes->kos_pihak_lawan,
+            'Tarikh Tutup Fail' => $f($kes->tarikh_tutup_fail), 'Kos' => $m($kes->kos), 'Kos OYD' => $m($kes->kos_oyd),
+            'Kos Pihak Lawan' => $m($kes->kos_pihak_lawan),
         ],
     ];
 @endphp

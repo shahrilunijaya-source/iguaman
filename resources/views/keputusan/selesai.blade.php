@@ -30,6 +30,7 @@
     @if ($kes->isEmpty())
         <div class="dash-empty__sub" style="padding:12px 0;">Tiada kes menunggu pengesahan selesai.</div>
     @else
+        <div class="table-scroll">
         <table class="ks-table">
             <thead>
                 <tr>
@@ -53,7 +54,7 @@
                                 </form>
                                 <form method="POST" action="{{ route('keputusan.kes.tolak-selesai', $k) }}" class="ks-reject" onsubmit="return confirm('Kembalikan kes ini kepada peguam?')">
                                     @csrf
-                                    <input class="field__input" name="reason" placeholder="Sebab (pilihan)" maxlength="255">
+                                    <input class="field__input" name="reason" placeholder="Sebab (pilihan)" aria-label="Sebab (pilihan)" maxlength="255">
                                     <button type="submit" class="btn btn--ghost" style="padding:4px 12px;font-size:12px;color:var(--danger);">↩ Tolak</button>
                                 </form>
                             </div>
@@ -62,6 +63,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         <div style="margin-top:16px;">{{ $kes->links() }}</div>
     @endif
 </div>

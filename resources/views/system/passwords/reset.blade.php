@@ -41,11 +41,11 @@
                     </div>
                     <div class="field">
                         <label class="field__label">Kata Laluan Baharu</label>
-                        <input type="password" name="password" class="field__input" placeholder="••••••••" required>
+                        <input type="password" name="password" class="field__input" placeholder="••••••••" aria-label="••••••••" required>
                     </div>
                     <div class="field">
                         <label class="field__label">Sahkan Kata Laluan</label>
-                        <input type="password" name="password_confirmation" class="field__input" placeholder="••••••••" required>
+                        <input type="password" name="password_confirmation" class="field__input" placeholder="••••••••" aria-label="••••••••" required>
                     </div>
 
                     @if ($errors->any())

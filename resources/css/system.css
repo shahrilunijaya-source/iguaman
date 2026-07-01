@@ -1169,8 +1169,12 @@ body.system .btn--block,
   background: #fff;
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  overflow: hidden;
+  /* UX-09: scroll horizontally instead of clipping fixed-px grids on narrow screens. */
+  overflow-x: auto;
+  overflow-y: hidden;
 }
+/* UX-09: wrapper for wide <table> lists so they scroll on mobile instead of overflowing. */
+.table-scroll { overflow-x: auto; }
 
 .tap-table__head {
   display: grid;

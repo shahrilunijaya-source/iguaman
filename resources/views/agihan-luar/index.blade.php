@@ -45,7 +45,7 @@
             <option value="{{ $val }}" @selected(($filters['status_agihan_pl'] ?? '') === $val)>{{ $txt }}</option>
         @endforeach
     </select>
-    <input name="q" value="{{ $filters['q'] ?? '' }}" class="field__input" style="max-width:240px;" placeholder="Cari no. permohonan / nama">
+    <input name="q" value="{{ $filters['q'] ?? '' }}" class="field__input" style="max-width:240px;" placeholder="Cari no. permohonan / nama" aria-label="Cari no. permohonan / nama">
     <button type="submit" class="btn btn--ghost">Cari</button>
 </form>
 
@@ -53,6 +53,7 @@
     @if ($kn->isEmpty())
         <div class="dash-empty__sub" style="padding:12px 0;">Tiada Khidmat Nasihat selesai untuk diagihkan.</div>
     @else
+        <div class="table-scroll">
         <table class="al-table">
             <thead>
                 <tr>
@@ -97,6 +98,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
         <div style="margin-top:16px;">{{ $kn->links() }}</div>
     @endif
 </div>

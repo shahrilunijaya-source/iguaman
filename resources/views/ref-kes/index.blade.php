@@ -25,7 +25,7 @@
         </select>
         <div class="tap-search">
             <span class="tap-search__icon">⌕</span>
-            <input type="text" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari jenis, kategori atau deskripsi…">
+            <input type="text" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari jenis, kategori atau deskripsi…" aria-label="Cari jenis, kategori atau deskripsi…">
         </div>
     </form>
 
@@ -46,7 +46,7 @@
                 <div class="tap-row__tujuan">{{ $row->deskripsi ?: '—' }}</div>
                 <div class="tap-row__tujuan">{{ $row->tarikh_kuatkuasa ? $row->tarikh_kuatkuasa->format('d/m/Y') : '—' }}</div>
                 <div><span class="pill {{ (string) $row->aktif_kes === '1' ? 'pill--received' : 'pill--overdue' }}">{{ (string) $row->aktif_kes === '1' ? 'Aktif' : 'Tidak' }}</span></div>
-                <div style="text-align:right;"><a href="{{ route('ref-kes.edit', $row) }}" class="tap-head__btn">✎</a></div>
+                <div style="text-align:right;"><a href="{{ route('ref-kes.edit', $row) }}" class="tap-head__btn" aria-label="Sunting rujukan kes" title="Sunting">✎</a></div>
             </div>
         @empty
             <div class="dash-empty" style="border:0">

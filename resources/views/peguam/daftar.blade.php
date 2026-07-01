@@ -233,7 +233,7 @@
                             </div>
                             <div class="field">
                                 <label class="field__label">No. Kad Pengenalan (Baru) <span class="req">*</span></label>
-                                <input type="text" name="kpBaru" class="field__input" value="{{ old('kpBaru') }}" placeholder="900101015555" maxlength="20" required>
+                                <input type="text" name="kpBaru" class="field__input" value="{{ old('kpBaru') }}" placeholder="900101015555" aria-label="900101015555" maxlength="20" required>
                             </div>
                             <div class="field">
                                 <label class="field__label">No. Kad Pengenalan (Lama)</label>
@@ -249,15 +249,15 @@
                             </div>
                             <div class="field">
                                 <label class="field__label">No. Telefon (Bimbit) <span class="req">*</span></label>
-                                <input type="text" name="noTelBimbit" class="field__input" value="{{ old('noTelBimbit') }}" placeholder="0123456789" maxlength="20" required>
+                                <input type="text" name="noTelBimbit" class="field__input" value="{{ old('noTelBimbit') }}" placeholder="0123456789" aria-label="0123456789" maxlength="20" required>
                             </div>
                             <div class="field col-2">
                                 <label class="field__label">Emel <span class="req">*</span></label>
-                                <input type="email" name="emelPeguam" class="field__input" value="{{ old('emelPeguam') }}" placeholder="nama@firma.com" maxlength="255" required>
+                                <input type="email" name="emelPeguam" class="field__input" value="{{ old('emelPeguam') }}" placeholder="nama@firma.com" aria-label="nama@firma.com" maxlength="255" required>
                             </div>
                             <div class="field col-2">
                                 <label class="field__label">Kelulusan Akademik <span class="req">*</span></label>
-                                <textarea name="kelulusanAkademik" class="field__input" rows="2" maxlength="500" required style="text-transform:uppercase; height:auto; padding:10px 14px;" placeholder="cth. LLB (Hons), Universiti Malaya">{{ old('kelulusanAkademik') }}</textarea>
+                                <textarea name="kelulusanAkademik" class="field__input" rows="2" maxlength="500" required style="text-transform:uppercase; height:auto; padding:10px 14px;" placeholder="cth. LLB (Hons), Universiti Malaya" aria-label="cth. LLB (Hons), Universiti Malaya">{{ old('kelulusanAkademik') }}</textarea>
                             </div>
                             <div class="field">
                                 <label class="field__label">Tarikh Diterima Masuk — Peguambela/Peguamcara <span class="req">*</span></label>
@@ -290,7 +290,7 @@
                         <div class="daftar-grid">
                             <div class="field col-2">
                                 <label class="field__label">Rumusan / Keterangan Ringkas Jenis &amp; Bilangan Kes Yang Telah Dikendalikan <span class="req">*</span></label>
-                                <textarea name="keteranganKes" class="field__input" rows="4" maxlength="2000" required style="height:auto; padding:10px 14px;" placeholder="cth. CIVIL, CRIMINAL, ACCIDENT, CONVEYANCING…">{{ old('keteranganKes') }}</textarea>
+                                <textarea name="keteranganKes" class="field__input" rows="4" maxlength="2000" required style="height:auto; padding:10px 14px;" placeholder="cth. CIVIL, CRIMINAL, ACCIDENT, CONVEYANCING…" aria-label="cth. CIVIL, CRIMINAL, ACCIDENT, CONVEYANCING…">{{ old('keteranganKes') }}</textarea>
                             </div>
                             <div class="field col-2">
                                 <label class="field__label">Senarai Kes Yang Pernah Dikendalikan (PDF) <span class="req">*</span></label>
@@ -509,9 +509,9 @@
                             </div>
                             <div class="field col-2">
                                 <label class="field__label">Alamat Firma</label>
-                                <input type="text" name="alamatFirma1" class="field__input" value="{{ old('alamatFirma1') }}" maxlength="255" placeholder="Alamat baris 1" style="text-transform:uppercase; margin-bottom:8px;">
-                                <input type="text" name="alamatFirma2" class="field__input" value="{{ old('alamatFirma2') }}" maxlength="255" placeholder="Alamat baris 2" style="text-transform:uppercase; margin-bottom:8px;">
-                                <input type="text" name="alamatFirma3" class="field__input" value="{{ old('alamatFirma3') }}" maxlength="255" placeholder="Alamat baris 3" style="text-transform:uppercase;">
+                                <input type="text" name="alamatFirma1" class="field__input" value="{{ old('alamatFirma1') }}" maxlength="255" placeholder="Alamat baris 1" aria-label="Alamat baris 1" style="text-transform:uppercase; margin-bottom:8px;">
+                                <input type="text" name="alamatFirma2" class="field__input" value="{{ old('alamatFirma2') }}" maxlength="255" placeholder="Alamat baris 2" aria-label="Alamat baris 2" style="text-transform:uppercase; margin-bottom:8px;">
+                                <input type="text" name="alamatFirma3" class="field__input" value="{{ old('alamatFirma3') }}" maxlength="255" placeholder="Alamat baris 3" aria-label="Alamat baris 3" style="text-transform:uppercase;">
                             </div>
                             <div class="field">
                                 <label class="field__label">Poskod</label>
@@ -593,9 +593,9 @@
                             </div>
                             <div class="field col-2">
                                 <label class="field__label">Alamat Bank</label>
-                                <input type="text" name="alamatBank1" class="field__input" value="{{ old('alamatBank1') }}" maxlength="255" placeholder="Alamat baris 1" style="text-transform:uppercase; margin-bottom:8px;">
-                                <input type="text" name="alamatBank2" class="field__input" value="{{ old('alamatBank2') }}" maxlength="255" placeholder="Alamat baris 2" style="text-transform:uppercase; margin-bottom:8px;">
-                                <input type="text" name="alamatBank3" class="field__input" value="{{ old('alamatBank3') }}" maxlength="255" placeholder="Alamat baris 3" style="text-transform:uppercase;">
+                                <input type="text" name="alamatBank1" class="field__input" value="{{ old('alamatBank1') }}" maxlength="255" placeholder="Alamat baris 1" aria-label="Alamat baris 1" style="text-transform:uppercase; margin-bottom:8px;">
+                                <input type="text" name="alamatBank2" class="field__input" value="{{ old('alamatBank2') }}" maxlength="255" placeholder="Alamat baris 2" aria-label="Alamat baris 2" style="text-transform:uppercase; margin-bottom:8px;">
+                                <input type="text" name="alamatBank3" class="field__input" value="{{ old('alamatBank3') }}" maxlength="255" placeholder="Alamat baris 3" aria-label="Alamat baris 3" style="text-transform:uppercase;">
                             </div>
                             <div class="field">
                                 <label class="field__label">Poskod <span class="req">*</span></label>

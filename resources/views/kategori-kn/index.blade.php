@@ -21,7 +21,7 @@
         <div class="tap-card__eyebrow">Tambah Kategori</div>
         <form method="POST" action="{{ route('kategori-kn.store') }}" style="display:flex; gap:8px;">
             @csrf
-            <input class="wiz-field__input" name="jenis_kategori" placeholder="Nama kategori baharu…" maxlength="255" required style="flex:1;">
+            <input class="wiz-field__input" name="jenis_kategori" placeholder="Nama kategori baharu…" aria-label="Nama kategori baharu…" maxlength="255" required style="flex:1;">
             <button type="submit" class="btn btn--primary">+ Tambah</button>
         </form>
     </div>
