@@ -8,7 +8,7 @@ use App\Models\Cawangan;
 use App\Models\Form;
 use App\Models\PemindahanCawangan;
 use App\Models\RefKes;
-use App\Support\NoFailGenerator;
+use App\Support\KesService;
 use App\Support\TransferCawanganService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -66,20 +66,9 @@ class KesController extends Controller
         return view('kes.form', $this->formData(new Form) + ['mode' => 'create']);
     }
 
-    public function store(PermohonanRequest $request): RedirectResponse
+    public function store(PermohonanRequest $request, KesService $svc): RedirectResponse
     {
-        $data = $request->validated();
-        $data['created_at'] = now();
-        $data['tarikh_daftar'] = $data['tarikh_daftar'] ?? now()->toDateString();
-        $data['didaftarkan_oleh'] = $request->user()->name;
-        $data['diterima'] = $data['diterima'] ?? ''; // NOT NULL in legacy schema
-
-        $kes = Form::create($data);
-
-        // Auto-generate file number if the officer left it blank (legacy generated no_fail at registration).
-        if (blank($kes->no_fail)) {
-            $kes->update(['no_fail' => app(NoFailGenerator::class)->generate($kes)]);
-        }
+        $kes = $svc->cipta($request->validated(), $request->user());
 
         return redirect()->route('kes.show', $kes)->with('status', 'Permohonan baharu direkodkan. No. Fail: '.$kes->no_fail);
     }
@@ -139,9 +128,9 @@ class KesController extends Controller
         return view('kes.form', $this->formData($kes) + ['mode' => 'edit']);
     }
 
-    public function update(PermohonanRequest $request, Form $kes): RedirectResponse
+    public function update(PermohonanRequest $request, Form $kes, KesService $svc): RedirectResponse
     {
-        $kes->update($request->validated() + ['tarikh_KPKemaskini' => now()]);
+        $svc->kemaskini($kes, $request->validated());
 
         return redirect()->route('kes.show', $kes)->with('status', 'Kes dikemaskini.');
     }
